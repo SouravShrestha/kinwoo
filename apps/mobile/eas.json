@@ -1,0 +1,44 @@
+{
+  "cli": {
+    "version": ">= 16.24.0",
+    "appVersionSource": "remote"
+  },
+  "build": {
+    "local": {
+      "android": {
+        "buildType": "apk"
+      },
+      "env": {
+        "EXPO_PUBLIC_API_URL": "https://test.kinwoo.cbsdev.me",
+        "EXPO_PUBLIC_SUPABASE_URL": "YOUR_TEST_SUPABASE_URL",
+        "EXPO_PUBLIC_SUPABASE_ANON_KEY": "YOUR_TEST_SUPABASE_ANON_KEY"
+      }
+    },
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "android": {
+        "buildType": "app-bundle"
+      },
+      "env": {
+        "EXPO_PUBLIC_API_URL": "https://test.kinwoo.cbsdev.me",
+        "EXPO_PUBLIC_SUPABASE_URL": "YOUR_TEST_SUPABASE_URL",
+        "EXPO_PUBLIC_SUPABASE_ANON_KEY": "YOUR_TEST_SUPABASE_ANON_KEY"
+      }
+    },
+    "production": {
+      "autoIncrement": true,
+      "android": {
+        "buildType": "app-bundle"
+      },
+      "env": {
+        "EXPO_PUBLIC_API_URL": "https://kinwoo.cbsdev.me",
+        "EXPO_PUBLIC_SUPABASE_URL": "YOUR_PROD_SUPABASE_URL",
+        "EXPO_PUBLIC_SUPABASE_ANON_KEY": "YOUR_PROD_SUPABASE_ANON_KEY"
+      }
+    }
+  },
+  "submit": {
+    "production": {}
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "name": "@kinwoo/icons",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Shared SVG icons. Geometry lives in src/data.ts; src/index.tsx renders it to the DOM and src/native.tsx to react-native-svg.",
+  "main": "./src/index.tsx",
+  "types": "./src/index.tsx",
+  "exports": {
+    ".": "./src/index.tsx",
+    "./native": "./src/native.tsx"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "peerDependencies": {
+    "react": ">=19",
+    "react-native-svg": ">=15"
+  },
+  "peerDependenciesMeta": {
+    "react-native-svg": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@types/react": "~19.2.0",
+    "vitest": "^3.2.4"
+  }
+}

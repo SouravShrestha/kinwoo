@@ -1,0 +1,46 @@
+{
+  "name": "kinwoo-monorepo",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "npm@10.9.2",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "turbo run dev --filter=@kinwoo/web",
+    "dev:mobile": "npm run start --workspace @kinwoo/mobile",
+    "build": "turbo run build",
+    "typecheck": "turbo run typecheck",
+    "test": "turbo run test",
+    "lint": "node scripts/check-boundaries.mjs && eslint .",
+    "check:boundaries": "node scripts/check-boundaries.mjs",
+    "format": "prettier --write .",
+    "deploy": "npm run deploy --workspace @kinwoo/web",
+    "preview": "npm run preview --workspace @kinwoo/web",
+    "tokens:generate": "npm run generate --workspace @kinwoo/tokens"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3.3.6",
+    "@eslint/js": "^9.39.5",
+    "eslint": "^9.0.0",
+    "eslint-config-next": "^15.3.5",
+    "eslint-config-prettier": "^10.1.1",
+    "eslint-plugin-prettier": "^5.2.6",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "globals": "^17.9.0",
+    "prettier": "^3.7.3",
+    "turbo": "^2.5.8",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.65.0"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "expo": "~57.0.27",
+    "react": "19.2.3",
+    "react-native": "0.86.3"
+  }
+}

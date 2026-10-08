@@ -1,0 +1,37 @@
+export interface ThemedValue {
+  light: string;
+  dark: string;
+}
+
+export type TokenValue = string | ThemedValue;
+
+export interface Token {
+  name: string;
+  value: TokenValue;
+}
+
+export const RADIUS_REM = 0.6;
+
+export const TOKENS: Token[] = [
+  { name: "background", value: { light: "#fefefe", dark: "#0e0e0e" } },
+  { name: "foreground", value: { light: "#0e0e0e", dark: "#fefefe" } },
+  { name: "muted", value: { light: "#f1f1f1", dark: "#1a1a1a" } },
+  { name: "muted-foreground", value: { light: "#6b6b6b", dark: "#9a9a9a" } },
+  { name: "border", value: { light: "#e5e5e5", dark: "#262626" } },
+  { name: "primary", value: { light: "#0e0e0e", dark: "#fefefe" } },
+  { name: "primary-foreground", value: { light: "#fefefe", dark: "#0e0e0e" } },
+  // The green behind the profile avatar, and the only chromatic token so far.
+  { name: "accent", value: { light: "#4f9163", dark: "#5faa74" } },
+  { name: "accent-foreground", value: { light: "#fefefe", dark: "#0e0e0e" } },
+  { name: "destructive", value: { light: "#c0392b", dark: "#e06a5c" } },
+];
+
+export function isThemed(value: TokenValue): value is ThemedValue {
+  return typeof value !== "string";
+}
+
+export function resolve(name: string, theme: "light" | "dark"): string {
+  const token = TOKENS.find((t) => t.name === name);
+  if (!token) throw new Error(`Unknown token "${name}"`);
+  return isThemed(token.value) ? token.value[theme] : token.value;
+}
