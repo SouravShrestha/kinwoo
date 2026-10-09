@@ -7,6 +7,9 @@ package-lock.json
 bun.lock
 routeTree.gen.ts
 
+# Expo-generated type declaration (gitignored, must not be edited)
+**/expo-env.d.ts
+
 # Monorepo build output
 **/.next/**
 **/.open-next/**
