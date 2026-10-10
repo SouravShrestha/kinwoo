@@ -1,36 +1,36 @@
 import { TABS, type TabKey } from "@kinwoo/core/app";
 import {
+  BillActiveIcon,
   BillIcon,
+  HomeActiveIcon,
   HomeIcon,
+  ListActiveIcon,
   ListIcon,
+  ProfileActiveIcon,
   ProfileIcon,
-  ProfileOutlineIcon,
 } from "@kinwoo/icons/native";
 import { colors } from "@kinwoo/tokens/native";
 import { Tabs } from "expo-router";
 import type { ComponentType } from "react";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { TabBarIcon } from "@/components/TabBarIcon";
 import { useTheme } from "@/theme/ThemeProvider";
 import type { IconProps } from "@kinwoo/icons/native";
 
-/**
- * Profile is the only tab with a distinct focused glyph; the rest use one icon
- * and rely on colour for state.
- */
 const ICONS: Record<
   TabKey,
   { active: ComponentType<IconProps>; inactive: ComponentType<IconProps> }
 > = {
-  home: { active: HomeIcon, inactive: HomeIcon },
-  tasks: { active: ListIcon, inactive: ListIcon },
-  bills: { active: BillIcon, inactive: BillIcon },
-  profile: { active: ProfileIcon, inactive: ProfileOutlineIcon },
+  home: { active: HomeActiveIcon, inactive: HomeIcon },
+  tasks: { active: ListActiveIcon, inactive: ListIcon },
+  bills: { active: BillActiveIcon, inactive: BillIcon },
+  profile: { active: ProfileActiveIcon, inactive: ProfileIcon },
 };
 
 /** Traced sizes differ per glyph, so each is nudged to look optically equal. */
 const SIZES: Record<TabKey, number> = { home: 25, tasks: 26, bills: 24, profile: 24 };
 
-/** expo-router's file routes; "/" maps to the group's index. */
 const ROUTE_NAMES: Record<TabKey, string> = {
   home: "index",
   tasks: "tasks",
@@ -38,8 +38,12 @@ const ROUTE_NAMES: Record<TabKey, string> = {
   profile: "profile",
 };
 
+const TAB_BAR_CONTENT_HEIGHT = 64;
+const TAB_BAR_PADDING_TOP = 12;
+
 export default function TabsLayout() {
   const { resolvedTheme } = useTheme();
+  const insets = useSafeAreaInsets();
   const palette = colors[resolvedTheme];
 
   return (
@@ -52,7 +56,8 @@ export default function TabsLayout() {
         tabBarStyle: {
           backgroundColor: palette.background,
           borderTopColor: palette.border,
-          height: 64,
+          height: TAB_BAR_CONTENT_HEIGHT + insets.bottom,
+          paddingTop: TAB_BAR_PADDING_TOP,
         },
       }}
     >
@@ -68,12 +73,15 @@ export default function TabsLayout() {
               tabBarAccessibilityLabel: tab.label,
               // react-navigation types this as ColorValue, but it always hands
               // back one of the hex strings configured above.
-              tabBarIcon: ({ focused, color }) =>
-                focused ? (
-                  <Active size={SIZES[tab.key]} color={color as string} />
-                ) : (
-                  <Inactive size={SIZES[tab.key]} color={color as string} />
-                ),
+              tabBarIcon: ({ focused, color }) => (
+                <TabBarIcon
+                  focused={focused}
+                  color={color as string}
+                  size={SIZES[tab.key]}
+                  Active={Active}
+                  Inactive={Inactive}
+                />
+              ),
             }}
           />
         );

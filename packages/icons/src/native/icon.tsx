@@ -3,10 +3,7 @@ import Svg, { Path } from "react-native-svg";
 import { DEFAULT_ICON_SIZE, type IconProps } from "../types";
 import type { IconGeometry } from "../data";
 
-/**
- * react-native-svg renderer. `color` is also set on the root so paths whose
- * fill resolves to `currentColor` pick it up, matching the web behaviour.
- */
+// `color` is also set on the root so paths filled with `currentColor` pick it up.
 export function SvgIcon({
   geometry,
   size = DEFAULT_ICON_SIZE,

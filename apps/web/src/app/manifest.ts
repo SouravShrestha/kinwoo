@@ -1,11 +1,6 @@
 import { APP_NAME } from "@kinwoo/core/app";
 import type { MetadataRoute } from "next";
 
-/**
- * Generated rather than a static file so the colours stay tied to the tokens.
- * No service worker: this makes the app installable and chrome-free, not
- * offline-capable.
- */
 export default function manifest(): MetadataRoute.Manifest {
   return {
     name: APP_NAME,

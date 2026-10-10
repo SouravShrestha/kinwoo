@@ -3,7 +3,6 @@
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
-/** The codes /auth/callback can redirect with, mapped to copy. */
 const MESSAGES: Record<string, string> = {
   provider_denied: "Login was cancelled.",
   missing_code: "That login link was incomplete. Try again.",
@@ -29,7 +28,6 @@ export function AuthErrorNotice() {
 
     setMessage(MESSAGES[code] ?? "Login failed. Try again.");
 
-    // Strip the parameter so a refresh does not resurface the message.
     const next = new URLSearchParams(params.toString());
     next.delete("auth_error");
     const query = next.toString();
@@ -47,7 +45,7 @@ export function AuthErrorNotice() {
       <button
         type="button"
         onClick={() => setMessage(null)}
-        className="mt-2 text-xs text-muted-foreground underline"
+        className="mt-2 text-xs text-muted-foreground underline hover:cursor-pointer"
       >
         Dismiss
       </button>

@@ -19,7 +19,6 @@ export function LoginScreen() {
   const [googleBusy, setGoogleBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // The gate only redirects *to* login, so the way back out lives here.
   useEffect(() => {
     if (ready && isLoggedIn) router.replace("/");
   }, [ready, isLoggedIn, router]);
@@ -68,7 +67,7 @@ export function LoginScreen() {
         </div>
 
         <div className="mt-10 space-y-3">
-          <Button label="Log in with Email" onClick={() => setEmailOpen(true)} />
+          <Button label="Sign in with Email" onClick={() => setEmailOpen(true)} />
 
           {canSignInWithGoogle ? (
             <Button
@@ -89,11 +88,11 @@ export function LoginScreen() {
 
         <p className="mt-8 pb-[calc(2rem+env(safe-area-inset-bottom))] text-center text-xs text-muted-foreground font-normal">
           By continuing to use {APP_NAME}, you agree to our{" "}
-          <Link href="/legal/terms" className="underline">
+          <Link href="/legal/terms" className="underline hover:cursor-pointer">
             Terms &amp; Conditions
           </Link>{" "}
           and{" "}
-          <Link href="/legal/privacy" className="underline">
+          <Link href="/legal/privacy" className="underline hover:cursor-pointer">
             Privacy Policy
           </Link>
           .

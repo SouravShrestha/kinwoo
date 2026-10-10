@@ -3,10 +3,7 @@ import type { IconGeometry } from "./data";
 
 export type WebIconProps = IconProps & { className?: string };
 
-/**
- * DOM renderer. Decorative by default: `aria-hidden` keeps icons out of the
- * accessibility tree, so the label must live on the surrounding control.
- */
+// Decorative: `aria-hidden` hides icons from assistive tech, so the label must live on the control.
 export function SvgIcon({
   geometry,
   size = DEFAULT_ICON_SIZE,

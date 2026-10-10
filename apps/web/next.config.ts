@@ -26,8 +26,6 @@ const nextConfig: NextConfig = {
       "default-src 'self'",
       `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""}`,
       "style-src 'self' 'unsafe-inline'",
-      // lh3.googleusercontent.com serves the avatar Google hands back on
-      // sign-in; without it those images are blocked.
       `img-src 'self' data: https://lh3.googleusercontent.com ${supabaseHost}`.trim(),
       `connect-src 'self' ${supabaseHost} ${supabaseWss}`.trim(),
       "font-src 'self' data:",

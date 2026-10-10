@@ -3,10 +3,6 @@ export interface SupabaseEnv {
   anonKey: string;
 }
 
-/**
- * Throws naming exactly what is missing. Callers that must survive a missing
- * configuration (the middleware, during a build) use readEnvOrNull instead.
- */
 export function readEnv(): SupabaseEnv {
   const env = readEnvOrNull();
   if (env) return env;

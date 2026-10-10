@@ -8,9 +8,8 @@ import type { ReactNode } from "react";
 import { AuthGate } from "./AuthGate";
 import { webAuthAdapter } from "@/lib/auth-adapter";
 
-// Same-origin, so requests carry the session cookie and no auth header
-// resolver is needed. Configured at module scope to avoid racing the first
-// render.
+// Same-origin, so requests carry the session cookie. Configured at module scope to
+// avoid racing the first render.
 configureApiClient({ baseUrl: "" });
 
 export function AppProviders({ children }: { children: ReactNode }) {

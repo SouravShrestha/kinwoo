@@ -10,11 +10,8 @@ function createSupabaseClient() {
 
 let instance: ReturnType<typeof createSupabaseClient> | undefined;
 
-/**
- * A module-level singleton whose env validation is deferred to first property
- * access. Without the Proxy, merely importing this module during SSR or the
- * OpenNext build would throw before any request is in flight.
- */
+// Env validation is deferred to first access so importing this during SSR or the
+// OpenNext build does not throw before a request exists.
 export const supabase = new Proxy({} as ReturnType<typeof createSupabaseClient>, {
   get(_target, prop, receiver) {
     instance ??= createSupabaseClient();

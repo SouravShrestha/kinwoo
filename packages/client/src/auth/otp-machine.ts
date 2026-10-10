@@ -1,10 +1,7 @@
 export const CODE_LENGTH = 6;
 export const RESEND_COOLDOWN_MS = 30_000;
 
-/**
- * Deliberately permissive. Real address validity is decided by whether the code
- * arrives; a stricter pattern only rejects addresses that work.
- */
+// Deliberately permissive: a stricter pattern only rejects addresses that work.
 export const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export type OtpPhase = "email" | "sending" | "code" | "verifying";
@@ -14,7 +11,6 @@ export interface OtpState {
   email: string;
   code: string;
   error: string | null;
-  /** Epoch ms when a resend becomes allowed again. */
   resendAvailableAt: number | null;
 }
 
@@ -30,7 +26,6 @@ export type OtpAction =
   | { type: "edit-email"; value: string }
   | { type: "edit-code"; value: string }
   | { type: "submit-email"; now: number }
-  /** `cooldownMs` defaults to RESEND_COOLDOWN_MS. */
   | { type: "send-succeeded"; now: number; cooldownMs?: number }
   | { type: "send-failed"; message: string }
   | { type: "submit-code" }
@@ -42,7 +37,6 @@ export function normaliseEmail(value: string): string {
   return value.trim().toLowerCase();
 }
 
-/** Strips anything that is not a digit and caps the length. */
 export function normaliseCode(value: string): string {
   return value.replace(/\D/g, "").slice(0, CODE_LENGTH);
 }
@@ -55,10 +49,7 @@ export function isCompleteCode(value: string): boolean {
   return normaliseCode(value).length === CODE_LENGTH;
 }
 
-/**
- * Turns an env value in whole seconds into a cooldown. Unset or malformed
- * values fall back to the default so a typo cannot remove the cooldown.
- */
+// Malformed values fall back to the default so a typo cannot remove the cooldown.
 export function resendCooldownMsFrom(seconds: string | undefined): number {
   if (seconds === undefined || !/^\d+$/.test(seconds.trim())) return RESEND_COOLDOWN_MS;
   return Number(seconds.trim()) * 1000;
@@ -77,8 +68,6 @@ export function resendSecondsRemaining(state: OtpState, now: number): number {
 export function otpReducer(state: OtpState, action: OtpAction): OtpState {
   switch (action.type) {
     case "edit-email":
-      // Clearing the error as the user types avoids a stale message sitting
-      // under a field they have already corrected.
       return { ...state, email: action.value, error: null };
 
     case "edit-code":
@@ -102,7 +91,6 @@ export function otpReducer(state: OtpState, action: OtpAction): OtpState {
       };
 
     case "send-failed":
-      // Back to the email step: the address is the thing most likely wrong.
       return { ...state, phase: "email", error: action.message };
 
     case "submit-code": {

@@ -5,14 +5,13 @@ import { useProfile } from "@kinwoo/client/profile";
 import { isPublicRoute } from "@kinwoo/core/auth";
 import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import { DisplayNameSheet } from "./DisplayNameSheet";
 
-/**
- * Mounted once in the root layout. Sends signed-out visitors to /login and
- * holds a non-dismissable sheet over the app until first-run setup is done.
- */
+/** Slightly longer than BottomSheet's 200ms exit animation. */
+const SHEET_HANDOFF_MS = 250;
+
 export function AuthGate() {
   const { ready: authReady, isLoggedIn } = useAuth();
   const { ready: profileReady, needsDisplayName } = useProfile();
@@ -31,5 +30,18 @@ export function AuthGate() {
     if (decision === "redirect-to-login") router.replace("/login");
   }, [decision, router]);
 
-  return <DisplayNameSheet open={decision === "collect-display-name"} />;
+  // The email sign-in sheet closes as the session lands. Wait for its exit
+  // animation so the two sheets never show at once.
+  const wantsName = decision === "collect-display-name";
+  const [settled, setSettled] = useState(false);
+  useEffect(() => {
+    if (!wantsName) return;
+    const timer = setTimeout(() => setSettled(true), SHEET_HANDOFF_MS);
+    return () => {
+      clearTimeout(timer);
+      setSettled(false);
+    };
+  }, [wantsName]);
+
+  return <DisplayNameSheet open={wantsName && settled} />;
 }

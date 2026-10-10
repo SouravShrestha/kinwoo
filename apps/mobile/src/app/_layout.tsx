@@ -1,6 +1,5 @@
 import "./globals.css";
-// Must be the first import after styles: gesture-handler patches the native
-// event system and expects to be initialised before any gesture consumer.
+// Must be the first import after styles: it has to initialise before any gesture consumer.
 import "react-native-gesture-handler";
 
 import {

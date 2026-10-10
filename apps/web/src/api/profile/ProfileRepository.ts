@@ -16,11 +16,8 @@ function toProfile(row: ProfileRow): Profile {
   };
 }
 
-/**
- * Takes the caller's session-scoped client, not the service-role one, so
- * row-level security is what enforces ownership rather than a WHERE clause we
- * could forget.
- */
+// Takes the session-scoped client, not service-role, so RLS enforces ownership
+// rather than a WHERE clause we could forget.
 export class ProfileRepository implements IProfileRepository {
   constructor(private readonly client: SupabaseClient<Database>) {}
 

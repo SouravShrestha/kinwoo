@@ -33,7 +33,6 @@ function themeVars(theme: "light" | "dark") {
   return vars(out);
 }
 
-// Built once so the style identity is stable between renders.
 const THEME_VARS = { light: themeVars("light"), dark: themeVars("dark") } as const;
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
@@ -65,13 +64,8 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     [theme, resolvedTheme, setTheme],
   );
 
-  // Token CSS variables are supplied from React state rather than the
-  // stylesheet's prefers-color-scheme block. That keeps className colours in
-  // the same render as the JS palette instead of waiting on a native
-  // Appearance round trip, so everything switches together.
-  //
-  // Appearance is deliberately never overridden: doing so would make
-  // useColorScheme() report the override, hiding the real device setting.
+  // CSS variables come from React state so className colours switch in the same render as the
+  // JS palette. Never override Appearance: useColorScheme() would then hide the device setting.
   return (
     <ThemeContext.Provider value={value}>
       <View className="flex-1" style={THEME_VARS[resolvedTheme]}>

@@ -4,12 +4,8 @@ import { describe, expect, it } from "vitest";
 
 import * as geometry from "./data";
 
-/**
- * Static analysis rather than imports: `native.tsx` pulls in react-native-svg,
- * which cannot load in a node test environment. Reading the source still
- * catches the failure mode that matters, an icon added to one platform and
- * forgotten on the other.
- */
+// Reads source instead of importing: native.tsx pulls in react-native-svg, which
+// cannot load in node.
 
 const here = path.dirname(new URL(import.meta.url).pathname);
 const read = (file: string) => readFileSync(path.join(here, file), "utf8");

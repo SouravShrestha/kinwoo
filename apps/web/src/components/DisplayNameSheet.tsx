@@ -49,9 +49,9 @@ export function DisplayNameSheet({ open }: { open: boolean }) {
           void submit();
         }}
       >
-        <h2 className="font-display text-2xl font-bold">What should we call you?</h2>
+        <h2 className="font-display text-2xl font-medium">What's your full name?</h2>
         <p className="mt-2 text-muted-foreground">
-          This is the name the people you share with will see.
+          Enter your first and last name so others know it's you.
         </p>
 
         <TextField

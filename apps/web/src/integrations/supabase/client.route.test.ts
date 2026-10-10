@@ -1,15 +1,5 @@
 import { afterAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-/**
- * What is under test is our own branching — which credential wins, which
- * verification path runs, and what an unverifiable credential resolves to —
- * not Supabase's JWT verification. So @supabase/ssr is mocked at the module
- * boundary and the auth client is a hand-written fake.
- *
- * The module under test reads env at call time, so each case re-imports it
- * after setting env via vi.resetModules().
- */
-
 const createServerClientMock = vi.fn();
 
 vi.mock("@supabase/ssr", () => ({
@@ -278,5 +268,38 @@ describe("cookie buffering", () => {
     applyCookies(new Request("https://kinwoo.cbsdev.me/x"), { cookies: { set } } as never);
 
     expect(set).not.toHaveBeenCalled();
+  });
+});
+
+describe("createRouteClient credentials", () => {
+  type Options = {
+    cookies: { getAll: () => unknown[] };
+    global?: { headers: Record<string, string> };
+  };
+
+  it("runs queries under a bearer token so RLS sees the mobile caller", async () => {
+    createServerClientMock.mockReturnValue(fakeClient({ getUser: vi.fn() }));
+
+    const { createRouteClient } = await loadModule();
+    createRouteClient(
+      new Request("https://kinwoo.cbsdev.me/api/profile", {
+        headers: { authorization: "Bearer jwt-1", cookie: "sb-auth-token=cookie" },
+      }),
+    );
+
+    const options = createServerClientMock.mock.calls[0][2] as Options;
+    expect(options.global?.headers.Authorization).toBe("Bearer jwt-1");
+    expect(options.cookies.getAll()).toEqual([]);
+  });
+
+  it("falls back to the session cookie when there is no bearer token", async () => {
+    createServerClientMock.mockReturnValue(fakeClient({ getUser: vi.fn() }));
+
+    const { createRouteClient } = await loadModule();
+    createRouteClient(requestWithCookie("sb-auth-token=abc"));
+
+    const options = createServerClientMock.mock.calls[0][2] as Options;
+    expect(options.global).toBeUndefined();
+    expect(options.cookies.getAll()).toEqual([{ name: "sb-auth-token", value: "abc" }]);
   });
 });

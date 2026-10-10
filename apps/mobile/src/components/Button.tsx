@@ -41,8 +41,7 @@ export function Button({
         ? "text-muted-foreground"
         : "text-foreground";
 
-  // ActivityIndicator has no className color support, so it defaults to a dark
-  // grey that vanishes against the black primary background. Match the label.
+  // ActivityIndicator ignores className colour; its dark default vanishes on the primary background.
   const spinnerColor = variant === "primary" ? colors[resolvedTheme].primaryForeground : undefined;
 
   return (
@@ -53,7 +52,6 @@ export function Button({
       onPress={onPress}
       disabled={isDisabled}
       className={[
-        // 56px keeps the target comfortably above the 44px minimum.
         "h-14 flex-row items-center justify-center rounded-xl px-5",
         container,
         isDisabled ? "opacity-50" : "active:opacity-80",

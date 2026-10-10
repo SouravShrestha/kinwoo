@@ -17,16 +17,8 @@ export interface RouteClient {
   applyCookies: <T extends NextResponse>(response: T) => T;
 }
 
-/**
- * Cookie writes are buffered per Request rather than written immediately.
- *
- * A route handler on Cloudflare Workers cannot mutate a response once it has
- * been constructed, and `next/headers` cookies are read-only inside handlers.
- * So Supabase's `setAll` collects here, and `applyCookies` flushes onto the
- * response the handler is about to return. A WeakMap keyed on the Request means
- * concurrent requests never share a buffer and entries are collected with the
- * request.
- */
+// Cookie writes are buffered per Request: Workers handlers cannot mutate a built
+// response and next/headers cookies are read-only. Keyed by WeakMap so requests never share.
 const pendingByRequest = new WeakMap<Request, PendingCookie[]>();
 
 export function createRouteClient(request: Request): RouteClient {
@@ -35,29 +27,29 @@ export function createRouteClient(request: Request): RouteClient {
   const pending = pendingByRequest.get(request) ?? [];
   pendingByRequest.set(request, pending);
 
+  // Mobile has no cookie jar; without the bearer token the client is anonymous and RLS rejects every read.
+  const token = bearerToken(request);
+
   const supabase = createServerClient<Database>(url, anonKey, {
     cookies: {
-      getAll: () => parseCookieHeader(request.headers.get("cookie")),
+      getAll: () => (token ? [] : parseCookieHeader(request.headers.get("cookie"))),
       setAll: (cookiesToSet) => {
         pending.push(...(cookiesToSet as PendingCookie[]));
       },
     },
+    ...(token ? { global: { headers: { Authorization: `Bearer ${token}` } } } : {}),
   });
 
   return { supabase, applyCookies: (response) => applyCookies(request, response) };
 }
 
-/** Lets a handler piggyback its own cookies on the same flush. */
 export function queueCookie(request: Request, cookie: PendingCookie): void {
   const pending = pendingByRequest.get(request) ?? [];
   pending.push(cookie);
   pendingByRequest.set(request, pending);
 }
 
-/**
- * Must be called on every exit path of every handler, including error paths.
- * Skipping it on a 401 drops a refreshed session and logs the user out.
- */
+// Call on every exit path, including errors: skipping it on a 401 drops a refreshed session.
 export function applyCookies<T extends NextResponse>(request: Request, response: T): T {
   const pending = pendingByRequest.get(request);
   if (!pending) return response;
@@ -84,17 +76,8 @@ type ClaimsCapable = {
   }>;
 };
 
-/**
- * Resolves the caller's identity from either credential kind: a bearer token
- * (mobile) takes precedence, otherwise the session cookie (web).
- *
- * `getClaims` verifies the JWT locally and is tried first to avoid a network
- * round trip per request; it is feature-detected because it is newer than the
- * pinned supabase-js types. `getUser` is the authoritative fallback.
- *
- * Returns null rather than throwing: an unidentified caller is a guest, never
- * someone else.
- */
+// A bearer token (mobile) wins over the session cookie. getClaims verifies locally and is
+// feature-detected (newer than the pinned types); getUser is the fallback. Returns null, never throws.
 export async function getVerifiedUser(request: Request): Promise<{ id: string } | null> {
   const token = bearerToken(request);
   if (token) return verifyBearerToken(token);

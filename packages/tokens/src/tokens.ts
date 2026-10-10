@@ -20,7 +20,6 @@ export const TOKENS: Token[] = [
   { name: "border", value: { light: "#e5e5e5", dark: "#262626" } },
   { name: "primary", value: { light: "#0e0e0e", dark: "#fefefe" } },
   { name: "primary-foreground", value: { light: "#fefefe", dark: "#0e0e0e" } },
-  // The green behind the profile avatar, and the only chromatic token so far.
   { name: "accent", value: { light: "#4f9163", dark: "#5faa74" } },
   { name: "accent-foreground", value: { light: "#fefefe", dark: "#0e0e0e" } },
   { name: "destructive", value: { light: "#c0392b", dark: "#e06a5c" } },

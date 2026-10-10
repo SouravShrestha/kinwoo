@@ -20,12 +20,13 @@ const RESEND_COOLDOWN_MS = resendCooldownMsFrom(
   process.env.EXPO_PUBLIC_OTP_RESEND_COOLDOWN_SECONDS,
 );
 
+// No text-underline-offset in React Native: the underline is a bottom border, this is the gap.
+const UNDERLINE_STYLE = { paddingBottom: 0 } as const;
+
 export function AuthSheet({ open, onClose }: { open: boolean; onClose: () => void }) {
   const { signInWithEmail, verifyEmailCode } = useAuth();
   const [state, dispatch] = useReducer(otpReducer, INITIAL_OTP_STATE);
 
-  // Drives the resend countdown label. Only ticks while the sheet is waiting on
-  // a code, so it is not a permanent timer.
   const [now, setNow] = useState(() => Date.now());
   useEffect(() => {
     if (!open || state.phase !== "code") return;
@@ -41,7 +42,6 @@ export function AuthSheet({ open, onClose }: { open: boolean; onClose: () => voi
 
   const send = async () => {
     dispatch({ type: "submit-email", now: Date.now() });
-    // The reducer rejected it; there is no request to make.
     if (!isValidEmail(state.email)) return;
 
     try {
@@ -58,28 +58,28 @@ export function AuthSheet({ open, onClose }: { open: boolean; onClose: () => voi
 
     try {
       await verifyEmailCode(state.email, state.code);
-      // No close call here: a successful sign-in flips the auth state and the
-      // caller unmounts this sheet.
+      // Close straight away so the display-name sheet does not stack on top of this one.
+      onClose();
     } catch (error) {
       dispatch({ type: "verify-failed", message: messageFor(error) });
     }
   };
 
   return (
-    <BottomSheet open={open} onClose={onClose} label="Log in with email" scrollable={false}>
+    <BottomSheet open={open} onClose={onClose} label="Home is just a login away" scrollable={false}>
       {state.phase === "code" || state.phase === "verifying" ? (
         <View>
-          <Text className="font- font-medium text-2xl text-foreground">Enter the code</Text>
-          <Text className="mt-2 text-muted-foreground">
-            Enter the {CODE_LENGTH} digit code sent to {state.email}
+          <Text className="font- font-medium text-2xl text-foreground">
+            Just a little verification
           </Text>
+          <Text className="mt-2 text-muted-foreground">Your code has landed at {state.email}</Text>
 
           <TextField
             kind="code"
             value={state.code}
             onChangeText={(value) => dispatch({ type: "edit-code", value })}
             disabled={busy}
-            className="mt-6"
+            className="mt-6 font-bold"
           />
 
           {state.error ? (
@@ -99,12 +99,14 @@ export function AuthSheet({ open, onClose }: { open: boolean; onClose: () => voi
             </Text>
           </Pressable>
 
-          <View className="mt-4 flex-row items-center justify-between">
+          <View className="mt-4 flex-row items-center justify-between px-1">
             <Pressable
               accessibilityRole="button"
               onPress={() => dispatch({ type: "back-to-email" })}
             >
-              <Text className="text-sm text-muted-foreground underline">Use a different email</Text>
+              <View className="border-b border-muted-foreground" style={UNDERLINE_STYLE}>
+                <Text className="text-sm text-foreground">Use a different email</Text>
+              </View>
             </Pressable>
 
             <Pressable
@@ -112,21 +114,28 @@ export function AuthSheet({ open, onClose }: { open: boolean; onClose: () => voi
               disabled={!canResend(state, now) || busy}
               onPress={send}
             >
-              <Text
-                className={`text-sm underline ${canResend(state, now) && !busy ? "text-foreground" : "text-muted-foreground opacity-50"}`}
+              <View
+                className={`border-b ${canResend(state, now) && !busy ? "border-foreground" : "border-muted-foreground opacity-50"}`}
+                style={UNDERLINE_STYLE}
               >
-                {canResend(state, now)
-                  ? "Resend code"
-                  : `Resend in ${resendSecondsRemaining(state, now)}s`}
-              </Text>
+                <Text
+                  className={`text-sm ${canResend(state, now) && !busy ? "text-foreground" : "text-muted-foreground"}`}
+                >
+                  {canResend(state, now)
+                    ? "Resend code"
+                    : `Resend in ${resendSecondsRemaining(state, now)}s`}
+                </Text>
+              </View>
             </Pressable>
           </View>
         </View>
       ) : (
         <View>
-          <Text className="font-display-medium text-2xl text-foreground">Log in with email</Text>
+          <Text className="font-display-medium text-2xl text-foreground">
+            Home is just a login away
+          </Text>
           <Text className="mt-2 text-muted-foreground">
-            We&apos;ll send you a {CODE_LENGTH}-digit code. No password needed.
+            Your email, and we'll take it from here.
           </Text>
 
           <TextField

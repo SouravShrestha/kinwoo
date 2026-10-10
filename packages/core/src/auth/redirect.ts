@@ -2,15 +2,8 @@ import { siteUrlFromEnv } from "../build-env";
 
 const MAX_PATH_LENGTH = 512;
 
-/**
- * Narrows an untrusted `next` parameter down to a same-site path.
- *
- * Anything that could leave the origin, or loop back into the auth routes, is
- * discarded in favour of "/". The rejections are deliberately broad: a
- * protocol-relative "//evil.com" is a valid URL to the browser, and a
- * backslash is normalised to a forward slash by some clients, so both have to
- * go even though neither looks like an absolute URL.
- */
+// Rejections are deliberately broad: "//evil.com" is a valid URL to the browser,
+// and some clients normalise a backslash to a forward slash.
 export function safeNextPath(value: string | null | undefined): string {
   if (!value) return "/";
   if (value.length > MAX_PATH_LENGTH) return "/";
@@ -30,13 +23,9 @@ export function safeNextPath(value: string | null | undefined): string {
   return value;
 }
 
-/**
- * The origin to build auth redirects against.
- *
- * The configured site URL wins over the request's own origin: behind Cloudflare
- * the inbound URL can carry an internal hostname, and Supabase only honours
- * redirects that match its allow-list exactly.
- */
+// The configured site URL wins over the request origin: behind Cloudflare the
+// inbound URL can carry an internal hostname, and Supabase only honours
+// redirects that match its allow-list exactly.
 export function resolveOrigin(request: { url: string }): string {
   const configured = siteUrlFromEnv();
   if (configured) return configured.replace(/\/+$/, "");

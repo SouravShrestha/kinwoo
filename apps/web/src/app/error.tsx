@@ -22,11 +22,11 @@ export default function ErrorPage({
         <button
           type="button"
           onClick={() => reset()}
-          className="cursor-pointer rounded-lg bg-primary px-4 py-2 text-primary-foreground hover:opacity-90"
+          className="rounded-lg bg-primary px-4 py-2 text-primary-foreground hover:cursor-pointer hover:opacity-90"
         >
           Try again
         </button>
-        <Link href="/" className="rounded-lg bg-muted px-4 py-2">
+        <Link href="/" className="rounded-lg bg-muted px-4 py-2 hover:cursor-pointer">
           Go home
         </Link>
       </div>

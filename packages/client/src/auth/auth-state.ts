@@ -9,7 +9,7 @@ export interface AuthState {
 
 export const INITIAL_AUTH_STATE: AuthState = { user: null, ready: false };
 
-/** Always marks the state ready: a null session is an answer, not a pending one. */
+// A null session is an answer, not a pending one, so ready is always true.
 export function authStateFromSession(session: Session | null | undefined): AuthState {
   return { user: session?.user ?? null, ready: true };
 }
@@ -21,12 +21,6 @@ export function canSignInWithGoogle(adapter: AuthAdapter): boolean {
 export const NO_GOOGLE_MESSAGE =
   "This build does not offer Google sign-in. Check canSignInWithGoogle before calling this.";
 
-/**
- * The adapter's methods as a complete action set, with the optional capability
- * turned into a loud failure rather than a silent no-op.
- *
- * Pure and React-free so the guards are testable without a renderer.
- */
 export function createAuthActions(adapter: AuthAdapter): AuthActions {
   return {
     signInWithGoogle: async () => {

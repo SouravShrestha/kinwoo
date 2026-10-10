@@ -19,7 +19,9 @@
     "format": "prettier --write .",
     "deploy": "npm run deploy --workspace @kinwoo/web",
     "preview": "npm run preview --workspace @kinwoo/web",
-    "tokens:generate": "npm run generate --workspace @kinwoo/tokens"
+    "tokens:generate": "npm run generate --workspace @kinwoo/tokens",
+    "dev:up": "colima start && supabase start",
+    "dev:down": "supabase stop && colima stop"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.6",
@@ -31,6 +33,7 @@
     "eslint-plugin-react-hooks": "^7.1.1",
     "globals": "^17.9.0",
     "prettier": "^3.7.3",
+    "supabase": "^2.120.0",
     "turbo": "^2.5.8",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.65.0"

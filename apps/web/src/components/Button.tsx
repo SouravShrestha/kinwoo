@@ -38,7 +38,7 @@ export function Button({
         "text-base font-medium transition-opacity",
         "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground",
         VARIANTS[variant],
-        isDisabled && "cursor-not-allowed opacity-50",
+        isDisabled ? "cursor-not-allowed opacity-50" : "hover:cursor-pointer",
         className,
       )}
       {...rest}

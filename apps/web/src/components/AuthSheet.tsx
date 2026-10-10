@@ -25,7 +25,6 @@ export function AuthSheet({ open, onClose }: { open: boolean; onClose: () => voi
   const { signInWithEmail, verifyEmailCode } = useAuth();
   const [state, dispatch] = useReducer(otpReducer, INITIAL_OTP_STATE);
 
-  // Only ticks while a code is outstanding, to drive the resend countdown.
   const [now, setNow] = useState(() => Date.now());
   useEffect(() => {
     if (!open || state.phase !== "code") return;
@@ -58,15 +57,15 @@ export function AuthSheet({ open, onClose }: { open: boolean; onClose: () => voi
 
     try {
       await verifyEmailCode(state.email, state.code);
-      // Not closed here: signing in flips the auth state and the caller
-      // unmounts this sheet.
+      // Close straight away so the display-name sheet never stacks on this one.
+      onClose();
     } catch (error) {
       dispatch({ type: "verify-failed", message: messageFor(error) });
     }
   };
 
   return (
-    <BottomSheet open={open} onClose={onClose} label="Log in with email">
+    <BottomSheet open={open} onClose={onClose} label="Home is just a login away">
       <form
         onSubmit={(event) => {
           event.preventDefault();
@@ -74,12 +73,12 @@ export function AuthSheet({ open, onClose }: { open: boolean; onClose: () => voi
         }}
       >
         <h2 className="font-display text-xl font-medium">
-          {onCodeStep ? "Enter your code" : "Log in with email"}
+          {onCodeStep ? "Just a little verification" : "Home is just a login away"}
         </h2>
         <p className="mt-2 text-muted-foreground text-sm">
           {onCodeStep
-            ? `We sent a ${CODE_LENGTH}-digit code to ${state.email}.`
-            : `We'll send you a ${CODE_LENGTH}-digit code. No password needed.`}
+            ? `Your code has landed at ${state.email}`
+            : `Your email, and we'll take it from here`}
         </p>
 
         {onCodeStep ? (
@@ -122,7 +121,7 @@ export function AuthSheet({ open, onClose }: { open: boolean; onClose: () => voi
             <button
               type="button"
               onClick={() => dispatch({ type: "back-to-email" })}
-              className="text-muted-foreground underline"
+              className="text-muted-foreground underline underline-offset-4 hover:cursor-pointer"
             >
               Use a different email
             </button>
@@ -131,7 +130,7 @@ export function AuthSheet({ open, onClose }: { open: boolean; onClose: () => voi
               type="button"
               onClick={() => void send()}
               disabled={!canResend(state, now) || busy}
-              className="underline disabled:opacity-50"
+              className="underline underline-offset-4 hover:cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
             >
               {canResend(state, now)
                 ? "Resend code"

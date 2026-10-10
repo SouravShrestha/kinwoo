@@ -41,12 +41,7 @@ jobs:
         env:
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL || vars.NEXT_PUBLIC_SUPABASE_URL }}
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY || vars.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
-          # Falls back to next.config.ts's own "http://localhost:3000" when
-          # unset, same as before this was wired through — set
-          # NEXT_PUBLIC_SITE_URL as a repo/environment variable or secret
-          # (e.g. https://test.kinwoo.cbsdev.me, matching wrangler.toml's
-          # [env.test] APP_HOSTNAME) so metadataBase, the sitemap and robots.txt
-          # stop inlining localhost into this environment's build.
+          # Unset falls back to localhost; match wrangler.toml's [env.test] APP_HOSTNAME.
           NEXT_PUBLIC_SITE_URL: ${{ secrets.NEXT_PUBLIC_SITE_URL || vars.NEXT_PUBLIC_SITE_URL }}
 
       - name: Build for Cloudflare Workers (OpenNext)
@@ -66,8 +61,7 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: deploy --env test
-          # Pinned to match apps/web's wrangler devDependency and ci-main.yml.
-          # Left unset, the action installs the latest major and deploys
-          # differently from main.
+          # Pinned to match apps/web's wrangler devDependency and ci-main.yml;
+          # unset, the action installs the latest major.
           wranglerVersion: "3"
           workingDirectory: apps/web

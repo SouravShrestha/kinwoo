@@ -13,13 +13,7 @@ function safeDecode(value: string): string {
   }
 }
 
-/**
- * Parsed by hand rather than with @supabase/ssr's helper, whose return shape
- * has changed across releases.
- *
- * Splits on the *first* `=` only: Supabase auth cookies hold base64 JSON, which
- * carries `=` padding that would otherwise be truncated.
- */
+// Splits on the first `=` only: base64 JSON values carry `=` padding.
 export function parseCookieHeader(header: string | null | undefined): CookiePair[] {
   if (!header) return [];
 

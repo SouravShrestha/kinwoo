@@ -75,3 +75,20 @@ skip_nonce_check = false
 
 [analytics]
 enabled = false
+
+[realtime]
+enabled = false
+
+[edge_runtime]
+enabled = false
+
+[storage]
+enabled = false
+
+[auth.email.template.confirmation]
+subject = "Your Kinwoo verification code"
+content_path = "./supabase/templates/otp.html"
+
+[auth.email.template.magic_link]
+subject = "Your Kinwoo sign-in code"
+content_path = "./supabase/templates/otp.html"

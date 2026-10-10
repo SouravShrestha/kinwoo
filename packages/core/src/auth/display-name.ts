@@ -6,15 +6,11 @@ export type DisplayNameError = "empty" | "too-long" | "invalid-characters";
 export type DisplayNameResult =
   { ok: true; value: string } | { ok: false; error: DisplayNameError };
 
-/** Trims and collapses internal runs of whitespace to a single space. */
 export function normaliseDisplayName(input: string): string {
   return input.trim().replace(/\s+/g, " ");
 }
 
-/**
- * Mirrors the profiles_display_name_length constraint in the database, so a
- * name the client accepts cannot be rejected by Postgres.
- */
+// Mirrors the profiles_display_name_length constraint in the database.
 export function validateDisplayName(input: string): DisplayNameResult {
   const value = normaliseDisplayName(input);
 

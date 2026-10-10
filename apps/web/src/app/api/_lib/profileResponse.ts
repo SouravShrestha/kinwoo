@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 
 import type { ProfileResult } from "@/api/profile/IProfileService";
 
-/** Maps the domain result onto HTTP. The only place that mapping lives. */
 export function profileResponse(result: ProfileResult): NextResponse {
   switch (result.status) {
     case "ok":

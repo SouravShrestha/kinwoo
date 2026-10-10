@@ -1,11 +1,8 @@
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "@kinwoo/core/db";
 
-/**
- * Service-role client. Bypasses row-level security entirely, so this module
- * must never be imported from a client component or a route handler that
- * serves user input directly.
- */
+// Service-role client: bypasses row-level security. Never import it from a client
+// component or a route handler that serves user input directly.
 export function getSupabaseAdmin() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;

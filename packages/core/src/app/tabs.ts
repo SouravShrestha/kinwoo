@@ -6,11 +6,7 @@ export interface TabDefinition {
   label: string;
 }
 
-/**
- * The single source for the bottom navigation on both platforms. Only data
- * lives here: core cannot import icon components, so each app maps the key to
- * its own renderer.
- */
+// Data only: core cannot import icon components, so each app maps the key to its own.
 export const TABS: readonly TabDefinition[] = [
   { key: "home", href: "/", label: "Home" },
   { key: "tasks", href: "/tasks", label: "Tasks" },
@@ -18,12 +14,8 @@ export const TABS: readonly TabDefinition[] = [
   { key: "profile", href: "/profile", label: "Profile" },
 ];
 
-/**
- * Which tab a pathname belongs to, or null for a route outside the navigation.
- *
- * "/" has to match exactly, otherwise it would claim every path. The rest match
- * on a path-segment boundary so "/billsomething" is not treated as "/bills".
- */
+// "/" must match exactly or it would claim every path. The rest match on a
+// segment boundary so "/billsomething" is not treated as "/bills".
 export function activeTabFor(pathname: string): TabKey | null {
   const normalised = pathname.length > 1 ? pathname.replace(/\/+$/, "") : pathname;
 

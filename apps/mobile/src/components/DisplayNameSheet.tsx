@@ -24,8 +24,7 @@ export function DisplayNameSheet({ open }: { open: boolean }) {
 
     try {
       await setDisplayName(result.value);
-      // Not closed here: saving clears needsDisplayName and the gate unmounts
-      // this sheet.
+      // Not closed here: saving clears needsDisplayName and the gate unmounts this sheet.
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : "Could not save that name.");
     } finally {
@@ -41,9 +40,11 @@ export function DisplayNameSheet({ open }: { open: boolean }) {
       showHandle={false}
       scrollable={false}
     >
-      <Text className="font-display text-2xl text-foreground">What should we call you?</Text>
+      <Text className="font-display font-medium text-2xl text-foreground">
+        What's your full name?
+      </Text>
       <Text className="mt-2 text-muted-foreground">
-        This is the name the people you share with will see.
+        Enter your first and last name so others know it’s you.
       </Text>
 
       <TextField

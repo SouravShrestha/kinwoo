@@ -1,13 +1,14 @@
 import { useAuth } from "@kinwoo/client/auth";
 import { useProfile } from "@kinwoo/client/profile";
-import { AppearanceIcon, BellIcon, GlobeIcon, ProfileOutlineIcon } from "@kinwoo/icons/native";
+import { AppearanceIcon, BellIcon, GlobeIcon, ProfileIcon } from "@kinwoo/icons/native";
 import { colors } from "@kinwoo/tokens/native";
 import { router } from "expo-router";
 import { useState } from "react";
-import { Image, Pressable, ScrollView, Text, View } from "react-native";
+import { Image, ScrollView, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { AppearanceSheet } from "@/components/AppearanceSheet";
+import { Button } from "@/components/Button";
 import { SettingsGroup, SettingsRow } from "@/components/Settings";
 import { profileImage } from "@/lib/images";
 import { useTheme } from "@/theme/ThemeProvider";
@@ -26,9 +27,9 @@ export default function ProfileScreen() {
   return (
     <ScrollView
       className="flex-1 bg-background"
-      contentContainerStyle={{ paddingTop: insets.top + 24, paddingHorizontal: 24 }}
+      contentContainerStyle={{ paddingTop: insets.top + 36, paddingHorizontal: 24 }}
     >
-      <View className="flex-row items-center">
+      <View className="flex-row items-center mb-6">
         <View className="size-16 items-center justify-center overflow-hidden rounded-full bg-accent">
           <Image
             source={profileImage}
@@ -40,8 +41,8 @@ export default function ProfileScreen() {
         </View>
 
         <View className="ml-4 flex-1">
-          <Text className="font-display text-xl text-foreground">
-            {profile?.displayName ?? "—"}
+          <Text className="font-display text-xl text-foreground font-medium tracking-tight">
+            {profile?.displayName ?? ""}
           </Text>
           <Text className="mt-0.5 text-sm text-muted-foreground">{user?.email ?? ""}</Text>
         </View>
@@ -49,7 +50,7 @@ export default function ProfileScreen() {
 
       <SettingsGroup title="Account Settings">
         <SettingsRow
-          icon={<ProfileOutlineIcon size={20} color={palette.foreground} />}
+          icon={<ProfileIcon size={20} color={palette.foreground} />}
           label="Personal Information"
           onPress={() => router.push("/settings/personal")}
         />
@@ -75,13 +76,7 @@ export default function ProfileScreen() {
         />
       </SettingsGroup>
 
-      <Pressable
-        accessibilityRole="button"
-        onPress={() => void signOut()}
-        className="mt-10 h-14 items-center justify-center rounded-3xl border border-border active:opacity-60"
-      >
-        <Text className="font-semibold text-base text-destructive">Log out</Text>
-      </Pressable>
+      <Button label="Log out" variant="outline" onPress={() => void signOut()} className="mt-10" />
 
       <View style={{ height: insets.bottom + 40 }} />
 

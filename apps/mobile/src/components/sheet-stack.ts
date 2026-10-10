@@ -3,12 +3,7 @@ import { BackHandler } from "react-native";
 
 import { isTop, push, remove } from "./sheet-stack-core";
 
-/**
- * Registers an open sheet so Android back closes the topmost one.
- *
- * Non-dismissable sheets never register, which is what makes back a no-op
- * behind the login wall.
- */
+// Non-dismissable sheets never register, which makes back a no-op behind the login wall.
 export function useSheetStack(isOpen: boolean, dismissable: boolean, onClose?: () => void) {
   const [id] = useState(() => Symbol("sheet"));
 

@@ -43,6 +43,8 @@ export default (): ExpoConfig => ({
     ],
     "expo-status-bar",
     "expo-web-browser",
+    // iOS 27 aborts launch without the UIScene lifecycle. Remove on SDK 58, where it is default.
+    ["expo-build-properties", { ios: { enableSceneSupport: true } }],
   ],
   experiments: {
     typedRoutes: true,

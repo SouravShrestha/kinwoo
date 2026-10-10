@@ -19,8 +19,8 @@ export function AuthProvider({ adapter, children }: { adapter: AuthAdapter; chil
   useEffect(() => {
     let active = true;
 
-    // Both paths mark the state ready. getSession settles the initial render;
-    // onAuthStateChange covers a token refresh arriving before it resolves.
+    // getSession settles the initial render; onAuthStateChange covers a token
+    // refresh arriving before it resolves.
     void adapter.client.auth.getSession().then(({ data }) => {
       if (active) setState(authStateFromSession(data.session));
     });

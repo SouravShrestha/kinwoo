@@ -137,10 +137,6 @@ describe("PATCH /api/profile/display-name", () => {
   });
 });
 
-/**
- * Cheap architectural guard: the service-role client bypasses row-level
- * security, so a route handler must never reach it directly.
- */
 describe("route sources", () => {
   const here = path.dirname(new URL(import.meta.url).pathname);
   const files = ["route.ts", "display-name/route.ts", "preferences/route.ts"];

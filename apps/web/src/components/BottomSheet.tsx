@@ -8,7 +8,6 @@ import { cn } from "@/lib/utils";
 const FOCUSABLE =
   'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
-/** Ignore a close that arrives within this window of opening. */
 const MISFIRE_MS = 300;
 const EXIT_FALLBACK_MS = 400;
 
@@ -147,7 +146,6 @@ export function BottomSheet({
         onClick={dismissable ? guardedClose : undefined}
         className={cn(
           "fixed inset-0 bg-black/50",
-          // Clicks fall through to nothing rather than closing the sheet.
           !dismissable && "pointer-events-none",
           zClassName,
           closing ? "sheet-backdrop-out" : "sheet-backdrop-in",

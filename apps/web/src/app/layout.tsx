@@ -15,7 +15,6 @@ const inter = Inter({
   display: "swap",
 });
 
-// Poppins is not a variable font, so each weight used by headings is listed.
 const poppins = Poppins({
   subsets: ["latin"],
   weight: ["500", "600", "700"],
@@ -43,7 +42,6 @@ export const metadata: Metadata = {
   applicationName: APP_NAME,
   title: APP_NAME,
   description: DESCRIPTION,
-  // Lets an iOS home-screen launch open without browser chrome.
   appleWebApp: { capable: true, statusBarStyle: "default", title: APP_NAME },
   openGraph: {
     title: APP_NAME,

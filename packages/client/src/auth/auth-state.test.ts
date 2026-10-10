@@ -13,11 +13,6 @@ import {
 const user = { id: "user-1", email: "daisy@example.com" } as User;
 const session = { user } as Session;
 
-/**
- * Hand-written fakes rather than a mocking library, matching the convention in
- * apps/web/src/api/health/HealthService.test.ts. What is under test is our own
- * guard logic, not Supabase.
- */
 function fakeAdapter(overrides: Partial<AuthAdapter> = {}): AuthAdapter {
   return {
     client: {

@@ -10,8 +10,7 @@ export const AUTH_CALLBACK_URL = "kinwoo://auth/callback";
 async function signInWithGoogleNative(): Promise<void> {
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: "google",
-    // We open the browser ourselves so the redirect comes back to this
-    // function rather than to a web page we do not control.
+    // Opened manually so the redirect returns to this function, not a web page.
     options: { redirectTo: AUTH_CALLBACK_URL, skipBrowserRedirect: true },
   });
 
@@ -20,7 +19,6 @@ async function signInWithGoogleNative(): Promise<void> {
 
   const result = await WebBrowser.openAuthSessionAsync(data.url, AUTH_CALLBACK_URL);
 
-  // The user dismissed the sheet. Not an error worth surfacing.
   if (result.type !== "success") return;
 
   const code = new URL(result.url).searchParams.get("code");
@@ -33,9 +31,7 @@ async function signInWithGoogleNative(): Promise<void> {
 export const nativeAuthAdapter: AuthAdapter = {
   client: supabase,
 
-  // iOS ships without Google: App Store review expects Sign in with Apple
-  // alongside any other third-party provider, and we do not offer it yet.
-  // Surfaced to the UI as canSignInWithGoogle.
+  // App Store review expects Sign in with Apple alongside Google, which we do not offer yet.
   signInWithGoogle: Platform.OS === "ios" ? undefined : signInWithGoogleNative,
 
   signInWithEmail: async (email): Promise<EmailSignInOutcome> => {

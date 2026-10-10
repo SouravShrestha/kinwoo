@@ -31,7 +31,7 @@ export function AppearanceSheet({ open, onClose }: { open: boolean; onClose: () 
                   setTheme(option.value);
                   onClose();
                 }}
-                className="flex min-h-14 w-full items-center text-left hover:opacity-70 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-foreground"
+                className="flex min-h-14 w-full items-center text-left hover:cursor-pointer hover:opacity-70 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-foreground"
               >
                 <span className="flex-1">
                   <span className="block text-base">{option.label}</span>

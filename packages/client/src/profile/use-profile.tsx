@@ -21,20 +21,18 @@ import {
 
 export interface ProfileContextValue {
   profile: Profile | null;
-  /** False until the first load settles, so callers can avoid a flash of empty state. */
   ready: boolean;
   error: string | null;
   refresh: () => Promise<void>;
   setDisplayName: (value: string) => Promise<void>;
   setPreferences: (preferences: ProfilePreferences) => Promise<void>;
-  /** True once we know the user has not finished first-run setup. */
   needsDisplayName: boolean;
 }
 
 const ProfileContext = createContext<ProfileContextValue | null>(null);
 
 interface LoadedState {
-  /** Who the loaded data belongs to, so another user's profile is never shown. */
+  // Ties loaded data to its owner so another user's profile is never shown.
   userId: string | null;
   profile: Profile | null;
   error: string | null;
@@ -54,8 +52,7 @@ export function ProfileProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (!authReady || !userId) return;
 
-    // Guards against a response landing after the user has changed or the
-    // provider has unmounted.
+    // Ignores a response that lands after the user changed or the provider unmounted.
     let active = true;
 
     void fetchProfile().then(
@@ -72,8 +69,8 @@ export function ProfileProvider({ children }: { children: ReactNode }) {
     };
   }, [authReady, userId]);
 
-  // Derived rather than reset in an effect. Signing out, or signing in as
-  // someone else, therefore cannot briefly surface the previous user's data.
+  // Derived rather than reset in an effect, so a user switch cannot briefly show
+  // the previous user's data.
   const matchesCurrentUser = isLoggedIn && userId !== null && loaded.userId === userId;
 
   const profile = matchesCurrentUser ? loaded.profile : null;

@@ -13,9 +13,8 @@ if (!API_URL) {
   throw new Error("Missing EXPO_PUBLIC_API_URL. Set it in apps/mobile/.env.local or eas.json.");
 }
 
-// Configured at module scope so the first request cannot race the first render.
-// Mobile has no cookie jar shared with the web app, so every call carries a
-// bearer token instead.
+// Module scope so the first request cannot race the first render. There is no shared cookie
+// jar on mobile, so calls carry a bearer token.
 configureApiClient({
   baseUrl: API_URL,
   getAuthHeaders: async (): Promise<Record<string, string>> => {

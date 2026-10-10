@@ -24,10 +24,8 @@ const POPPINS_FACES = {
 
 const WEIGHT_NAMES = { 300: "light", 400: "normal", 500: "medium", 600: "semibold", 700: "bold" };
 
-// React Native cannot pick a weight from a single face, so each weight utility
-// also selects the matching registered family. `font-medium` etc. are Inter;
-// headings use `font-display` (bold) or `font-display-medium|semibold`. Do not
-// combine `font-display` with `font-bold`: the later utility switches back to Inter.
+// React Native cannot pick a weight from a single face, so each weight utility also selects
+// its family. Do not combine `font-display` with `font-bold`: the later one switches to Inter.
 function fontWeights({ addUtilities }) {
   const utilities = {};
   for (const [weight, face] of Object.entries(INTER_FACES)) {

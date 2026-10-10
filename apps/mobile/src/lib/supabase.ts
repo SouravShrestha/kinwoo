@@ -1,5 +1,4 @@
-// Supabase's client builds URLs with the WHATWG URL API, which Hermes does not
-// ship. Must be imported before createClient runs.
+// Hermes lacks the WHATWG URL API that Supabase needs. Import before createClient runs.
 import "react-native-url-polyfill/auto";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -24,8 +23,7 @@ function createSupabaseClient() {
       storage: AsyncStorage,
       autoRefreshToken: true,
       persistSession: true,
-      // There is no URL bar to read a session out of; the OAuth code is
-      // exchanged by hand in the auth adapter.
+      // The OAuth code is exchanged by hand in the auth adapter.
       detectSessionInUrl: false,
       flowType: "pkce",
     },
@@ -34,8 +32,7 @@ function createSupabaseClient() {
 
 export const supabase = createSupabaseClient();
 
-// Refreshing while backgrounded burns requests and can fail on a sleeping
-// radio, so the timer follows app state.
+// Refreshing while backgrounded burns requests and can fail on a sleeping radio.
 AppState.addEventListener("change", (state) => {
   if (state === "active") void supabase.auth.startAutoRefresh();
   else void supabase.auth.stopAutoRefresh();

@@ -14,8 +14,20 @@ export const ProfileIcon = (props: IconProps) => (
   <SvgIcon {...props} geometry={geometry.profileIcon} />
 );
 
-export const ProfileOutlineIcon = (props: IconProps) => (
-  <SvgIcon {...props} geometry={geometry.profileOutlineIcon} />
+export const HomeActiveIcon = (props: IconProps) => (
+  <SvgIcon {...props} geometry={geometry.homeActiveIcon} />
+);
+
+export const ListActiveIcon = (props: IconProps) => (
+  <SvgIcon {...props} geometry={geometry.listActiveIcon} />
+);
+
+export const BillActiveIcon = (props: IconProps) => (
+  <SvgIcon {...props} geometry={geometry.billActiveIcon} />
+);
+
+export const ProfileActiveIcon = (props: IconProps) => (
+  <SvgIcon {...props} geometry={geometry.profileActiveIcon} />
 );
 
 export const BellIcon = (props: IconProps) => <SvgIcon {...props} geometry={geometry.bellIcon} />;

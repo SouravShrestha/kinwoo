@@ -1,6 +1,9 @@
 import { CODE_LENGTH } from "@kinwoo/client/auth";
 import { DISPLAY_NAME_MAX_LENGTH } from "@kinwoo/core/auth";
+import { colors } from "@kinwoo/tokens/native";
 import type { ComponentProps } from "react";
+
+import { useTheme } from "@/theme/ThemeProvider";
 
 import { SheetTextInput } from "./BottomSheet";
 
@@ -10,8 +13,6 @@ export type TextFieldKind = "email" | "code" | "name";
 
 const BASE = "rounded-2xl border border-border bg-muted px-4 text-foreground";
 
-// Everything that differs between kinds lives here, so call sites only say
-// which kind they want.
 const PRESETS: Record<TextFieldKind, InputProps> = {
   email: {
     keyboardType: "email-address",
@@ -21,10 +22,10 @@ const PRESETS: Record<TextFieldKind, InputProps> = {
     autoCorrect: false,
     accessibilityLabel: "Email address",
     placeholder: "you@example.com",
-    // No `text-*` size class: it also sets lineHeight, which makes iOS
-    // TextInput text sit lower than the caret once you start typing.
+    // No `text-*` size class: its lineHeight misaligns iOS text and caret. letterSpacing is
+    // explicit because the code field's tracking leaks into placeholders when iOS recycles views.
     className: BASE,
-    style: { fontSize: 18, height: 54, paddingVertical: 0 },
+    style: { fontSize: 18, height: 54, paddingVertical: 0, letterSpacing: 0 },
   },
   code: {
     keyboardType: "number-pad",
@@ -42,8 +43,8 @@ const PRESETS: Record<TextFieldKind, InputProps> = {
     autoCorrect: false,
     accessibilityLabel: "Display name",
     placeholder: "Daisy",
-    className: `${BASE}`,
-    style: { fontSize: 16, height: 54, paddingVertical: 0 },
+    className: BASE,
+    style: { fontSize: 16, height: 54, paddingVertical: 0, letterSpacing: 0 },
   },
 };
 
@@ -52,7 +53,6 @@ type TextFieldProps = {
   value: string;
   onChangeText: (value: string) => void;
   disabled?: boolean;
-  /** Extra classes, typically spacing. Appended to the preset's classes. */
   className?: string;
 };
 
@@ -64,10 +64,13 @@ export function TextField({
   className,
 }: TextFieldProps) {
   const preset = PRESETS[kind];
+  const { resolvedTheme } = useTheme();
 
   return (
     <SheetTextInput
       {...preset}
+      // No className hook for the placeholder; the native default ignores the in-app theme.
+      placeholderTextColor={colors[resolvedTheme].mutedForeground}
       value={value}
       onChangeText={onChangeText}
       editable={!disabled}

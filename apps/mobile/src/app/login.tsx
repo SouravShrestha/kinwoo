@@ -1,9 +1,11 @@
 import { useAuth } from "@kinwoo/client/auth";
+import { useProfile } from "@kinwoo/client/profile";
 import { APP_NAME } from "@kinwoo/core/app";
 import { GoogleIcon } from "@kinwoo/icons/native";
 import { router } from "expo-router";
+import * as WebBrowser from "expo-web-browser";
 import { useEffect, useState } from "react";
-import { Image, Linking, Text, View } from "react-native";
+import { Image, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { AuthSheet } from "@/components/AuthSheet";
@@ -16,6 +18,7 @@ const PRIVACY_URL = "https://kinwoo.cbsdev.me/legal/privacy";
 
 export default function LoginScreen() {
   const { isLoggedIn, ready, canSignInWithGoogle, signInWithGoogle } = useAuth();
+  const { ready: profileReady, needsDisplayName } = useProfile();
   const { resolvedTheme } = useTheme();
   const insets = useSafeAreaInsets();
 
@@ -23,11 +26,11 @@ export default function LoginScreen() {
   const [googleBusy, setGoogleBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Leaving this screen is the gate's job everywhere else, but the gate only
-  // redirects *to* login, so the way back out lives here.
+  // Hold until the profile is ready and no name is owed: gorhom's modal does not reliably
+  // present across a route change, so redirecting early would skip the display-name sheet.
   useEffect(() => {
-    if (ready && isLoggedIn) router.replace("/");
-  }, [ready, isLoggedIn]);
+    if (ready && isLoggedIn && profileReady && !needsDisplayName) router.replace("/");
+  }, [ready, isLoggedIn, profileReady, needsDisplayName]);
 
   const google = async () => {
     setGoogleBusy(true);
@@ -62,7 +65,7 @@ export default function LoginScreen() {
       </View>
 
       <View className="mt-10">
-        <Button label="Log in with Email" onPress={() => setEmailOpen(true)} />
+        <Button label="Sign in with Email" onPress={() => setEmailOpen(true)} />
 
         {canSignInWithGoogle ? (
           <Button
@@ -88,11 +91,11 @@ export default function LoginScreen() {
       <View style={{ paddingBottom: insets.bottom + 24 }} className="mt-8">
         <Text className="text-center text-xs text-muted-foreground">
           By continuing to use {APP_NAME}, you agree to our{" "}
-          <Text className="underline" onPress={() => void Linking.openURL(TERMS_URL)}>
+          <Text className="underline" onPress={() => void WebBrowser.openBrowserAsync(TERMS_URL)}>
             Terms &amp; Conditions
           </Text>{" "}
           and{" "}
-          <Text className="underline" onPress={() => void Linking.openURL(PRIVACY_URL)}>
+          <Text className="underline" onPress={() => void WebBrowser.openBrowserAsync(PRIVACY_URL)}>
             Privacy Policy
           </Text>
           .

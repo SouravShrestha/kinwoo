@@ -13,14 +13,13 @@ import { cssInterop } from "nativewind";
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import type { ComponentRef } from "react";
 import { Easing, runOnJS, useAnimatedReaction } from "react-native-reanimated";
-import { TouchableOpacity } from "react-native-gesture-handler";
-import { View } from "react-native";
+import { Gesture, GestureDetector, TouchableOpacity } from "react-native-gesture-handler";
+import { Keyboard, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { useSheetStack } from "./sheet-stack";
 import { useTheme } from "@/theme/ThemeProvider";
 
-/** How long to wait for a dismiss to settle before forcing a remount. */
 const STUCK_DISMISS_MS = 1200;
 
 export function BottomSheet({
@@ -60,6 +59,21 @@ export function BottomSheet({
   useEffect(() => {
     openRef.current = open;
   }, [open]);
+
+  const keyboardVisible = useRef(false);
+
+  useEffect(() => {
+    const show = Keyboard.addListener("keyboardDidShow", () => {
+      keyboardVisible.current = true;
+    });
+    const hide = Keyboard.addListener("keyboardDidHide", () => {
+      keyboardVisible.current = false;
+    });
+    return () => {
+      show.remove();
+      hide.remove();
+    };
+  }, []);
 
   // gorhom is imperative and occasionally wedges mid-dismiss. The counters let
   // us detect a dismiss that never settles and remount via key={instance}.
@@ -103,16 +117,23 @@ export function BottomSheet({
     onClose?.();
   }, [dismissable, onClose, instance]);
 
+  const handleBackdropPress = useCallback(() => {
+    if (keyboardVisible.current) {
+      Keyboard.dismiss();
+      return;
+    }
+    sheetRef.current?.dismiss();
+  }, []);
+
   const renderBackdrop = useCallback(
     (props: BottomSheetBackdropProps) => (
-      <BottomSheetBackdrop
+      <KeyboardAwareBackdrop
         {...props}
-        appearsOnIndex={0}
-        disappearsOnIndex={-1}
-        pressBehavior={dismissable ? "close" : "none"}
+        dismissable={dismissable}
+        onBackdropPress={handleBackdropPress}
       />
     ),
-    [dismissable],
+    [dismissable, handleBackdropPress],
   );
 
   const handleIndicatorStyle = useMemo(
@@ -177,9 +198,39 @@ export function BottomSheet({
   );
 }
 
-/**
- * Catches a gesture-driven close, which `onDismiss` does not always report.
- */
+// The default `pressBehavior="close"` closes immediately, leaving no chance to dismiss the
+// keyboard first, so the press is driven by our own tap gesture.
+function KeyboardAwareBackdrop({
+  dismissable,
+  onBackdropPress,
+  ...props
+}: BottomSheetBackdropProps & {
+  dismissable: boolean;
+  onBackdropPress: () => void;
+}) {
+  const tap = useMemo(
+    () =>
+      Gesture.Tap().onEnd(() => {
+        runOnJS(onBackdropPress)();
+      }),
+    [onBackdropPress],
+  );
+
+  const backdrop = (
+    <BottomSheetBackdrop
+      {...props}
+      appearsOnIndex={0}
+      disappearsOnIndex={-1}
+      pressBehavior="none"
+    />
+  );
+
+  if (!dismissable) return backdrop;
+
+  return <GestureDetector gesture={tap}>{backdrop}</GestureDetector>;
+}
+
+// `onDismiss` does not always report a gesture-driven close.
 function CloseWatcher({ onClosed }: { onClosed: () => void }) {
   const { animatedIndex } = useBottomSheet();
 
@@ -196,10 +247,6 @@ function CloseWatcher({ onClosed }: { onClosed: () => void }) {
   return null;
 }
 
-/**
- * gorhom's keyboard-aware input and gesture-handler's touchable, re-exported
- * with NativeWind support so content inside a sheet can still use className.
- */
 export const SheetTextInput = BottomSheetTextInput;
 export const SheetTouchable = TouchableOpacity;
 

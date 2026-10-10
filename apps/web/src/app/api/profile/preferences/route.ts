@@ -21,7 +21,6 @@ export async function PATCH(request: Request) {
     return applyCookies(NextResponse.json({ error: "Invalid JSON body" }, { status: 400 }));
   }
 
-  // Only the three known keys are forwarded; the service validates their values.
   const preferences: ProfilePreferences = {};
   if ("locale" in body) preferences.locale = body.locale as string;
   if ("theme" in body) preferences.theme = body.theme as ProfilePreferences["theme"];

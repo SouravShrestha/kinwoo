@@ -1,10 +1,6 @@
 export interface ApiConfig {
   baseUrl: string;
   fetch?: typeof fetch;
-  /**
-   * Extra headers resolved per request. Mobile uses this to attach a Supabase
-   * bearer token; web leaves it unset and relies on session cookies.
-   */
   getAuthHeaders?: () => Promise<Record<string, string>>;
 }
 

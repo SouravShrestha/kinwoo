@@ -8,8 +8,6 @@ const FOCUS =
   "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground";
 const BASE = `h-14 w-full border border-border bg-muted px-4 ${FOCUS}`;
 
-// Everything that differs between kinds lives here, so call sites only say
-// which kind they want.
 const PRESETS: Record<TextFieldKind, InputHTMLAttributes<HTMLInputElement>> = {
   email: {
     type: "email",
@@ -43,9 +41,7 @@ type TextFieldProps = {
   value: string;
   onChange: (value: string) => void;
   disabled?: boolean;
-  /** Id of the element describing the current error; omit when there is none. */
   errorId?: string;
-  /** Extra classes, typically spacing. Appended to the preset's classes. */
   className?: string;
 };
 

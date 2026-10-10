@@ -7,7 +7,7 @@ import { useTheme } from "@/theme/ThemeProvider";
 
 export function SettingsGroup({ title, children }: { title: string; children: ReactNode }) {
   return (
-    <View className="mt-8">
+    <View className="mt-6">
       <Text className="text-sm text-muted-foreground">{title}</Text>
       <View className="mt-2">{children}</View>
     </View>
@@ -33,8 +33,7 @@ export function SettingsRow({
       accessibilityRole="button"
       accessibilityLabel={value ? `${label}, ${value}` : label}
       onPress={onPress}
-      // 56px keeps the row above the 44px minimum touch target.
-      className="h-14 flex-row items-center active:opacity-60"
+      className="h-14 flex-row items-center active:opacity-60 mt-2"
     >
       <View className="w-9">{icon}</View>
       <Text className="flex-1 text-base text-foreground">{label}</Text>

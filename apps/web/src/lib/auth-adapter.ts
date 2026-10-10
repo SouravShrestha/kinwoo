@@ -5,14 +5,8 @@ import { safeNextPath } from "@kinwoo/core/auth";
 
 import { supabase } from "@/integrations/supabase/client";
 
-/**
- * Where Supabase should send the browser after Google.
- *
- * The configured site URL wins over the live origin so the value matches
- * Supabase's redirect allow-list exactly; behind Cloudflare the two can differ.
- * This lives in the app rather than in @kinwoo/client because that package may
- * not touch `window`.
- */
+// The configured site URL wins over the live origin so it matches Supabase's redirect
+// allow-list exactly; behind Cloudflare the two can differ.
 function callbackUrl(): string {
   const configured = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/+$/, "");
   const origin = configured || window.location.origin;
