@@ -14,7 +14,7 @@ export async function GET(request: Request) {
   }
 
   const service = new ProfileService(new ProfileRepository(supabase));
-  const result = await service.getProfile(user.id);
+  const result = await service.getProfile(user.id, user.socialAvatarUrl);
 
   return applyCookies(profileResponse(result));
 }

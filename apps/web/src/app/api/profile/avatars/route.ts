@@ -13,7 +13,7 @@ export async function GET(request: Request) {
   }
 
   const service = new ProfileService(new ProfileRepository(supabase));
-  const result = await service.listAvatars();
+  const result = await service.listAvatars(user.socialAvatarUrl);
 
   if (result.status === "error") {
     return applyCookies(NextResponse.json({ error: "Could not load avatars" }, { status: 503 }));

@@ -47,6 +47,81 @@ describe("ProfileService.getProfile", () => {
   });
 });
 
+const GOOGLE_AVATAR = "https://lh3.googleusercontent.com/a/photo=s96-c";
+const PRESET = "https://cdn.example.com/avatars/one.png";
+
+describe("ProfileService social avatar", () => {
+  it("defaults an empty avatar to the social one instead of a preset", async () => {
+    const setAvatarUrlIfMissing = vi.fn(async () => ({ ...profile, avatarUrl: GOOGLE_AVATAR }));
+    const service = new ProfileService(
+      fakeRepository({ setAvatarUrlIfMissing, listAvatarUrls: async () => [PRESET] }),
+    );
+
+    const result = await service.getProfile("user-1", GOOGLE_AVATAR);
+
+    expect(setAvatarUrlIfMissing).toHaveBeenCalledWith("user-1", GOOGLE_AVATAR);
+    expect(result).toMatchObject({ profile: { avatarUrl: GOOGLE_AVATAR } });
+  });
+
+  it("falls back to a preset when the social URL is not from Google", async () => {
+    const setAvatarUrlIfMissing = vi.fn(async () => profile);
+    const service = new ProfileService(
+      fakeRepository({ setAvatarUrlIfMissing, listAvatarUrls: async () => [PRESET] }),
+    );
+
+    await service.getProfile("user-1", "https://evil.example.com/track.png");
+
+    expect(setAvatarUrlIfMissing).toHaveBeenCalledWith("user-1", PRESET);
+  });
+
+  it("keeps an avatar the user already has", async () => {
+    const setAvatarUrlIfMissing = vi.fn(async () => profile);
+    const owned = { ...profile, avatarUrl: PRESET };
+    const service = new ProfileService(
+      fakeRepository({ findById: async () => owned, setAvatarUrlIfMissing }),
+    );
+
+    await expect(service.getProfile("user-1", GOOGLE_AVATAR)).resolves.toEqual({
+      status: "ok",
+      profile: owned,
+    });
+    expect(setAvatarUrlIfMissing).not.toHaveBeenCalled();
+  });
+
+  it("lists the social avatar first, ahead of the presets", async () => {
+    const service = new ProfileService(fakeRepository({ listAvatarUrls: async () => [PRESET] }));
+
+    await expect(service.listAvatars(GOOGLE_AVATAR)).resolves.toEqual({
+      status: "ok",
+      avatars: [GOOGLE_AVATAR, PRESET],
+    });
+    await expect(service.listAvatars()).resolves.toEqual({ status: "ok", avatars: [PRESET] });
+  });
+
+  it("lets the user switch back to the social avatar", async () => {
+    const updateAvatarUrl = vi.fn(async () => profile);
+    const service = new ProfileService(
+      fakeRepository({ updateAvatarUrl, listAvatarUrls: async () => [PRESET] }),
+    );
+
+    await service.setAvatar("user-1", GOOGLE_AVATAR, GOOGLE_AVATAR);
+
+    expect(updateAvatarUrl).toHaveBeenCalledWith("user-1", GOOGLE_AVATAR);
+  });
+
+  it("rejects a social-looking URL the account does not own", async () => {
+    const updateAvatarUrl = vi.fn(async () => profile);
+    const service = new ProfileService(
+      fakeRepository({ updateAvatarUrl, listAvatarUrls: async () => [PRESET] }),
+    );
+
+    const result = await service.setAvatar("user-1", GOOGLE_AVATAR);
+
+    expect(result.status).toBe("invalid");
+    expect(updateAvatarUrl).not.toHaveBeenCalled();
+  });
+});
+
 describe("ProfileService.setDisplayName", () => {
   it("writes the normalised name, not the raw input", async () => {
     const updateDisplayName = vi.fn(async () => profile);

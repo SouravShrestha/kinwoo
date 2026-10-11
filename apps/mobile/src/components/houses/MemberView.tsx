@@ -53,7 +53,7 @@ export function MemberView({
     <View>
       <SheetHeader onBack={onBack} />
 
-      <View className="mt-6 flex-row items-start">
+      <View className={`flex-row items-start ${onBack ? "mt-6" : "mt-12"}`}>
         <Avatar name={member.displayName} url={member.avatarUrl} size={64} />
         <View className="ml-4 flex-1 items-start">
           <Text className="font-display-medium text-xl text-foreground" numberOfLines={1}>

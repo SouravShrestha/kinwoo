@@ -69,16 +69,28 @@ function bearerToken(request: Request): string | null {
   return match ? match[1].trim() : null;
 }
 
+export interface VerifiedUser {
+  id: string;
+  // Raw and unvalidated: it comes from user-writable metadata.
+  socialAvatarUrl?: string;
+}
+
 type ClaimsCapable = {
   getClaims?: (jwt?: string) => Promise<{
-    data: { claims?: { sub?: string } } | null;
+    data: { claims?: { sub?: string; user_metadata?: unknown } } | null;
     error: unknown;
   }>;
 };
 
+function verifiedUser(id: string, metadata: unknown): VerifiedUser {
+  const { avatar_url, picture } = (metadata ?? {}) as Record<string, unknown>;
+  const url = [avatar_url, picture].find((value) => typeof value === "string" && value);
+  return typeof url === "string" ? { id, socialAvatarUrl: url } : { id };
+}
+
 // A bearer token (mobile) wins over the session cookie. getClaims verifies locally and is
 // feature-detected (newer than the pinned types); getUser is the fallback. Returns null, never throws.
-export async function getVerifiedUser(request: Request): Promise<{ id: string } | null> {
+export async function getVerifiedUser(request: Request): Promise<VerifiedUser | null> {
   const token = bearerToken(request);
   if (token) return verifyBearerToken(token);
 
@@ -86,7 +98,7 @@ export async function getVerifiedUser(request: Request): Promise<{ id: string } 
   return verifyWithClient(supabase);
 }
 
-async function verifyBearerToken(token: string): Promise<{ id: string } | null> {
+async function verifyBearerToken(token: string): Promise<VerifiedUser | null> {
   const { url, anonKey } = readEnv();
 
   const supabase = createServerClient<Database>(url, anonKey, {
@@ -99,7 +111,7 @@ async function verifyBearerToken(token: string): Promise<{ id: string } | null> 
     try {
       const { data, error } = await auth.getClaims(token);
       const sub = data?.claims?.sub;
-      if (!error && sub) return { id: sub };
+      if (!error && sub) return verifiedUser(sub, data?.claims?.user_metadata);
       if (!error) return null;
     } catch {
       // Fall through to the remote check.
@@ -108,19 +120,17 @@ async function verifyBearerToken(token: string): Promise<{ id: string } | null> 
 
   const { data, error } = await supabase.auth.getUser(token);
   if (error || !data.user) return null;
-  return { id: data.user.id };
+  return verifiedUser(data.user.id, data.user.user_metadata);
 }
 
-async function verifyWithClient(
-  supabase: SupabaseClient<Database>,
-): Promise<{ id: string } | null> {
+async function verifyWithClient(supabase: SupabaseClient<Database>): Promise<VerifiedUser | null> {
   const auth = supabase.auth as unknown as ClaimsCapable;
 
   if (auth.getClaims) {
     try {
       const { data, error } = await auth.getClaims();
       const sub = data?.claims?.sub;
-      if (!error && sub) return { id: sub };
+      if (!error && sub) return verifiedUser(sub, data?.claims?.user_metadata);
       if (!error) return null;
     } catch {
       // Fall through to the remote check.
@@ -129,5 +139,5 @@ async function verifyWithClient(
 
   const { data, error } = await supabase.auth.getUser();
   if (error || !data.user) return null;
-  return { id: data.user.id };
+  return verifiedUser(data.user.id, data.user.user_metadata);
 }

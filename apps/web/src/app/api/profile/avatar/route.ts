@@ -27,7 +27,7 @@ export async function PATCH(request: Request) {
   }
 
   const service = new ProfileService(new ProfileRepository(supabase));
-  const result = await service.setAvatar(user.id, avatarUrl);
+  const result = await service.setAvatar(user.id, avatarUrl, user.socialAvatarUrl);
 
   return applyCookies(profileResponse(result));
 }

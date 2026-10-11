@@ -150,6 +150,39 @@ describe("getVerifiedUser with a bearer token", () => {
   });
 });
 
+describe("getVerifiedUser social avatar", () => {
+  it("reads the avatar from the verified claims", async () => {
+    const claims = { sub: "user-6", user_metadata: { picture: "https://img/p.png" } };
+    createServerClientMock.mockReturnValue(
+      fakeClient({
+        getClaims: vi.fn(async () => ({ data: { claims }, error: null })),
+        getUser: vi.fn(),
+      }),
+    );
+
+    const { getVerifiedUser } = await loadModule();
+
+    await expect(getVerifiedUser(requestWithBearer("jwt-6"))).resolves.toEqual({
+      id: "user-6",
+      socialAvatarUrl: "https://img/p.png",
+    });
+  });
+
+  it("reads the avatar from the user record on the getUser fallback", async () => {
+    const user = { id: "user-7", user_metadata: { avatar_url: "https://img/a.png" } };
+    createServerClientMock.mockReturnValue(
+      fakeClient({ getUser: vi.fn(async () => ({ data: { user }, error: null })) }),
+    );
+
+    const { getVerifiedUser } = await loadModule();
+
+    await expect(getVerifiedUser(requestWithBearer("jwt-7"))).resolves.toEqual({
+      id: "user-7",
+      socialAvatarUrl: "https://img/a.png",
+    });
+  });
+});
+
 describe("getVerifiedUser with a session cookie", () => {
   it("resolves the cookie session via getClaims", async () => {
     const getClaims = vi.fn(async () => ({ data: { claims: { sub: "user-4" } }, error: null }));
