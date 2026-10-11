@@ -1,4 +1,76 @@
-<h2>Your code</h2>
-<p>Enter this code to continue:</p>
-<h1>{{ .Token }}</h1>
-<p>It expires in 10 minutes.</p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+  </style>
+</head>
+<body style="margin:0; padding:0; background-color:#ffffff; font-family:'Poppins', Helvetica, Arial, sans-serif;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#ffffff; padding:40px 0; font-family:'Poppins', Helvetica, Arial, sans-serif;">
+  <tr>
+    <td align="center">
+      <table role="presentation" width="420" cellpadding="0" cellspacing="0" style="background-color:#ffffff; border-radius:12px; padding:32px; border:1px solid #e5e5e5;">
+
+        <!-- Header: logo + badge -->
+        <tr>
+          <td>
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+              <tr>
+                <td align="left" valign="middle">
+                  <img src="https://ywurekullmmhhqssrige.supabase.co/storage/v1/object/public/public_assets/icons/splash-icon-black.png" alt="Kinwoo" height="20" style="display:block;">
+                </td>
+                <td align="right" valign="middle">
+                  <span style="background-color:#f4f4f5; color:#52525b; font-family:'Poppins', Helvetica, Arial, sans-serif; font-size:12px; font-weight:500; padding:6px 14px; border-radius:20px; white-space:nowrap;">
+                    OTP Verification
+                  </span>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <!-- Greeting -->
+        <tr>
+          <td style="padding-top:28px;">
+            <p style="margin:0; font-family:'Poppins', Helvetica, Arial, sans-serif; font-size:22px; font-weight:400; color:#18181b;">Hello!</p>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding-top:6px;">
+            <p style="margin:0; font-family:'Poppins', Helvetica, Arial, sans-serif; font-size:14px; font-weight:400; color:#71717a;">Your one-time password (OTP) is:</p>
+          </td>
+        </tr>
+
+        <!-- Code box -->
+        <tr>
+          <td style="padding-top:18px;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+              <tr>
+                <td align="center" style="background-color:#f4f4f5; border-radius:10px; padding:20px 0;">
+                  <span style="font-family:'Poppins', Helvetica, Arial, sans-serif; font-size:34px; font-weight:600; letter-spacing:8px; color:#18181b;">
+                    {{ .Token }}
+                  </span>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <!-- Footer note -->
+        <tr>
+          <td style="padding-top:36px;">
+            <p style="margin:0; font-family:'Poppins', Helvetica, Arial, sans-serif; font-size:13px; font-weight:400; color:#71717a;">
+              Enter this code in the app to verify your identity. <br/> This code expires shortly and can only be used once.
+            </p>
+          </td>
+        </tr>
+
+      </table>
+    </td>
+  </tr>
+</table>
+</body>
+</html>

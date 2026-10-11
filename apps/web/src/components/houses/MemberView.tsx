@@ -56,7 +56,7 @@ export function MemberView({
     <div>
       <SheetHeader onBack={onBack} />
 
-      <div className={cn("flex items-start gap-4", onBack ? "mt-6" : "mt-12")}>
+      <div className={cn("flex items-start gap-4", onBack ? "mt-6" : "mt-16")}>
         <Avatar name={member.displayName} url={member.avatarUrl} size={64} />
         <div className="flex min-w-0 flex-1 flex-col items-start">
           <h2 className="max-w-full truncate font-display text-xl font-medium">
