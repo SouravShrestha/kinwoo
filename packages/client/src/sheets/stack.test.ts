@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from "vitest";
 
-import { isTop, push, remove, reset } from "./sheet-stack-core";
+import { isTop, push, remove, reset } from "./stack";
 
 beforeEach(() => reset());
 

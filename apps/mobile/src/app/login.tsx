@@ -10,7 +10,8 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { AuthSheet } from "@/components/AuthSheet";
 import { Button } from "@/components/Button";
-import { landingImage, landingImageDark } from "@/lib/images";
+import { landingImage, landingImageDark, logoTypedBlack, logoTypedWhite } from "@/lib/images";
+import { usePressGuard } from "@/lib/press-guard";
 import { useTheme } from "@/theme/ThemeProvider";
 
 const TERMS_URL = "https://kinwoo.cbsdev.me/legal/terms";
@@ -44,6 +45,9 @@ export default function LoginScreen() {
     }
   };
 
+  const openTerms = usePressGuard(() => void WebBrowser.openBrowserAsync(TERMS_URL));
+  const openPrivacy = usePressGuard(() => void WebBrowser.openBrowserAsync(PRIVACY_URL));
+
   return (
     <View className="flex-1 bg-background px-7" style={{ paddingTop: insets.top + 16 }}>
       <View className="flex-1 items-center justify-center">
@@ -58,13 +62,20 @@ export default function LoginScreen() {
       </View>
 
       <View className="">
-        <Text className="font-display-medium text-3xl text-foreground">Welcome to {APP_NAME}</Text>
-        <Text className="mt-2 text-base text-muted-foreground">
+        <Image
+          source={resolvedTheme === "dark" ? logoTypedWhite : logoTypedBlack}
+          accessibilityIgnoresInvertColors
+          accessible
+          accessibilityLabel={APP_NAME}
+          resizeMode="contain"
+          className="h-[45px] w-[160px]"
+        />
+        <Text className="font-display-normal mt-2 text-base text-muted-foreground ml-2">
           Everything shared. Nothing forgotten.
         </Text>
       </View>
 
-      <View className="mt-10">
+      <View className="mt-12 px-1">
         <Button label="Sign in with Email" onPress={() => setEmailOpen(true)} />
 
         {canSignInWithGoogle ? (
@@ -91,11 +102,11 @@ export default function LoginScreen() {
       <View style={{ paddingBottom: insets.bottom + 24 }} className="mt-8">
         <Text className="text-center text-xs text-muted-foreground">
           By continuing to use {APP_NAME}, you agree to our{" "}
-          <Text className="underline" onPress={() => void WebBrowser.openBrowserAsync(TERMS_URL)}>
+          <Text className="underline" onPress={openTerms}>
             Terms &amp; Conditions
           </Text>{" "}
           and{" "}
-          <Text className="underline" onPress={() => void WebBrowser.openBrowserAsync(PRIVACY_URL)}>
+          <Text className="underline" onPress={openPrivacy}>
             Privacy Policy
           </Text>
           .

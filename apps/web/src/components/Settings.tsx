@@ -7,7 +7,7 @@ import type { ReactNode } from "react";
 export function SettingsGroup({ title, children }: { title: string; children: ReactNode }) {
   return (
     <section className="mt-10">
-      <h2 className="text-sm text-muted-foreground font-normal">{title}</h2>
+      <h2 className="text-sm text-muted-foreground">{title}</h2>
       <ul className="mt-4">{children}</ul>
     </section>
   );
@@ -17,7 +17,7 @@ function RowBody({ icon, label, value }: { icon: ReactNode; label: string; value
   return (
     <>
       <span className="w-9 shrink-0">{icon}</span>
-      <span className="flex-1 text-sm font-normal">{label}</span>
+      <span className="flex-1 text-base">{label}</span>
       {value ? <span className="mr-2 text-sm text-muted-foreground">{value}</span> : null}
       <ArrowRightIcon size={16} className="text-muted-foreground" />
     </>

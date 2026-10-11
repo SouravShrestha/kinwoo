@@ -26,6 +26,7 @@ export default tseslint.config(
       "**/android/**",
       "**/ios/**",
       "packages/tokens/generated/**",
+      "packages/core/src/database.generated.ts",
     ],
   },
   ...compat.extends("next/core-web-vitals").map((config) => ({

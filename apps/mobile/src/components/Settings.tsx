@@ -1,6 +1,8 @@
 import { ArrowRightIcon } from "@kinwoo/icons/native";
 import { colors } from "@kinwoo/tokens/native";
-import { Pressable, Text, View } from "react-native";
+import { Text, View } from "react-native";
+
+import { Pressable } from "@/components/Pressable";
 import type { ReactNode } from "react";
 
 import { useTheme } from "@/theme/ThemeProvider";

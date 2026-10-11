@@ -60,13 +60,30 @@ export function LoginScreen() {
         </div>
 
         <div>
-          <h1 className="font-display text-3xl font-medium">Welcome to {APP_NAME}</h1>
-          <p className="mt-2 text-base text-muted-foreground font-normal">
+          <h1>
+            <Image
+              src="/images/logo-typed-black.png"
+              alt={APP_NAME}
+              width={512}
+              height={144}
+              priority
+              className="h-auto w-40 dark:hidden"
+            />
+            <Image
+              src="/images/logo-typed-white.png"
+              alt={APP_NAME}
+              width={512}
+              height={144}
+              priority
+              className="hidden h-auto w-40 dark:block"
+            />
+          </h1>
+          <p className="mt-3 font-display text-base font-normal text-muted-foreground ml-2">
             Everything shared. Nothing forgotten.
           </p>
         </div>
 
-        <div className="mt-10 space-y-3">
+        <div className="mt-12 px-1 space-y-3">
           <Button label="Sign in with Email" onClick={() => setEmailOpen(true)} />
 
           {canSignInWithGoogle ? (
@@ -86,7 +103,7 @@ export function LoginScreen() {
           ) : null}
         </div>
 
-        <p className="mt-8 pb-[calc(2rem+env(safe-area-inset-bottom))] text-center text-xs text-muted-foreground font-normal">
+        <p className="mt-8 pb-[calc(2rem+env(safe-area-inset-bottom))] text-center text-xs text-muted-foreground">
           By continuing to use {APP_NAME}, you agree to our{" "}
           <Link href="/legal/terms" className="underline hover:cursor-pointer">
             Terms &amp; Conditions

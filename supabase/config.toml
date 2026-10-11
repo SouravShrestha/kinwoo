@@ -77,13 +77,18 @@ skip_nonce_check = false
 enabled = false
 
 [realtime]
-enabled = false
+enabled = true
 
 [edge_runtime]
 enabled = false
 
 [storage]
-enabled = false
+enabled = true
+
+[storage.buckets.avatars]
+public = true
+file_size_limit = "1MiB"
+allowed_mime_types = ["image/png", "image/jpeg", "image/webp"]
 
 [auth.email.template.confirmation]
 subject = "Your Kinwoo verification code"

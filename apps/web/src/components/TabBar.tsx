@@ -12,8 +12,9 @@ import {
   ProfileIcon,
   type WebIconProps,
 } from "@kinwoo/icons";
+import { rejectHouseRequired, useHouseAccess } from "@kinwoo/client/houses";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useState, type ComponentType } from "react";
 
 import { cn } from "@/lib/utils";
@@ -33,6 +34,8 @@ const SIZES: Record<TabKey, number> = { home: 25, tasks: 26, bills: 24, profile:
 export function TabBar() {
   const pathname = usePathname();
   const active = activeTabFor(pathname);
+  const router = useRouter();
+  const { hasNoHouse } = useHouseAccess();
 
   // Derived during render so the first paint does not animate.
   const [seen, setSeen] = useState(active);
@@ -56,6 +59,11 @@ export function TabBar() {
             <li key={tab.key} className="flex-1">
               <Link
                 href={tab.href}
+                onClick={(event) => {
+                  if (!hasNoHouse || !tab.requiresHouse) return;
+                  event.preventDefault();
+                  rejectHouseRequired(pathname, () => router.replace("/"));
+                }}
                 aria-label={tab.label}
                 aria-current={isActive ? "page" : undefined}
                 className={cn(

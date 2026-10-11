@@ -6,7 +6,7 @@ export type TextFieldKind = "email" | "code" | "name";
 
 const FOCUS =
   "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground";
-const BASE = `h-14 w-full border border-border bg-muted px-4 ${FOCUS}`;
+const BASE = `h-[54px] w-full rounded-2xl border border-border bg-muted px-4 text-foreground placeholder:text-muted-foreground ${FOCUS}`;
 
 const PRESETS: Record<TextFieldKind, InputHTMLAttributes<HTMLInputElement>> = {
   email: {
@@ -17,7 +17,7 @@ const PRESETS: Record<TextFieldKind, InputHTMLAttributes<HTMLInputElement>> = {
     spellCheck: false,
     "aria-label": "Email address",
     placeholder: "you@example.com",
-    className: `${BASE} rounded-lg text-base`,
+    className: `${BASE} text-lg tracking-normal`,
   },
   code: {
     inputMode: "numeric",
@@ -25,14 +25,14 @@ const PRESETS: Record<TextFieldKind, InputHTMLAttributes<HTMLInputElement>> = {
     maxLength: CODE_LENGTH,
     "aria-label": `${CODE_LENGTH}-digit code`,
     placeholder: "123456",
-    className: `${BASE} rounded-lg text-center text-2xl tracking-[0.5em]`,
+    className: `${BASE} text-center text-base font-bold tracking-[8px]`,
   },
   name: {
     autoComplete: "name",
     maxLength: DISPLAY_NAME_MAX_LENGTH,
     "aria-label": "Display name",
     placeholder: "Daisy",
-    className: `${BASE} rounded-2xl text-base`,
+    className: `${BASE} text-base`,
   },
 };
 

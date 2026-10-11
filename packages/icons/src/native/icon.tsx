@@ -1,6 +1,6 @@
 import Svg, { Path } from "react-native-svg";
 
-import { DEFAULT_ICON_SIZE, type IconProps } from "../types";
+import { DEFAULT_ICON_SIZE, iconHeight, type IconProps } from "../types";
 import type { IconGeometry } from "../data";
 
 // `color` is also set on the root so paths filled with `currentColor` pick it up.
@@ -12,7 +12,7 @@ export function SvgIcon({
   return (
     <Svg
       width={size}
-      height={size}
+      height={iconHeight(geometry.viewBox, size)}
       viewBox={geometry.viewBox}
       fill="none"
       color={color}

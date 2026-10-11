@@ -1,10 +1,10 @@
-import { colors } from "@kinwoo/tokens/native";
-import { ActivityIndicator, Pressable, Text, View, type PressableProps } from "react-native";
+import { useBusyWhile } from "@kinwoo/client/activity";
+import { Text, View, type PressableProps } from "react-native";
 import type { ReactNode } from "react";
 
-import { useTheme } from "@/theme/ThemeProvider";
+import { Pressable } from "./Pressable";
 
-export type ButtonVariant = "primary" | "outline" | "ghost";
+export type ButtonVariant = "primary" | "outline" | "ghost" | "destructive";
 
 export function Button({
   label,
@@ -12,7 +12,10 @@ export function Button({
   variant = "primary",
   loading = false,
   disabled = false,
+  allowDoublePress = false,
   icon,
+  iconClassName = "mr-2.5",
+  labelWeight = "medium",
   className,
   ...rest
 }: {
@@ -21,28 +24,33 @@ export function Button({
   variant?: ButtonVariant;
   loading?: boolean;
   disabled?: boolean;
+  allowDoublePress?: boolean;
   icon?: ReactNode;
+  iconClassName?: string;
+  labelWeight?: "normal" | "medium";
   className?: string;
 } & Omit<PressableProps, "onPress" | "disabled" | "children" | "className">) {
-  const { resolvedTheme } = useTheme();
   const isDisabled = disabled || loading;
+  useBusyWhile(loading);
 
+  // Outline and destructive stay transparent so they take on the surface they sit on, page or sheet.
   const container =
     variant === "primary"
       ? "bg-primary"
       : variant === "outline"
-        ? "border border-border bg-background"
-        : "bg-transparent";
+        ? "border border-border bg-transparent"
+        : variant === "destructive"
+          ? "border border-destructive bg-transparent"
+          : "bg-transparent";
 
   const text =
     variant === "primary"
       ? "text-primary-foreground"
       : variant === "ghost"
         ? "text-muted-foreground"
-        : "text-foreground";
-
-  // ActivityIndicator ignores className colour; its dark default vanishes on the primary background.
-  const spinnerColor = variant === "primary" ? colors[resolvedTheme].primaryForeground : undefined;
+        : variant === "destructive"
+          ? "text-destructive"
+          : "text-foreground";
 
   return (
     <Pressable
@@ -50,6 +58,7 @@ export function Button({
       accessibilityLabel={label}
       accessibilityState={{ disabled: isDisabled, busy: loading }}
       onPress={onPress}
+      allowDoublePress={allowDoublePress}
       disabled={isDisabled}
       className={[
         "h-14 flex-row items-center justify-center rounded-xl px-5",
@@ -59,14 +68,12 @@ export function Button({
       ].join(" ")}
       {...rest}
     >
-      {loading ? (
-        <ActivityIndicator size="small" color={spinnerColor} />
-      ) : (
-        <>
-          {icon ? <View className="mr-2.5">{icon}</View> : null}
-          <Text className={`font-medium text-base ${text}`}>{label}</Text>
-        </>
-      )}
+      {icon ? <View className={iconClassName}>{icon}</View> : null}
+      <Text
+        className={`${labelWeight === "normal" ? "font-display-normal" : "font-display-medium"} text-base ${text}`}
+      >
+        {label}
+      </Text>
     </Pressable>
   );
 }

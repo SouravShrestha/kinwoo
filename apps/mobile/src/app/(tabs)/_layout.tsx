@@ -1,3 +1,4 @@
+import { rejectHouseRequired, useHouseAccess } from "@kinwoo/client/houses";
 import { TABS, type TabKey } from "@kinwoo/core/app";
 import {
   BillActiveIcon,
@@ -10,7 +11,7 @@ import {
   ProfileIcon,
 } from "@kinwoo/icons/native";
 import { colors } from "@kinwoo/tokens/native";
-import { Tabs } from "expo-router";
+import { Tabs, router, usePathname } from "expo-router";
 import type { ComponentType } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -45,6 +46,8 @@ export default function TabsLayout() {
   const { resolvedTheme } = useTheme();
   const insets = useSafeAreaInsets();
   const palette = colors[resolvedTheme];
+  const pathname = usePathname();
+  const { hasNoHouse } = useHouseAccess();
 
   return (
     <Tabs
@@ -68,6 +71,13 @@ export default function TabsLayout() {
           <Tabs.Screen
             key={tab.key}
             name={ROUTE_NAMES[tab.key]}
+            listeners={{
+              tabPress: (event) => {
+                if (!hasNoHouse || !tab.requiresHouse) return;
+                event.preventDefault();
+                rejectHouseRequired(pathname, () => router.navigate("/"));
+              },
+            }}
             options={{
               title: tab.label,
               tabBarAccessibilityLabel: tab.label,

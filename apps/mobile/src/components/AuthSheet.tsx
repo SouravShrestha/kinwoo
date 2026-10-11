@@ -1,3 +1,4 @@
+import { useBusyWhile } from "@kinwoo/client/activity";
 import {
   CODE_LENGTH,
   INITIAL_OTP_STATE,
@@ -10,7 +11,9 @@ import {
   useAuth,
 } from "@kinwoo/client/auth";
 import { useEffect, useReducer, useState } from "react";
-import { Pressable, Text, View } from "react-native";
+import { Text, View } from "react-native";
+
+import { Pressable } from "@/components/Pressable";
 
 import { BottomSheet } from "./BottomSheet";
 import { Button } from "./Button";
@@ -39,6 +42,7 @@ export function AuthSheet({ open, onClose }: { open: boolean; onClose: () => voi
   }, [open]);
 
   const busy = state.phase === "sending" || state.phase === "verifying";
+  useBusyWhile(busy);
 
   const send = async () => {
     dispatch({ type: "submit-email", now: Date.now() });

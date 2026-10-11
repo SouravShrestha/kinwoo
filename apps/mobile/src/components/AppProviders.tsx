@@ -1,10 +1,19 @@
+import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { configureApiClient } from "@kinwoo/client/api";
 import { AuthProvider } from "@kinwoo/client/auth";
+import { HousesProvider } from "@kinwoo/client/houses";
 import { ProfileProvider } from "@kinwoo/client/profile";
-import type { ReactNode } from "react";
+import { router } from "expo-router";
+import { useEffect, type ReactNode } from "react";
 
 import { AuthGate } from "./AuthGate";
+import { HouseGate } from "./HouseGate";
+import { SplashGate } from "./SplashGate";
+import { ToastHost } from "./Toast";
+import { TopLoader } from "./TopLoader";
 import { nativeAuthAdapter } from "@/lib/auth-adapter";
+import { installFocusManager } from "@/lib/focus";
+import { houseStorage } from "@/lib/house-storage";
 import { supabase } from "@/lib/supabase";
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL;
@@ -24,12 +33,31 @@ configureApiClient({
   },
 });
 
+const resumeInvite = (code: string) =>
+  router.push({ pathname: "/house/join", params: { code, confirm: "1" } });
+
 export function AppProviders({ children }: { children: ReactNode }) {
+  useEffect(() => installFocusManager(), []);
+
   return (
     <AuthProvider adapter={nativeAuthAdapter}>
       <ProfileProvider>
-        {children}
-        <AuthGate />
+        <HousesProvider
+          storage={houseStorage}
+          realtimeClient={supabase}
+          onPendingInvite={resumeInvite}
+        >
+          {/* Modal content renders in this provider's portal host, so it must sit inside the
+              data providers or sheet contents cannot reach their contexts. */}
+          <BottomSheetModalProvider>
+            {children}
+            <AuthGate />
+            <HouseGate />
+            <SplashGate />
+            <TopLoader />
+            <ToastHost />
+          </BottomSheetModalProvider>
+        </HousesProvider>
       </ProfileProvider>
     </AuthProvider>
   );

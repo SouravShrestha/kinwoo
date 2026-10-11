@@ -1,5 +1,7 @@
 import { useAuth } from "@kinwoo/client/auth";
 import { useProfile } from "@kinwoo/client/profile";
+import { toast } from "@kinwoo/client/toast";
+import { TOAST_MESSAGES } from "@kinwoo/core/toast";
 import { AppearanceIcon, BellIcon, GlobeIcon, ProfileIcon } from "@kinwoo/icons/native";
 import { colors } from "@kinwoo/tokens/native";
 import { router } from "expo-router";
@@ -8,7 +10,10 @@ import { Image, ScrollView, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { AppearanceSheet } from "@/components/AppearanceSheet";
+import { AvatarSheet } from "@/components/AvatarSheet";
 import { Button } from "@/components/Button";
+import { ConfirmDialog } from "@/components/ConfirmDialog";
+import { Pressable } from "@/components/Pressable";
 import { SettingsGroup, SettingsRow } from "@/components/Settings";
 import { profileImage } from "@/lib/images";
 import { useTheme } from "@/theme/ThemeProvider";
@@ -23,6 +28,21 @@ export default function ProfileScreen() {
   const insets = useSafeAreaInsets();
 
   const [appearanceOpen, setAppearanceOpen] = useState(false);
+  const [avatarOpen, setAvatarOpen] = useState(false);
+  const [logoutOpen, setLogoutOpen] = useState(false);
+  const [loggingOut, setLoggingOut] = useState(false);
+
+  const confirmLogout = async () => {
+    setLoggingOut(true);
+    try {
+      await signOut();
+    } catch {
+      toast.error(TOAST_MESSAGES.logoutFailed);
+    } finally {
+      setLoggingOut(false);
+      setLogoutOpen(false);
+    }
+  };
 
   return (
     <ScrollView
@@ -30,15 +50,19 @@ export default function ProfileScreen() {
       contentContainerStyle={{ paddingTop: insets.top + 36, paddingHorizontal: 24 }}
     >
       <View className="flex-row items-center mb-6">
-        <View className="size-16 items-center justify-center overflow-hidden rounded-full bg-accent">
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel="Change avatar"
+          onPress={() => setAvatarOpen(true)}
+          className="size-16 items-center justify-center overflow-hidden rounded-full bg-accent active:opacity-80"
+        >
           <Image
-            source={profileImage}
+            source={profile?.avatarUrl ? { uri: profile.avatarUrl } : profileImage}
             accessibilityIgnoresInvertColors
-            accessibilityLabel="Your avatar"
             resizeMode="cover"
             className="size-16"
           />
-        </View>
+        </Pressable>
 
         <View className="ml-4 flex-1">
           <Text className="font-display text-xl text-foreground font-medium tracking-tight">
@@ -76,11 +100,27 @@ export default function ProfileScreen() {
         />
       </SettingsGroup>
 
-      <Button label="Log out" variant="outline" onPress={() => void signOut()} className="mt-10" />
+      <Button
+        label="Log out"
+        variant="outline"
+        onPress={() => setLogoutOpen(true)}
+        className="mt-10"
+      />
+
+      <ConfirmDialog
+        open={logoutOpen}
+        title="Log out?"
+        description="You'll need to sign in again to use Kinwoo."
+        confirmLabel="Log out"
+        isPending={loggingOut}
+        onConfirm={() => void confirmLogout()}
+        onCancel={() => setLogoutOpen(false)}
+      />
 
       <View style={{ height: insets.bottom + 40 }} />
 
       <AppearanceSheet open={appearanceOpen} onClose={() => setAppearanceOpen(false)} />
+      <AvatarSheet open={avatarOpen} onClose={() => setAvatarOpen(false)} />
     </ScrollView>
   );
 }

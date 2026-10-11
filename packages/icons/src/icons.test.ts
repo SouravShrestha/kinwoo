@@ -55,10 +55,11 @@ describe("icon geometry", () => {
     }
   });
 
-  it("only hardcodes fills on the Google brand mark", () => {
+  it("only hardcodes fills on the brand marks", () => {
     for (const [name, icon] of entries) {
       const hasFixedFill = icon.paths.some((p) => p.fill !== undefined);
-      expect(hasFixedFill, name).toBe(name === "googleIcon");
+      const isBrandMark = ["googleIcon"].includes(name);
+      expect(hasFixedFill, name).toBe(isBrandMark);
     }
   });
 });

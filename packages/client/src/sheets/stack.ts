@@ -1,4 +1,5 @@
-// Keep free of react-native imports so it can be unit tested.
+// Module state on purpose: every sheet in one app must share a single stack, so only the top
+// sheet answers Escape, Android back and focus trapping.
 let stack: symbol[] = [];
 
 export function push(id: symbol): void {

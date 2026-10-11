@@ -9,6 +9,7 @@ describe("isPublicRoute", () => {
     expect(isPublicRoute("/legal")).toBe(true);
     expect(isPublicRoute("/legal/privacy")).toBe(true);
     expect(isPublicRoute("/auth/callback")).toBe(true);
+    expect(isPublicRoute("/join/ABC234")).toBe(true);
   });
 
   it("treats everything else as private", () => {

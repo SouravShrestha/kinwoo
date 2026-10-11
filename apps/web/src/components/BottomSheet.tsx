@@ -1,5 +1,7 @@
 "use client";
 
+import { isTop, push, remove } from "@kinwoo/client/sheets";
+import { CloseIcon } from "@kinwoo/icons";
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 
@@ -19,6 +21,7 @@ export function BottomSheet({
   zClassName = "z-80",
   dismissable = true,
   showHandle = true,
+  showClose = false,
   children,
 }: {
   open: boolean;
@@ -28,6 +31,7 @@ export function BottomSheet({
   zClassName?: string;
   dismissable?: boolean;
   showHandle?: boolean;
+  showClose?: boolean;
   children: ReactNode;
 }) {
   const [mounted, setMounted] = useState(false);
@@ -35,6 +39,7 @@ export function BottomSheet({
   const [closing, setClosing] = useState(false);
   const [prevOpen, setPrevOpen] = useState(open);
 
+  const stackId = useRef(Symbol("sheet"));
   const openedAt = useRef(0);
   const panelRef = useRef<HTMLDivElement>(null);
   const previousFocus = useRef<HTMLElement | null>(null);
@@ -63,6 +68,15 @@ export function BottomSheet({
     if (open) openedAt.current = Date.now();
   }, [open]);
 
+  // Only the topmost sheet answers Escape and Tab, so a confirmation stacked on another sheet
+  // doesn't also close or trap the sheet underneath.
+  useEffect(() => {
+    if (!open) return;
+    const id = stackId.current;
+    push(id);
+    return () => remove(id);
+  }, [open]);
+
   const guardedClose = useCallback(() => {
     if (Date.now() - openedAt.current < MISFIRE_MS) return;
     onClose?.();
@@ -81,7 +95,7 @@ export function BottomSheet({
   useEffect(() => {
     if (!open || !dismissable) return;
     const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") guardedClose();
+      if (event.key === "Escape" && isTop(stackId.current)) guardedClose();
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
@@ -107,7 +121,7 @@ export function BottomSheet({
     if (!open) return;
 
     const onKey = (event: KeyboardEvent) => {
-      if (event.key !== "Tab") return;
+      if (event.key !== "Tab" || !isTop(stackId.current)) return;
 
       const panel = panelRef.current;
       if (!panel) return;
@@ -171,9 +185,9 @@ export function BottomSheet({
             setClosing(false);
           }}
           className={cn(
-            "pointer-events-auto w-full max-w-md rounded-t-2xl bg-background p-6",
+            "pointer-events-auto relative w-full max-w-md rounded-t-2xl bg-sheet p-6",
             "pb-[calc(1.5rem+env(safe-area-inset-bottom))]",
-            "max-h-[calc(100dvh-1.5rem)] overflow-y-auto",
+            "max-h-[calc(100dvh-1.5rem)] overflow-x-hidden overflow-y-auto",
             closing ? "sheet-panel-out" : "sheet-panel-in",
             className,
           )}
@@ -183,6 +197,16 @@ export function BottomSheet({
               aria-hidden
               className="mx-auto mb-5 h-1.5 w-10 rounded-full bg-muted-foreground/30"
             />
+          )}
+          {showClose && (
+            <button
+              type="button"
+              aria-label="Close"
+              onClick={guardedClose}
+              className="absolute right-4 top-11 flex size-9 items-center justify-center rounded-full hover:cursor-pointer hover:opacity-70 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
+            >
+              <CloseIcon size={22} />
+            </button>
           )}
           {children}
         </div>

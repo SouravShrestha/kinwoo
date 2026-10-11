@@ -8,6 +8,7 @@ import {
   useBottomSheet,
   useBottomSheetTimingConfigs,
 } from "@gorhom/bottom-sheet";
+import { CloseIcon } from "@kinwoo/icons/native";
 import { colors, radius } from "@kinwoo/tokens/native";
 import { cssInterop } from "nativewind";
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
@@ -17,6 +18,7 @@ import { Gesture, GestureDetector, TouchableOpacity } from "react-native-gesture
 import { Keyboard, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { Pressable } from "./Pressable";
 import { useSheetStack } from "./sheet-stack";
 import { useTheme } from "@/theme/ThemeProvider";
 
@@ -28,6 +30,7 @@ export function BottomSheet({
   label,
   dismissable = true,
   showHandle = true,
+  showClose = false,
   scrollable = true,
   maxHeight,
   children,
@@ -37,6 +40,7 @@ export function BottomSheet({
   label: string;
   dismissable?: boolean;
   showHandle?: boolean;
+  showClose?: boolean;
   scrollable?: boolean;
   maxHeight?: number;
   children: ReactNode;
@@ -151,6 +155,18 @@ export function BottomSheet({
     paddingBottom: Math.max(insets.bottom, 32),
   };
 
+  const closeButton = showClose ? (
+    <Pressable
+      accessibilityRole="button"
+      accessibilityLabel="Close"
+      hitSlop={8}
+      onPress={() => sheetRef.current?.dismiss()}
+      className="absolute right-3 top-2 z-10 size-9 items-center justify-center active:opacity-60"
+    >
+      <CloseIcon size={22} color={palette.foreground} />
+    </Pressable>
+  ) : null;
+
   const a11y = {
     accessibilityViewIsModal: true,
     accessibilityLabel: label,
@@ -171,7 +187,7 @@ export function BottomSheet({
       keyboardBlurBehavior="restore"
       android_keyboardInputMode="adjustResize"
       backdropComponent={renderBackdrop}
-      backgroundStyle={{ backgroundColor: palette.background }}
+      backgroundStyle={{ backgroundColor: palette.sheet }}
       style={{
         borderTopLeftRadius: radius["2xl"],
         borderTopRightRadius: radius["2xl"],
@@ -184,14 +200,22 @@ export function BottomSheet({
       {scrollable ? (
         <BottomSheetScrollView
           showsVerticalScrollIndicator={false}
+          bounces={false}
+          overScrollMode="never"
           keyboardShouldPersistTaps="handled"
           {...a11y}
         >
-          <View style={padding}>{children}</View>
+          <View style={padding}>
+            {closeButton}
+            {children}
+          </View>
         </BottomSheetScrollView>
       ) : (
         <BottomSheetView {...a11y}>
-          <View style={padding}>{children}</View>
+          <View style={padding}>
+            {closeButton}
+            {children}
+          </View>
         </BottomSheetView>
       )}
     </BottomSheetModal>

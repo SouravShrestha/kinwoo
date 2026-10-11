@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { BackHandler } from "react-native";
 
-import { isTop, push, remove } from "./sheet-stack-core";
+import { isTop, push, remove } from "@kinwoo/client/sheets";
 
 // Non-dismissable sheets never register, which makes back a no-op behind the login wall.
 export function useSheetStack(isOpen: boolean, dismissable: boolean, onClose?: () => void) {

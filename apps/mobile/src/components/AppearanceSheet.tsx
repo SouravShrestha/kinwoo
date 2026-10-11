@@ -1,43 +1,70 @@
-import { Pressable, Text, View } from "react-native";
+import { AutoThemeIcon, MoonIcon, SunIcon, type IconProps } from "@kinwoo/icons/native";
+import { colors, radius } from "@kinwoo/tokens/native";
+import type { ComponentType } from "react";
+import { Text, useColorScheme, View } from "react-native";
 
-import { BottomSheet } from "./BottomSheet";
+import { Pressable } from "@/components/Pressable";
 import { useTheme, type ThemePreference } from "@/theme/ThemeProvider";
 
-const OPTIONS: { value: ThemePreference; label: string; hint: string }[] = [
-  { value: "light", label: "Light", hint: "Always the light theme" },
-  { value: "dark", label: "Dark", hint: "Always the dark theme" },
-  { value: "system", label: "System", hint: "Follow the device setting" },
+import { BottomSheet } from "./BottomSheet";
+
+type Scheme = "light" | "dark";
+
+const OPTIONS: {
+  value: ThemePreference;
+  label: string;
+  Icon: ComponentType<IconProps>;
+  preview: (deviceScheme: Scheme) => Scheme;
+}[] = [
+  { value: "system", label: "System", Icon: AutoThemeIcon, preview: (device) => device },
+  { value: "dark", label: "Dark", Icon: MoonIcon, preview: () => "dark" },
+  { value: "light", label: "Light", Icon: SunIcon, preview: () => "light" },
 ];
 
 export function AppearanceSheet({ open, onClose }: { open: boolean; onClose: () => void }) {
-  const { theme, setTheme } = useTheme();
+  const { theme, resolvedTheme, setTheme } = useTheme();
+  const deviceScheme: Scheme = useColorScheme() === "dark" ? "dark" : "light";
+  const palette = colors[resolvedTheme];
 
   return (
-    <BottomSheet open={open} onClose={onClose} label="Appearance" scrollable={false}>
-      <Text className="font-display text-2xl text-foreground">Appearance</Text>
+    <BottomSheet open={open} onClose={onClose} label="Appearance" scrollable={false} showClose>
+      <Text className="pr-10 font-display-medium text-xl text-foreground">Choose your theme</Text>
 
-      <View className="mt-4">
-        {OPTIONS.map((option) => {
-          const selected = theme === option.value;
+      <View accessibilityRole="radiogroup" className="-mx-1.5 mt-9 flex-row pb-6">
+        {OPTIONS.map(({ value, label, Icon, preview }) => {
+          const selected = theme === value;
+          const tile = colors[preview(deviceScheme)];
 
           return (
-            <Pressable
-              key={option.value}
-              accessibilityRole="radio"
-              accessibilityState={{ selected }}
-              accessibilityLabel={option.label}
-              onPress={() => {
-                setTheme(option.value);
-                onClose();
-              }}
-              className="h-14 flex-row items-center active:opacity-60"
-            >
-              <View className="flex-1">
-                <Text className="text-base text-foreground">{option.label}</Text>
-                <Text className="text-xs text-muted-foreground">{option.hint}</Text>
-              </View>
-              {selected ? <Text className="text-base text-foreground">✓</Text> : null}
-            </Pressable>
+            <View key={value} className="flex-1 px-1.5">
+              <Pressable
+                accessibilityRole="radio"
+                accessibilityState={{ checked: selected }}
+                accessibilityLabel={label}
+                onPress={() => {
+                  setTheme(value);
+                  onClose();
+                }}
+                className="h-28 justify-between overflow-hidden px-3 pb-3 pt-4 active:opacity-80"
+                style={{
+                  backgroundColor: tile.background,
+                  borderColor: palette.border,
+                  borderRadius: radius.md,
+                  borderWidth: 1,
+                }}
+              >
+                <Icon size={16} color={tile.foreground} />
+                <Text className="text-base font-medium" style={{ color: tile.foreground }}>
+                  {label}
+                </Text>
+                {selected ? (
+                  <View
+                    className="absolute inset-x-0 bottom-0 h-1"
+                    style={{ backgroundColor: palette.accent }}
+                  />
+                ) : null}
+              </Pressable>
+            </View>
           );
         })}
       </View>

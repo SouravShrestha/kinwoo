@@ -18,6 +18,7 @@ export type ThemePreference = "light" | "dark" | "system";
 interface ThemeContextValue {
   theme: ThemePreference;
   resolvedTheme: "light" | "dark";
+  themeStyle: (typeof THEME_VARS)["light" | "dark"];
   setTheme: (theme: ThemePreference) => void;
 }
 
@@ -60,7 +61,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   const resolvedTheme = theme === "system" ? (systemScheme === "dark" ? "dark" : "light") : theme;
 
   const value = useMemo<ThemeContextValue>(
-    () => ({ theme, resolvedTheme, setTheme }),
+    () => ({ theme, resolvedTheme, themeStyle: THEME_VARS[resolvedTheme], setTheme }),
     [theme, resolvedTheme, setTheme],
   );
 
@@ -68,7 +69,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   // JS palette. Never override Appearance: useColorScheme() would then hide the device setting.
   return (
     <ThemeContext.Provider value={value}>
-      <View className="flex-1" style={THEME_VARS[resolvedTheme]}>
+      <View className="flex-1" style={value.themeStyle}>
         <StatusBar style={resolvedTheme === "dark" ? "light" : "dark"} />
         {children}
       </View>

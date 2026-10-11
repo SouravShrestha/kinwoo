@@ -4,6 +4,9 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { IProfileRepository, Profile, ProfilePreferences } from "./IProfileRepository";
 
 const COLUMNS = "id, display_name, avatar_url, locale, theme, notifications_enabled";
+const AVATAR_BUCKET = "avatars";
+const AVATAR_LIST_LIMIT = 100;
+const IMAGE_FILE = /\.(png|jpe?g|webp)$/i;
 
 function toProfile(row: ProfileRow): Profile {
   return {
@@ -49,6 +52,37 @@ export class ProfileRepository implements IProfileRepository {
 
     if (Object.keys(patch).length === 0) return this.findById(userId);
     return this.update(userId, patch);
+  }
+
+  async updateAvatarUrl(userId: string, avatarUrl: string): Promise<Profile | null> {
+    return this.update(userId, { avatar_url: avatarUrl });
+  }
+
+  async setAvatarUrlIfMissing(userId: string, avatarUrl: string): Promise<Profile | null> {
+    const { data, error } = await this.client
+      .from("profiles")
+      .update({ avatar_url: avatarUrl })
+      .eq("id", userId)
+      .is("avatar_url", null)
+      .select(COLUMNS)
+      .maybeSingle();
+
+    if (error) throw new Error(error.message);
+    return data ? toProfile(data as ProfileRow) : null;
+  }
+
+  async listAvatarUrls(): Promise<string[]> {
+    const bucket = this.client.storage.from(AVATAR_BUCKET);
+    const { data, error } = await bucket.list("", {
+      limit: AVATAR_LIST_LIMIT,
+      sortBy: { column: "name", order: "asc" },
+    });
+
+    if (error) throw new Error(error.message);
+
+    return data
+      .filter((entry) => entry.id !== null && IMAGE_FILE.test(entry.name))
+      .map((entry) => bucket.getPublicUrl(entry.name).data.publicUrl);
   }
 
   private async update(userId: string, patch: ProfileUpdate): Promise<Profile | null> {

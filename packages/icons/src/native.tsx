@@ -32,6 +32,10 @@ export const ProfileActiveIcon = (props: IconProps) => (
 
 export const BellIcon = (props: IconProps) => <SvgIcon {...props} geometry={geometry.bellIcon} />;
 
+export const NotificationIcon = (props: IconProps) => (
+  <SvgIcon {...props} geometry={geometry.notificationIcon} />
+);
+
 export const GlobeIcon = (props: IconProps) => <SvgIcon {...props} geometry={geometry.globeIcon} />;
 
 export const AppearanceIcon = (props: IconProps) => (
@@ -44,4 +48,49 @@ export const ArrowRightIcon = (props: IconProps) => (
 
 export const GoogleIcon = (props: IconProps) => (
   <SvgIcon {...props} geometry={geometry.googleIcon} />
+);
+export const HousePinIcon = (props: IconProps) => (
+  <SvgIcon {...props} geometry={geometry.housePinIcon} />
+);
+
+export const BuildIcon = (props: IconProps) => <SvgIcon {...props} geometry={geometry.buildIcon} />;
+
+export const CodeIcon = (props: IconProps) => <SvgIcon {...props} geometry={geometry.codeIcon} />;
+
+export const CloseIcon = (props: IconProps) => <SvgIcon {...props} geometry={geometry.closeIcon} />;
+export const CopyIcon = (props: IconProps) => <SvgIcon {...props} geometry={geometry.copyIcon} />;
+
+export const EmailIcon = (props: IconProps) => <SvgIcon {...props} geometry={geometry.emailIcon} />;
+
+export const LockIcon = (props: IconProps) => <SvgIcon {...props} geometry={geometry.lockIcon} />;
+
+export const TickIcon = (props: IconProps) => <SvgIcon {...props} geometry={geometry.tickIcon} />;
+
+export const SunIcon = (props: IconProps) => <SvgIcon {...props} geometry={geometry.sunIcon} />;
+
+export const MoonIcon = (props: IconProps) => <SvgIcon {...props} geometry={geometry.moonIcon} />;
+
+export const AutoThemeIcon = (props: IconProps) => (
+  <SvgIcon {...props} geometry={geometry.autoThemeIcon} />
+);
+export const QrIcon = (props: IconProps) => <SvgIcon {...props} geometry={geometry.qrIcon} />;
+export const CameraIcon = (props: IconProps) => (
+  <SvgIcon {...props} geometry={geometry.cameraIcon} />
+);
+export const SettingsIcon = (props: IconProps) => (
+  <SvgIcon {...props} geometry={geometry.settingsIcon} />
+);
+export const TextInputIcon = (props: IconProps) => (
+  <SvgIcon {...props} geometry={geometry.textInputIcon} />
+);
+export const EnterIcon = (props: IconProps) => <SvgIcon {...props} geometry={geometry.enterIcon} />;
+export const ShareIcon = (props: IconProps) => <SvgIcon {...props} geometry={geometry.shareIcon} />;
+export const InviteIcon = (props: IconProps) => (
+  <SvgIcon {...props} geometry={geometry.inviteIcon} />
+);
+export const HouseSettingsIcon = (props: IconProps) => (
+  <SvgIcon {...props} geometry={geometry.houseSettingsIcon} />
+);
+export const MemberIcon = (props: IconProps) => (
+  <SvgIcon {...props} geometry={geometry.memberIcon} />
 );

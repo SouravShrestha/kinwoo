@@ -17,6 +17,9 @@ function fakeRepository(overrides: Partial<IProfileRepository> = {}): IProfileRe
     findById: async () => profile,
     updateDisplayName: async () => profile,
     updatePreferences: async () => profile,
+    updateAvatarUrl: async () => profile,
+    setAvatarUrlIfMissing: async () => profile,
+    listAvatarUrls: async () => [],
     ...overrides,
   };
 }

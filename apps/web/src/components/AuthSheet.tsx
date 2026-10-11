@@ -13,6 +13,8 @@ import {
 } from "@kinwoo/client/auth";
 import { useEffect, useReducer, useState } from "react";
 
+import { cn } from "@/lib/utils";
+
 import { BottomSheet } from "./BottomSheet";
 import { Button } from "./Button";
 import { TextField } from "./TextField";
@@ -72,7 +74,7 @@ export function AuthSheet({ open, onClose }: { open: boolean; onClose: () => voi
           void (onCodeStep ? verify() : send());
         }}
       >
-        <h2 className="font-display text-xl font-medium">
+        <h2 className="font-display text-2xl font-medium">
           {onCodeStep ? "Just a little verification" : "Home is just a login away"}
         </h2>
         <p className="mt-2 text-muted-foreground text-sm">
@@ -102,18 +104,20 @@ export function AuthSheet({ open, onClose }: { open: boolean; onClose: () => voi
         )}
 
         {state.error ? (
-          <p id="auth-sheet-error" role="alert" className="mt-3 text-sm text-destructive px-2">
+          <p
+            id="auth-sheet-error"
+            role="alert"
+            className={cn("mt-3 text-sm text-destructive", !onCodeStep && "px-1")}
+          >
             {state.error}
           </p>
         ) : null}
 
         <Button
           type="submit"
-          label={
-            busy ? (onCodeStep ? "Checking…" : "Sending…") : onCodeStep ? "Continue" : "Send code"
-          }
+          label={onCodeStep ? (busy ? "Checking…" : "Continue") : "Send code"}
           loading={busy}
-          className="mt-6"
+          className={cn("mt-5", onCodeStep && "rounded-3xl font-sans font-semibold")}
         />
 
         {onCodeStep ? (
@@ -121,7 +125,7 @@ export function AuthSheet({ open, onClose }: { open: boolean; onClose: () => voi
             <button
               type="button"
               onClick={() => dispatch({ type: "back-to-email" })}
-              className="text-muted-foreground underline underline-offset-4 hover:cursor-pointer"
+              className="text-foreground underline decoration-muted-foreground underline-offset-2 hover:cursor-pointer"
             >
               Use a different email
             </button>
@@ -130,7 +134,7 @@ export function AuthSheet({ open, onClose }: { open: boolean; onClose: () => voi
               type="button"
               onClick={() => void send()}
               disabled={!canResend(state, now) || busy}
-              className="underline underline-offset-4 hover:cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
+              className="text-foreground underline underline-offset-2 hover:cursor-pointer disabled:cursor-not-allowed disabled:text-muted-foreground disabled:opacity-50"
             >
               {canResend(state, now)
                 ? "Resend code"

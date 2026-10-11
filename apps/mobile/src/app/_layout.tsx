@@ -10,22 +10,19 @@ import {
   Inter_700Bold,
 } from "@expo-google-fonts/inter";
 import {
+  Poppins_400Regular,
   Poppins_500Medium,
   Poppins_600SemiBold,
   Poppins_700Bold,
 } from "@expo-google-fonts/poppins";
-import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
-import * as SplashScreen from "expo-splash-screen";
-import { useEffect } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import { AppProviders } from "@/components/AppProviders";
+import "@/lib/splash";
 import { ThemeProvider } from "@/theme/ThemeProvider";
-
-SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const [fontsLoaded] = useFonts({
@@ -34,14 +31,11 @@ export default function RootLayout() {
     Inter_500Medium,
     Inter_600SemiBold,
     Inter_700Bold,
+    Poppins_400Regular,
     Poppins_500Medium,
     Poppins_600SemiBold,
     Poppins_700Bold,
   });
-
-  useEffect(() => {
-    if (fontsLoaded) void SplashScreen.hideAsync();
-  }, [fontsLoaded]);
 
   if (!fontsLoaded) return null;
 
@@ -49,11 +43,14 @@ export default function RootLayout() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
         <ThemeProvider>
-          <BottomSheetModalProvider>
-            <AppProviders>
-              <Stack screenOptions={{ headerShown: false }} />
-            </AppProviders>
-          </BottomSheetModalProvider>
+          <AppProviders>
+            <Stack screenOptions={{ headerShown: false }}>
+              <Stack.Screen
+                name="house/invite"
+                options={{ animation: "slide_from_bottom", gestureDirection: "vertical" }}
+              />
+            </Stack>
+          </AppProviders>
         </ThemeProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>

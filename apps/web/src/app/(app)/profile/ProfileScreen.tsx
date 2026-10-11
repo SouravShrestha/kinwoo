@@ -2,13 +2,16 @@
 
 import { useAuth } from "@kinwoo/client/auth";
 import { useProfile } from "@kinwoo/client/profile";
+import { toast } from "@kinwoo/client/toast";
+import { TOAST_MESSAGES } from "@kinwoo/core/toast";
 import { AppearanceIcon, BellIcon, GlobeIcon, ProfileIcon } from "@kinwoo/icons";
-import Image from "next/image";
 import { useTheme } from "next-themes";
 import { useState } from "react";
 
 import { AppearanceSheet } from "@/components/AppearanceSheet";
+import { AvatarSheet } from "@/components/AvatarSheet";
 import { Button } from "@/components/Button";
+import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { SettingsButtonRow, SettingsGroup, SettingsLinkRow } from "@/components/Settings";
 
 const THEME_LABELS: Record<string, string> = {
@@ -22,19 +25,40 @@ export function ProfileScreen() {
   const { profile } = useProfile();
   const { theme } = useTheme();
   const [appearanceOpen, setAppearanceOpen] = useState(false);
+  const [avatarOpen, setAvatarOpen] = useState(false);
+  const [logoutOpen, setLogoutOpen] = useState(false);
+  const [loggingOut, setLoggingOut] = useState(false);
+
+  const confirmLogout = async () => {
+    setLoggingOut(true);
+    try {
+      await signOut();
+    } catch {
+      toast.error(TOAST_MESSAGES.logoutFailed);
+    } finally {
+      setLoggingOut(false);
+      setLogoutOpen(false);
+    }
+  };
 
   return (
     <main className="px-6 pt-10">
       <div className="mb-12 flex items-center">
-        <div className="size-16 shrink-0 overflow-hidden rounded-full bg-accent">
-          <Image
-            src="/images/profile-image.png"
+        <button
+          type="button"
+          aria-label="Change avatar"
+          onClick={() => setAvatarOpen(true)}
+          className="size-16 shrink-0 overflow-hidden rounded-full bg-accent hover:cursor-pointer hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={profile?.avatarUrl ?? "/images/profile-image.png"}
             alt=""
             width={64}
             height={64}
             className="size-16 object-cover"
           />
-        </div>
+        </button>
 
         <div className="ml-4 min-w-0">
           <p className="font-medium truncate text-xl tracking-tight">
@@ -75,11 +99,21 @@ export function ProfileScreen() {
       <Button
         label="Log out"
         variant="outline"
-        onClick={() => void signOut()}
+        onClick={() => setLogoutOpen(true)}
         className="mt-10 text-foreground"
       />
 
       <AppearanceSheet open={appearanceOpen} onClose={() => setAppearanceOpen(false)} />
+      <AvatarSheet open={avatarOpen} onClose={() => setAvatarOpen(false)} />
+      <ConfirmDialog
+        open={logoutOpen}
+        title="Log out?"
+        description="You'll need to sign in again to use Kinwoo."
+        confirmLabel="Log out"
+        isPending={loggingOut}
+        onConfirm={() => void confirmLogout()}
+        onCancel={() => setLogoutOpen(false)}
+      />
     </main>
   );
 }

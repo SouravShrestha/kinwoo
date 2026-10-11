@@ -41,3 +41,4 @@ screenshots/
 apps/mobile/builds/*
 
 _current_branch*
+.plans

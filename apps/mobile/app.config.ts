@@ -17,6 +17,7 @@ export default (): ExpoConfig => ({
   ios: {
     bundleIdentifier: "me.cbsdev.kinwoo",
     supportsTablet: false,
+    icon: "./assets/kinwoo.icon",
   },
   android: {
     package: "me.cbsdev.kinwoo",
@@ -31,11 +32,12 @@ export default (): ExpoConfig => ({
     [
       "expo-splash-screen",
       {
-        image: "./assets/splash-icon.png",
+        image: "./assets/splash-icon-black.png",
+        imageWidth: 200,
         resizeMode: "contain",
         backgroundColor: "#fefefe",
         dark: {
-          image: "./assets/splash-icon.png",
+          image: "./assets/splash-icon-white.png",
           resizeMode: "contain",
           backgroundColor: "#0e0e0e",
         },
@@ -43,6 +45,13 @@ export default (): ExpoConfig => ({
     ],
     "expo-status-bar",
     "expo-web-browser",
+    [
+      "expo-camera",
+      {
+        cameraPermission: "Kinwoo uses the camera to scan a house invite QR code.",
+        recordAudioAndroid: false,
+      },
+    ],
     // iOS 27 aborts launch without the UIScene lifecycle. Remove on SDK 58, where it is default.
     ["expo-build-properties", { ios: { enableSceneSupport: true } }],
   ],

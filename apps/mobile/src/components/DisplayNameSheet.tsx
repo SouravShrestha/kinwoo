@@ -1,7 +1,10 @@
+import { useBusyWhile } from "@kinwoo/client/activity";
 import { validateDisplayName } from "@kinwoo/core/auth";
 import { useProfile } from "@kinwoo/client/profile";
 import { useState } from "react";
-import { Pressable, Text, View } from "react-native";
+import { Text, View } from "react-native";
+
+import { Pressable } from "@/components/Pressable";
 
 import { BottomSheet } from "./BottomSheet";
 import { TextField } from "./TextField";
@@ -11,6 +14,7 @@ export function DisplayNameSheet({ open }: { open: boolean }) {
   const [value, setValue] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+  useBusyWhile(saving);
 
   const submit = async () => {
     const result = validateDisplayName(value);

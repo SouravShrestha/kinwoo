@@ -9,28 +9,42 @@
 
 export const lightColors = {
   "background": "#fefefe",
+  "sheet": "#fefefe",
   "foreground": "#0e0e0e",
+  "card": "#fbfbfb",
   "muted": "#f1f1f1",
   "mutedForeground": "#6b6b6b",
   "border": "#e5e5e5",
   "primary": "#0e0e0e",
   "primaryForeground": "#fefefe",
-  "accent": "#4f9163",
+  "accent": "#4e8e60",
   "accentForeground": "#fefefe",
   "destructive": "#c0392b",
+  "destructiveForeground": "#fefefe",
+  "warning": "#b45309",
+  "warningForeground": "#fefefe",
+  "info": "#2563a8",
+  "infoForeground": "#fefefe",
 } as const;
 
 export const darkColors = {
   "background": "#0e0e0e",
+  "sheet": "#161616",
   "foreground": "#fefefe",
+  "card": "#1a1a1a",
   "muted": "#1a1a1a",
   "mutedForeground": "#9a9a9a",
   "border": "#262626",
   "primary": "#fefefe",
   "primaryForeground": "#0e0e0e",
-  "accent": "#5faa74",
+  "accent": "#5ea771",
   "accentForeground": "#0e0e0e",
   "destructive": "#e06a5c",
+  "destructiveForeground": "#0e0e0e",
+  "warning": "#f0b429",
+  "warningForeground": "#0e0e0e",
+  "info": "#6aa8e8",
+  "infoForeground": "#0e0e0e",
 } as const;
 
 export type ColorName = keyof typeof lightColors;
@@ -39,7 +53,9 @@ export const colors = { light: lightColors, dark: darkColors } as const;
 
 export const cssVarNames = {
   "background": "--background",
+  "sheet": "--sheet",
   "foreground": "--foreground",
+  "card": "--card",
   "muted": "--muted",
   "mutedForeground": "--muted-foreground",
   "border": "--border",
@@ -48,6 +64,11 @@ export const cssVarNames = {
   "accent": "--accent",
   "accentForeground": "--accent-foreground",
   "destructive": "--destructive",
+  "destructiveForeground": "--destructive-foreground",
+  "warning": "--warning",
+  "warningForeground": "--warning-foreground",
+  "info": "--info",
+  "infoForeground": "--info-foreground",
 } as const satisfies Record<ColorName, string>;
 
 export const RADIUS_BASE_PX = 9.6;

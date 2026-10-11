@@ -10,7 +10,9 @@
     ".": "./src/index.ts",
     "./app": "./src/app/index.ts",
     "./auth": "./src/auth/index.ts",
-    "./db": "./src/db.ts"
+    "./db": "./src/db.ts",
+    "./houses": "./src/houses/index.ts",
+    "./toast": "./src/toast/index.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",

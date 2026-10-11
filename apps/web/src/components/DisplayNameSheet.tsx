@@ -49,9 +49,9 @@ export function DisplayNameSheet({ open }: { open: boolean }) {
           void submit();
         }}
       >
-        <h2 className="font-display text-2xl font-medium">What's your full name?</h2>
-        <p className="mt-2 text-muted-foreground">
-          Enter your first and last name so others know it's you.
+        <h2 className="font-display text-2xl font-medium">What&apos;s your full name?</h2>
+        <p className="mt-2 text-sm text-muted-foreground">
+          Enter your first and last name so others know it&apos;s you.
         </p>
 
         <TextField
@@ -76,7 +76,7 @@ export function DisplayNameSheet({ open }: { open: boolean }) {
           type="submit"
           label={saving ? "Saving…" : "Continue"}
           loading={saving}
-          className="mt-5"
+          className="mt-5 rounded-3xl font-sans font-semibold"
         />
       </form>
     </BottomSheet>

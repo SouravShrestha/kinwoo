@@ -1,6 +1,7 @@
 import type { Profile, ProfilePreferences } from "@kinwoo/core/db";
 
 import { getApiConfig } from "../api/config";
+import { apiRequest } from "../api/request";
 
 export type { Profile, ProfilePreferences };
 
@@ -54,6 +55,19 @@ export function updateDisplayName(displayName: string): Promise<Profile> {
     method: "PATCH",
     body: JSON.stringify({ displayName }),
   });
+}
+
+export async function fetchAvatars(): Promise<string[]> {
+  const { avatars } = await apiRequest<{ avatars: string[] }>("/api/profile/avatars");
+  return avatars;
+}
+
+export async function updateAvatar(avatarUrl: string): Promise<Profile> {
+  const { profile } = await apiRequest<{ profile: Profile }>("/api/profile/avatar", {
+    method: "PATCH",
+    body: { avatarUrl },
+  });
+  return profile;
 }
 
 export function updatePreferences(preferences: ProfilePreferences): Promise<Profile> {

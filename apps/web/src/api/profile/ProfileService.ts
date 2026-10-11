@@ -1,7 +1,7 @@
 import { displayNameErrorMessage, validateDisplayName } from "@kinwoo/core/auth";
 
-import type { IProfileRepository, ProfilePreferences } from "./IProfileRepository";
-import type { IProfileService, ProfileResult } from "./IProfileService";
+import type { IProfileRepository, Profile, ProfilePreferences } from "./IProfileRepository";
+import type { AvatarListResult, IProfileService, ProfileResult } from "./IProfileService";
 
 const VALID_THEMES = new Set(["light", "dark", "system"]);
 const LOCALE_PATTERN = /^[a-z]{2}(-[A-Za-z0-9]{2,8})?$/;
@@ -12,9 +12,29 @@ export class ProfileService implements IProfileService {
   async getProfile(userId: string): Promise<ProfileResult> {
     try {
       const profile = await this.repository.findById(userId);
-      return profile ? { status: "ok", profile } : { status: "not-found" };
+      if (!profile) return { status: "not-found" };
+
+      return {
+        status: "ok",
+        profile: profile.avatarUrl ? profile : await this.withAvatar(profile),
+      };
     } catch {
       return { status: "error" };
+    }
+  }
+
+  // Never fails the profile load: without a default avatar the clients fall back to a placeholder.
+  private async withAvatar(profile: Profile): Promise<Profile> {
+    try {
+      const avatars = await this.repository.listAvatarUrls();
+      if (avatars.length === 0) return profile;
+
+      const pick = avatars[Math.floor(Math.random() * avatars.length)];
+      // Conditional on the column still being empty, so two concurrent loads settle on one avatar.
+      const updated = await this.repository.setAvatarUrlIfMissing(profile.id, pick);
+      return updated ?? (await this.repository.findById(profile.id)) ?? profile;
+    } catch {
+      return profile;
     }
   }
 
@@ -38,6 +58,30 @@ export class ProfileService implements IProfileService {
 
     try {
       const profile = await this.repository.updatePreferences(userId, preferences);
+      return profile ? { status: "ok", profile } : { status: "not-found" };
+    } catch {
+      return { status: "error" };
+    }
+  }
+
+  async listAvatars(): Promise<AvatarListResult> {
+    try {
+      return { status: "ok", avatars: await this.repository.listAvatarUrls() };
+    } catch {
+      return { status: "error" };
+    }
+  }
+
+  async setAvatar(userId: string, avatarUrl: string): Promise<ProfileResult> {
+    try {
+      // Only a URL we list ourselves is stored, so a client cannot point a profile at an
+      // arbitrary image.
+      const avatars = await this.repository.listAvatarUrls();
+      if (!avatars.includes(avatarUrl)) {
+        return { status: "invalid", message: "Choose one of the available avatars." };
+      }
+
+      const profile = await this.repository.updateAvatarUrl(userId, avatarUrl);
       return profile ? { status: "ok", profile } : { status: "not-found" };
     } catch {
       return { status: "error" };

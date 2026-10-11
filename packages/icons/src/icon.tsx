@@ -1,4 +1,4 @@
-import { DEFAULT_ICON_SIZE, type IconProps } from "./types";
+import { DEFAULT_ICON_SIZE, iconHeight, type IconProps } from "./types";
 import type { IconGeometry } from "./data";
 
 export type WebIconProps = IconProps & { className?: string };
@@ -13,7 +13,7 @@ export function SvgIcon({
   return (
     <svg
       width={size}
-      height={size}
+      height={iconHeight(geometry.viewBox, size)}
       viewBox={geometry.viewBox}
       fill="none"
       xmlns="http://www.w3.org/2000/svg"

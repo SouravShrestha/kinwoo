@@ -1,6 +1,6 @@
-// Use `type` aliases, not interfaces: postgrest-js constrains Row to
-// `Record<string, unknown>` and interfaces lack an implicit index signature,
-// which makes every `.update()` argument resolve to `never`.
+// Table and RPC shapes come from `npm run db:types`. The types below narrow or rename them for the
+// apps. Use `type` aliases, not interfaces: postgrest-js constrains Row to `Record<string, unknown>`
+// and interfaces lack an implicit index signature.
 
 export type ThemePreference = "light" | "dark" | "system";
 
@@ -38,27 +38,4 @@ export type ProfileUpdate = Partial<
   Pick<ProfileRow, "display_name" | "avatar_url" | "locale" | "theme" | "notifications_enabled">
 >;
 
-export type Database = {
-  public: {
-    Tables: {
-      profiles: {
-        Row: ProfileRow;
-        Insert: ProfileInsert;
-        Update: ProfileUpdate;
-        Relationships: [
-          {
-            foreignKeyName: "profiles_id_fkey";
-            columns: ["id"];
-            isOneToOne: true;
-            referencedRelation: "users";
-            referencedColumns: ["id"];
-          },
-        ];
-      };
-    };
-    Views: Record<string, never>;
-    Functions: Record<string, never>;
-    Enums: Record<string, never>;
-    CompositeTypes: Record<string, never>;
-  };
-};
+export type { Database, Json } from "./database.generated";

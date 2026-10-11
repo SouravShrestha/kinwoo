@@ -13,6 +13,7 @@ import {
 import { useAuth } from "../auth/use-auth";
 import {
   fetchProfile,
+  updateAvatar as patchAvatar,
   updateDisplayName as patchDisplayName,
   updatePreferences as patchPreferences,
   type Profile,
@@ -26,6 +27,7 @@ export interface ProfileContextValue {
   refresh: () => Promise<void>;
   setDisplayName: (value: string) => Promise<void>;
   setPreferences: (preferences: ProfilePreferences) => Promise<void>;
+  setAvatar: (avatarUrl: string) => Promise<void>;
   needsDisplayName: boolean;
 }
 
@@ -102,6 +104,14 @@ export function ProfileProvider({ children }: { children: ReactNode }) {
     [userId],
   );
 
+  const setAvatar = useCallback(
+    async (avatarUrl: string) => {
+      const updated = await patchAvatar(avatarUrl);
+      setLoaded({ userId, profile: updated, error: null });
+    },
+    [userId],
+  );
+
   const value = useMemo<ProfileContextValue>(
     () => ({
       profile,
@@ -110,9 +120,10 @@ export function ProfileProvider({ children }: { children: ReactNode }) {
       refresh,
       setDisplayName,
       setPreferences,
+      setAvatar,
       needsDisplayName: ready && profile !== null && profile.displayName === null,
     }),
-    [profile, ready, error, refresh, setDisplayName, setPreferences],
+    [profile, ready, error, refresh, setDisplayName, setPreferences, setAvatar],
   );
 
   return <ProfileContext.Provider value={value}>{children}</ProfileContext.Provider>;

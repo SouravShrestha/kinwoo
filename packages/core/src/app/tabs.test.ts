@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { TABS, activeTabFor } from "./tabs";
+import { TABS, activeTabFor, routeRequiresHouse } from "./tabs";
 
 describe("TABS", () => {
   it("has unique keys and hrefs", () => {
@@ -43,5 +43,21 @@ describe("activeTabFor", () => {
   it("returns null for routes outside the navigation", () => {
     expect(activeTabFor("/login")).toBeNull();
     expect(activeTabFor("/legal/privacy")).toBeNull();
+  });
+});
+
+describe("routeRequiresHouse", () => {
+  it("requires a house for tasks and bills, including nested routes", () => {
+    expect(routeRequiresHouse("/tasks")).toBe(true);
+    expect(routeRequiresHouse("/bills")).toBe(true);
+    expect(routeRequiresHouse("/bills/2026/january")).toBe(true);
+    expect(routeRequiresHouse("/tasks/")).toBe(true);
+  });
+
+  it("leaves home, profile and unrelated routes open", () => {
+    expect(routeRequiresHouse("/")).toBe(false);
+    expect(routeRequiresHouse("/profile")).toBe(false);
+    expect(routeRequiresHouse("/house/create")).toBe(false);
+    expect(routeRequiresHouse("/billsomething")).toBe(false);
   });
 });

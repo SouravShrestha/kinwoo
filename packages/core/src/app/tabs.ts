@@ -4,14 +4,15 @@ export interface TabDefinition {
   key: TabKey;
   href: string;
   label: string;
+  requiresHouse: boolean;
 }
 
 // Data only: core cannot import icon components, so each app maps the key to its own.
 export const TABS: readonly TabDefinition[] = [
-  { key: "home", href: "/", label: "Home" },
-  { key: "tasks", href: "/tasks", label: "Tasks" },
-  { key: "bills", href: "/bills", label: "Bills" },
-  { key: "profile", href: "/profile", label: "Profile" },
+  { key: "home", href: "/", label: "Home", requiresHouse: false },
+  { key: "tasks", href: "/tasks", label: "Tasks", requiresHouse: true },
+  { key: "bills", href: "/bills", label: "Bills", requiresHouse: true },
+  { key: "profile", href: "/profile", label: "Profile", requiresHouse: false },
 ];
 
 // "/" must match exactly or it would claim every path. The rest match on a
@@ -29,4 +30,9 @@ export function activeTabFor(pathname: string): TabKey | null {
   }
 
   return null;
+}
+
+export function routeRequiresHouse(pathname: string): boolean {
+  const key = activeTabFor(pathname);
+  return TABS.some((tab) => tab.key === key && tab.requiresHouse);
 }

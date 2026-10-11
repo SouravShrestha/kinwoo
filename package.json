@@ -21,7 +21,10 @@
     "preview": "npm run preview --workspace @kinwoo/web",
     "tokens:generate": "npm run generate --workspace @kinwoo/tokens",
     "dev:up": "colima start && supabase start",
-    "dev:down": "supabase stop && colima stop"
+    "dev:down": "supabase stop && colima stop",
+    "db:reset": "supabase db reset",
+    "db:test": "supabase test db",
+    "db:types": "node scripts/gen-db-types.mjs"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.6",
