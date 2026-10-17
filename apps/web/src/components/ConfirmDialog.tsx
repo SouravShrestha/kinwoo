@@ -1,36 +1,49 @@
 "use client";
 
 import { isTop, push, remove } from "@kinwoo/client/sheets";
-import { useEffect, useRef, type ReactNode } from "react";
+import { CONFIRM_CANCEL_LABEL, type ConfirmCopy, type ConfirmIconName } from "@kinwoo/core/confirm";
+import {
+  LeaveHouseIcon,
+  LockFilledIcon,
+  LogoutIcon,
+  TrashIcon,
+  UserCheckIcon,
+  UserCrossIcon,
+  WorldIcon,
+  type WebIconProps,
+} from "@kinwoo/icons";
+import { useEffect, useRef, type ComponentType } from "react";
 import { createPortal } from "react-dom";
 
 import { cn } from "@/lib/utils";
 
 import { Button } from "./Button";
 
+const ICONS: Record<ConfirmIconName, ComponentType<WebIconProps>> = {
+  trash: TrashIcon,
+  logout: LogoutIcon,
+  lock: LockFilledIcon,
+  world: WorldIcon,
+  leaveHouse: LeaveHouseIcon,
+  userCheck: UserCheckIcon,
+  userCross: UserCrossIcon,
+};
+
 // A centred card over a dimmed backdrop. It interrupts the current flow rather than being part of
 // it, so it is a dialog and not a bottom sheet. Portalled because a sheet panel's transform would
 // otherwise become the containing block of its fixed positioning.
 export function ConfirmDialog({
   open,
-  title,
-  description,
+  copy,
   error,
-  confirmLabel,
-  confirmVariant = "destructive",
-  cancelLabel = "Cancel",
   onConfirm,
   onCancel,
   isPending = false,
   zClassName = "z-90",
 }: {
   open: boolean;
-  title: string;
-  description?: ReactNode;
+  copy: ConfirmCopy;
   error?: string | null;
-  confirmLabel: string;
-  confirmVariant?: "primary" | "destructive";
-  cancelLabel?: string;
   onConfirm: () => void;
   onCancel: () => void;
   isPending?: boolean;
@@ -82,38 +95,54 @@ export function ConfirmDialog({
 
   if (!open) return null;
 
+  const Icon = ICONS[copy.icon];
+
   return createPortal(
     <div
       role="alertdialog"
       aria-modal="true"
-      aria-label={title}
-      className={cn("fixed inset-0 flex items-center justify-center bg-black/60 px-6", zClassName)}
+      aria-label={copy.title}
+      className={cn("fixed inset-0 flex items-center justify-center bg-backdrop px-6", zClassName)}
     >
       <div
         ref={panelRef}
-        className="flex w-full max-w-xs flex-col gap-5 rounded-2xl border border-border bg-sheet p-6"
+        className="w-full max-w-sm overflow-hidden rounded-2xl border border-dialog-border bg-dialog"
       >
-        <div className="text-center">
-          <h2 className="font-display text-lg font-medium">{title}</h2>
-          {description ? <p className="mt-1 text-sm text-muted-foreground">{description}</p> : null}
+        <div
+          className={cn(
+            "flex justify-center py-6",
+            copy.tone === "destructive" ? "text-destructive" : "text-foreground",
+          )}
+        >
+          <Icon size={24} />
+        </div>
+
+        <h2 className="bg-dialog-header px-6 py-3 mt-1 text-center font-display text-lg font-medium">
+          {copy.title}
+        </h2>
+
+        <div className="px-6 pt-5 text-center my-2">
+          <p className="whitespace-pre-line font-display text-base text-foreground">
+            {copy.message}
+          </p>
           {error ? (
-            <p role="alert" className="mt-3 text-sm text-destructive">
+            <p role="alert" className="mt-3 text-base text-destructive">
               {error}
             </p>
           ) : null}
         </div>
 
-        <div className="flex gap-3">
+        <div className="flex items-center gap-4 px-6 pt-6 pb-5">
+          <button
+            type="button"
+            disabled={isPending}
+            onClick={onCancel}
+            className="h-14 flex-1 font-display text-base font-medium text-foreground underline underline-offset-[6px] hover:cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            {CONFIRM_CANCEL_LABEL}
+          </button>
           <div className="flex-1">
-            <Button label={cancelLabel} variant="outline" disabled={isPending} onClick={onCancel} />
-          </div>
-          <div className="flex-1">
-            <Button
-              label={confirmLabel}
-              variant={confirmVariant}
-              loading={isPending}
-              onClick={onConfirm}
-            />
+            <Button label={copy.confirmLabel} loading={isPending} onClick={onConfirm} />
           </div>
         </div>
       </div>

@@ -53,7 +53,7 @@ export default (): ExpoConfig => ({
       },
     ],
     // iOS 27 aborts launch without the UIScene lifecycle. Remove on SDK 58, where it is default.
-    ["expo-build-properties", { ios: { enableSceneSupport: true } }],
+    ["expo-build-properties", { ios: { enableSceneSupport: true, usePrecompiledModules: false } }],
   ],
   experiments: {
     typedRoutes: true,

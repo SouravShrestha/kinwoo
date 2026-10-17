@@ -15,6 +15,10 @@ export const RADIUS_REM = 0.6;
 export const TOKENS: Token[] = [
   { name: "background", value: { light: "#fefefe", dark: "#0e0e0e" } },
   { name: "sheet", value: { light: "#fefefe", dark: "#161616" } },
+  { name: "dialog", value: { light: "#fefefe", dark: "#1c1c1c" } },
+  { name: "dialog-header", value: { light: "#f4f4f4", dark: "#262626" } },
+  { name: "dialog-border", value: { light: "#dcdcdc", dark: "#3a3a3a" } },
+  { name: "backdrop", value: "#000000cc" },
   { name: "foreground", value: { light: "#0e0e0e", dark: "#fefefe" } },
   { name: "card", value: { light: "#fbfbfb", dark: "#1a1a1a" } },
   { name: "muted", value: { light: "#f1f1f1", dark: "#1a1a1a" } },

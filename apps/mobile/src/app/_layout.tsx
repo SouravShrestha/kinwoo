@@ -12,6 +12,7 @@ import {
 import {
   Poppins_400Regular,
   Poppins_500Medium,
+  Poppins_500Medium_Italic,
   Poppins_600SemiBold,
   Poppins_700Bold,
 } from "@expo-google-fonts/poppins";
@@ -33,6 +34,7 @@ export default function RootLayout() {
     Inter_700Bold,
     Poppins_400Regular,
     Poppins_500Medium,
+    Poppins_500Medium_Italic,
     Poppins_600SemiBold,
     Poppins_700Bold,
   });
@@ -48,6 +50,25 @@ export default function RootLayout() {
               <Stack.Screen
                 name="house/invite"
                 options={{ animation: "slide_from_bottom", gestureDirection: "vertical" }}
+              />
+              <Stack.Screen name="profile" options={{ animation: "slide_from_right" }} />
+              <Stack.Screen
+                name="item/new"
+                options={{ animation: "slide_from_bottom", gestureDirection: "vertical" }}
+              />
+              <Stack.Screen
+                name="item/bought"
+                options={{ animation: "slide_from_bottom", gestureDirection: "vertical" }}
+              />
+              <Stack.Screen
+                name="item/bought-batch"
+                // Transparent so the screen below shows through while the sheet is dragged down;
+                // the screen handles its own swipe because the native one loses to its ScrollView.
+                options={{
+                  presentation: "transparentModal",
+                  animation: "slide_from_bottom",
+                  gestureEnabled: false,
+                }}
               />
             </Stack>
           </AppProviders>

@@ -3,13 +3,23 @@
 import { useAuth } from "@kinwoo/client/auth";
 import { useProfile } from "@kinwoo/client/profile";
 import { toast } from "@kinwoo/client/toast";
+import { LEGAL_LABELS, LEGAL_PATHS } from "@kinwoo/core/app";
+import { CONFIRM_COPY } from "@kinwoo/core/confirm";
 import { TOAST_MESSAGES } from "@kinwoo/core/toast";
-import { AppearanceIcon, BellIcon, GlobeIcon, ProfileIcon } from "@kinwoo/icons";
+import {
+  AppearanceIcon,
+  BellIcon,
+  DocumentIcon,
+  GlobeIcon,
+  ProfileIcon,
+  ShieldCheckIcon,
+} from "@kinwoo/icons";
 import { useTheme } from "next-themes";
 import { useState } from "react";
 
 import { AppearanceSheet } from "@/components/AppearanceSheet";
 import { AvatarSheet } from "@/components/AvatarSheet";
+import { BackButton } from "@/components/BackButton";
 import { Button } from "@/components/Button";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { SettingsButtonRow, SettingsGroup, SettingsLinkRow } from "@/components/Settings";
@@ -42,7 +52,11 @@ export function ProfileScreen() {
   };
 
   return (
-    <main className="px-6 pt-10">
+    <main className="px-6 pb-[calc(2.5rem+env(safe-area-inset-bottom))] pt-[calc(1.25rem+env(safe-area-inset-top))]">
+      <div className="mb-6">
+        <BackButton />
+      </div>
+
       <div className="mb-12 flex items-center">
         <button
           type="button"
@@ -96,6 +110,19 @@ export function ProfileScreen() {
         />
       </SettingsGroup>
 
+      <SettingsGroup title={LEGAL_LABELS.group}>
+        <SettingsLinkRow
+          href={LEGAL_PATHS.terms}
+          icon={<DocumentIcon size={20} />}
+          label={LEGAL_LABELS.terms}
+        />
+        <SettingsLinkRow
+          href={LEGAL_PATHS.privacy}
+          icon={<ShieldCheckIcon size={20} />}
+          label={LEGAL_LABELS.privacy}
+        />
+      </SettingsGroup>
+
       <Button
         label="Log out"
         variant="outline"
@@ -107,9 +134,7 @@ export function ProfileScreen() {
       <AvatarSheet open={avatarOpen} onClose={() => setAvatarOpen(false)} />
       <ConfirmDialog
         open={logoutOpen}
-        title="Log out?"
-        description="You'll need to sign in again to use Kinwoo."
-        confirmLabel="Log out"
+        copy={CONFIRM_COPY.logout}
         isPending={loggingOut}
         onConfirm={() => void confirmLogout()}
         onCancel={() => setLogoutOpen(false)}

@@ -9,6 +9,7 @@
     "packages/*"
   ],
   "scripts": {
+    "postinstall": "patch-package",
     "dev": "turbo run dev --filter=@kinwoo/web",
     "dev:mobile": "npm run start --workspace @kinwoo/mobile",
     "build": "turbo run build",
@@ -35,6 +36,7 @@
     "eslint-plugin-prettier": "^5.2.6",
     "eslint-plugin-react-hooks": "^7.1.1",
     "globals": "^17.9.0",
+    "patch-package": "8.0.0",
     "prettier": "^3.7.3",
     "supabase": "^2.120.0",
     "turbo": "^2.5.8",

@@ -10,8 +10,11 @@
     ".": "./src/index.ts",
     "./app": "./src/app/index.ts",
     "./auth": "./src/auth/index.ts",
+    "./confirm": "./src/confirm/index.ts",
     "./db": "./src/db.ts",
+    "./filters": "./src/filters/index.ts",
     "./houses": "./src/houses/index.ts",
+    "./grocery": "./src/grocery/index.ts",
     "./toast": "./src/toast/index.ts"
   },
   "scripts": {

@@ -2,7 +2,8 @@
 
 import { configureApiClient } from "@kinwoo/client/api";
 import { AuthProvider } from "@kinwoo/client/auth";
-import { HousesProvider } from "@kinwoo/client/houses";
+import { GroceryRealtime } from "@kinwoo/client/grocery";
+import { HousesProvider, useActiveHouse } from "@kinwoo/client/houses";
 import { ProfileProvider } from "@kinwoo/client/profile";
 import { useRouter } from "next/navigation";
 import type { ReactNode } from "react";
@@ -20,6 +21,12 @@ import { supabase } from "@/integrations/supabase/client";
 // avoid racing the first render.
 configureApiClient({ baseUrl: "" });
 
+function GroceryRealtimeGate() {
+  const { activeHouse } = useActiveHouse();
+  if (!activeHouse) return null;
+  return <GroceryRealtime client={supabase} houseId={activeHouse.house.id} />;
+}
+
 export function AppProviders({ children }: { children: ReactNode }) {
   const router = useRouter();
 
@@ -33,6 +40,7 @@ export function AppProviders({ children }: { children: ReactNode }) {
             router.push(`/house/join?code=${encodeURIComponent(code)}&confirm=1`)
           }
         >
+          <GroceryRealtimeGate />
           <TopLoader />
           <Toaster />
           <DoubleClickGuard />

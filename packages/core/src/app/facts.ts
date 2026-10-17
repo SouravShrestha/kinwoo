@@ -1,6 +1,6 @@
 export const APP_NAME = "Kinwoo";
 
-export const SUPPORT_EMAIL = "souravshrestha@cbsdev.me";
+export const SUPPORT_EMAIL = "hello@kinwoo.in";
 
 export const AUTHOR_NAME = "Sourav Shrestha";
 export const AUTHOR_URL = "https://www.cbsdev.me/";
@@ -19,3 +19,10 @@ export function supportMailtoFor(options: {
   const query = `subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(lines.join("\n"))}`;
   return `mailto:${SUPPORT_EMAIL}?${query}`;
 }
+
+export const NOT_FOUND_COPY = {
+  code: "404",
+  title: "Page not found",
+  hint: "The page you’re looking for doesn’t exist or has been moved",
+  action: "Go Home",
+} as const;

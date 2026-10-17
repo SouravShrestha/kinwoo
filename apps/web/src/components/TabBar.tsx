@@ -2,14 +2,14 @@
 
 import { TABS, activeTabFor, type TabKey } from "@kinwoo/core/app";
 import {
+  ActivitiesActiveIcon,
+  ActivitiesIcon,
   BillActiveIcon,
   BillIcon,
+  CartActiveIcon,
+  CartIcon,
   HomeActiveIcon,
   HomeIcon,
-  ListActiveIcon,
-  ListIcon,
-  ProfileActiveIcon,
-  ProfileIcon,
   type WebIconProps,
 } from "@kinwoo/icons";
 import { rejectHouseRequired, useHouseAccess } from "@kinwoo/client/houses";
@@ -24,12 +24,12 @@ const ICONS: Record<
   { active: ComponentType<WebIconProps>; inactive: ComponentType<WebIconProps> }
 > = {
   home: { active: HomeActiveIcon, inactive: HomeIcon },
-  tasks: { active: ListActiveIcon, inactive: ListIcon },
+  tasks: { active: CartActiveIcon, inactive: CartIcon },
   bills: { active: BillActiveIcon, inactive: BillIcon },
-  profile: { active: ProfileActiveIcon, inactive: ProfileIcon },
+  activities: { active: ActivitiesActiveIcon, inactive: ActivitiesIcon },
 };
 
-const SIZES: Record<TabKey, number> = { home: 25, tasks: 26, bills: 24, profile: 24 };
+const SIZES: Record<TabKey, number> = { home: 25, tasks: 25, bills: 24, activities: 26 };
 
 export function TabBar() {
   const pathname = usePathname();

@@ -6,6 +6,8 @@ import { ProfileProvider } from "@kinwoo/client/profile";
 import { router } from "expo-router";
 import { useEffect, type ReactNode } from "react";
 
+import { GroceryRealtime } from "@kinwoo/client/grocery";
+import { useActiveHouse } from "@kinwoo/client/houses";
 import { AuthGate } from "./AuthGate";
 import { HouseGate } from "./HouseGate";
 import { SplashGate } from "./SplashGate";
@@ -15,6 +17,12 @@ import { nativeAuthAdapter } from "@/lib/auth-adapter";
 import { installFocusManager } from "@/lib/focus";
 import { houseStorage } from "@/lib/house-storage";
 import { supabase } from "@/lib/supabase";
+
+function GroceryRealtimeGate() {
+  const { activeHouse } = useActiveHouse();
+  if (!activeHouse) return null;
+  return <GroceryRealtime client={supabase} houseId={activeHouse.house.id} />;
+}
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL;
 
@@ -56,6 +64,7 @@ export function AppProviders({ children }: { children: ReactNode }) {
             <SplashGate />
             <TopLoader />
             <ToastHost />
+            <GroceryRealtimeGate />
           </BottomSheetModalProvider>
         </HousesProvider>
       </ProfileProvider>

@@ -36,7 +36,7 @@ export function SettingsView({
     <View>
       <SheetHeader onBack={onBack} />
       {!isAdmin ? (
-        <Text className="mt-4 text-sm text-muted-foreground">
+        <Text className="mt-4 text-sm text-muted-foreground font-display-medium">
           Only admins can change the house details.
         </Text>
       ) : null}

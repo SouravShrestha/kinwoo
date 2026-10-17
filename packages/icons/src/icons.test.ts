@@ -42,7 +42,7 @@ describe("icon geometry", () => {
 
   it("gives every icon a viewBox and at least one path", () => {
     for (const [name, icon] of entries) {
-      expect(icon.viewBox, name).toMatch(/^0 0 \d+ \d+$/);
+      expect(icon.viewBox, name).toMatch(/^(-?\d+(\.\d+)? ){3}\d+(\.\d+)?$/);
       expect(icon.paths.length, name).toBeGreaterThan(0);
     }
   });

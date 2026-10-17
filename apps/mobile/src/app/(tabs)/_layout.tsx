@@ -1,14 +1,14 @@
 import { rejectHouseRequired, useHouseAccess } from "@kinwoo/client/houses";
 import { TABS, type TabKey } from "@kinwoo/core/app";
 import {
+  ActivitiesActiveIcon,
+  ActivitiesIcon,
   BillActiveIcon,
   BillIcon,
+  CartActiveIcon,
+  CartIcon,
   HomeActiveIcon,
   HomeIcon,
-  ListActiveIcon,
-  ListIcon,
-  ProfileActiveIcon,
-  ProfileIcon,
 } from "@kinwoo/icons/native";
 import { colors } from "@kinwoo/tokens/native";
 import { Tabs, router, usePathname } from "expo-router";
@@ -24,19 +24,19 @@ const ICONS: Record<
   { active: ComponentType<IconProps>; inactive: ComponentType<IconProps> }
 > = {
   home: { active: HomeActiveIcon, inactive: HomeIcon },
-  tasks: { active: ListActiveIcon, inactive: ListIcon },
+  tasks: { active: CartActiveIcon, inactive: CartIcon },
   bills: { active: BillActiveIcon, inactive: BillIcon },
-  profile: { active: ProfileActiveIcon, inactive: ProfileIcon },
+  activities: { active: ActivitiesActiveIcon, inactive: ActivitiesIcon },
 };
 
 /** Traced sizes differ per glyph, so each is nudged to look optically equal. */
-const SIZES: Record<TabKey, number> = { home: 25, tasks: 26, bills: 24, profile: 24 };
+const SIZES: Record<TabKey, number> = { home: 25, tasks: 25, bills: 24, activities: 26 };
 
 const ROUTE_NAMES: Record<TabKey, string> = {
   home: "index",
   tasks: "tasks",
   bills: "bills",
-  profile: "profile",
+  activities: "activities",
 };
 
 const TAB_BAR_CONTENT_HEIGHT = 64;

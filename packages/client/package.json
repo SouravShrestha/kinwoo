@@ -13,6 +13,7 @@
     "./auth": "./src/auth/index.ts",
     "./profile": "./src/profile/index.ts",
     "./houses": "./src/houses/index.ts",
+    "./grocery": "./src/grocery/index.ts",
     "./sheets": "./src/sheets/index.ts",
     "./toast": "./src/toast/index.ts"
   },

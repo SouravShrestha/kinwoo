@@ -5,11 +5,12 @@ import type { ButtonHTMLAttributes, ReactNode } from "react";
 
 import { cn } from "@/lib/utils";
 
-export type ButtonVariant = "primary" | "outline" | "ghost" | "destructive";
+export type ButtonVariant = "primary" | "accent" | "outline" | "ghost" | "destructive";
 
 // Outline and destructive stay transparent so they take on the surface they sit on, page or sheet.
 const VARIANTS: Record<ButtonVariant, string> = {
   primary: "bg-primary text-primary-foreground hover:opacity-90",
+  accent: "bg-accent text-accent-foreground hover:opacity-90",
   outline: "border border-border bg-transparent text-foreground hover:bg-muted",
   ghost: "bg-transparent text-muted-foreground hover:bg-muted",
   destructive: "border border-destructive bg-transparent text-destructive hover:bg-muted",
@@ -20,6 +21,7 @@ export function Button({
   variant = "primary",
   loading = false,
   icon,
+  iconEnd,
   labelWeight = "medium",
   className,
   disabled,
@@ -29,6 +31,7 @@ export function Button({
   variant?: ButtonVariant;
   loading?: boolean;
   icon?: ReactNode;
+  iconEnd?: ReactNode;
   labelWeight?: "normal" | "medium";
 } & Omit<ButtonHTMLAttributes<HTMLButtonElement>, "children">) {
   const isDisabled = disabled || loading;
@@ -52,6 +55,7 @@ export function Button({
     >
       {icon}
       <span>{label}</span>
+      {iconEnd}
     </button>
   );
 }

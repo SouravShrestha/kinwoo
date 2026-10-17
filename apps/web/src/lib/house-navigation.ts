@@ -1,6 +1,15 @@
 import { useRouter } from "next/navigation";
 import { useMemo } from "react";
 
+export function markBoughtPath(listId: string, itemId: string) {
+  return `/item/bought?listId=${encodeURIComponent(listId)}&itemId=${encodeURIComponent(itemId)}`;
+}
+
+export function batchMarkBoughtPath(listId: string, itemIds: readonly string[]) {
+  const ids = itemIds.map(encodeURIComponent).join(",");
+  return `/item/bought-batch?listId=${encodeURIComponent(listId)}&itemIds=${ids}`;
+}
+
 export function useHouseNavigation() {
   const router = useRouter();
 

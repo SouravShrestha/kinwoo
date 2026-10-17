@@ -1,4 +1,4 @@
-export type TabKey = "home" | "tasks" | "bills" | "profile";
+export type TabKey = "home" | "tasks" | "bills" | "activities";
 
 export interface TabDefinition {
   key: TabKey;
@@ -10,9 +10,9 @@ export interface TabDefinition {
 // Data only: core cannot import icon components, so each app maps the key to its own.
 export const TABS: readonly TabDefinition[] = [
   { key: "home", href: "/", label: "Home", requiresHouse: false },
-  { key: "tasks", href: "/tasks", label: "Tasks", requiresHouse: true },
+  { key: "tasks", href: "/tasks", label: "Lists", requiresHouse: true },
   { key: "bills", href: "/bills", label: "Bills", requiresHouse: true },
-  { key: "profile", href: "/profile", label: "Profile", requiresHouse: false },
+  { key: "activities", href: "/activities", label: "Activities", requiresHouse: true },
 ];
 
 // "/" must match exactly or it would claim every path. The rest match on a

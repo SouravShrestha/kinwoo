@@ -1,0 +1,90 @@
+import { useBusyWhile } from "@kinwoo/client/activity";
+import { useAuth } from "@kinwoo/client/auth";
+import { useRecentActivity } from "@kinwoo/client/grocery";
+import { useActiveHouse } from "@kinwoo/client/houses";
+import { countSelected, EMPTY_FILTER_SELECTION, type FilterSelection } from "@kinwoo/core/filters";
+import { activityFilterGroups, filterActivity } from "@kinwoo/core/grocery";
+import { useCallback, useMemo, useState } from "react";
+import { Text, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+
+import { ActivityList } from "@/components/activity/ActivityList";
+import { Filters } from "@/components/Filters";
+
+export default function ActivitiesScreen() {
+  const insets = useSafeAreaInsets();
+  const { activeHouse, ready } = useActiveHouse();
+  const houseId = activeHouse?.house.id ?? null;
+  const { user } = useAuth();
+  const currentUserId = user?.id ?? null;
+
+  const {
+    data: entries,
+    isLoading,
+    hasNextPage,
+    isFetchNextPageError,
+    isFetchingNextPage,
+    fetchNextPage,
+  } = useRecentActivity(houseId);
+  useBusyWhile(isFetchingNextPage);
+  const [filters, setFilters] = useState<FilterSelection>(EMPTY_FILTER_SELECTION);
+
+  const filterGroups = useMemo(
+    () => activityFilterGroups(entries ?? [], currentUserId),
+    [entries, currentUserId],
+  );
+  const filteredEntries = useMemo(() => filterActivity(entries ?? [], filters), [entries, filters]);
+
+  const moreToFetch = hasNextPage && !isFetchNextPageError;
+  const loadMore = useCallback(() => {
+    if (moreToFetch && !isFetchingNextPage) void fetchNextPage();
+  }, [moreToFetch, isFetchingNextPage, fetchNextPage]);
+
+  if (!ready) {
+    return <View className="flex-1 bg-background" />;
+  }
+
+  if (!activeHouse) {
+    return (
+      <View
+        className="flex-1 items-center justify-center bg-background px-6"
+        style={{ paddingTop: insets.top }}
+      >
+        <Text className="text-center text-base text-muted-foreground font-display-medium">
+          Create or join a house to view activity.
+        </Text>
+      </View>
+    );
+  }
+
+  const showEmpty = !isLoading && filteredEntries.length === 0 && !moreToFetch;
+
+  return (
+    <View className="flex-1 bg-background" style={{ paddingTop: insets.top }}>
+      <ActivityList
+        entries={filteredEntries}
+        currentUserId={currentUserId}
+        onEndReached={loadMore}
+        header={
+          <>
+            <View className="px-6 pb-3 pt-3">
+              <Text className="font-display-medium text-xl text-foreground">Recent Activity</Text>
+            </View>
+            <Filters groups={filterGroups} value={filters} onChange={setFilters} className="pb-6" />
+          </>
+        }
+        empty={
+          showEmpty ? (
+            <View className="flex-1 items-center justify-center px-6">
+              <Text className="text-center text-sm text-muted-foreground font-display-normal">
+                {countSelected(filters) > 0
+                  ? "No activity matches these filters"
+                  : "No activity yet"}
+              </Text>
+            </View>
+          ) : null
+        }
+      />
+    </View>
+  );
+}

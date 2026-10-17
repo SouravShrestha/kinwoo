@@ -1,6 +1,8 @@
 import {
   BottomSheetBackdrop,
   type BottomSheetBackdropProps,
+  BottomSheetFooter,
+  type BottomSheetFooterProps,
   BottomSheetModal,
   BottomSheetScrollView,
   BottomSheetTextInput,
@@ -11,18 +13,30 @@ import {
 import { CloseIcon } from "@kinwoo/icons/native";
 import { colors, radius } from "@kinwoo/tokens/native";
 import { cssInterop } from "nativewind";
-import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  useSyncExternalStore,
+  type ReactNode,
+} from "react";
 import type { ComponentRef } from "react";
 import { Easing, runOnJS, useAnimatedReaction } from "react-native-reanimated";
 import { Gesture, GestureDetector, TouchableOpacity } from "react-native-gesture-handler";
-import { Keyboard, View } from "react-native";
+import { Keyboard, useWindowDimensions, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Pressable } from "./Pressable";
+import { createSheetFooterSlot, SheetFooterContext, type SheetFooterSlot } from "./sheet-footer";
 import { useSheetStack } from "./sheet-stack";
+import { useKeyboardVisible } from "@/lib/use-keyboard-visible";
 import { useTheme } from "@/theme/ThemeProvider";
 
 const STUCK_DISMISS_MS = 1200;
+// The keyboard covers the home indicator, so only a small gap is kept above it.
+export const SHEET_KEYBOARD_GAP = 20;
 
 export function BottomSheet({
   open,
@@ -33,6 +47,7 @@ export function BottomSheet({
   showClose = false,
   scrollable = true,
   maxHeight,
+  minHeightRatio,
   children,
 }: {
   open: boolean;
@@ -43,9 +58,11 @@ export function BottomSheet({
   showClose?: boolean;
   scrollable?: boolean;
   maxHeight?: number;
+  minHeightRatio?: number;
   children: ReactNode;
 }) {
   const insets = useSafeAreaInsets();
+  const { height: screenHeight } = useWindowDimensions();
   const { resolvedTheme } = useTheme();
   const palette = colors[resolvedTheme];
 
@@ -149,10 +166,28 @@ export function BottomSheet({
     [showHandle, palette.mutedForeground],
   );
 
+  const bottomPadding = Math.max(insets.bottom, 32);
+  const [footerSlot] = useState(createSheetFooterSlot);
+  const footerHeight = useSyncExternalStore(footerSlot.subscribe, footerSlot.getHeight);
+  const keyboardShown = useKeyboardVisible();
+
+  const renderFooter = useCallback(
+    (props: BottomSheetFooterProps) => (
+      <FooterHost {...props} slot={footerSlot} bottomPadding={bottomPadding} />
+    ),
+    [footerSlot, bottomPadding],
+  );
+
   const padding = {
     paddingHorizontal: 24,
     paddingTop: showHandle ? 14 : 12,
-    paddingBottom: Math.max(insets.bottom, 32),
+    // The footer floats over the content, so the content leaves room for it while it shows.
+    paddingBottom: keyboardShown
+      ? SHEET_KEYBOARD_GAP
+      : footerHeight > 0
+        ? footerHeight
+        : bottomPadding,
+    minHeight: minHeightRatio ? screenHeight * minHeightRatio : undefined,
   };
 
   const closeButton = showClose ? (
@@ -185,8 +220,11 @@ export function BottomSheet({
       onDismiss={handleDismissed}
       keyboardBehavior="interactive"
       keyboardBlurBehavior="restore"
+      // Otherwise the sheet can be dragged down behind a keyboard that stays up.
+      enableBlurKeyboardOnGesture
       android_keyboardInputMode="adjustResize"
       backdropComponent={renderBackdrop}
+      footerComponent={renderFooter}
       backgroundStyle={{ backgroundColor: palette.sheet }}
       style={{
         borderTopLeftRadius: radius["2xl"],
@@ -207,14 +245,14 @@ export function BottomSheet({
         >
           <View style={padding}>
             {closeButton}
-            {children}
+            <SheetFooterContext.Provider value={footerSlot}>{children}</SheetFooterContext.Provider>
           </View>
         </BottomSheetScrollView>
       ) : (
         <BottomSheetView {...a11y}>
           <View style={padding}>
             {closeButton}
-            {children}
+            <SheetFooterContext.Provider value={footerSlot}>{children}</SheetFooterContext.Provider>
           </View>
         </BottomSheetView>
       )}
@@ -269,6 +307,42 @@ function CloseWatcher({ onClosed }: { onClosed: () => void }) {
   );
 
   return null;
+}
+
+// gorhom pins the footer by its measured height, which lags a growing child by a frame or more.
+// A fixed-height, touch-transparent box with the content at its bottom keeps the bottom edge
+// still while the content grows. Hidden while typing so it never covers the focused field;
+// the content drops its footer spacer at the same time so it sits right above the keyboard.
+function FooterHost({
+  animatedFooterPosition,
+  slot,
+  bottomPadding,
+}: BottomSheetFooterProps & { slot: SheetFooterSlot; bottomPadding: number }) {
+  const content = useSyncExternalStore(slot.subscribe, slot.get);
+  const { resolvedTheme } = useTheme();
+  const keyboardVisible = useKeyboardVisible();
+
+  if (!content || keyboardVisible) return null;
+
+  return (
+    <BottomSheetFooter animatedFooterPosition={animatedFooterPosition}>
+      <View
+        pointerEvents="box-none"
+        style={{ height: content.maxHeight + bottomPadding, justifyContent: "flex-end" }}
+      >
+        <View
+          onLayout={(event) => slot.setHeight(event.nativeEvent.layout.height)}
+          style={{
+            paddingHorizontal: 24,
+            paddingBottom: bottomPadding,
+            backgroundColor: colors[resolvedTheme].sheet,
+          }}
+        >
+          {content.node}
+        </View>
+      </View>
+    </BottomSheetFooter>
+  );
 }
 
 export const SheetTextInput = BottomSheetTextInput;

@@ -11,6 +11,11 @@ export function memberInitial(name: string | null | undefined): string {
   return Array.from(memberDisplayName(name))[0]?.toUpperCase() ?? "?";
 }
 
+export function splitMemberName(name: string): { first: string; rest: string } {
+  const [first = "", ...rest] = name.trim().split(/\s+/);
+  return { first, rest: rest.join(" ") };
+}
+
 export function timeOfDayGreeting(now: Date): string {
   const hour = now.getHours();
   if (hour < 12) return "Good Morning!";

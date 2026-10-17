@@ -18,12 +18,17 @@ describe("activeTabFor", () => {
     expect(activeTabFor("/")).toBe("home");
     expect(activeTabFor("/tasks")).toBe("tasks");
     expect(activeTabFor("/bills")).toBe("bills");
-    expect(activeTabFor("/profile")).toBe("profile");
+    expect(activeTabFor("/activities")).toBe("activities");
   });
 
   it("matches nested routes to their parent tab", () => {
-    expect(activeTabFor("/profile/personal")).toBe("profile");
+    expect(activeTabFor("/activities/today")).toBe("activities");
     expect(activeTabFor("/bills/2026/january")).toBe("bills");
+  });
+
+  it("keeps profile out of the navigation", () => {
+    expect(activeTabFor("/profile")).toBeNull();
+    expect(activeTabFor("/profile/personal")).toBeNull();
   });
 
   it("does not let home claim every route", () => {
@@ -32,11 +37,11 @@ describe("activeTabFor", () => {
 
   it("does not match on a shared prefix", () => {
     expect(activeTabFor("/billsomething")).toBeNull();
-    expect(activeTabFor("/profiles")).toBeNull();
+    expect(activeTabFor("/activitiesfeed")).toBeNull();
   });
 
   it("ignores a trailing slash", () => {
-    expect(activeTabFor("/profile/")).toBe("profile");
+    expect(activeTabFor("/activities/")).toBe("activities");
     expect(activeTabFor("/")).toBe("home");
   });
 
@@ -47,9 +52,10 @@ describe("activeTabFor", () => {
 });
 
 describe("routeRequiresHouse", () => {
-  it("requires a house for tasks and bills, including nested routes", () => {
+  it("requires a house for tasks, bills and activities, including nested routes", () => {
     expect(routeRequiresHouse("/tasks")).toBe(true);
     expect(routeRequiresHouse("/bills")).toBe(true);
+    expect(routeRequiresHouse("/activities")).toBe(true);
     expect(routeRequiresHouse("/bills/2026/january")).toBe(true);
     expect(routeRequiresHouse("/tasks/")).toBe(true);
   });

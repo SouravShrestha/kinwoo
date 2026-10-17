@@ -30,7 +30,7 @@ This Code of Conduct applies within all project spaces (issues, pull requests, d
 
 ## Enforcement
 
-Instances of abusive, harassing, or otherwise unacceptable behaviour may be reported by emailing **souravshrestha@cbsdev.me**. All complaints will be reviewed and investigated promptly and fairly, and the maintainer is obligated to respect the privacy and security of the reporter of any incident.
+Instances of abusive, harassing, or otherwise unacceptable behaviour may be reported by emailing **hello@kinwoo.in**. All complaints will be reviewed and investigated promptly and fairly, and the maintainer is obligated to respect the privacy and security of the reporter of any incident.
 
 Project maintainers who do not follow or enforce the Code of Conduct in good faith may face temporary or permanent repercussions as determined by the project's leadership.
 

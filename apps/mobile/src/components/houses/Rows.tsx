@@ -7,6 +7,7 @@ export function ListRow({
   leading,
   title,
   subtitle,
+  aside,
   trailing,
   onPress,
   accessibilityLabel,
@@ -14,6 +15,7 @@ export function ListRow({
   leading?: ReactNode;
   title: string;
   subtitle?: string | null;
+  aside?: string | null;
   trailing?: ReactNode;
   onPress?: () => void;
   accessibilityLabel?: string;
@@ -22,9 +24,16 @@ export function ListRow({
     <>
       {leading ? <View className="mr-3">{leading}</View> : null}
       <View className="flex-1">
-        <Text className="text-base text-foreground" numberOfLines={1}>
-          {title}
-        </Text>
+        <View className="flex-row items-center">
+          <Text className="flex-1 text-base text-foreground" numberOfLines={1}>
+            {title}
+          </Text>
+          {aside ? (
+            <Text className="ml-3 text-sm text-muted-foreground" numberOfLines={1}>
+              {aside}
+            </Text>
+          ) : null}
+        </View>
         {subtitle ? (
           <Text className="mt-0.5 text-sm text-muted-foreground" numberOfLines={1}>
             {subtitle}

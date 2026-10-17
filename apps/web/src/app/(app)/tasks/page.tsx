@@ -1,12 +1,7 @@
-import { Placeholder } from "@/components/Placeholder";
+import { TasksScreen } from "./TasksScreen";
 
-export const metadata = { title: "Tasks" };
+export const metadata = { title: "Lists" };
 
 export default function TasksPage() {
-  return (
-    <Placeholder
-      title="Tasks"
-      description="Shared lists and chores will live here. Not built yet."
-    />
-  );
+  return <TasksScreen />;
 }

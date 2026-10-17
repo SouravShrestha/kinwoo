@@ -11,11 +11,9 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { AuthSheet } from "@/components/AuthSheet";
 import { Button } from "@/components/Button";
 import { landingImage, landingImageDark, logoTypedBlack, logoTypedWhite } from "@/lib/images";
+import { PRIVACY_URL, TERMS_URL } from "@/lib/legal";
 import { usePressGuard } from "@/lib/press-guard";
 import { useTheme } from "@/theme/ThemeProvider";
-
-const TERMS_URL = "https://kinwoo.cbsdev.me/legal/terms";
-const PRIVACY_URL = "https://kinwoo.cbsdev.me/legal/privacy";
 
 export default function LoginScreen() {
   const { isLoggedIn, ready, canSignInWithGoogle, signInWithGoogle } = useAuth();

@@ -36,6 +36,11 @@ function fontWeights({ addUtilities }) {
     if (weight === "700") continue;
     utilities[`.font-display-${WEIGHT_NAMES[weight]}`] = { fontFamily: face, fontWeight: weight };
   }
+  // Italic is a separate face on native, so it gets its own utility rather than `italic`.
+  utilities[".font-display-medium-italic"] = {
+    fontFamily: "Poppins_500Medium_Italic",
+    fontWeight: "500",
+  };
   addUtilities(utilities);
 }
 

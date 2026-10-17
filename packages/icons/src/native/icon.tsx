@@ -23,9 +23,13 @@ export function SvgIcon({
         <Path
           key={index}
           d={path.d}
-          fill={path.fill ?? color}
+          fill={path.lineWidth ? "none" : (path.fill ?? color)}
           fillRule={path.fillRule}
           clipRule={path.clipRule}
+          stroke={path.lineWidth || path.strokeWidth ? (path.fill ?? color) : undefined}
+          strokeWidth={path.lineWidth ?? path.strokeWidth}
+          strokeLinecap={path.lineWidth ? "round" : undefined}
+          strokeLinejoin={path.lineWidth || path.strokeWidth ? "round" : undefined}
         />
       ))}
     </Svg>

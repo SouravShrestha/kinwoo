@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 
 import { Pressable } from "./Pressable";
 
-export type ButtonVariant = "primary" | "outline" | "ghost" | "destructive";
+export type ButtonVariant = "primary" | "accent" | "outline" | "ghost" | "destructive";
 
 export function Button({
   label,
@@ -15,6 +15,8 @@ export function Button({
   allowDoublePress = false,
   icon,
   iconClassName = "mr-2.5",
+  iconEnd,
+  iconEndClassName = "ml-2.5",
   labelWeight = "medium",
   className,
   ...rest
@@ -27,6 +29,8 @@ export function Button({
   allowDoublePress?: boolean;
   icon?: ReactNode;
   iconClassName?: string;
+  iconEnd?: ReactNode;
+  iconEndClassName?: string;
   labelWeight?: "normal" | "medium";
   className?: string;
 } & Omit<PressableProps, "onPress" | "disabled" | "children" | "className">) {
@@ -37,20 +41,24 @@ export function Button({
   const container =
     variant === "primary"
       ? "bg-primary"
-      : variant === "outline"
-        ? "border border-border bg-transparent"
-        : variant === "destructive"
-          ? "border border-destructive bg-transparent"
-          : "bg-transparent";
+      : variant === "accent"
+        ? "bg-accent"
+        : variant === "outline"
+          ? "border border-border bg-transparent"
+          : variant === "destructive"
+            ? "border border-destructive bg-transparent"
+            : "bg-transparent";
 
   const text =
     variant === "primary"
       ? "text-primary-foreground"
-      : variant === "ghost"
-        ? "text-muted-foreground"
-        : variant === "destructive"
-          ? "text-destructive"
-          : "text-foreground";
+      : variant === "accent"
+        ? "text-accent-foreground"
+        : variant === "ghost"
+          ? "text-muted-foreground"
+          : variant === "destructive"
+            ? "text-destructive"
+            : "text-foreground";
 
   return (
     <Pressable
@@ -74,6 +82,7 @@ export function Button({
       >
         {label}
       </Text>
+      {iconEnd ? <View className={iconEndClassName}>{iconEnd}</View> : null}
     </Pressable>
   );
 }

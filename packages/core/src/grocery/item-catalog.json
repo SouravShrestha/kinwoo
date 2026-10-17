@@ -1,0 +1,2664 @@
+{
+  "Dairy": {
+    "fallback": {
+      "quantity": 500,
+      "unit": "g"
+    },
+    "items": {
+      "milk": {
+        "quantity": 1,
+        "unit": "L",
+        "aliases": [
+          "doodh",
+          "dudh",
+          "दूध",
+          "full cream",
+          "toned milk",
+          "double toned",
+          "skim",
+          "cow milk",
+          "buffalo milk",
+          "a2 milk"
+        ]
+      },
+      "plant milk": {
+        "quantity": 1,
+        "unit": "L",
+        "aliases": ["soy milk", "almond milk", "oat milk"]
+      },
+      "buttermilk": {
+        "quantity": 500,
+        "unit": "ml",
+        "aliases": ["chaas", "chhaas", "chhach", "mattha", "छाछ"]
+      },
+      "milkshake": {
+        "quantity": 500,
+        "unit": "ml",
+        "aliases": ["flavoured milk", "rose milk", "badam milk"]
+      },
+      "paneer": {
+        "quantity": 200,
+        "unit": "g",
+        "aliases": ["पनीर", "cottage cheese", "chhena"]
+      },
+      "cheese": {
+        "quantity": 200,
+        "unit": "g",
+        "aliases": [
+          "चीज़",
+          "cheese slices",
+          "cheese spread",
+          "mozzarella",
+          "cheddar",
+          "parmesan",
+          "processed cheese"
+        ]
+      },
+      "tofu": {
+        "quantity": 200,
+        "unit": "g",
+        "aliases": ["soya paneer"]
+      },
+      "khoya": {
+        "quantity": 200,
+        "unit": "g",
+        "aliases": ["mawa", "khova"]
+      },
+      "curd": {
+        "quantity": 500,
+        "unit": "g",
+        "aliases": ["dahi", "दही", "hung curd", "set curd"]
+      },
+      "shrikhand": {
+        "quantity": 500,
+        "unit": "g"
+      },
+      "yogurt": {
+        "quantity": 400,
+        "unit": "g",
+        "aliases": ["yoghurt", "greek yogurt", "greek yoghurt"]
+      },
+      "ghee": {
+        "quantity": 500,
+        "unit": "g",
+        "aliases": ["घी", "desi ghee", "cow ghee", "buffalo ghee", "clarified butter"]
+      },
+      "milk powder": {
+        "quantity": 500,
+        "unit": "g",
+        "aliases": ["dairy whitener"]
+      },
+      "butter": {
+        "quantity": 100,
+        "unit": "g",
+        "aliases": [
+          "makhan",
+          "makkhan",
+          "मक्खन",
+          "salted butter",
+          "unsalted butter",
+          "white butter"
+        ]
+      },
+      "margarine": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "cream": {
+        "quantity": 200,
+        "unit": "ml",
+        "aliases": ["malai", "मलाई", "fresh cream", "whipping cream", "sour cream"]
+      },
+      "condensed milk": {
+        "quantity": 400,
+        "unit": "g",
+        "aliases": ["milkmaid"]
+      },
+      "lassi": {
+        "quantity": 1,
+        "unit": "btl",
+        "aliases": ["sweet lassi"]
+      }
+    }
+  },
+  "Fruits": {
+    "fallback": {
+      "quantity": 1,
+      "unit": "kg"
+    },
+    "items": {
+      "apple": {
+        "quantity": 1,
+        "unit": "kg",
+        "aliases": ["seb", "सेब"]
+      },
+      "banana": {
+        "quantity": 1,
+        "unit": "dz",
+        "aliases": ["kela", "केला", "robusta banana", "elaichi kela"]
+      },
+      "raw banana": {
+        "quantity": 500,
+        "unit": "g",
+        "aliases": ["kaccha kela", "kacha kela", "plantain"]
+      },
+      "mango": {
+        "quantity": 1,
+        "unit": "kg",
+        "aliases": ["aam", "आम"]
+      },
+      "raw mango": {
+        "quantity": 500,
+        "unit": "g",
+        "aliases": ["kairi", "kacchi keri"]
+      },
+      "lemon": {
+        "quantity": 4,
+        "unit": "pc",
+        "aliases": ["lime", "nimbu", "nimboo", "नींबू", "kagzi nimbu"]
+      },
+      "orange": {
+        "quantity": 1,
+        "unit": "kg",
+        "aliases": ["santra", "narangi", "संतरा"]
+      },
+      "mosambi": {
+        "quantity": 1,
+        "unit": "kg",
+        "aliases": ["mausambi", "sweet lime"]
+      },
+      "pomegranate": {
+        "quantity": 1,
+        "unit": "kg",
+        "aliases": ["anar", "अनार"]
+      },
+      "papaya": {
+        "quantity": 1,
+        "unit": "kg",
+        "aliases": ["papita", "पपीता"]
+      },
+      "guava": {
+        "quantity": 1,
+        "unit": "kg",
+        "aliases": ["amrud", "अमरूद", "peru"]
+      },
+      "pear": {
+        "quantity": 1,
+        "unit": "kg",
+        "aliases": ["nashpati", "नाशपाती"]
+      },
+      "litchi": {
+        "quantity": 1,
+        "unit": "kg",
+        "aliases": ["lychee", "leechi"]
+      },
+      "jackfruit": {
+        "quantity": 1,
+        "unit": "kg",
+        "aliases": ["kathal", "कटहल"]
+      },
+      "chikoo": {
+        "quantity": 1,
+        "unit": "kg",
+        "aliases": ["chiku", "sapota", "sapodilla"]
+      },
+      "custard apple": {
+        "quantity": 1,
+        "unit": "kg",
+        "aliases": ["sitaphal", "sharifa"]
+      },
+      "amla": {
+        "quantity": 500,
+        "unit": "g",
+        "aliases": ["gooseberry", "आंवला", "awla"]
+      },
+      "jamun": {
+        "quantity": 500,
+        "unit": "g",
+        "aliases": ["java plum", "jambul"]
+      },
+      "grapes": {
+        "quantity": 500,
+        "unit": "g",
+        "aliases": ["angoor", "अंगूर", "green grapes", "black grapes"]
+      },
+      "ber": {
+        "quantity": 500,
+        "unit": "g",
+        "aliases": ["jujube", "bor"]
+      },
+      "watermelon": {
+        "quantity": 1,
+        "unit": "pc",
+        "aliases": ["tarbooz", "तरबूज"]
+      },
+      "muskmelon": {
+        "quantity": 1,
+        "unit": "pc",
+        "aliases": ["kharbuja", "melon", "cantaloupe"]
+      },
+      "pineapple": {
+        "quantity": 1,
+        "unit": "pc",
+        "aliases": ["ananas", "अनानास"]
+      },
+      "coconut": {
+        "quantity": 1,
+        "unit": "pc",
+        "aliases": ["nariyal", "नारियल", "dry coconut", "copra"]
+      },
+      "tender coconut": {
+        "quantity": 1,
+        "unit": "pc",
+        "aliases": ["daab", "elaneer"]
+      },
+      "dragon fruit": {
+        "quantity": 2,
+        "unit": "pc"
+      },
+      "avocado": {
+        "quantity": 2,
+        "unit": "pc"
+      },
+      "kiwi": {
+        "quantity": 4,
+        "unit": "pc"
+      },
+      "plum": {
+        "quantity": 4,
+        "unit": "pc",
+        "aliases": ["aloo bukhara"]
+      },
+      "peach": {
+        "quantity": 4,
+        "unit": "pc",
+        "aliases": ["aadu"]
+      },
+      "apricot": {
+        "quantity": 4,
+        "unit": "pc",
+        "aliases": ["khubani"]
+      },
+      "strawberry": {
+        "quantity": 250,
+        "unit": "g"
+      },
+      "cherry": {
+        "quantity": 250,
+        "unit": "g"
+      },
+      "fig": {
+        "quantity": 250,
+        "unit": "g",
+        "aliases": ["anjeer", "अंजीर"]
+      },
+      "cranberry": {
+        "quantity": 250,
+        "unit": "g"
+      },
+      "blackberry": {
+        "quantity": 250,
+        "unit": "g"
+      },
+      "blueberry": {
+        "quantity": 125,
+        "unit": "g",
+        "aliases": ["blueberries"]
+      },
+      "raspberry": {
+        "quantity": 125,
+        "unit": "g"
+      },
+      "fruits": {
+        "quantity": 1,
+        "unit": "kg",
+        "aliases": ["phal", "फल", "seasonal fruits"]
+      }
+    }
+  },
+  "Vegetables": {
+    "fallback": {
+      "quantity": 500,
+      "unit": "g"
+    },
+    "items": {
+      "onion": {
+        "quantity": 1,
+        "unit": "kg",
+        "aliases": ["pyaz", "pyaaz", "pyaj", "kanda", "प्याज", "प्याज़", "red onion"]
+      },
+      "spring onion": {
+        "quantity": 1,
+        "unit": "bn",
+        "aliases": ["hara pyaz", "scallion"]
+      },
+      "tomato": {
+        "quantity": 1,
+        "unit": "kg",
+        "aliases": ["tamatar", "टमाटर"]
+      },
+      "cherry tomato": {
+        "quantity": 250,
+        "unit": "g"
+      },
+      "potato": {
+        "quantity": 1,
+        "unit": "kg",
+        "aliases": ["aloo", "alu", "batata", "आलू"]
+      },
+      "sweet potato": {
+        "quantity": 1,
+        "unit": "kg",
+        "aliases": ["shakarkandi", "shakarkand"]
+      },
+      "garlic": {
+        "quantity": 100,
+        "unit": "g",
+        "aliases": ["lahsun", "lasun", "lehsun", "लहसुन"]
+      },
+      "ginger": {
+        "quantity": 100,
+        "unit": "g",
+        "aliases": ["adrak", "अदरक"]
+      },
+      "ginger garlic paste": {
+        "quantity": 100,
+        "unit": "g",
+        "aliases": ["adrak lahsun paste"]
+      },
+      "green chilli": {
+        "quantity": 100,
+        "unit": "g",
+        "aliases": ["green chili", "hari mirch", "हरी मिर्च"]
+      },
+      "raw turmeric": {
+        "quantity": 100,
+        "unit": "g",
+        "aliases": ["kachi haldi", "amba haldi"]
+      },
+      "lemongrass": {
+        "quantity": 1,
+        "unit": "bn",
+        "aliases": ["lemon grass"]
+      },
+      "spinach": {
+        "quantity": 1,
+        "unit": "bn",
+        "aliases": ["palak", "पालक"]
+      },
+      "coriander leaves": {
+        "quantity": 1,
+        "unit": "bn",
+        "aliases": [
+          "dhania",
+          "dhaniya patta",
+          "hara dhania",
+          "cilantro",
+          "kothimbir",
+          "धनिया पत्ती"
+        ]
+      },
+      "mint": {
+        "quantity": 1,
+        "unit": "bn",
+        "aliases": ["pudina", "पुदीना"]
+      },
+      "curry leaves": {
+        "quantity": 1,
+        "unit": "bn",
+        "aliases": ["curry patta", "kadi patta", "kadhi patta", "kari patta"]
+      },
+      "fenugreek leaves": {
+        "quantity": 1,
+        "unit": "bn",
+        "aliases": ["methi", "methi leaves", "मेथी"]
+      },
+      "dill": {
+        "quantity": 1,
+        "unit": "bn",
+        "aliases": ["suva", "sowa", "shepu"]
+      },
+      "mustard greens": {
+        "quantity": 1,
+        "unit": "bn",
+        "aliases": ["sarson", "sarson saag", "saag"]
+      },
+      "bathua": {
+        "quantity": 1,
+        "unit": "bn"
+      },
+      "amaranth": {
+        "quantity": 1,
+        "unit": "bn",
+        "aliases": ["chaulai", "thotakura"]
+      },
+      "parsley": {
+        "quantity": 1,
+        "unit": "bn"
+      },
+      "basil": {
+        "quantity": 1,
+        "unit": "bn",
+        "aliases": ["tulsi"]
+      },
+      "leafy vegetables": {
+        "quantity": 1,
+        "unit": "bn"
+      },
+      "carrot": {
+        "quantity": 500,
+        "unit": "g",
+        "aliases": ["gajar", "गाजर"]
+      },
+      "peas": {
+        "quantity": 500,
+        "unit": "g",
+        "aliases": ["matar", "mutter", "मटर", "green peas", "frozen peas"]
+      },
+      "brinjal": {
+        "quantity": 500,
+        "unit": "g",
+        "aliases": ["baingan", "बैंगन", "begun", "eggplant", "aubergine", "vangi"]
+      },
+      "okra": {
+        "quantity": 500,
+        "unit": "g",
+        "aliases": ["bhindi", "bhendi", "भिंडी", "ladyfinger", "lady finger"]
+      },
+      "bitter gourd": {
+        "quantity": 500,
+        "unit": "g",
+        "aliases": ["karela", "करेला"]
+      },
+      "bottle gourd": {
+        "quantity": 1,
+        "unit": "kg",
+        "aliases": ["lauki", "लौकी", "doodhi", "दूधी", "ghiya"]
+      },
+      "ridge gourd": {
+        "quantity": 500,
+        "unit": "g",
+        "aliases": ["turai", "tori", "torai"]
+      },
+      "sponge gourd": {
+        "quantity": 500,
+        "unit": "g"
+      },
+      "snake gourd": {
+        "quantity": 500,
+        "unit": "g",
+        "aliases": ["chichinda", "padwal"]
+      },
+      "ash gourd": {
+        "quantity": 500,
+        "unit": "g",
+        "aliases": ["petha", "kohla"]
+      },
+      "tinda": {
+        "quantity": 500,
+        "unit": "g",
+        "aliases": ["apple gourd"]
+      },
+      "ivy gourd": {
+        "quantity": 500,
+        "unit": "g",
+        "aliases": ["tindora", "kundru"]
+      },
+      "parwal": {
+        "quantity": 500,
+        "unit": "g",
+        "aliases": ["pointed gourd", "parval"]
+      },
+      "pumpkin": {
+        "quantity": 1,
+        "unit": "kg",
+        "aliases": ["kaddu", "kaddoo", "कद्दू"]
+      },
+      "cabbage": {
+        "quantity": 1,
+        "unit": "kg",
+        "aliases": ["patta gobhi", "pattagobhi", "band gobhi", "पत्तागोभी"]
+      },
+      "cauliflower": {
+        "quantity": 1,
+        "unit": "pc",
+        "aliases": ["gobi", "gobhi", "phool gobhi", "phulkopi", "फूलगोभी"]
+      },
+      "broccoli": {
+        "quantity": 1,
+        "unit": "pc"
+      },
+      "red cabbage": {
+        "quantity": 1,
+        "unit": "pc",
+        "aliases": ["purple cabbage"]
+      },
+      "kohlrabi": {
+        "quantity": 1,
+        "unit": "pc",
+        "aliases": ["knol khol", "ol kopi"]
+      },
+      "cluster beans": {
+        "quantity": 500,
+        "unit": "g",
+        "aliases": ["gavar", "guar", "gawar"]
+      },
+      "french beans": {
+        "quantity": 500,
+        "unit": "g",
+        "aliases": ["beans", "fansi", "farasbi", "green beans"]
+      },
+      "cucumber": {
+        "quantity": 500,
+        "unit": "g",
+        "aliases": ["kheera", "khira", "kakdi", "खीरा"]
+      },
+      "radish": {
+        "quantity": 500,
+        "unit": "g",
+        "aliases": ["mooli", "muli", "मूली"]
+      },
+      "beetroot": {
+        "quantity": 500,
+        "unit": "g",
+        "aliases": ["beet", "chukandar", "चुकंदर"]
+      },
+      "turnip": {
+        "quantity": 500,
+        "unit": "g",
+        "aliases": ["shalgam"]
+      },
+      "drumstick": {
+        "quantity": 500,
+        "unit": "g",
+        "aliases": ["sahjan", "saijan", "moringa", "shevga"]
+      },
+      "yam": {
+        "quantity": 500,
+        "unit": "g",
+        "aliases": ["suran", "jimikand", "elephant foot yam"]
+      },
+      "colocasia": {
+        "quantity": 500,
+        "unit": "g",
+        "aliases": ["arbi", "arvi"]
+      },
+      "raw papaya": {
+        "quantity": 500,
+        "unit": "g",
+        "aliases": ["kaccha papita"]
+      },
+      "lotus stem": {
+        "quantity": 500,
+        "unit": "g",
+        "aliases": ["kamal kakdi"]
+      },
+      "sprouts": {
+        "quantity": 500,
+        "unit": "g",
+        "aliases": ["moong sprouts"]
+      },
+      "mixed vegetables": {
+        "quantity": 500,
+        "unit": "g",
+        "aliases": ["vegetables", "veggies", "sabzi", "sabji", "सब्जी", "frozen vegetables"]
+      },
+      "capsicum": {
+        "quantity": 250,
+        "unit": "g",
+        "aliases": ["shimla mirch", "शिमला मिर्च", "bell pepper"]
+      },
+      "mushroom": {
+        "quantity": 250,
+        "unit": "g",
+        "aliases": ["mushrooms", "khumbi"]
+      },
+      "baby corn": {
+        "quantity": 250,
+        "unit": "g"
+      },
+      "zucchini": {
+        "quantity": 250,
+        "unit": "g"
+      },
+      "jalapeno": {
+        "quantity": 250,
+        "unit": "g"
+      },
+      "celery": {
+        "quantity": 250,
+        "unit": "g"
+      },
+      "leek": {
+        "quantity": 250,
+        "unit": "g"
+      },
+      "lettuce": {
+        "quantity": 250,
+        "unit": "g",
+        "aliases": ["iceberg", "salad patta"]
+      },
+      "bok choy": {
+        "quantity": 250,
+        "unit": "g"
+      },
+      "asparagus": {
+        "quantity": 250,
+        "unit": "g"
+      },
+      "kale": {
+        "quantity": 250,
+        "unit": "g"
+      },
+      "corn": {
+        "quantity": 2,
+        "unit": "pc",
+        "aliases": ["makka", "makkai", "bhutta", "sweet corn", "corn cob"]
+      }
+    }
+  },
+  "Staples": {
+    "fallback": {
+      "quantity": 1,
+      "unit": "kg"
+    },
+    "items": {
+      "rice": {
+        "quantity": 1,
+        "unit": "kg",
+        "aliases": [
+          "chawal",
+          "chaawal",
+          "चावल",
+          "basmati",
+          "basmati rice",
+          "sona masoori",
+          "idli rice",
+          "brown rice",
+          "parboiled rice",
+          "raw rice"
+        ]
+      },
+      "atta": {
+        "quantity": 5,
+        "unit": "kg",
+        "aliases": ["आटा", "aata", "wheat flour", "gehu atta", "chakki atta", "multigrain atta"]
+      },
+      "flour": {
+        "quantity": 1,
+        "unit": "kg",
+        "aliases": ["maida", "मैदा", "all purpose flour"]
+      },
+      "besan": {
+        "quantity": 1,
+        "unit": "kg",
+        "aliases": ["बेसन", "gram flour", "chickpea flour"]
+      },
+      "rice flour": {
+        "quantity": 1,
+        "unit": "kg",
+        "aliases": ["chawal ka atta"]
+      },
+      "corn flour": {
+        "quantity": 1,
+        "unit": "kg",
+        "aliases": ["cornflour", "corn starch"]
+      },
+      "maize flour": {
+        "quantity": 1,
+        "unit": "kg",
+        "aliases": ["makki atta", "makki ka atta", "makka atta"]
+      },
+      "jowar atta": {
+        "quantity": 1,
+        "unit": "kg",
+        "aliases": ["jowar flour", "sorghum flour"]
+      },
+      "bajra atta": {
+        "quantity": 1,
+        "unit": "kg",
+        "aliases": ["bajra flour", "pearl millet flour"]
+      },
+      "ragi atta": {
+        "quantity": 1,
+        "unit": "kg",
+        "aliases": ["ragi flour", "nachni", "finger millet flour"]
+      },
+      "sattu": {
+        "quantity": 1,
+        "unit": "kg"
+      },
+      "custard powder": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "dal": {
+        "quantity": 1,
+        "unit": "kg",
+        "aliases": ["daal", "दाल", "pulses", "lentils"]
+      },
+      "toor dal": {
+        "quantity": 1,
+        "unit": "kg",
+        "aliases": ["tur dal", "tuvar", "arhar", "arhar dal", "pigeon pea"]
+      },
+      "moong dal": {
+        "quantity": 1,
+        "unit": "kg",
+        "aliases": ["mung dal", "moong", "green gram", "sabut moong", "whole moong"]
+      },
+      "masoor dal": {
+        "quantity": 1,
+        "unit": "kg",
+        "aliases": ["masoor", "red lentils"]
+      },
+      "chana dal": {
+        "quantity": 1,
+        "unit": "kg",
+        "aliases": ["chana", "bengal gram"]
+      },
+      "urad dal": {
+        "quantity": 1,
+        "unit": "kg",
+        "aliases": ["urad", "black gram"]
+      },
+      "lobia": {
+        "quantity": 1,
+        "unit": "kg",
+        "aliases": ["black eyed peas", "chawli"]
+      },
+      "rajma": {
+        "quantity": 1,
+        "unit": "kg",
+        "aliases": ["राजमा", "kidney beans"]
+      },
+      "chole": {
+        "quantity": 1,
+        "unit": "kg",
+        "aliases": ["chhole", "kabuli chana", "chickpeas", "safed chana"]
+      },
+      "kala chana": {
+        "quantity": 1,
+        "unit": "kg",
+        "aliases": ["black chickpeas"]
+      },
+      "dalia": {
+        "quantity": 1,
+        "unit": "kg",
+        "aliases": ["daliya", "broken wheat"]
+      },
+      "poha": {
+        "quantity": 1,
+        "unit": "kg",
+        "aliases": ["pohe", "flattened rice"]
+      },
+      "murmura": {
+        "quantity": 500,
+        "unit": "g",
+        "aliases": ["muri", "kurmura", "puffed rice"]
+      },
+      "sabudana": {
+        "quantity": 500,
+        "unit": "g",
+        "aliases": ["sago", "tapioca pearls"]
+      },
+      "semolina": {
+        "quantity": 1,
+        "unit": "kg",
+        "aliases": ["sooji", "suji", "rava", "rawa"]
+      },
+      "millet": {
+        "quantity": 1,
+        "unit": "kg",
+        "aliases": ["millets", "jowar", "bajra", "ragi", "foxtail millet"]
+      },
+      "quinoa": {
+        "quantity": 500,
+        "unit": "g"
+      },
+      "oats": {
+        "quantity": 1,
+        "unit": "p",
+        "aliases": ["rolled oats", "instant oats"]
+      },
+      "muesli": {
+        "quantity": 1,
+        "unit": "p",
+        "aliases": ["granola"]
+      },
+      "cornflakes": {
+        "quantity": 1,
+        "unit": "p",
+        "aliases": ["corn flakes", "chocos"]
+      },
+      "sugar": {
+        "quantity": 1,
+        "unit": "kg",
+        "aliases": ["chini", "cheeni", "चीनी", "shakkar"]
+      },
+      "brown sugar": {
+        "quantity": 1,
+        "unit": "kg"
+      },
+      "icing sugar": {
+        "quantity": 500,
+        "unit": "g",
+        "aliases": ["powdered sugar"]
+      },
+      "mishri": {
+        "quantity": 500,
+        "unit": "g",
+        "aliases": ["rock sugar"]
+      },
+      "jaggery": {
+        "quantity": 1,
+        "unit": "kg",
+        "aliases": ["gur", "gud", "gul", "गुड़"]
+      },
+      "salt": {
+        "quantity": 1,
+        "unit": "kg",
+        "aliases": ["namak", "नमक", "tata salt", "iodized salt"]
+      },
+      "rock salt": {
+        "quantity": 1,
+        "unit": "kg",
+        "aliases": ["sendha namak", "sendha"]
+      },
+      "cooking oil": {
+        "quantity": 1,
+        "unit": "L",
+        "aliases": [
+          "oil",
+          "tel",
+          "तेल",
+          "refined oil",
+          "vegetable oil",
+          "sunflower oil",
+          "soybean oil",
+          "rice bran oil",
+          "vanaspati"
+        ]
+      },
+      "mustard oil": {
+        "quantity": 1,
+        "unit": "L",
+        "aliases": ["sarson ka tel", "sarso tel", "kachi ghani"]
+      },
+      "groundnut oil": {
+        "quantity": 1,
+        "unit": "L",
+        "aliases": ["peanut oil", "moongfali tel"]
+      },
+      "coconut oil": {
+        "quantity": 1,
+        "unit": "L",
+        "aliases": ["nariyal tel"]
+      },
+      "sesame oil": {
+        "quantity": 500,
+        "unit": "ml",
+        "aliases": ["til oil", "til ka tel", "gingelly oil"]
+      },
+      "olive oil": {
+        "quantity": 500,
+        "unit": "ml"
+      },
+      "vinegar": {
+        "quantity": 500,
+        "unit": "ml",
+        "aliases": ["sirka"]
+      },
+      "soy sauce": {
+        "quantity": 500,
+        "unit": "ml",
+        "aliases": ["soya sauce"]
+      },
+      "chilli sauce": {
+        "quantity": 500,
+        "unit": "ml",
+        "aliases": ["schezwan sauce", "hot sauce"]
+      },
+      "rose water": {
+        "quantity": 100,
+        "unit": "ml",
+        "aliases": ["gulab jal"]
+      },
+      "vanilla essence": {
+        "quantity": 50,
+        "unit": "ml"
+      },
+      "food colour": {
+        "quantity": 1,
+        "unit": "p",
+        "aliases": ["food color"]
+      },
+      "ketchup": {
+        "quantity": 1,
+        "unit": "btl",
+        "aliases": ["tomato ketchup", "tomato sauce"]
+      },
+      "mayonnaise": {
+        "quantity": 1,
+        "unit": "btl",
+        "aliases": ["mayo"]
+      },
+      "honey": {
+        "quantity": 1,
+        "unit": "btl",
+        "aliases": ["shahad", "शहद"]
+      },
+      "jam": {
+        "quantity": 1,
+        "unit": "btl",
+        "aliases": ["fruit jam", "marmalade"]
+      },
+      "pickle": {
+        "quantity": 1,
+        "unit": "btl",
+        "aliases": ["achar", "achaar", "अचार"]
+      },
+      "chutney": {
+        "quantity": 1,
+        "unit": "btl"
+      },
+      "peanut butter": {
+        "quantity": 1,
+        "unit": "btl"
+      },
+      "chocolate spread": {
+        "quantity": 1,
+        "unit": "btl",
+        "aliases": ["nutella"]
+      },
+      "syrup": {
+        "quantity": 1,
+        "unit": "btl"
+      },
+      "pasta sauce": {
+        "quantity": 1,
+        "unit": "btl",
+        "aliases": ["pizza sauce"]
+      },
+      "noodles": {
+        "quantity": 1,
+        "unit": "p",
+        "aliases": ["maggi", "instant noodles", "hakka noodles"]
+      },
+      "pasta": {
+        "quantity": 1,
+        "unit": "p",
+        "aliases": ["macaroni", "spaghetti", "penne"]
+      },
+      "vermicelli": {
+        "quantity": 1,
+        "unit": "p",
+        "aliases": ["sewai", "seviyan", "semiya", "सेवई"]
+      },
+      "papad": {
+        "quantity": 1,
+        "unit": "p",
+        "aliases": ["papadum", "appalam", "pappad"]
+      },
+      "soup": {
+        "quantity": 1,
+        "unit": "p",
+        "aliases": ["soup powder"]
+      },
+      "jelly": {
+        "quantity": 1,
+        "unit": "p"
+      },
+      "chia seeds": {
+        "quantity": 250,
+        "unit": "g",
+        "aliases": ["chia", "sabja"]
+      },
+      "flax seeds": {
+        "quantity": 250,
+        "unit": "g",
+        "aliases": ["flaxseed", "alsi", "अलसी"]
+      },
+      "pumpkin seeds": {
+        "quantity": 250,
+        "unit": "g"
+      },
+      "sunflower seeds": {
+        "quantity": 250,
+        "unit": "g"
+      },
+      "magaz": {
+        "quantity": 100,
+        "unit": "g",
+        "aliases": ["melon seeds", "char magaz"]
+      },
+      "peanuts": {
+        "quantity": 500,
+        "unit": "g",
+        "aliases": ["moongfali", "मूंगफली", "groundnut", "singdana"]
+      },
+      "roasted chana": {
+        "quantity": 500,
+        "unit": "g",
+        "aliases": ["bhuna chana", "bhuna chane", "phutana"]
+      },
+      "makhana": {
+        "quantity": 250,
+        "unit": "g",
+        "aliases": ["makhane", "fox nuts", "lotus seeds"]
+      },
+      "desiccated coconut": {
+        "quantity": 250,
+        "unit": "g",
+        "aliases": ["coconut powder"]
+      },
+      "dry fruits": {
+        "quantity": 500,
+        "unit": "g",
+        "aliases": ["mewa", "meva", "मेवा", "mixed nuts"]
+      },
+      "soya chunks": {
+        "quantity": 500,
+        "unit": "g",
+        "aliases": ["soy chunks", "meal maker", "nutrela"]
+      },
+      "almond": {
+        "quantity": 250,
+        "unit": "g",
+        "aliases": ["almonds", "badam", "बादाम"]
+      },
+      "cashew": {
+        "quantity": 250,
+        "unit": "g",
+        "aliases": ["cashews", "kaju", "काजू"]
+      },
+      "raisin": {
+        "quantity": 250,
+        "unit": "g",
+        "aliases": ["raisins", "kishmish", "किशमिश"]
+      },
+      "walnut": {
+        "quantity": 250,
+        "unit": "g",
+        "aliases": ["akhrot", "अखरोट"]
+      },
+      "pistachio": {
+        "quantity": 250,
+        "unit": "g",
+        "aliases": ["pista"]
+      },
+      "dates": {
+        "quantity": 500,
+        "unit": "g",
+        "aliases": ["khajoor", "khajur", "खजूर"]
+      },
+      "prunes": {
+        "quantity": 250,
+        "unit": "g"
+      },
+      "chironji": {
+        "quantity": 100,
+        "unit": "g",
+        "aliases": ["charoli"]
+      },
+      "pine nuts": {
+        "quantity": 100,
+        "unit": "g",
+        "aliases": ["chilgoza"]
+      },
+      "baking soda": {
+        "quantity": 100,
+        "unit": "g",
+        "aliases": ["meetha soda", "cooking soda"]
+      },
+      "baking powder": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "yeast": {
+        "quantity": 1,
+        "unit": "p"
+      },
+      "eno": {
+        "quantity": 1,
+        "unit": "p",
+        "aliases": ["fruit salt"]
+      },
+      "cocoa powder": {
+        "quantity": 100,
+        "unit": "g",
+        "aliases": ["cocoa"]
+      },
+      "chocolate chips": {
+        "quantity": 200,
+        "unit": "g",
+        "aliases": ["cooking chocolate"]
+      },
+      "citric acid": {
+        "quantity": 100,
+        "unit": "g",
+        "aliases": ["nimbu satt"]
+      },
+      "gelatin": {
+        "quantity": 1,
+        "unit": "p",
+        "aliases": ["agar agar", "china grass"]
+      }
+    }
+  },
+  "Spices": {
+    "fallback": {
+      "quantity": 100,
+      "unit": "g"
+    },
+    "items": {
+      "masala": {
+        "quantity": 100,
+        "unit": "g",
+        "aliases": ["मसाला", "spice mix", "seasoning", "whole spices", "khada masala"]
+      },
+      "garam masala": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "chaat masala": {
+        "quantity": 100,
+        "unit": "g",
+        "aliases": ["chat masala"]
+      },
+      "chana masala": {
+        "quantity": 100,
+        "unit": "g",
+        "aliases": ["chole masala", "chhole masala"]
+      },
+      "sambar masala": {
+        "quantity": 100,
+        "unit": "g",
+        "aliases": ["sambhar masala", "sambar powder"]
+      },
+      "rasam powder": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "pav bhaji masala": {
+        "quantity": 100,
+        "unit": "g",
+        "aliases": ["bhaji masala"]
+      },
+      "biryani masala": {
+        "quantity": 100,
+        "unit": "g",
+        "aliases": ["pulao masala"]
+      },
+      "kitchen king": {
+        "quantity": 100,
+        "unit": "g",
+        "aliases": ["sabzi masala", "sabji masala"]
+      },
+      "meat masala": {
+        "quantity": 100,
+        "unit": "g",
+        "aliases": ["mutton masala", "chicken masala", "fish masala", "tandoori masala"]
+      },
+      "paneer masala": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "rajma masala": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "goda masala": {
+        "quantity": 100,
+        "unit": "g",
+        "aliases": ["kala masala"]
+      },
+      "tea masala": {
+        "quantity": 100,
+        "unit": "g",
+        "aliases": ["chai masala", "chai ka masala"]
+      },
+      "curry powder": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "kasuri methi": {
+        "quantity": 50,
+        "unit": "g",
+        "aliases": ["kasoori methi", "dried fenugreek"]
+      },
+      "jaljeera": {
+        "quantity": 100,
+        "unit": "g",
+        "aliases": ["jal jeera"]
+      },
+      "amchur": {
+        "quantity": 100,
+        "unit": "g",
+        "aliases": ["amchoor", "aamchur", "mango powder"]
+      },
+      "anardana": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "black salt": {
+        "quantity": 100,
+        "unit": "g",
+        "aliases": ["kala namak"]
+      },
+      "oregano": {
+        "quantity": 50,
+        "unit": "g",
+        "aliases": ["mixed herbs", "italian seasoning", "thyme"]
+      },
+      "chilli flakes": {
+        "quantity": 50,
+        "unit": "g",
+        "aliases": ["chili flakes"]
+      },
+      "paprika": {
+        "quantity": 50,
+        "unit": "g"
+      },
+      "turmeric": {
+        "quantity": 100,
+        "unit": "g",
+        "aliases": ["haldi", "हल्दी", "turmeric powder", "haldi powder"]
+      },
+      "chilli": {
+        "quantity": 100,
+        "unit": "g",
+        "aliases": [
+          "chili",
+          "mirch",
+          "मिर्च",
+          "red chilli",
+          "lal mirch",
+          "लाल मिर्च",
+          "chilli powder",
+          "chili powder",
+          "mirch powder"
+        ]
+      },
+      "kashmiri chilli": {
+        "quantity": 100,
+        "unit": "g",
+        "aliases": ["kashmiri mirch", "कश्मीरी मिर्च"]
+      },
+      "dry red chilli": {
+        "quantity": 100,
+        "unit": "g",
+        "aliases": ["sabut lal mirch", "sukhi mirch", "dried red chilli"]
+      },
+      "jeera": {
+        "quantity": 100,
+        "unit": "g",
+        "aliases": ["जीरा", "cumin", "zeera", "jira", "cumin seeds", "jeera powder"]
+      },
+      "shahi jeera": {
+        "quantity": 50,
+        "unit": "g",
+        "aliases": ["black cumin", "kala jeera", "caraway"]
+      },
+      "coriander": {
+        "quantity": 100,
+        "unit": "g",
+        "aliases": [
+          "dhania powder",
+          "dhaniya powder",
+          "coriander powder",
+          "coriander seeds",
+          "sabut dhania"
+        ]
+      },
+      "black pepper": {
+        "quantity": 100,
+        "unit": "g",
+        "aliases": ["kali mirch", "काली मिर्च", "peppercorn", "pepper", "pepper powder"]
+      },
+      "white pepper": {
+        "quantity": 50,
+        "unit": "g",
+        "aliases": ["safed mirch"]
+      },
+      "cloves": {
+        "quantity": 50,
+        "unit": "g",
+        "aliases": ["clove", "laung", "lavang", "लौंग"]
+      },
+      "cinnamon": {
+        "quantity": 50,
+        "unit": "g",
+        "aliases": ["dalchini", "दालचीनी"]
+      },
+      "bay leaf": {
+        "quantity": 50,
+        "unit": "g",
+        "aliases": ["tej patta", "tejpatta"]
+      },
+      "mustard seeds": {
+        "quantity": 100,
+        "unit": "g",
+        "aliases": ["mustard", "rai", "sarson dana", "सरसों"]
+      },
+      "fenugreek seeds": {
+        "quantity": 100,
+        "unit": "g",
+        "aliases": ["methi dana", "methi seeds"]
+      },
+      "fennel": {
+        "quantity": 100,
+        "unit": "g",
+        "aliases": ["saunf", "सौंफ", "fennel seeds", "badi saunf"]
+      },
+      "mukhwas": {
+        "quantity": 100,
+        "unit": "g",
+        "aliases": ["mouth freshener"]
+      },
+      "ajwain": {
+        "quantity": 100,
+        "unit": "g",
+        "aliases": ["ajwan", "omam", "carom seeds"]
+      },
+      "nigella": {
+        "quantity": 50,
+        "unit": "g",
+        "aliases": ["kalonji", "kalaunji", "black seeds"]
+      },
+      "poppy seeds": {
+        "quantity": 50,
+        "unit": "g",
+        "aliases": ["khus khus", "khuskhus", "posto"]
+      },
+      "sesame": {
+        "quantity": 100,
+        "unit": "g",
+        "aliases": ["sesame seeds", "til", "तिल", "white sesame", "black sesame"]
+      },
+      "star anise": {
+        "quantity": 50,
+        "unit": "g",
+        "aliases": ["chakri phool"]
+      },
+      "nutmeg": {
+        "quantity": 50,
+        "unit": "g",
+        "aliases": ["jaiphal", "jayphal"]
+      },
+      "mace": {
+        "quantity": 20,
+        "unit": "g",
+        "aliases": ["javitri"]
+      },
+      "ginger powder": {
+        "quantity": 100,
+        "unit": "g",
+        "aliases": ["sonth", "saunth", "dried ginger"]
+      },
+      "garlic powder": {
+        "quantity": 100,
+        "unit": "g",
+        "aliases": ["lahsun powder"]
+      },
+      "onion powder": {
+        "quantity": 100,
+        "unit": "g",
+        "aliases": ["pyaz powder"]
+      },
+      "cardamom": {
+        "quantity": 50,
+        "unit": "g",
+        "aliases": [
+          "elaichi",
+          "ilaichi",
+          "इलायची",
+          "green cardamom",
+          "choti elaichi",
+          "cardamom powder"
+        ]
+      },
+      "black cardamom": {
+        "quantity": 50,
+        "unit": "g",
+        "aliases": ["badi elaichi", "kali elaichi"]
+      },
+      "hing": {
+        "quantity": 50,
+        "unit": "g",
+        "aliases": ["heeng", "हींग", "asafoetida", "hing powder"]
+      },
+      "saffron": {
+        "quantity": 1,
+        "unit": "g",
+        "aliases": ["kesar", "केसर", "zafran"]
+      },
+      "gond": {
+        "quantity": 100,
+        "unit": "g",
+        "aliases": ["gond katira", "edible gum"]
+      },
+      "gulkand": {
+        "quantity": 250,
+        "unit": "g"
+      },
+      "imli": {
+        "quantity": 250,
+        "unit": "g",
+        "aliases": ["इमली", "tamarind", "tamarind paste"]
+      },
+      "kokum": {
+        "quantity": 100,
+        "unit": "g",
+        "aliases": ["kokam", "aamsul"]
+      }
+    }
+  },
+  "Meat & Fish": {
+    "fallback": {
+      "quantity": 500,
+      "unit": "g"
+    },
+    "items": {
+      "chicken": {
+        "quantity": 500,
+        "unit": "g",
+        "aliases": [
+          "murgi",
+          "murga",
+          "मुर्गा",
+          "chicken breast",
+          "chicken leg",
+          "chicken thigh",
+          "chicken wings",
+          "chicken curry cut",
+          "curry cut",
+          "boneless chicken",
+          "country chicken",
+          "desi chicken"
+        ]
+      },
+      "chicken liver": {
+        "quantity": 500,
+        "unit": "g",
+        "aliases": ["kaleji"]
+      },
+      "mutton": {
+        "quantity": 500,
+        "unit": "g",
+        "aliases": ["gosht", "मटन", "goat", "goat meat", "bakra", "lamb", "mutton chops", "chaap"]
+      },
+      "keema": {
+        "quantity": 500,
+        "unit": "g",
+        "aliases": ["qeema", "kheema", "कीमा", "mince", "minced meat"]
+      },
+      "beef": {
+        "quantity": 500,
+        "unit": "g",
+        "aliases": ["buffalo meat"]
+      },
+      "pork": {
+        "quantity": 500,
+        "unit": "g"
+      },
+      "bacon": {
+        "quantity": 200,
+        "unit": "g",
+        "aliases": ["ham"]
+      },
+      "sausage": {
+        "quantity": 250,
+        "unit": "g",
+        "aliases": ["sausages", "salami"]
+      },
+      "turkey": {
+        "quantity": 500,
+        "unit": "g",
+        "aliases": ["duck"]
+      },
+      "fish": {
+        "quantity": 500,
+        "unit": "g",
+        "aliases": ["machli", "machhi", "मछली", "maach", "meen", "fish fillet", "fish curry cut"]
+      },
+      "pomfret": {
+        "quantity": 500,
+        "unit": "g",
+        "aliases": ["paplet"]
+      },
+      "surmai": {
+        "quantity": 500,
+        "unit": "g",
+        "aliases": ["kingfish", "seer fish", "vanjaram"]
+      },
+      "rohu": {
+        "quantity": 500,
+        "unit": "g",
+        "aliases": ["katla", "catla"]
+      },
+      "hilsa": {
+        "quantity": 500,
+        "unit": "g",
+        "aliases": ["ilish"]
+      },
+      "bhetki": {
+        "quantity": 500,
+        "unit": "g",
+        "aliases": ["barramundi"]
+      },
+      "mackerel": {
+        "quantity": 500,
+        "unit": "g",
+        "aliases": ["bangda", "ayala"]
+      },
+      "sardine": {
+        "quantity": 500,
+        "unit": "g",
+        "aliases": ["mathi", "chala"]
+      },
+      "bombil": {
+        "quantity": 500,
+        "unit": "g",
+        "aliases": ["bombay duck"]
+      },
+      "salmon": {
+        "quantity": 500,
+        "unit": "g"
+      },
+      "tuna": {
+        "quantity": 500,
+        "unit": "g"
+      },
+      "basa": {
+        "quantity": 500,
+        "unit": "g",
+        "aliases": ["tilapia"]
+      },
+      "crab": {
+        "quantity": 500,
+        "unit": "g",
+        "aliases": ["kekda", "kekra", "nandu"]
+      },
+      "squid": {
+        "quantity": 500,
+        "unit": "g",
+        "aliases": ["calamari"]
+      },
+      "seafood": {
+        "quantity": 500,
+        "unit": "g",
+        "aliases": ["sea food"]
+      },
+      "dried fish": {
+        "quantity": 250,
+        "unit": "g",
+        "aliases": ["sukha machli", "sukka bombil"]
+      },
+      "prawn": {
+        "quantity": 250,
+        "unit": "g",
+        "aliases": [
+          "prawns",
+          "jhinga",
+          "jheenga",
+          "झींगा",
+          "shrimp",
+          "shrimps",
+          "tiger prawn",
+          "king prawn",
+          "kolambi",
+          "chingri"
+        ]
+      },
+      "lobster": {
+        "quantity": 500,
+        "unit": "g"
+      },
+      "egg": {
+        "quantity": 1,
+        "unit": "dz",
+        "aliases": [
+          "eggs",
+          "anda",
+          "ande",
+          "अंडा",
+          "अंडे",
+          "egg tray",
+          "country eggs",
+          "desi eggs",
+          "brown eggs",
+          "white eggs"
+        ]
+      },
+      "quail eggs": {
+        "quantity": 1,
+        "unit": "dz"
+      }
+    }
+  },
+  "Bakery": {
+    "fallback": {
+      "quantity": 1,
+      "unit": "p"
+    },
+    "items": {
+      "bread": {
+        "quantity": 1,
+        "unit": "p",
+        "aliases": [
+          "double roti",
+          "ब्रेड",
+          "brown bread",
+          "white bread",
+          "sandwich bread",
+          "multigrain bread",
+          "toast"
+        ]
+      },
+      "pav": {
+        "quantity": 1,
+        "unit": "p",
+        "aliases": ["paav", "पाव", "ladi pav"]
+      },
+      "bun": {
+        "quantity": 1,
+        "unit": "p",
+        "aliases": ["buns", "burger bun", "bun maska"]
+      },
+      "rusk": {
+        "quantity": 1,
+        "unit": "p",
+        "aliases": ["toast rusk"]
+      },
+      "roti": {
+        "quantity": 1,
+        "unit": "p",
+        "aliases": ["chapati", "chapatti", "phulka", "रोटी", "tawa roti"]
+      },
+      "paratha": {
+        "quantity": 1,
+        "unit": "p",
+        "aliases": ["parantha", "frozen paratha", "lachha paratha"]
+      },
+      "naan": {
+        "quantity": 1,
+        "unit": "p",
+        "aliases": ["nan", "butter naan"]
+      },
+      "kulcha": {
+        "quantity": 1,
+        "unit": "p",
+        "aliases": ["kulche"]
+      },
+      "puri": {
+        "quantity": 1,
+        "unit": "p",
+        "aliases": ["poori"]
+      },
+      "bhatura": {
+        "quantity": 1,
+        "unit": "p",
+        "aliases": ["bhature"]
+      },
+      "thepla": {
+        "quantity": 1,
+        "unit": "p"
+      },
+      "pizza base": {
+        "quantity": 1,
+        "unit": "p",
+        "aliases": ["pizza crust"]
+      },
+      "pita": {
+        "quantity": 1,
+        "unit": "p",
+        "aliases": ["pita bread"]
+      },
+      "tortilla": {
+        "quantity": 1,
+        "unit": "p",
+        "aliases": ["wrap", "wraps"]
+      },
+      "garlic bread": {
+        "quantity": 1,
+        "unit": "p"
+      },
+      "bagel": {
+        "quantity": 1,
+        "unit": "p"
+      },
+      "croissant": {
+        "quantity": 1,
+        "unit": "p"
+      },
+      "baguette": {
+        "quantity": 1,
+        "unit": "p",
+        "aliases": ["sourdough"]
+      },
+      "puff": {
+        "quantity": 1,
+        "unit": "p",
+        "aliases": ["khari", "veg puff", "egg puff", "patties"]
+      },
+      "cake": {
+        "quantity": 1,
+        "unit": "pc",
+        "aliases": ["केक", "birthday cake", "plum cake", "black forest", "cream cake", "cake slice"]
+      },
+      "pastry": {
+        "quantity": 1,
+        "unit": "pc",
+        "aliases": ["pastries", "eclair"]
+      },
+      "cupcake": {
+        "quantity": 1,
+        "unit": "pc",
+        "aliases": ["muffin"]
+      },
+      "brownie": {
+        "quantity": 1,
+        "unit": "pc"
+      },
+      "donut": {
+        "quantity": 1,
+        "unit": "pc",
+        "aliases": ["doughnut"]
+      },
+      "cheesecake": {
+        "quantity": 1,
+        "unit": "pc"
+      },
+      "swiss roll": {
+        "quantity": 1,
+        "unit": "pc"
+      },
+      "pizza": {
+        "quantity": 1,
+        "unit": "pc"
+      },
+      "burger": {
+        "quantity": 1,
+        "unit": "pc"
+      },
+      "sandwich": {
+        "quantity": 1,
+        "unit": "pc"
+      },
+      "macaron": {
+        "quantity": 1,
+        "unit": "pc",
+        "aliases": ["waffle"]
+      }
+    }
+  },
+  "Snacks": {
+    "fallback": {
+      "quantity": 1,
+      "unit": "p"
+    },
+    "items": {
+      "biscuit": {
+        "quantity": 1,
+        "unit": "p",
+        "aliases": ["biscuits", "बिस्किट", "cookies", "cookie"]
+      },
+      "parle g": {
+        "quantity": 1,
+        "unit": "p",
+        "aliases": ["parle-g", "glucose biscuit"]
+      },
+      "marie": {
+        "quantity": 1,
+        "unit": "p",
+        "aliases": ["marie gold"]
+      },
+      "good day": {
+        "quantity": 1,
+        "unit": "p",
+        "aliases": ["butter cookies"]
+      },
+      "bourbon": {
+        "quantity": 1,
+        "unit": "p",
+        "aliases": ["oreo", "cream biscuit"]
+      },
+      "jim jam": {
+        "quantity": 1,
+        "unit": "p",
+        "aliases": ["hide and seek"]
+      },
+      "digestive": {
+        "quantity": 1,
+        "unit": "p"
+      },
+      "nankhatai": {
+        "quantity": 1,
+        "unit": "p",
+        "aliases": ["nan khatai"]
+      },
+      "crackers": {
+        "quantity": 1,
+        "unit": "p",
+        "aliases": ["monaco", "cream cracker"]
+      },
+      "chips": {
+        "quantity": 1,
+        "unit": "p",
+        "aliases": [
+          "चिप्स",
+          "potato chips",
+          "lays",
+          "pringles",
+          "nachos",
+          "wafers",
+          "banana chips",
+          "kurkure"
+        ]
+      },
+      "popcorn": {
+        "quantity": 1,
+        "unit": "p",
+        "aliases": ["pop corn"]
+      },
+      "granola bar": {
+        "quantity": 1,
+        "unit": "p",
+        "aliases": ["protein bar", "energy bar"]
+      },
+      "candy": {
+        "quantity": 1,
+        "unit": "p",
+        "aliases": ["toffee", "टॉफी", "lollipop"]
+      },
+      "chewing gum": {
+        "quantity": 1,
+        "unit": "p",
+        "aliases": ["gum", "bubble gum"]
+      },
+      "mints": {
+        "quantity": 1,
+        "unit": "p",
+        "aliases": ["polo", "mentos"]
+      },
+      "gummies": {
+        "quantity": 1,
+        "unit": "p",
+        "aliases": ["jelly beans"]
+      },
+      "samosa": {
+        "quantity": 1,
+        "unit": "p"
+      },
+      "namkeen": {
+        "quantity": 200,
+        "unit": "g",
+        "aliases": [
+          "नमकीन",
+          "mixture",
+          "navratan mixture",
+          "dal moth",
+          "chana jor garam",
+          "masala peanuts"
+        ]
+      },
+      "bhujia": {
+        "quantity": 200,
+        "unit": "g",
+        "aliases": ["aloo bhujia", "bikaneri bhujia", "sev"]
+      },
+      "gathiya": {
+        "quantity": 200,
+        "unit": "g",
+        "aliases": ["fafda"]
+      },
+      "chakli": {
+        "quantity": 200,
+        "unit": "g",
+        "aliases": ["murukku"]
+      },
+      "mathri": {
+        "quantity": 200,
+        "unit": "g",
+        "aliases": ["namak para", "namak pare", "shakkar para"]
+      },
+      "bhel": {
+        "quantity": 200,
+        "unit": "g",
+        "aliases": ["chivda", "chiwda"]
+      },
+      "bhakarwadi": {
+        "quantity": 200,
+        "unit": "g"
+      },
+      "kachori": {
+        "quantity": 200,
+        "unit": "g"
+      },
+      "sweets": {
+        "quantity": 500,
+        "unit": "g",
+        "aliases": ["mithai", "मिठाई"]
+      },
+      "gulab jamun": {
+        "quantity": 500,
+        "unit": "g"
+      },
+      "rasgulla": {
+        "quantity": 500,
+        "unit": "g",
+        "aliases": ["rasagulla"]
+      },
+      "jalebi": {
+        "quantity": 250,
+        "unit": "g"
+      },
+      "barfi": {
+        "quantity": 500,
+        "unit": "g",
+        "aliases": ["burfi"]
+      },
+      "peda": {
+        "quantity": 500,
+        "unit": "g"
+      },
+      "ladoo": {
+        "quantity": 500,
+        "unit": "g",
+        "aliases": ["laddu", "लड्डू"]
+      },
+      "halwa": {
+        "quantity": 500,
+        "unit": "g"
+      },
+      "soan papdi": {
+        "quantity": 250,
+        "unit": "g"
+      },
+      "rewri": {
+        "quantity": 200,
+        "unit": "g",
+        "aliases": ["revdi", "gajak"]
+      },
+      "chikki": {
+        "quantity": 200,
+        "unit": "g"
+      },
+      "kaju katli": {
+        "quantity": 250,
+        "unit": "g",
+        "aliases": ["kaju barfi"]
+      },
+      "chocolate": {
+        "quantity": 1,
+        "unit": "pc",
+        "aliases": ["चॉकलेट", "chocolate bar", "dark chocolate"]
+      },
+      "dairy milk": {
+        "quantity": 1,
+        "unit": "pc",
+        "aliases": ["cadbury"]
+      },
+      "5 star": {
+        "quantity": 1,
+        "unit": "pc",
+        "aliases": ["five star"]
+      },
+      "kitkat": {
+        "quantity": 1,
+        "unit": "pc",
+        "aliases": ["kit kat"]
+      },
+      "munch": {
+        "quantity": 1,
+        "unit": "pc"
+      },
+      "perk": {
+        "quantity": 1,
+        "unit": "pc"
+      },
+      "snickers": {
+        "quantity": 1,
+        "unit": "pc"
+      },
+      "ferrero rocher": {
+        "quantity": 1,
+        "unit": "pc"
+      },
+      "kinder joy": {
+        "quantity": 1,
+        "unit": "pc",
+        "aliases": ["kinderjoy"]
+      },
+      "ice cream": {
+        "quantity": 1,
+        "unit": "pc",
+        "aliases": ["kulfi", "ice cream cone", "cornetto"]
+      }
+    }
+  },
+  "Beverages": {
+    "fallback": {
+      "quantity": 1,
+      "unit": "btl"
+    },
+    "items": {
+      "water": {
+        "quantity": 1,
+        "unit": "L",
+        "aliases": ["paani", "pani", "पानी", "mineral water", "drinking water", "bisleri"]
+      },
+      "soda water": {
+        "quantity": 1,
+        "unit": "L",
+        "aliases": ["club soda"]
+      },
+      "juice": {
+        "quantity": 1,
+        "unit": "L",
+        "aliases": ["ras", "रस", "fruit juice", "mixed fruit juice"]
+      },
+      "mango juice": {
+        "quantity": 1,
+        "unit": "L",
+        "aliases": ["mango drink", "maaza", "frooti"]
+      },
+      "orange juice": {
+        "quantity": 1,
+        "unit": "L"
+      },
+      "apple juice": {
+        "quantity": 1,
+        "unit": "L"
+      },
+      "pomegranate juice": {
+        "quantity": 1,
+        "unit": "L"
+      },
+      "sugarcane juice": {
+        "quantity": 1,
+        "unit": "L",
+        "aliases": ["ganne ka ras"]
+      },
+      "coconut water": {
+        "quantity": 1,
+        "unit": "btl",
+        "aliases": ["nariyal pani"]
+      },
+      "nimbu pani": {
+        "quantity": 1,
+        "unit": "L",
+        "aliases": ["lemonade", "shikanji"]
+      },
+      "aam panna": {
+        "quantity": 1,
+        "unit": "L"
+      },
+      "sharbat": {
+        "quantity": 1,
+        "unit": "btl",
+        "aliases": ["शरबत", "rooh afza", "roohafza", "squash", "kokum sharbat", "bael sharbat"]
+      },
+      "thandai": {
+        "quantity": 1,
+        "unit": "btl"
+      },
+      "tea": {
+        "quantity": 250,
+        "unit": "g",
+        "aliases": [
+          "chai",
+          "चाय",
+          "chai patti",
+          "chaipatti",
+          "tea powder",
+          "tea leaves",
+          "tea dust",
+          "loose tea",
+          "assam tea",
+          "red label",
+          "taj mahal",
+          "wagh bakri",
+          "tata tea"
+        ]
+      },
+      "green tea": {
+        "quantity": 100,
+        "unit": "g",
+        "aliases": ["tulsi tea", "herbal tea", "lemon tea"]
+      },
+      "tea bags": {
+        "quantity": 1,
+        "unit": "p",
+        "aliases": ["tea bag"]
+      },
+      "kahwa": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "coffee": {
+        "quantity": 100,
+        "unit": "g",
+        "aliases": [
+          "कॉफी",
+          "kaapi",
+          "filter coffee",
+          "coffee powder",
+          "coffee beans",
+          "instant coffee",
+          "bru",
+          "nescafe",
+          "coffee chicory"
+        ]
+      },
+      "horlicks": {
+        "quantity": 500,
+        "unit": "g",
+        "aliases": ["bournvita", "boost", "complan", "health drink", "malt drink"]
+      },
+      "protein powder": {
+        "quantity": 500,
+        "unit": "g",
+        "aliases": ["whey protein"]
+      },
+      "glucose powder": {
+        "quantity": 500,
+        "unit": "g",
+        "aliases": ["glucon d", "glucon-d", "tang", "rasna"]
+      },
+      "ors": {
+        "quantity": 1,
+        "unit": "p",
+        "aliases": ["electral"]
+      },
+      "cola": {
+        "quantity": 1,
+        "unit": "btl",
+        "aliases": ["coke", "coca cola", "thums up", "pepsi"]
+      },
+      "sprite": {
+        "quantity": 1,
+        "unit": "btl",
+        "aliases": ["7up", "7 up", "fanta", "mirinda", "limca", "mountain dew"]
+      },
+      "soda": {
+        "quantity": 1,
+        "unit": "btl",
+        "aliases": ["cold drink", "cold drinks", "soft drink", "fizzy drink", "goli soda"]
+      },
+      "energy drink": {
+        "quantity": 1,
+        "unit": "btl",
+        "aliases": ["red bull", "sting", "gatorade"]
+      },
+      "ginger ale": {
+        "quantity": 1,
+        "unit": "btl",
+        "aliases": ["tonic water", "kombucha"]
+      }
+    }
+  },
+  "Household": {
+    "fallback": {
+      "quantity": 1,
+      "unit": "pc"
+    },
+    "items": {
+      "soap": {
+        "quantity": 1,
+        "unit": "pc",
+        "aliases": ["sabun", "साबुन", "bathing soap", "lux", "dettol soap", "lifebuoy"]
+      },
+      "broom": {
+        "quantity": 1,
+        "unit": "pc",
+        "aliases": ["jhadu", "झाड़ू"]
+      },
+      "mop": {
+        "quantity": 1,
+        "unit": "pc",
+        "aliases": ["pocha", "wiper"]
+      },
+      "bucket": {
+        "quantity": 1,
+        "unit": "pc",
+        "aliases": ["balti", "mug"]
+      },
+      "dustbin": {
+        "quantity": 1,
+        "unit": "pc"
+      },
+      "sponge": {
+        "quantity": 1,
+        "unit": "pc",
+        "aliases": ["scrub", "scotch brite", "steel scrubber"]
+      },
+      "duster": {
+        "quantity": 1,
+        "unit": "pc",
+        "aliases": ["cloth"]
+      },
+      "hanger": {
+        "quantity": 1,
+        "unit": "pc"
+      },
+      "lighter": {
+        "quantity": 1,
+        "unit": "pc",
+        "aliases": ["gas lighter"]
+      },
+      "matchbox": {
+        "quantity": 1,
+        "unit": "pc",
+        "aliases": ["machis", "matches"]
+      },
+      "candle": {
+        "quantity": 1,
+        "unit": "pc",
+        "aliases": ["mombatti", "मोमबत्ती"]
+      },
+      "diya": {
+        "quantity": 1,
+        "unit": "pc"
+      },
+      "bulb": {
+        "quantity": 1,
+        "unit": "pc",
+        "aliases": ["led bulb"]
+      },
+      "battery": {
+        "quantity": 1,
+        "unit": "pc",
+        "aliases": ["cell", "cells"]
+      },
+      "torch": {
+        "quantity": 1,
+        "unit": "pc",
+        "aliases": ["flashlight"]
+      },
+      "mosquito bat": {
+        "quantity": 1,
+        "unit": "pc"
+      },
+      "room freshener": {
+        "quantity": 1,
+        "unit": "pc",
+        "aliases": ["air freshener", "odonil"]
+      },
+      "naphthalene": {
+        "quantity": 1,
+        "unit": "pc",
+        "aliases": ["naphthalene balls"]
+      },
+      "insect spray": {
+        "quantity": 1,
+        "unit": "pc",
+        "aliases": ["hit spray", "mortein", "cockroach chalk"]
+      },
+      "mosquito repellent": {
+        "quantity": 1,
+        "unit": "btl",
+        "aliases": ["all out", "good knight", "mosquito coil"]
+      },
+      "agarbatti": {
+        "quantity": 1,
+        "unit": "p",
+        "aliases": ["अगरबत्ती", "incense", "dhoop"]
+      },
+      "camphor": {
+        "quantity": 1,
+        "unit": "p",
+        "aliases": ["kapur", "कपूर"]
+      },
+      "pooja samagri": {
+        "quantity": 1,
+        "unit": "p",
+        "aliases": ["kumkum", "roli", "sindoor", "havan samagri"]
+      },
+      "detergent": {
+        "quantity": 1,
+        "unit": "kg",
+        "aliases": ["washing powder", "surf", "surf excel", "ariel", "tide", "rin", "wheel"]
+      },
+      "shampoo": {
+        "quantity": 1,
+        "unit": "btl",
+        "aliases": ["शैम्पू"]
+      },
+      "dishwash": {
+        "quantity": 1,
+        "unit": "btl",
+        "aliases": ["dish wash", "dishwash liquid", "vim liquid", "dishwashing gel"]
+      },
+      "dishwash bar": {
+        "quantity": 1,
+        "unit": "p",
+        "aliases": ["vim bar", "washing bar", "kapda sabun"]
+      },
+      "toilet": {
+        "quantity": 1,
+        "unit": "btl",
+        "aliases": ["toilet cleaner", "harpic", "domex", "bathroom cleaner"]
+      },
+      "floor cleaner": {
+        "quantity": 1,
+        "unit": "btl",
+        "aliases": ["lizol", "phenyl", "phenol"]
+      },
+      "bleach": {
+        "quantity": 1,
+        "unit": "btl",
+        "aliases": ["colin"]
+      },
+      "glass cleaner": {
+        "quantity": 1,
+        "unit": "btl",
+        "aliases": ["surface cleaner"]
+      },
+      "fabric softener": {
+        "quantity": 1,
+        "unit": "btl",
+        "aliases": ["comfort"]
+      },
+      "handwash": {
+        "quantity": 1,
+        "unit": "btl",
+        "aliases": ["hand wash", "liquid soap"]
+      },
+      "drain cleaner": {
+        "quantity": 1,
+        "unit": "btl"
+      },
+      "tissue": {
+        "quantity": 1,
+        "unit": "p",
+        "aliases": ["tissues", "tissue paper", "napkin", "paper napkin"]
+      },
+      "toilet paper": {
+        "quantity": 1,
+        "unit": "p",
+        "aliases": ["toilet roll"]
+      },
+      "kitchen roll": {
+        "quantity": 1,
+        "unit": "p",
+        "aliases": ["kitchen towel"]
+      },
+      "garbage bag": {
+        "quantity": 1,
+        "unit": "p",
+        "aliases": ["garbage bags", "trash bag", "dustbin bag"]
+      },
+      "aluminium foil": {
+        "quantity": 1,
+        "unit": "p",
+        "aliases": ["aluminum foil"]
+      },
+      "cling film": {
+        "quantity": 1,
+        "unit": "p"
+      },
+      "butter paper": {
+        "quantity": 1,
+        "unit": "p",
+        "aliases": ["parchment paper"]
+      },
+      "paper plates": {
+        "quantity": 1,
+        "unit": "p",
+        "aliases": ["disposable plates"]
+      },
+      "paper cups": {
+        "quantity": 1,
+        "unit": "p",
+        "aliases": ["disposable cups"]
+      },
+      "toothpick": {
+        "quantity": 1,
+        "unit": "p",
+        "aliases": ["tooth picks"]
+      }
+    }
+  },
+  "Personal Care": {
+    "fallback": {
+      "quantity": 1,
+      "unit": "pc"
+    },
+    "items": {
+      "toothpaste": {
+        "quantity": 1,
+        "unit": "pc",
+        "aliases": ["टूथपेस्ट", "colgate", "pepsodent", "close up", "dant manjan"]
+      },
+      "toothbrush": {
+        "quantity": 1,
+        "unit": "pc",
+        "aliases": ["brush", "ब्रश"]
+      },
+      "razor": {
+        "quantity": 1,
+        "unit": "pc",
+        "aliases": ["blade", "blades", "gillette"]
+      },
+      "trimmer": {
+        "quantity": 1,
+        "unit": "pc"
+      },
+      "comb": {
+        "quantity": 1,
+        "unit": "pc",
+        "aliases": ["kanghi", "hair brush"]
+      },
+      "nail cutter": {
+        "quantity": 1,
+        "unit": "pc",
+        "aliases": ["nail clipper"]
+      },
+      "tongue cleaner": {
+        "quantity": 1,
+        "unit": "pc"
+      },
+      "loofah": {
+        "quantity": 1,
+        "unit": "pc",
+        "aliases": ["bath sponge"]
+      },
+      "hair clip": {
+        "quantity": 1,
+        "unit": "pc",
+        "aliases": ["hair band", "hair tie"]
+      },
+      "bindi": {
+        "quantity": 1,
+        "unit": "pc",
+        "aliases": ["sindoor pack"]
+      },
+      "kajal": {
+        "quantity": 1,
+        "unit": "pc",
+        "aliases": ["kohl", "eyeliner"]
+      },
+      "lipstick": {
+        "quantity": 1,
+        "unit": "pc"
+      },
+      "nail polish": {
+        "quantity": 1,
+        "unit": "pc",
+        "aliases": ["nail paint"]
+      },
+      "lip balm": {
+        "quantity": 1,
+        "unit": "pc"
+      },
+      "vaseline": {
+        "quantity": 1,
+        "unit": "pc",
+        "aliases": ["petroleum jelly"]
+      },
+      "cotton buds": {
+        "quantity": 1,
+        "unit": "p",
+        "aliases": ["ear buds"]
+      },
+      "cotton": {
+        "quantity": 1,
+        "unit": "p",
+        "aliases": ["rui", "cotton pads"]
+      },
+      "bandage": {
+        "quantity": 1,
+        "unit": "p",
+        "aliases": ["band aid", "plaster"]
+      },
+      "thermometer": {
+        "quantity": 1,
+        "unit": "pc"
+      },
+      "face mask": {
+        "quantity": 1,
+        "unit": "p",
+        "aliases": ["mask", "n95"]
+      },
+      "sanitary pad": {
+        "quantity": 1,
+        "unit": "p",
+        "aliases": ["sanitary pads", "pads", "sanitary napkin"]
+      },
+      "tampon": {
+        "quantity": 1,
+        "unit": "p"
+      },
+      "diaper": {
+        "quantity": 1,
+        "unit": "p",
+        "aliases": ["diapers", "baby diaper"]
+      },
+      "wet wipes": {
+        "quantity": 1,
+        "unit": "p",
+        "aliases": ["baby wipes", "wipes"]
+      },
+      "condom": {
+        "quantity": 1,
+        "unit": "p",
+        "aliases": ["condoms"]
+      },
+      "lotion": {
+        "quantity": 1,
+        "unit": "btl",
+        "aliases": ["body lotion"]
+      },
+      "moisturiser": {
+        "quantity": 1,
+        "unit": "btl",
+        "aliases": ["moisturizer", "cold cream", "face cream"]
+      },
+      "sunscreen": {
+        "quantity": 1,
+        "unit": "btl",
+        "aliases": ["sunblock"]
+      },
+      "face wash": {
+        "quantity": 1,
+        "unit": "btl",
+        "aliases": ["facewash"]
+      },
+      "face serum": {
+        "quantity": 1,
+        "unit": "btl",
+        "aliases": ["serum", "toner", "micellar water", "makeup remover"]
+      },
+      "sanitizer": {
+        "quantity": 1,
+        "unit": "btl",
+        "aliases": ["सैनिटाइज़र", "hand sanitizer"]
+      },
+      "deodorant": {
+        "quantity": 1,
+        "unit": "btl",
+        "aliases": ["deo", "body spray", "roll on"]
+      },
+      "perfume": {
+        "quantity": 1,
+        "unit": "btl"
+      },
+      "talcum powder": {
+        "quantity": 1,
+        "unit": "btl",
+        "aliases": ["talc", "body powder"]
+      },
+      "hair oil": {
+        "quantity": 1,
+        "unit": "btl",
+        "aliases": ["coconut hair oil", "amla hair oil", "almond oil", "badam tel"]
+      },
+      "castor oil": {
+        "quantity": 1,
+        "unit": "btl",
+        "aliases": ["arandi tel"]
+      },
+      "conditioner": {
+        "quantity": 1,
+        "unit": "btl",
+        "aliases": ["hair serum"]
+      },
+      "hair gel": {
+        "quantity": 1,
+        "unit": "btl",
+        "aliases": ["hair spray"]
+      },
+      "hair colour": {
+        "quantity": 1,
+        "unit": "pc",
+        "aliases": ["hair color", "hair dye"]
+      },
+      "henna": {
+        "quantity": 1,
+        "unit": "p",
+        "aliases": ["mehendi", "mehndi", "मेहंदी"]
+      },
+      "body wash": {
+        "quantity": 1,
+        "unit": "btl",
+        "aliases": ["shower gel"]
+      },
+      "shaving cream": {
+        "quantity": 1,
+        "unit": "btl",
+        "aliases": ["shaving foam", "shaving gel"]
+      },
+      "aftershave": {
+        "quantity": 1,
+        "unit": "btl",
+        "aliases": ["after shave"]
+      },
+      "mouthwash": {
+        "quantity": 1,
+        "unit": "btl",
+        "aliases": ["listerine"]
+      },
+      "dental floss": {
+        "quantity": 1,
+        "unit": "pc",
+        "aliases": ["floss"]
+      },
+      "eye drops": {
+        "quantity": 1,
+        "unit": "btl"
+      },
+      "baby oil": {
+        "quantity": 1,
+        "unit": "btl",
+        "aliases": ["baby lotion", "baby powder", "baby shampoo"]
+      },
+      "massage oil": {
+        "quantity": 1,
+        "unit": "btl",
+        "aliases": ["body oil"]
+      }
+    }
+  }
+}

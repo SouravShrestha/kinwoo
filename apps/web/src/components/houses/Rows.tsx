@@ -11,6 +11,7 @@ export function ListRow({
   leading,
   title,
   subtitle,
+  aside,
   trailing,
   onClick,
   label,
@@ -18,6 +19,7 @@ export function ListRow({
   leading?: ReactNode;
   title: string;
   subtitle?: string | null;
+  aside?: string | null;
   trailing?: ReactNode;
   onClick?: () => void;
   label?: string;
@@ -26,7 +28,12 @@ export function ListRow({
     <>
       {leading ? <span className="mr-3 shrink-0">{leading}</span> : null}
       <span className="min-w-0 flex-1">
-        <span className="block truncate text-base">{title}</span>
+        <span className="flex items-center">
+          <span className="min-w-0 flex-1 truncate text-base">{title}</span>
+          {aside ? (
+            <span className="ml-3 shrink-0 text-sm text-muted-foreground">{aside}</span>
+          ) : null}
+        </span>
         {subtitle ? (
           <span className="mt-0.5 block truncate text-sm text-muted-foreground">{subtitle}</span>
         ) : null}

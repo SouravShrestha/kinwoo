@@ -15,4 +15,12 @@ export const inviteFriends = require("../../assets/images/invite-friends.png") a
 
 export const buildYourHouse = require("../../assets/images/build-your-house.png") as number;
 
+export const noItems = require("../../assets/images/no-item.png") as number;
+
 export const profileImage = require("../../assets/images/profile-image.png") as number;
+
+export const blinkitLogo = require("../../assets/images/blinkit.jpeg") as number;
+
+export const zeptoLogo = require("../../assets/images/zepto.jpeg") as number;
+
+export const instamartLogo = require("../../assets/images/instamart.jpeg") as number;

@@ -1,10 +1,6 @@
 import type { MemberConfirm, MemberConfirmRequest } from "@kinwoo/client/houses";
-import {
-  leaveConfirmCopy,
-  removeConfirmCopy,
-  roleConfirmCopy,
-  type LeaveState,
-} from "@kinwoo/core/houses";
+import { leaveConfirmCopy, removeConfirmCopy, roleConfirmCopy } from "@kinwoo/core/confirm";
+import type { LeaveState } from "@kinwoo/core/houses";
 
 import { ConfirmDialog } from "../ConfirmDialog";
 
@@ -24,16 +20,12 @@ export function MemberConfirmDialog({
   leave: LeaveState;
 }) {
   const copy = confirmCopy(confirm.request, houseName, leave);
-  const promoting = confirm.request?.kind === "role" && confirm.request.role === "admin";
 
   return (
     <ConfirmDialog
       open={confirm.open}
-      title={copy.title}
-      description={copy.message}
+      copy={copy}
       error={confirm.actions.error}
-      confirmLabel={copy.confirmLabel}
-      confirmVariant={promoting ? "primary" : "destructive"}
       isPending={confirm.actions.busy}
       onConfirm={() => void confirm.confirm()}
       onCancel={confirm.cancel}

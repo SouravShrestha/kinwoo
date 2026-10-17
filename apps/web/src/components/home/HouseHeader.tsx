@@ -1,4 +1,4 @@
-import { HousePinIcon, NotificationIcon } from "@kinwoo/icons";
+import { HousePinIcon } from "@kinwoo/icons";
 
 type HouseHeaderProps = {
   name: string | null;
@@ -8,32 +8,23 @@ type HouseHeaderProps = {
 
 export function HouseHeader({ name, address, onPressHouse }: HouseHeaderProps) {
   return (
-    <>
-      <h1 className="min-w-0 max-w-[70%] font-display text-lg font-medium">
-        <button
-          type="button"
-          aria-haspopup="dialog"
-          onClick={onPressHouse}
-          className="block w-full min-w-0 text-left hover:cursor-pointer hover:opacity-70 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
-        >
-          <span className="-ml-1 flex items-center gap-1.5">
-            {name ? <HousePinIcon size={18} className="shrink-0" /> : null}
-            <span className="truncate font-display font-medium">{name ?? ""}</span>
-          </span>
-          {address ? (
-            <span className="mt-0.5 block truncate text-xs font-display font-normal text-muted-foreground">
-              {address}
-            </span>
-          ) : null}
-        </button>
-      </h1>
+    <h1 className="min-w-0 max-w-[70%] font-display text-lg font-medium">
       <button
         type="button"
-        aria-label="Notifications"
-        className="-mr-2 flex size-10 shrink-0 items-center justify-center rounded-full hover:cursor-pointer hover:opacity-70 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
+        aria-haspopup="dialog"
+        onClick={onPressHouse}
+        className="block w-full min-w-0 text-left hover:cursor-pointer hover:opacity-70 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
       >
-        <NotificationIcon size={22} />
+        <span className="-ml-1 flex items-center gap-1.5">
+          {name ? <HousePinIcon size={18} className="shrink-0" /> : null}
+          <span className="truncate font-display font-medium">{name ?? ""}</span>
+        </span>
+        {address ? (
+          <span className="mt-0.5 block truncate text-xs font-display font-normal text-muted-foreground">
+            {address}
+          </span>
+        ) : null}
       </button>
-    </>
+    </h1>
   );
 }

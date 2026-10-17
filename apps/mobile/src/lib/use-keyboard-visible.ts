@@ -1,17 +1,16 @@
 import { useEffect, useState } from "react";
 import { Keyboard, Platform } from "react-native";
 
-// iOS "will" events fire as the keyboard starts moving, so the animation tracks it.
-// Android only has "did" events.
-const SHOW_EVENT = Platform.OS === "ios" ? "keyboardWillShow" : "keyboardDidShow";
-const HIDE_EVENT = Platform.OS === "ios" ? "keyboardWillHide" : "keyboardDidHide";
+// iOS sends "will" events in step with the keyboard animation; Android only sends "did" events.
+const SHOW = Platform.OS === "ios" ? "keyboardWillShow" : "keyboardDidShow";
+const HIDE = Platform.OS === "ios" ? "keyboardWillHide" : "keyboardDidHide";
 
-export function useKeyboardVisible() {
-  const [visible, setVisible] = useState(false);
+export function useKeyboardVisible(): boolean {
+  const [visible, setVisible] = useState(() => Keyboard.isVisible());
 
   useEffect(() => {
-    const show = Keyboard.addListener(SHOW_EVENT, () => setVisible(true));
-    const hide = Keyboard.addListener(HIDE_EVENT, () => setVisible(false));
+    const show = Keyboard.addListener(SHOW, () => setVisible(true));
+    const hide = Keyboard.addListener(HIDE, () => setVisible(false));
     return () => {
       show.remove();
       hide.remove();
@@ -19,4 +18,19 @@ export function useKeyboardVisible() {
   }, []);
 
   return visible;
+}
+
+export function useKeyboardHeight(): number {
+  const [height, setHeight] = useState(() => Keyboard.metrics()?.height ?? 0);
+
+  useEffect(() => {
+    const show = Keyboard.addListener(SHOW, (event) => setHeight(event.endCoordinates.height));
+    const hide = Keyboard.addListener(HIDE, () => setHeight(0));
+    return () => {
+      show.remove();
+      hide.remove();
+    };
+  }, []);
+
+  return height;
 }

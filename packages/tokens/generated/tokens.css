@@ -10,6 +10,10 @@
 
   --background: #fefefe;
   --sheet: #fefefe;
+  --dialog: #fefefe;
+  --dialog-header: #f4f4f4;
+  --dialog-border: #dcdcdc;
+  --backdrop: #000000cc;
   --foreground: #0e0e0e;
   --card: #fbfbfb;
   --muted: #f1f1f1;
@@ -30,6 +34,9 @@
 .dark {
   --background: #0e0e0e;
   --sheet: #161616;
+  --dialog: #1c1c1c;
+  --dialog-header: #262626;
+  --dialog-border: #3a3a3a;
   --foreground: #fefefe;
   --card: #1a1a1a;
   --muted: #1a1a1a;

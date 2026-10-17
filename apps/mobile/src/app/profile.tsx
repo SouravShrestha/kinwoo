@@ -1,10 +1,21 @@
 import { useAuth } from "@kinwoo/client/auth";
 import { useProfile } from "@kinwoo/client/profile";
 import { toast } from "@kinwoo/client/toast";
+import { LEGAL_LABELS } from "@kinwoo/core/app";
+import { CONFIRM_COPY } from "@kinwoo/core/confirm";
 import { TOAST_MESSAGES } from "@kinwoo/core/toast";
-import { AppearanceIcon, BellIcon, GlobeIcon, ProfileIcon } from "@kinwoo/icons/native";
+import {
+  AppearanceIcon,
+  ArrowRightIcon,
+  BellIcon,
+  DocumentIcon,
+  GlobeIcon,
+  ProfileIcon,
+  ShieldCheckIcon,
+} from "@kinwoo/icons/native";
 import { colors } from "@kinwoo/tokens/native";
 import { router } from "expo-router";
+import * as WebBrowser from "expo-web-browser";
 import { useState } from "react";
 import { Image, ScrollView, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -15,7 +26,10 @@ import { Button } from "@/components/Button";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { Pressable } from "@/components/Pressable";
 import { SettingsGroup, SettingsRow } from "@/components/Settings";
+import { goBack } from "@/lib/house-navigation";
 import { profileImage } from "@/lib/images";
+import { PRIVACY_URL, TERMS_URL } from "@/lib/legal";
+import { usePressGuard } from "@/lib/press-guard";
 import { useTheme } from "@/theme/ThemeProvider";
 
 const THEME_LABELS = { light: "Light", dark: "Dark", system: "System" } as const;
@@ -32,6 +46,9 @@ export default function ProfileScreen() {
   const [logoutOpen, setLogoutOpen] = useState(false);
   const [loggingOut, setLoggingOut] = useState(false);
 
+  const openTerms = usePressGuard(() => void WebBrowser.openBrowserAsync(TERMS_URL));
+  const openPrivacy = usePressGuard(() => void WebBrowser.openBrowserAsync(PRIVACY_URL));
+
   const confirmLogout = async () => {
     setLoggingOut(true);
     try {
@@ -47,8 +64,21 @@ export default function ProfileScreen() {
   return (
     <ScrollView
       className="flex-1 bg-background"
-      contentContainerStyle={{ paddingTop: insets.top + 36, paddingHorizontal: 24 }}
+      showsVerticalScrollIndicator={false}
+      contentContainerStyle={{ paddingTop: insets.top + 12, paddingHorizontal: 24 }}
     >
+      <Pressable
+        accessibilityRole="button"
+        accessibilityLabel="Back"
+        onPress={goBack}
+        hitSlop={12}
+        className="mb-6 size-9 items-start justify-center"
+      >
+        <View style={{ transform: [{ rotate: "180deg" }] }}>
+          <ArrowRightIcon size={26} color={palette.foreground} />
+        </View>
+      </Pressable>
+
       <View className="flex-row items-center mb-6">
         <Pressable
           accessibilityRole="button"
@@ -100,6 +130,19 @@ export default function ProfileScreen() {
         />
       </SettingsGroup>
 
+      <SettingsGroup title={LEGAL_LABELS.group}>
+        <SettingsRow
+          icon={<DocumentIcon size={20} color={palette.foreground} />}
+          label={LEGAL_LABELS.terms}
+          onPress={openTerms}
+        />
+        <SettingsRow
+          icon={<ShieldCheckIcon size={20} color={palette.foreground} />}
+          label={LEGAL_LABELS.privacy}
+          onPress={openPrivacy}
+        />
+      </SettingsGroup>
+
       <Button
         label="Log out"
         variant="outline"
@@ -109,9 +152,7 @@ export default function ProfileScreen() {
 
       <ConfirmDialog
         open={logoutOpen}
-        title="Log out?"
-        description="You'll need to sign in again to use Kinwoo."
-        confirmLabel="Log out"
+        copy={CONFIRM_COPY.logout}
         isPending={loggingOut}
         onConfirm={() => void confirmLogout()}
         onCancel={() => setLogoutOpen(false)}

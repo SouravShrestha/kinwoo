@@ -205,7 +205,8 @@ describe("route sources", () => {
   ];
 
   it("covers every houses and invites route", () => {
-    expect(files.length).toBe(10);
+    // 10 original house/invite routes + 18 grocery sub-routes.
+    expect(files.length).toBe(28);
   });
 
   it("never import the service-role client", () => {
@@ -219,7 +220,11 @@ describe("route sources", () => {
   it("delegate to the shared handler so cookies are always flushed", () => {
     for (const file of files) {
       const source = readFileSync(file, "utf8");
-      expect(source, file).toContain("handleHouseRequest");
+      // Grocery routes use handleGroceryRequest (their own parallel helper that
+      // also calls applyCookies); all other routes use handleHouseRequest.
+      const usesSharedHandler =
+        source.includes("handleHouseRequest") || source.includes("handleGroceryRequest");
+      expect(usesSharedHandler, file).toBe(true);
       expect(source, file).not.toContain("createRouteClient");
     }
   });

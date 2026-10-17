@@ -64,7 +64,7 @@ export function SetupHousePrompt({ onCreate, onJoin }: SetupHousePromptProps) {
   const { resolvedTheme } = useTheme();
 
   return (
-    <View className="w-full flex-1 justify-center pb-16">
+    <View className="w-full flex-1 justify-center">
       <View className="w-full flex-row items-start gap-5">
         <ActionCard
           label={"Build\na house"}

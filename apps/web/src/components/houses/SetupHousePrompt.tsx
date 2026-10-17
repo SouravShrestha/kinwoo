@@ -55,7 +55,7 @@ function ActionCard({
 
 export function SetupHousePrompt({ onCreate, onJoin }: SetupHousePromptProps) {
   return (
-    <div className="flex w-full flex-1 flex-col justify-center pb-16">
+    <div className="flex w-full flex-1 flex-col justify-center">
       <div className="flex w-full items-start gap-5">
         <ActionCard
           lines={["Build", "a house"]}

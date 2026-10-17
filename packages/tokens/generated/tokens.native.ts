@@ -10,6 +10,10 @@
 export const lightColors = {
   "background": "#fefefe",
   "sheet": "#fefefe",
+  "dialog": "#fefefe",
+  "dialogHeader": "#f4f4f4",
+  "dialogBorder": "#dcdcdc",
+  "backdrop": "#000000cc",
   "foreground": "#0e0e0e",
   "card": "#fbfbfb",
   "muted": "#f1f1f1",
@@ -30,6 +34,10 @@ export const lightColors = {
 export const darkColors = {
   "background": "#0e0e0e",
   "sheet": "#161616",
+  "dialog": "#1c1c1c",
+  "dialogHeader": "#262626",
+  "dialogBorder": "#3a3a3a",
+  "backdrop": "#000000cc",
   "foreground": "#fefefe",
   "card": "#1a1a1a",
   "muted": "#1a1a1a",
@@ -54,6 +62,10 @@ export const colors = { light: lightColors, dark: darkColors } as const;
 export const cssVarNames = {
   "background": "--background",
   "sheet": "--sheet",
+  "dialog": "--dialog",
+  "dialogHeader": "--dialog-header",
+  "dialogBorder": "--dialog-border",
+  "backdrop": "--backdrop",
   "foreground": "--foreground",
   "card": "--card",
   "muted": "--muted",

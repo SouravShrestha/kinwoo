@@ -58,7 +58,8 @@ export function MembersView({
                 <ListRow
                   leading={<Avatar name={member.displayName} url={member.avatarUrl} />}
                   title={isSelf ? "You" : name}
-                  subtitle={roleLabel(member.role)}
+                  subtitle={member.email}
+                  aside={roleLabel(member.role)}
                   label={`${name}, ${roleLabel(member.role)}`}
                   onClick={isAdmin || isSelf ? () => onSelect(member.userId) : undefined}
                 />
