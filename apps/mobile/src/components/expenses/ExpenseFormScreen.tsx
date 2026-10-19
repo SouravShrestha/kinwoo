@@ -12,22 +12,18 @@ import { formatPickedDate } from "@kinwoo/core/grocery";
 import { ArrowRightIcon, CalendarIcon, CheckCircleIcon, RupeeIcon } from "@kinwoo/icons/native";
 import { colors } from "@kinwoo/tokens/native";
 import { useState } from "react";
-import {
-  Keyboard,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  Text,
-  TextInput,
-  View,
-} from "react-native";
+import { Keyboard, KeyboardAvoidingView, Platform, Text, TextInput, View } from "react-native";
+import { GestureDetector } from "react-native-gesture-handler";
 import Animated, { Easing, FadeInUp, FadeOutUp, ReduceMotion } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { DatePickerSheet } from "@/components/grocery/DatePickerSheet";
 import { OptionSheet } from "@/components/OptionSheet";
 import { Pressable } from "@/components/Pressable";
+import { SwipeDownScreen } from "@/components/SwipeDownScreen";
 import { goBack } from "@/lib/house-navigation";
+import { useFocusedInputAboveKeyboard } from "@/lib/use-focused-input-above-keyboard";
+import { useSwipeDownToDismiss } from "@/lib/use-swipe-down-to-dismiss";
 import { useTheme } from "@/theme/ThemeProvider";
 
 import { ExpenseCategoryIcon } from "./ExpenseCategoryIcon";
@@ -65,6 +61,9 @@ export function ExpenseFormScreen({
   const dateLabel = formatPickedDate(form.date);
   const heading = form.isEditing ? "Edit expense" : "Add expense";
 
+  const { pan, scrollGesture, scrollY, onScroll, sheetStyle } = useSwipeDownToDismiss(goBack);
+  const { scrollRef, revealFocusedInput } = useFocusedInputAboveKeyboard(scrollY);
+
   const openPicker = (next: Picker) => {
     Keyboard.dismiss();
     setPicker(next);
@@ -72,167 +71,199 @@ export function ExpenseFormScreen({
   const closePicker = () => setPicker(null);
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : undefined}
-      className="flex-1 bg-background"
-    >
-      <View
-        className="flex-row items-center justify-between px-6 pb-6"
-        style={{ paddingTop: insets.top + 20 }}
+    <SwipeDownScreen pan={pan} sheetStyle={sheetStyle}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
+        className="flex-1"
       >
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel="Back"
-          onPress={goBack}
-          hitSlop={12}
-          className="size-10 items-start justify-center"
-        >
-          <View style={{ transform: [{ rotate: "90deg" }] }}>
-            <ArrowRightIcon size={28} color={palette.foreground} />
-          </View>
-        </Pressable>
-        <Text accessibilityRole="header" className="font-display-medium text-lg text-foreground">
-          {heading}
-        </Text>
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel={form.isEditing ? "Save expense" : "Add expense"}
-          accessibilityState={{ disabled: submitDisabled, busy: form.submitting }}
-          disabled={submitDisabled}
-          onPress={() => void form.submit()}
-          hitSlop={12}
-          className={`size-10 items-end justify-center ${submitDisabled ? "opacity-40" : ""}`}
-        >
-          <CheckCircleIcon size={26} color={palette.foreground} />
-        </Pressable>
-      </View>
-
-      <ScrollView keyboardShouldPersistTaps="handled" contentContainerClassName="gap-5 px-6 pb-10">
-        <View>
-          <View className="flex-row gap-3">
-            <Pressable
-              accessibilityRole="button"
-              accessibilityLabel={`Category: ${EXPENSE_CATEGORY_LABELS[form.category]}. Change category`}
-              onPress={() => openPicker("category")}
-              allowDoublePress
-              className="size-12 items-center justify-center rounded-xl bg-muted active:opacity-80"
-            >
-              <ExpenseCategoryIcon category={form.category} size={24} color={palette.foreground} />
-            </Pressable>
-            <TextInput
-              accessibilityLabel="Title"
-              accessibilityHint={form.titleError ?? undefined}
-              autoCapitalize="sentences"
-              returnKeyType="next"
-              maxLength={EXPENSE_TITLE_MAX}
-              placeholder="What was it for?"
-              placeholderTextColor={palette.mutedForeground}
-              value={form.title}
-              onChangeText={form.setTitle}
-              // No `text-*` size class: its lineHeight misaligns iOS text and caret.
-              className="h-12 flex-1 rounded-xl bg-muted px-5 font-display-normal text-foreground"
-              style={{ fontSize: 16, paddingVertical: 0 }}
-            />
-          </View>
-          {form.titleError ? (
-            <Text
-              accessibilityLiveRegion="polite"
-              className="mt-2 text-right font-display-normal text-sm text-destructive"
-            >
-              {form.titleError}
-            </Text>
-          ) : null}
-        </View>
-
-        <View className="my-3">
-          <View className="flex-row items-center gap-3 border-b border-border pb-1">
-            <RupeeIcon size={28} color={palette.foreground} />
-            <TextInput
-              autoFocus={!form.isEditing}
-              accessibilityLabel="Amount"
-              accessibilityHint={form.amountError ?? undefined}
-              keyboardType="decimal-pad"
-              placeholder="0.00"
-              placeholderTextColor={palette.mutedForeground}
-              value={form.amount}
-              onChangeText={form.setAmount}
-              className="h-11 min-w-0 flex-1 font-display-medium text-foreground"
-              style={{ fontSize: 34, paddingVertical: 0 }}
-            />
-          </View>
-          {form.amountError ? (
-            <Text
-              accessibilityLiveRegion="polite"
-              className="mt-2 font-display-normal text-sm text-destructive"
-            >
-              {form.amountError}
-            </Text>
-          ) : null}
-        </View>
-
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel={`Date: ${dateLabel}. Change date`}
-          onPress={() => openPicker("date")}
-          allowDoublePress
-          className="h-12 flex-row items-center gap-2 rounded-xl bg-muted px-3.5 active:opacity-80"
-        >
-          <CalendarIcon size={16} color={palette.foreground} />
-          <Text className="font-display-normal text-base text-foreground">{dateLabel}</Text>
-        </Pressable>
-
-        <View>
-          <TextInput
-            accessibilityLabel="Note"
-            accessibilityHint={form.noteError ?? undefined}
-            multiline
-            maxLength={EXPENSE_NOTE_MAX}
-            placeholder="Add a note (optional)"
-            placeholderTextColor={palette.mutedForeground}
-            value={form.note}
-            onChangeText={form.setNote}
-            className="min-h-20 rounded-xl bg-muted px-5 py-3 font-display-normal text-foreground"
-            style={{ fontSize: 16, textAlignVertical: "top" }}
-          />
-          {form.noteError ? (
-            <Text
-              accessibilityLiveRegion="polite"
-              className="mt-2 font-display-normal text-sm text-destructive"
-            >
-              {form.noteError}
-            </Text>
-          ) : null}
-        </View>
-
-        {payers.totalPaise > 0 ? (
-          <Animated.View
-            entering={SPLIT_ENTERING}
-            exiting={SPLIT_EXITING}
-            className="flex-row flex-wrap items-center gap-x-2 gap-y-3"
+        <GestureDetector gesture={scrollGesture}>
+          <Animated.ScrollView
+            ref={scrollRef}
+            onScroll={onScroll}
+            scrollEventThrottle={16}
+            // Overscroll at the top would fight the pull-down; the sheet itself gives the feedback.
+            bounces={false}
+            showsVerticalScrollIndicator={false}
+            overScrollMode="never"
+            keyboardShouldPersistTaps="handled"
+            keyboardDismissMode="on-drag"
+            contentContainerClassName="gap-5 px-6"
+            contentContainerStyle={{
+              paddingTop: insets.top + 20,
+              paddingBottom: insets.bottom + 32,
+            }}
           >
-            <Text className="font-display-normal text-base text-muted-foreground">Paid by</Text>
+            <View className="flex-row items-center justify-between pb-3">
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel="Back"
+                onPress={goBack}
+                hitSlop={12}
+                className="size-10 items-start justify-center"
+              >
+                <View style={{ transform: [{ rotate: "90deg" }] }}>
+                  <ArrowRightIcon size={28} color={palette.foreground} />
+                </View>
+              </Pressable>
+              <Text
+                accessibilityRole="header"
+                className="font-display-medium text-lg text-foreground"
+              >
+                {heading}
+              </Text>
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel={form.isEditing ? "Save expense" : "Add expense"}
+                accessibilityState={{ disabled: submitDisabled, busy: form.submitting }}
+                disabled={submitDisabled}
+                onPress={() => void form.submit()}
+                hitSlop={12}
+                className={`size-10 items-end justify-center ${submitDisabled ? "opacity-40" : ""}`}
+              >
+                <CheckCircleIcon size={26} color={palette.foreground} />
+              </Pressable>
+            </View>
+
+            <View>
+              <View className="flex-row gap-3">
+                <Pressable
+                  accessibilityRole="button"
+                  accessibilityLabel={`Category: ${EXPENSE_CATEGORY_LABELS[form.category]}. Change category`}
+                  onPress={() => openPicker("category")}
+                  allowDoublePress
+                  className="size-12 items-center justify-center rounded-xl bg-muted active:opacity-80"
+                >
+                  <ExpenseCategoryIcon
+                    category={form.category}
+                    size={24}
+                    color={palette.foreground}
+                  />
+                </Pressable>
+                <TextInput
+                  accessibilityLabel="Title"
+                  accessibilityHint={form.titleError ?? undefined}
+                  autoCapitalize="sentences"
+                  returnKeyType="next"
+                  maxLength={EXPENSE_TITLE_MAX}
+                  placeholder="What was it for?"
+                  placeholderTextColor={palette.mutedForeground}
+                  onFocus={revealFocusedInput}
+                  value={form.title}
+                  onChangeText={form.setTitle}
+                  // No `text-*` size class: its lineHeight misaligns iOS text and caret.
+                  className="h-12 flex-1 rounded-xl bg-muted px-5 font-display-normal text-foreground"
+                  style={{ fontSize: 16, paddingVertical: 0 }}
+                />
+              </View>
+              {form.titleError ? (
+                <Text
+                  accessibilityLiveRegion="polite"
+                  className="mt-2 text-right font-display-normal text-sm text-destructive"
+                >
+                  {form.titleError}
+                </Text>
+              ) : null}
+            </View>
+
+            <View className="my-3">
+              <View className="flex-row items-center gap-3 border-b border-border pb-1">
+                <RupeeIcon size={28} color={palette.foreground} />
+                <TextInput
+                  autoFocus={!form.isEditing}
+                  accessibilityLabel="Amount"
+                  accessibilityHint={form.amountError ?? undefined}
+                  keyboardType="decimal-pad"
+                  placeholder="0.00"
+                  placeholderTextColor={palette.mutedForeground}
+                  onFocus={revealFocusedInput}
+                  value={form.amount}
+                  onChangeText={form.setAmount}
+                  className="h-11 min-w-0 flex-1 font-display-medium text-foreground"
+                  style={{ fontSize: 34, paddingVertical: 0 }}
+                />
+              </View>
+              {form.amountError ? (
+                <Text
+                  accessibilityLiveRegion="polite"
+                  className="mt-2 font-display-normal text-sm text-destructive"
+                >
+                  {form.amountError}
+                </Text>
+              ) : null}
+            </View>
+
             <Pressable
               accessibilityRole="button"
-              accessibilityLabel={`Paid by ${payers.label}. Change who paid`}
-              onPress={() => openPicker("payers")}
+              accessibilityLabel={`Date: ${dateLabel}. Change date`}
+              onPress={() => openPicker("date")}
               allowDoublePress
-              className="rounded-lg bg-muted px-3.5 py-1.5 active:opacity-80"
+              className="h-12 flex-row items-center gap-2 rounded-xl bg-muted px-3.5 active:opacity-80"
             >
-              <Text className="font-display-medium text-base text-foreground">{payers.label}</Text>
+              <CalendarIcon size={16} color={palette.foreground} />
+              <Text className="font-display-normal text-base text-foreground">{dateLabel}</Text>
             </Pressable>
-            <Text className="font-display-normal text-base text-muted-foreground">and split</Text>
-            <Pressable
-              accessibilityRole="button"
-              accessibilityLabel={`Split ${split.label.toLowerCase()}. Change how it is split`}
-              onPress={() => openPicker("split")}
-              allowDoublePress
-              className="rounded-lg bg-muted px-3.5 py-1.5 active:opacity-80"
-            >
-              <Text className="font-display-medium text-base text-foreground">{split.label}</Text>
-            </Pressable>
-          </Animated.View>
-        ) : null}
-      </ScrollView>
+
+            <View>
+              <TextInput
+                accessibilityLabel="Note"
+                accessibilityHint={form.noteError ?? undefined}
+                multiline
+                maxLength={EXPENSE_NOTE_MAX}
+                placeholder="Add a note (optional)"
+                placeholderTextColor={palette.mutedForeground}
+                onFocus={revealFocusedInput}
+                value={form.note}
+                onChangeText={form.setNote}
+                className="min-h-20 rounded-xl bg-muted px-5 py-3 font-display-normal text-foreground"
+                style={{ fontSize: 16, textAlignVertical: "top" }}
+              />
+              {form.noteError ? (
+                <Text
+                  accessibilityLiveRegion="polite"
+                  className="mt-2 font-display-normal text-sm text-destructive"
+                >
+                  {form.noteError}
+                </Text>
+              ) : null}
+            </View>
+
+            {payers.totalPaise > 0 ? (
+              <Animated.View
+                entering={SPLIT_ENTERING}
+                exiting={SPLIT_EXITING}
+                className="flex-row flex-wrap items-center gap-x-2 gap-y-3"
+              >
+                <Text className="font-display-normal text-base text-muted-foreground">Paid by</Text>
+                <Pressable
+                  accessibilityRole="button"
+                  accessibilityLabel={`Paid by ${payers.label}. Change who paid`}
+                  onPress={() => openPicker("payers")}
+                  allowDoublePress
+                  className="rounded-lg bg-muted px-3.5 py-1.5 active:opacity-80"
+                >
+                  <Text className="font-display-medium text-base text-foreground">
+                    {payers.label}
+                  </Text>
+                </Pressable>
+                <Text className="font-display-normal text-base text-muted-foreground">
+                  and split
+                </Text>
+                <Pressable
+                  accessibilityRole="button"
+                  accessibilityLabel={`Split ${split.label.toLowerCase()}. Change how it is split`}
+                  onPress={() => openPicker("split")}
+                  allowDoublePress
+                  className="rounded-lg bg-muted px-3.5 py-1.5 active:opacity-80"
+                >
+                  <Text className="font-display-medium text-base text-foreground">
+                    {split.label}
+                  </Text>
+                </Pressable>
+              </Animated.View>
+            ) : null}
+          </Animated.ScrollView>
+        </GestureDetector>
+      </KeyboardAvoidingView>
 
       <OptionSheet
         open={picker === "category"}
@@ -263,6 +294,6 @@ export function ExpenseFormScreen({
         onSelect={form.setDate}
         label="Choose the date spent"
       />
-    </KeyboardAvoidingView>
+    </SwipeDownScreen>
   );
 }

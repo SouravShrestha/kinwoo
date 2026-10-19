@@ -9,13 +9,17 @@ import {
 import { ArrowRightIcon } from "@kinwoo/icons/native";
 import { colors } from "@kinwoo/tokens/native";
 import { useMemo, useState } from "react";
-import { FlatList, Text, View } from "react-native";
+import { Text, View } from "react-native";
+import { GestureDetector } from "react-native-gesture-handler";
+import Animated from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { BoughtGroupSheet } from "@/components/grocery/BoughtGroupSheet";
 import { ItemDetailSheet } from "@/components/grocery/ItemDetailSheet";
 import { Pressable } from "@/components/Pressable";
+import { SwipeDownScreen } from "@/components/SwipeDownScreen";
 import { goBack } from "@/lib/house-navigation";
+import { useSwipeDownToDismiss } from "@/lib/use-swipe-down-to-dismiss";
 import { useTheme } from "@/theme/ThemeProvider";
 
 import { PrivatePurchaseRow } from "./PrivatePurchaseRow";
@@ -46,16 +50,21 @@ export function PrivateSpending({ houseId }: { houseId: string }) {
   };
 
   const loaded = items !== undefined;
+  const { pan, scrollGesture, onScroll, sheetStyle } = useSwipeDownToDismiss(goBack);
 
   return (
-    <>
-      <FlatList
-        data={loaded ? entries : []}
-        keyExtractor={(spend) => spend.key}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: insets.bottom + 40 }}
-        ListHeaderComponent={
-          <View className="px-6 pb-4" style={{ paddingTop: insets.top + 12 }}>
+    <SwipeDownScreen pan={pan} sheetStyle={sheetStyle}>
+      <GestureDetector gesture={scrollGesture}>
+        <Animated.ScrollView
+          onScroll={onScroll}
+          scrollEventThrottle={16}
+          // Overscroll at the top would fight the pull-down; the sheet itself gives the feedback.
+          bounces={false}
+          showsVerticalScrollIndicator={false}
+          overScrollMode="never"
+          contentContainerStyle={{ paddingBottom: insets.bottom + 40 }}
+        >
+          <View className="px-6 pb-4" style={{ paddingTop: insets.top + 20 }}>
             <Pressable
               accessibilityRole="button"
               accessibilityLabel="Back"
@@ -83,10 +92,8 @@ export function PrivateSpending({ houseId }: { houseId: string }) {
               </View>
             ) : null}
           </View>
-        }
-        renderItem={({ item }) => <PrivatePurchaseRow entry={item} onOpen={() => open(item)} />}
-        ListEmptyComponent={
-          loaded ? (
+
+          {loaded && entries.length === 0 ? (
             <View className="mx-4 mt-4 items-center gap-2 rounded-2xl border border-dashed border-border px-6 py-16">
               <Text className="font-display-medium text-base text-foreground">
                 No private purchases yet
@@ -95,9 +102,15 @@ export function PrivateSpending({ houseId }: { houseId: string }) {
                 Things you buy from your private lists show up here.
               </Text>
             </View>
-          ) : null
-        }
-      />
+          ) : null}
+
+          {loaded
+            ? entries.map((spend) => (
+                <PrivatePurchaseRow key={spend.key} entry={spend} onOpen={() => open(spend)} />
+              ))
+            : null}
+        </Animated.ScrollView>
+      </GestureDetector>
 
       <BoughtGroupSheet
         open={groupSheetOpen}
@@ -119,6 +132,6 @@ export function PrivateSpending({ houseId }: { houseId: string }) {
         listId={activeItem?.listId ?? ""}
         itemId={activeItem?.id ?? null}
       />
-    </>
+    </SwipeDownScreen>
   );
 }

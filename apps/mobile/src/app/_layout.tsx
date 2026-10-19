@@ -25,6 +25,14 @@ import { AppProviders } from "@/components/AppProviders";
 import "@/lib/splash";
 import { ThemeProvider } from "@/theme/ThemeProvider";
 
+// Transparent so the screen below shows through while the sheet is dragged down; the screen
+// handles its own swipe because the native one loses to its ScrollView.
+const SWIPE_DOWN_SHEET = {
+  presentation: "transparentModal",
+  animation: "slide_from_bottom",
+  gestureEnabled: false,
+} as const;
+
 export default function RootLayout() {
   const [fontsLoaded] = useFonts({
     Inter_300Light,
@@ -56,7 +64,6 @@ export default function RootLayout() {
                 name="item/new"
                 options={{
                   animation: "slide_from_bottom",
-                  animationDuration: 200,
                   gestureDirection: "vertical",
                 }}
               />
@@ -64,40 +71,14 @@ export default function RootLayout() {
                 name="item/bought"
                 options={{ animation: "slide_from_bottom", gestureDirection: "vertical" }}
               />
-              <Stack.Screen
-                name="expense/new"
-                options={{
-                  animation: "slide_from_bottom",
-                  animationDuration: 200,
-                  gestureDirection: "vertical",
-                }}
-              />
-              <Stack.Screen
-                name="expense/edit"
-                options={{
-                  animation: "slide_from_bottom",
-                  animationDuration: 200,
-                  gestureDirection: "vertical",
-                }}
-              />
-              <Stack.Screen
-                name="expenses/private"
-                options={{ animation: "slide_from_bottom", gestureDirection: "vertical" }}
-              />
+              <Stack.Screen name="expense/new" options={SWIPE_DOWN_SHEET} />
+              <Stack.Screen name="expense/edit" options={SWIPE_DOWN_SHEET} />
+              <Stack.Screen name="expenses/private" options={SWIPE_DOWN_SHEET} />
               <Stack.Screen
                 name="expense/[expenseId]"
                 options={{ animation: "slide_from_right" }}
               />
-              <Stack.Screen
-                name="item/bought-batch"
-                // Transparent so the screen below shows through while the sheet is dragged down;
-                // the screen handles its own swipe because the native one loses to its ScrollView.
-                options={{
-                  presentation: "transparentModal",
-                  animation: "slide_from_bottom",
-                  gestureEnabled: false,
-                }}
-              />
+              <Stack.Screen name="item/bought-batch" options={SWIPE_DOWN_SHEET} />
             </Stack>
           </AppProviders>
         </ThemeProvider>
