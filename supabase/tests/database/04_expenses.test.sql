@@ -144,11 +144,64 @@ select results_eq(
   format('values (%L::uuid, 6000::bigint), (%L::uuid, 8000::bigint)', tests.id('b'), tests.id('c')),
   'house_balances lists the caller''s pairs');
 
+select tests.as_user(tests.id('b'));
+select results_eq(
+  format('select user_id, net_paise, is_self from public.house_member_nets(%L) order by net_paise',
+    tests.id('house')),
+  format('values (%L::uuid, -7000::bigint, true), (%L::uuid, -7000::bigint, false),
+                 (%L::uuid, 14000::bigint, false)',
+    tests.id('b'), tests.id('c'), tests.id('a')),
+  'house_member_nets lists every member''s net and flags the caller');
+
 select tests.as_user(tests.id('x'));
 select throws_ok(format('select * from public.house_balances(%L)', tests.id('house')),
   'P0001', 'FORBIDDEN', 'outsiders cannot read balances');
+select throws_ok(format('select * from public.house_member_nets(%L)', tests.id('house')),
+  'P0001', 'FORBIDDEN', 'outsiders cannot read member nets');
+
 select is((select count(*) from public.expenses), 0::bigint, 'outsiders cannot see expenses');
 select is((select count(*) from public.expense_shares), 0::bigint, 'or their shares');
+
+-- Simplify debts is a house-wide setting any member can change, and every change is logged
+select throws_ok(format('select public.set_simplify_debts(%L, true)', tests.id('house')),
+  'P0001', 'FORBIDDEN', 'outsiders cannot change simplify debts');
+select tests.as_user(tests.id('b'));
+select is((select simplify_debts from public.houses where id = tests.id('house')), false,
+  'simplify debts starts off');
+select lives_ok(format('select public.set_simplify_debts(%L, true)', tests.id('house')),
+  'a plain member can turn it on');
+select is((select simplify_debts from public.houses where id = tests.id('house')), true,
+  'the setting is stored on the house');
+select tests.as_user(tests.id('c'));
+select is((select simplify_debts from public.houses where id = tests.id('house')), true,
+  'every member sees it');
+select lives_ok(format('select public.set_simplify_debts(%L, true)', tests.id('house')),
+  'setting the same value again is allowed');
+select is((select count(*) from public.activity_log
+            where house_id = tests.id('house') and type = 'simplify_debts_changed'), 1::bigint,
+  'an unchanged value is not logged again');
+select lives_ok(format('select public.set_simplify_debts(%L, false)', tests.id('house')),
+  'it can be turned back off');
+select results_eq(
+  format($$select actor_id, (payload->>'enabled')::boolean from public.activity_log
+            where house_id = %L and type = 'simplify_debts_changed' order by (payload->>'enabled')::boolean desc$$,
+    tests.id('house')),
+  format('values (%L::uuid, true), (%L::uuid, false)', tests.id('b'), tests.id('c')),
+  'each change records who made it and the new value');
+select throws_ok(format('update public.houses set simplify_debts = true where id = %L',
+    tests.id('house')),
+  '42501', null, 'the column cannot be written directly');
+
+-- One person can change it twice in 30 minutes; Meera has made 1 so far
+select lives_ok(format('select public.set_simplify_debts(%L, true)', tests.id('house')),
+  'a second change fits in the allowance');
+select throws_ok(format('select public.set_simplify_debts(%L, false)', tests.id('house')),
+  'P0001', 'RATE_LIMITED', 'the third change in thirty minutes is refused');
+select lives_ok(format('select public.set_simplify_debts(%L, true)', tests.id('house')),
+  'repeating the current value is never limited');
+select tests.as_user(tests.id('b'));
+select lives_ok(format('select public.set_simplify_debts(%L, false)', tests.id('house')),
+  'the limit is per person');
 
 -- Remainders round once per pair
 select tests.as_user(tests.id('a'));

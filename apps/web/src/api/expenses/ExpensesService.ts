@@ -7,6 +7,7 @@ import {
   isExpenseCategory,
   isSpentOn,
   isValidExpenseAmount,
+  simplifiedBalances,
   validateExpenseNote,
   validateExpenseParts,
   validateExpenseTitle,
@@ -118,8 +119,16 @@ export class ExpensesService implements IExpensesService {
     });
   }
 
-  async getBalances(houseId: string): Promise<ExpensesResult<HouseBalances>> {
-    return this.run(() => this.repository.getBalances(houseId));
+  async getBalances(houseId: string, simplify: boolean): Promise<ExpensesResult<HouseBalances>> {
+    if (!simplify) return this.run(() => this.repository.getBalances(houseId));
+    return this.run(async () => simplifiedBalances(await this.repository.getMemberNets(houseId)));
+  }
+
+  async setSimplifyDebts(houseId: string, enabled: boolean): Promise<ExpensesResult<null>> {
+    return this.run(async () => {
+      await this.repository.setSimplifyDebts(houseId, enabled);
+      return null;
+    });
   }
 
   private async run<T>(work: () => Promise<T>): Promise<ExpensesResult<T>> {

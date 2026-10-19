@@ -137,7 +137,7 @@ function DayEntries({
   currentUserId: string | null;
 }) {
   return (
-    <View className="px-6">
+    <View className="px-4">
       {entries.map((entry, index) => (
         <View
           key={entry.id}
@@ -170,7 +170,7 @@ const keyExtractor = (group: GroceryActivityEntry[], index: number) =>
   group[0]?.id ?? String(index);
 
 const renderSectionHeader = ({ section }: { section: DaySection }) => (
-  <View className="bg-background px-6 py-2">
+  <View className="bg-background px-4 py-2">
     <Text className="font-display-medium text-sm text-foreground">{section.title}</Text>
   </View>
 );

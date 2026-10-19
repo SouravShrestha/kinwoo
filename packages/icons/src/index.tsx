@@ -328,3 +328,15 @@ export const GlobeFilledIcon = (props: WebIconProps) => (
 export const CloudLockFilledIcon = (props: WebIconProps) => (
   <SvgIcon {...props} geometry={geometry.cloudLockFilledIcon} />
 );
+export const SimplifyIcon = (props: WebIconProps) => (
+  <SvgIcon {...props} geometry={geometry.simplifyIcon} />
+);
+export const SettleUpIcon = (props: WebIconProps) => (
+  <SvgIcon {...props} geometry={geometry.settleUpIcon} />
+);
+export const BalancesIcon = (props: WebIconProps) => (
+  <SvgIcon {...props} geometry={geometry.balancesIcon} />
+);
+export const TotalsIcon = (props: WebIconProps) => (
+  <SvgIcon {...props} geometry={geometry.totalsIcon} />
+);

@@ -10,6 +10,7 @@ import {
   type ExpenseInput,
   type HouseBalances,
   type IExpensesRepository,
+  type MemberNet,
 } from "./IExpensesRepository";
 
 const EXPENSE_COLUMNS =
@@ -166,5 +167,25 @@ export class ExpensesRepository implements IExpensesRepository {
       netPaise: Number(row.net_paise),
     }));
     return { netPaise: pairs.reduce((sum, pair) => sum + pair.netPaise, 0), pairs };
+  }
+
+  async setSimplifyDebts(houseId: string, enabled: boolean): Promise<void> {
+    const { error } = await this.client.rpc("set_simplify_debts", {
+      p_house_id: houseId,
+      p_enabled: enabled,
+    });
+    if (error) fail(error);
+  }
+
+  async getMemberNets(houseId: string): Promise<MemberNet[]> {
+    const { data, error } = await this.client.rpc("house_member_nets", { p_house_id: houseId });
+    if (error) fail(error);
+    return (data ?? []).map((row) => ({
+      userId: row.user_id,
+      name: row.display_name ?? null,
+      avatarUrl: toPublicAvatarUrl(this.client, row.avatar_url),
+      netPaise: Number(row.net_paise),
+      isSelf: row.is_self,
+    }));
   }
 }

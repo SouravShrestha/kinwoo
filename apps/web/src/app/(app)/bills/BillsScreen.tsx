@@ -2,22 +2,25 @@
 
 import { useBusyWhile } from "@kinwoo/client/activity";
 import { useAuth } from "@kinwoo/client/auth";
-import { useExpenses, useHouseBalances } from "@kinwoo/client/expenses";
-import { useGroceryLists } from "@kinwoo/client/grocery";
+import {
+  expenseErrorFromCause,
+  useExpenses,
+  useHouseBalances,
+  useSetSimplifyDebts,
+} from "@kinwoo/client/expenses";
 import { useActiveHouse } from "@kinwoo/client/houses";
-import { groupExpensesByMonth } from "@kinwoo/core/expenses";
-import { hasOwnPrivateList } from "@kinwoo/core/grocery";
-import { PlusCircleIcon } from "@kinwoo/icons";
+import { toast } from "@kinwoo/client/toast";
+import { MoreVerticalIcon, PlusCircleIcon } from "@kinwoo/icons";
 import { useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 
 import { Button } from "@/components/Button";
 import { BalanceSummary } from "@/components/expenses/BalanceSummary";
-import { BillsTabView, type BillsView } from "@/components/expenses/BillsTabView";
+import { ExpenseActions } from "@/components/expenses/ExpenseActions";
 import { ExpenseRow } from "@/components/expenses/ExpenseRow";
-import { PrivateSpending } from "@/components/expenses/PrivateSpending";
+import { ExpensesMenuSheet } from "@/components/expenses/ExpensesMenuSheet";
 import { SetupHousePrompt } from "@/components/houses/SetupHousePrompt";
-import { expensePath, NEW_EXPENSE_PATH } from "@/lib/house-navigation";
+import { expensePath, NEW_EXPENSE_PATH, PRIVATE_SPENDING_PATH } from "@/lib/house-navigation";
 
 export function BillsScreen() {
   const router = useRouter();
@@ -25,10 +28,7 @@ export function BillsScreen() {
   const houseId = activeHouse?.house.id ?? null;
   const { user } = useAuth();
   const currentUserId = user?.id ?? null;
-  const [selectedView, setSelectedView] = useState<BillsView>("shared");
-  const { data: lists } = useGroceryLists(houseId);
-  const hasPrivateList = hasOwnPrivateList(lists ?? [], currentUserId);
-  const view = hasPrivateList ? selectedView : "shared";
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const {
     data: expenses,
@@ -38,10 +38,11 @@ export function BillsScreen() {
     isFetchingNextPage,
     fetchNextPage,
   } = useExpenses(houseId);
-  const { data: balances } = useHouseBalances(houseId);
-  useBusyWhile(isFetchingNextPage);
+  const simplifyDebts = activeHouse?.house.simplifyDebts ?? false;
+  const setSimplifyDebts = useSetSimplifyDebts(houseId ?? "");
+  const { data: balances, isPlaceholderData } = useHouseBalances(houseId, simplifyDebts);
+  useBusyWhile(isFetchingNextPage || isPlaceholderData);
 
-  const months = useMemo(() => groupExpensesByMonth(expenses ?? []), [expenses]);
   const canLoadMore = hasNextPage && !isFetchNextPageError && !isFetchingNextPage;
 
   if (ready && !activeHouse) {
@@ -55,13 +56,34 @@ export function BillsScreen() {
     );
   }
 
-  const empty = ready && !isLoading && months.length === 0;
+  const empty = ready && !isLoading && (expenses ?? []).length === 0;
 
-  const sharedBills = (
-    <>
-      {balances ? <BalanceSummary balances={balances} /> : null}
+  const menuButton = (
+    <button
+      type="button"
+      onClick={() => setMenuOpen(true)}
+      aria-label="Expense options"
+      className="-mr-2 flex size-10 items-center justify-center text-foreground transition-opacity hover:cursor-pointer hover:opacity-70"
+    >
+      <MoreVerticalIcon size={3} />
+    </button>
+  );
 
-      <div className="mt-6">
+  return (
+    <main className="flex min-h-[calc(100dvh-4rem)] flex-col overflow-x-clip px-4 pb-24 pt-6">
+      <div className="flex justify-end px-2">{menuButton}</div>
+      {balances ? (
+        <div className="mt-2 px-2">
+          <BalanceSummary balances={balances} />
+        </div>
+      ) : null}
+      {balances ? (
+        <div className="mt-9">
+          <ExpenseActions />
+        </div>
+      ) : null}
+
+      <div className="mt-4">
         {!ready || isLoading ? null : empty ? (
           <div className="flex flex-col items-center justify-center gap-4 rounded-2xl border border-dashed border-border px-6 py-16 text-center">
             <p className="font-display font-medium text-foreground">No expenses yet</p>
@@ -75,57 +97,34 @@ export function BillsScreen() {
             />
           </div>
         ) : (
-          <div className="space-y-6">
-            {months.map((month) => (
-              <section key={month.key} aria-labelledby={`month-${month.key}`}>
-                <h2
-                  id={`month-${month.key}`}
-                  className="mb-3 font-display text-sm font-medium text-muted-foreground"
-                >
-                  {month.label}
-                </h2>
-                <ul className="space-y-2.5">
-                  {month.expenses.map((expense) => (
-                    <li key={expense.id}>
-                      <ExpenseRow
-                        expense={expense}
-                        currentUserId={currentUserId}
-                        onOpen={() => router.push(expensePath(expense.id))}
-                      />
-                    </li>
-                  ))}
-                </ul>
-              </section>
-            ))}
+          <div className="-mx-4">
+            <div className="mb-2" />
+            <ul>
+              {(expenses ?? []).map((expense) => (
+                <li key={expense.id}>
+                  <ExpenseRow
+                    expense={expense}
+                    currentUserId={currentUserId}
+                    onOpen={() => router.push(expensePath(expense.id))}
+                  />
+                </li>
+              ))}
+            </ul>
             {canLoadMore ? (
-              <Button
-                label="Show older expenses"
-                variant="outline"
-                onClick={() => void fetchNextPage()}
-              />
+              <div className="mt-6 px-4">
+                <Button
+                  label="Show older expenses"
+                  variant="outline"
+                  onClick={() => void fetchNextPage()}
+                />
+              </div>
             ) : null}
           </div>
         )}
       </div>
-    </>
-  );
 
-  return (
-    <main className="flex min-h-[calc(100dvh-4rem)] flex-col overflow-x-clip px-6 pb-24">
-      {hasPrivateList && houseId ? (
-        <BillsTabView
-          value={view}
-          onChange={setSelectedView}
-          renderPage={(page) =>
-            page === "private" ? <PrivateSpending houseId={houseId} /> : sharedBills
-          }
-        />
-      ) : (
-        <div className="pt-6">{sharedBills}</div>
-      )}
-
-      {empty || view === "private" ? null : (
-        <div className="pointer-events-none fixed bottom-22.5 left-1/2 w-full max-w-md -translate-x-1/2 px-6">
+      {empty ? null : (
+        <div className="pointer-events-none fixed bottom-22.5 left-1/2 w-full max-w-md -translate-x-1/2 px-4">
           <button
             type="button"
             onClick={() => router.push(NEW_EXPENSE_PATH)}
@@ -137,6 +136,24 @@ export function BillsScreen() {
           </button>
         </div>
       )}
+
+      <ExpensesMenuSheet
+        open={menuOpen}
+        onClose={() => setMenuOpen(false)}
+        simplifyDebts={simplifyDebts}
+        onSimplifyDebtsChange={(enabled) =>
+          setSimplifyDebts.mutate(enabled, {
+            onError: (error) =>
+              toast.error(
+                expenseErrorFromCause(error, "Couldn't change simplify debts. Try again."),
+              ),
+          })
+        }
+        onViewPrivate={() => {
+          setMenuOpen(false);
+          router.push(PRIVATE_SPENDING_PATH);
+        }}
+      />
     </main>
   );
 }

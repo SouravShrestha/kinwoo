@@ -17,5 +17,6 @@ export interface IExpensesService {
     input: ExpenseInput,
   ): Promise<ExpensesResult<Expense>>;
   deleteExpense(expenseId: string): Promise<ExpensesResult<null>>;
-  getBalances(houseId: string): Promise<ExpensesResult<HouseBalances>>;
+  getBalances(houseId: string, simplify: boolean): Promise<ExpensesResult<HouseBalances>>;
+  setSimplifyDebts(houseId: string, enabled: boolean): Promise<ExpensesResult<null>>;
 }

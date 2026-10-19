@@ -22,13 +22,13 @@ import {
   type JoinResult,
 } from "./IHousesRepository";
 
-const HOUSE_COLUMNS = "id, name, address, join_mode";
+const HOUSE_COLUMNS = "id, name, address, join_mode, simplify_debts";
 const INVITE_COLUMNS = "id, code, uses";
 const INVITED_EMAIL_COLUMNS = "id, email, created_at";
 
 type HouseRow = Pick<
   Database["public"]["Tables"]["houses"]["Row"],
-  "id" | "name" | "address" | "join_mode"
+  "id" | "name" | "address" | "join_mode" | "simplify_debts"
 >;
 type InviteRow = Database["public"]["Tables"]["house_invites"]["Row"];
 type InvitedEmailRow = Database["public"]["Tables"]["house_invited_emails"]["Row"];
@@ -39,6 +39,7 @@ function toHouse(row: HouseRow): House {
     name: row.name,
     address: row.address,
     joinMode: isHouseJoinMode(row.join_mode) ? row.join_mode : "anyone",
+    simplifyDebts: row.simplify_debts,
   };
 }
 

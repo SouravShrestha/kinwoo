@@ -24,6 +24,10 @@ export function openEditExpense(expenseId: string) {
   router.push({ pathname: "/expense/edit", params: { expenseId } });
 }
 
+export function openPrivateSpending() {
+  router.push("/expenses/private");
+}
+
 // A deep link can land on a house screen with nothing underneath it to go back to.
 export function goBack() {
   if (router.canGoBack()) router.back();

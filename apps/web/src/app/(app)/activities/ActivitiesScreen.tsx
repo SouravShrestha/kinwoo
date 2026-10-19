@@ -59,14 +59,16 @@ export function ActivitiesScreen() {
   }
 
   return (
-    <main className="flex min-h-[calc(100dvh-4rem)] flex-col px-6 pb-24 pt-6">
-      <h1 className="pb-4 font-display text-xl font-normal text-foreground">Recent Activity</h1>
+    <main className="flex min-h-[calc(100dvh-4rem)] flex-col px-4 pb-24 pt-6">
+      <h1 className="mb-4 flex min-h-10 items-center px-2 font-display text-xl font-normal text-foreground">
+        Recent Activity
+      </h1>
 
       <Filters
         groups={filterGroups}
         value={filters}
         onChange={setFilters}
-        className="-mx-6 mb-6 mt-2 px-6"
+        className="-mx-4 mb-6 mt-2 px-6"
       />
 
       <div className="flex-1">

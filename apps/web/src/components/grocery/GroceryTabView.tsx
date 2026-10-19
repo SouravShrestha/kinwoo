@@ -255,7 +255,7 @@ export function GroceryTabView({
             id={panelId(tab.key)}
             aria-labelledby={tabId(tab.key)}
             inert={i !== index}
-            className="w-full shrink-0 snap-start snap-always px-6 pt-4"
+            className="w-full shrink-0 snap-start snap-always px-4 pt-4"
           >
             {renderPage(tab.key)}
           </div>

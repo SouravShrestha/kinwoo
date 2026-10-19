@@ -108,6 +108,14 @@
   animation: kinwoo-slide-down 200ms ease-in both;
 }
 
+@utility form-screen-in {
+  animation: kinwoo-slide-up 180ms cubic-bezier(0.32, 0.72, 0, 1) both;
+}
+
+@utility form-screen-out {
+  animation: kinwoo-slide-down 150ms ease-in both;
+}
+
 @keyframes kinwoo-view-in-forward {
   from {
     opacity: 0;
@@ -202,6 +210,8 @@
   .sheet-backdrop-out,
   .sheet-panel-in,
   .sheet-panel-out,
+  .form-screen-in,
+  .form-screen-out,
   .sheet-view-forward,
   .sheet-view-back,
   .toast-in,

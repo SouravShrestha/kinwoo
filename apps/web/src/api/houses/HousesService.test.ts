@@ -10,7 +10,13 @@ import {
   type InvitedEmail,
 } from "./IHousesRepository";
 
-const house: House = { id: "h1", name: "Flat", address: null, joinMode: "anyone" };
+const house: House = {
+  id: "h1",
+  name: "Flat",
+  address: null,
+  joinMode: "anyone",
+  simplifyDebts: false,
+};
 const invite: HouseInvite = { id: "i1", code: "ABC234", uses: 0 };
 const invitedEmail: InvitedEmail = {
   id: "e1",

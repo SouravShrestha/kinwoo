@@ -4,9 +4,10 @@ import type {
   ExpenseErrorCode,
   ExpenseInput,
   HouseBalances,
+  MemberNet,
 } from "@kinwoo/core/expenses";
 
-export type { Expense, ExpenseCursor, ExpenseInput, HouseBalances };
+export type { Expense, ExpenseCursor, ExpenseInput, HouseBalances, MemberNet };
 
 export class ExpensesRepositoryError extends Error {
   constructor(
@@ -25,4 +26,6 @@ export interface IExpensesRepository {
   updateExpense(expenseId: string, input: ExpenseInput): Promise<void>;
   deleteExpense(expenseId: string): Promise<void>;
   getBalances(houseId: string): Promise<HouseBalances>;
+  getMemberNets(houseId: string): Promise<MemberNet[]>;
+  setSimplifyDebts(houseId: string, enabled: boolean): Promise<void>;
 }

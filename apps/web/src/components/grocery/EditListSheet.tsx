@@ -27,6 +27,7 @@ import { Button } from "@/components/Button";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { Avatar } from "@/components/houses/Avatar";
 import { SheetHeader } from "@/components/houses/SheetHeader";
+import { Switch } from "@/components/Switch";
 import { CategoryIcon } from "./CategoryIcon";
 import { ListIconPicker } from "./ListIconPicker";
 import { ListVisibilityToggle } from "./ListVisibilityToggle";
@@ -252,10 +253,11 @@ export function EditListSheet({
                         : "New items land here"}
                     </p>
                   </div>
-                  <DefaultToggle
+                  <Switch
                     checked={isDefault}
                     disabled={wasDefault}
                     onChange={setIsDefault}
+                    label="Set as default list"
                   />
                 </div>
               ) : null}
@@ -327,34 +329,6 @@ function DeleteButton({ disabled, onClick }: { disabled: boolean; onClick: () =>
       className="flex size-14 shrink-0 items-center justify-center rounded-xl bg-destructive/15 text-destructive transition-opacity hover:cursor-pointer hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground disabled:cursor-not-allowed disabled:opacity-50"
     >
       <TrashIcon size={20} />
-    </button>
-  );
-}
-
-function DefaultToggle({
-  checked,
-  disabled,
-  onChange,
-}: {
-  checked: boolean;
-  disabled?: boolean;
-  onChange: (next: boolean) => void;
-}) {
-  return (
-    <button
-      type="button"
-      role="switch"
-      aria-checked={checked}
-      aria-label="Set as default list"
-      disabled={disabled}
-      onClick={() => onChange(!checked)}
-      className="relative h-7 w-12 shrink-0 rounded-full bg-muted-foreground/30 transition-colors aria-checked:bg-foreground hover:cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
-    >
-      <span
-        aria-hidden
-        className="absolute left-1 top-1 size-5 rounded-full bg-muted-foreground transition-[transform,background-color] duration-200 ease-out data-[on=true]:translate-x-5 data-[on=true]:bg-background"
-        data-on={checked}
-      />
     </button>
   );
 }

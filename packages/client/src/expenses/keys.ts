@@ -4,4 +4,6 @@ export const expenseKeys = {
   detail: (houseId: string, expenseId: string) =>
     ["expenses", houseId, "detail", expenseId] as const,
   balances: (houseId: string) => ["expenses", houseId, "balances"] as const,
+  balancesView: (houseId: string, simplify: boolean) =>
+    ["expenses", houseId, "balances", simplify ? "simplified" : "direct"] as const,
 };

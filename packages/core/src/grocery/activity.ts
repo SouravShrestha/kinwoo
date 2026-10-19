@@ -27,6 +27,7 @@ const TYPE_OPTION_BY_ACTIVITY: Record<string, string> = {
   "expense.created": "expenses",
   "expense.updated": "expenses",
   "expense.deleted": "expenses",
+  simplify_debts_changed: "expenses",
   "grocery_item.cancelled": "deleted",
   "grocery_item.deleted": "deleted",
   "grocery_list.created": "lists",
@@ -264,6 +265,12 @@ function memberParts(
         { text: ` ${role}`, emphasis: false },
       ];
     }
+    case "simplify_debts_changed":
+      return [
+        actor,
+        { text: ` turned ${entry.payload?.enabled === true ? "on" : "off"} `, emphasis: false },
+        { text: "simplify debts", emphasis: true },
+      ];
     case "invite_created": {
       const phrase = entry.payload?.regenerated === true ? "regenerated" : "created";
       return [actor, { text: ` ${phrase} the invite code`, emphasis: false }];
@@ -563,6 +570,7 @@ const ICON_BY_ACTIVITY: Record<string, ActivityIconName> = {
   "expense.created": "transaction",
   "expense.updated": "transaction",
   "expense.deleted": "trash",
+  simplify_debts_changed: "transaction",
   "grocery_item.cancelled": "cart-cross",
   "grocery_item.deleted": "trash",
   "grocery_list.created": "file-plus",

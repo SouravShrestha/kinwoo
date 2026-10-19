@@ -2,21 +2,28 @@ import { describe, expect, it } from "vitest";
 
 import {
   balanceHeadline,
+  balanceHeadlineParts,
   buildExpenseParts,
   canManageExpense,
   computeSplit,
   expenseFormSeed,
+  expenseShareSummary,
   expenseYourShare,
   groupExpensesByMonth,
   isSpentOn,
   pairBalanceLabel,
+  pairBalanceParts,
   parseExpenseRpcError,
   shareWeightLabel,
+  simplifiedBalances,
+  simplifyDebts,
   spentOnFor,
+  spentOnParts,
   validateExpenseNote,
   validateExpenseParts,
   validateExpenseTitle,
   type Expense,
+  type MemberNet,
 } from "./index";
 
 function expense(overrides: Partial<Expense> = {}): Expense {
@@ -244,6 +251,86 @@ describe("ledger labels", () => {
     expect(pairBalanceLabel({ userId: "c", name: null, avatarUrl: null, netPaise: -15000 })).toBe(
       "You owe Housemate ₹150",
     );
+  });
+
+  it("splits balance text around the amount", () => {
+    expect(balanceHeadlineParts({ netPaise: -27542, pairs: [] })).toEqual({
+      before: "You owe ",
+      amount: "₹275.42",
+      after: " overall",
+      tone: "owe",
+    });
+    expect(
+      pairBalanceParts({ userId: "b", name: "Asha", avatarUrl: null, netPaise: 42000 }),
+    ).toEqual({ before: "Asha owes you ", amount: "₹420", after: "", tone: "owed" });
+  });
+
+  it("summarises your share without the sentence", () => {
+    expect(expenseShareSummary(expense(), "a")).toEqual({
+      label: "you lent",
+      amountPaise: 20000,
+      tone: "lent",
+    });
+    expect(expenseShareSummary(expense(), "b")).toEqual({
+      label: "you borrowed",
+      amountPaise: 10000,
+      tone: "borrowed",
+    });
+    expect(expenseShareSummary(expense(), "z")).toEqual({
+      label: "not involved",
+      amountPaise: null,
+      tone: "neutral",
+    });
+  });
+
+  it("splits the spent-on date for the date column", () => {
+    expect(spentOnParts("2026-10-08")).toEqual({ month: "Oct", day: "08" });
+    expect(spentOnParts("2026-10-10")).toEqual({ month: "Oct", day: "10" });
+  });
+});
+
+describe("simplifyDebts", () => {
+  const member = (userId: string, netPaise: number, isSelf = false): MemberNet => ({
+    userId,
+    name: userId.toUpperCase(),
+    avatarUrl: null,
+    netPaise,
+    isSelf,
+  });
+
+  it("settles a chain in fewer transfers", () => {
+    // b owes a 100 and c owes b 100, so c can pay a directly.
+    expect(simplifyDebts([member("a", 10000), member("b", 0), member("c", -10000)])).toEqual([
+      { fromId: "c", toId: "a", amountPaise: 10000 },
+    ]);
+  });
+
+  it("matches the largest debtor with the largest creditor", () => {
+    expect(
+      simplifyDebts([member("a", 14000), member("b", -7000), member("c", -7000), member("d", 0)]),
+    ).toEqual([
+      { fromId: "b", toId: "a", amountPaise: 7000 },
+      { fromId: "c", toId: "a", amountPaise: 7000 },
+    ]);
+    expect(simplifyDebts([member("a", 5000), member("b", 3000), member("c", -8000)])).toEqual([
+      { fromId: "c", toId: "a", amountPaise: 5000 },
+      { fromId: "c", toId: "b", amountPaise: 3000 },
+    ]);
+  });
+
+  it("returns the caller's side of the simplified debts", () => {
+    expect(
+      simplifiedBalances([member("a", 10000), member("b", 0, true), member("c", -10000)]),
+    ).toEqual({ netPaise: 0, pairs: [] });
+    expect(
+      simplifiedBalances([member("a", 5000), member("b", 3000), member("c", -8000, true)]),
+    ).toEqual({
+      netPaise: -8000,
+      pairs: [
+        { userId: "a", name: "A", avatarUrl: null, netPaise: -5000 },
+        { userId: "b", name: "B", avatarUrl: null, netPaise: -3000 },
+      ],
+    });
   });
 });
 

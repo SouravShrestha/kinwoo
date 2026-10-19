@@ -12,6 +12,8 @@ export function batchMarkBoughtPath(listId: string, itemIds: readonly string[]) 
 
 export const NEW_EXPENSE_PATH = "/expense/new";
 
+export const PRIVATE_SPENDING_PATH = "/expenses/private";
+
 export function expensePath(expenseId: string) {
   return `/expense/${encodeURIComponent(expenseId)}`;
 }

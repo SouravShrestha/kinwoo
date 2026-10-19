@@ -54,7 +54,11 @@ export default function RootLayout() {
               <Stack.Screen name="profile" options={{ animation: "slide_from_right" }} />
               <Stack.Screen
                 name="item/new"
-                options={{ animation: "slide_from_bottom", gestureDirection: "vertical" }}
+                options={{
+                  animation: "slide_from_bottom",
+                  animationDuration: 200,
+                  gestureDirection: "vertical",
+                }}
               />
               <Stack.Screen
                 name="item/bought"
@@ -62,10 +66,22 @@ export default function RootLayout() {
               />
               <Stack.Screen
                 name="expense/new"
-                options={{ animation: "slide_from_bottom", gestureDirection: "vertical" }}
+                options={{
+                  animation: "slide_from_bottom",
+                  animationDuration: 200,
+                  gestureDirection: "vertical",
+                }}
               />
               <Stack.Screen
                 name="expense/edit"
+                options={{
+                  animation: "slide_from_bottom",
+                  animationDuration: 200,
+                  gestureDirection: "vertical",
+                }}
+              />
+              <Stack.Screen
+                name="expenses/private"
                 options={{ animation: "slide_from_bottom", gestureDirection: "vertical" }}
               />
               <Stack.Screen

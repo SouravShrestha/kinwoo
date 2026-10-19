@@ -66,3 +66,12 @@ export type HouseBalances = {
   netPaise: number;
   pairs: PairBalance[];
 };
+
+// Positive `netPaise` means the house owes this member overall.
+export type MemberNet = {
+  userId: string;
+  name: string | null;
+  avatarUrl: string | null;
+  netPaise: number;
+  isSelf: boolean;
+};

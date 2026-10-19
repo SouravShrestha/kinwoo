@@ -453,7 +453,7 @@ export function TasksScreen() {
 
       <div
         hidden={selecting}
-        className="fixed bottom-22.5 left-1/2 -translate-x-1/2 w-full max-w-md px-6 pointer-events-none"
+        className="fixed bottom-22.5 left-1/2 -translate-x-1/2 w-full max-w-md px-4 pointer-events-none"
       >
         <button
           type="button"

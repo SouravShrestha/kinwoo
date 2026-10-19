@@ -128,3 +128,33 @@ describe("formatTimelineTime", () => {
     expect(formatTimelineTime("nope", now)).toBe("");
   });
 });
+
+describe("simplify debts activity", () => {
+  const entry = (enabled: boolean): GroceryActivityEntry => ({
+    id: "s1",
+    actorId: "u1",
+    actorName: "Sourav",
+    type: "simplify_debts_changed",
+    entityType: "house",
+    entityId: "h1",
+    payload: { enabled },
+    createdAt: "2026-10-15T10:00:00Z",
+  });
+
+  it("reads as the actor switching it on or off", () => {
+    expect(formatActivityParts(entry(true), "u2")).toEqual([
+      { text: "Sourav", emphasis: true },
+      { text: " turned on ", emphasis: false },
+      { text: "simplify debts", emphasis: true },
+    ]);
+    expect(formatActivityParts(entry(false), "u1")).toEqual([
+      { text: "You", emphasis: true },
+      { text: " turned off ", emphasis: false },
+      { text: "simplify debts", emphasis: true },
+    ]);
+  });
+
+  it("uses the expense icon", () => {
+    expect(activityIconName(entry(true))).toBe("transaction");
+  });
+});

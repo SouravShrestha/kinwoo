@@ -6,6 +6,7 @@ export const EXPENSE_ERROR_CODES = [
   "NOT_A_MEMBER",
   "INVALID_INPUT",
   "PRIVATE_LIST",
+  "RATE_LIMITED",
 ] as const;
 
 export type ExpenseErrorCode = (typeof EXPENSE_ERROR_CODES)[number];
@@ -26,6 +27,7 @@ const MESSAGES: Record<ExpenseErrorCode, string> = {
   NOT_A_MEMBER: "Everyone in an expense has to be in the house.",
   INVALID_INPUT: "Check the amounts and try again.",
   PRIVATE_LIST: "Purchases from a private list can't be split.",
+  RATE_LIMITED: "You've changed this twice already. Try again in half an hour.",
 };
 
 export const GENERIC_EXPENSE_ERROR = "Something went wrong. Please try again.";

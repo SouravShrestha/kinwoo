@@ -94,7 +94,20 @@ export function formatPaise(paise: number): string {
   return `${sign}₹${rupees}${fraction === 0 ? "" : `.${String(fraction).padStart(2, "0")}`}`;
 }
 
-const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+export const SHORT_MONTHS = [
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
+] as const;
 
 function startOfDay(time: number): number {
   const date = new Date(time);
@@ -108,7 +121,7 @@ export function formatBoughtDate(iso: string, now: number = Date.now()): string 
   const days = Math.round((startOfDay(now) - startOfDay(date.getTime())) / 86_400_000);
   if (days === 0) return "Today";
   if (days === 1) return "Yesterday";
-  const dayMonth = `${date.getDate()} ${MONTHS[date.getMonth()]}`;
+  const dayMonth = `${date.getDate()} ${SHORT_MONTHS[date.getMonth()]}`;
   return date.getFullYear() === new Date(now).getFullYear()
     ? dayMonth
     : `${dayMonth} ${date.getFullYear()}`;
@@ -116,7 +129,7 @@ export function formatBoughtDate(iso: string, now: number = Date.now()): string 
 
 export function formatFullDate(time: number): string {
   const date = new Date(time);
-  return `${date.getDate()} ${MONTHS[date.getMonth()]}, ${date.getFullYear()}`;
+  return `${date.getDate()} ${SHORT_MONTHS[date.getMonth()]}, ${date.getFullYear()}`;
 }
 
 export function formatPickedDate(date: Date, now: number = Date.now()): string {

@@ -18,6 +18,7 @@ import { PrivatePurchaseRow } from "./PrivatePurchaseRow";
 export function PrivateSpending({ houseId }: { houseId: string }) {
   const { data: items } = usePrivatePurchases(houseId);
   const spending = useMemo(() => summarizePrivateSpending(items ?? []), [items]);
+  const entries = useMemo(() => spending.months.flatMap((month) => month.entries), [spending]);
 
   const [activeItem, setActiveItem] = useState<{ id: string; listId: string } | null>(null);
   const [activeBatchId, setActiveBatchId] = useState<string | null>(null);
@@ -40,21 +41,19 @@ export function PrivateSpending({ houseId }: { houseId: string }) {
 
   return (
     <>
-      <section
-        aria-labelledby="private-spending-headline"
-        className="rounded-2xl border border-border bg-card p-4"
-      >
+      <section aria-labelledby="private-spending-headline" className="px-2">
         <h2
           id="private-spending-headline"
-          className="font-display text-lg font-medium text-foreground"
+          className="font-display text-xl font-normal text-foreground"
         >
-          {formatPaise(spending.totalPaise)} spent privately
+          You&apos;ve spent <span className="font-medium">{formatPaise(spending.totalPaise)}</span>{" "}
+          privately
         </h2>
-        <p className="mt-1 font-display text-sm text-muted-foreground">{PRIVATE_SPENDING_NOTE}</p>
+        <p className="mt-2 font-display text-sm text-muted-foreground">{PRIVATE_SPENDING_NOTE}</p>
       </section>
 
       <div className="mt-6">
-        {spending.months.length === 0 ? (
+        {entries.length === 0 ? (
           <div className="flex flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-border px-6 py-16 text-center">
             <p className="font-display font-medium text-foreground">No private purchases yet</p>
             <p className="font-display text-sm text-muted-foreground">
@@ -62,30 +61,13 @@ export function PrivateSpending({ houseId }: { houseId: string }) {
             </p>
           </div>
         ) : (
-          <div className="space-y-6">
-            {spending.months.map((month) => (
-              <section key={month.key} aria-labelledby={`private-month-${month.key}`}>
-                <div className="mb-3 flex items-baseline justify-between gap-3">
-                  <h2
-                    id={`private-month-${month.key}`}
-                    className="font-display text-sm font-medium text-muted-foreground"
-                  >
-                    {month.label}
-                  </h2>
-                  <span className="font-display text-sm text-muted-foreground">
-                    {formatPaise(month.totalPaise)}
-                  </span>
-                </div>
-                <ul className="space-y-2.5">
-                  {month.entries.map((spend) => (
-                    <li key={spend.key}>
-                      <PrivatePurchaseRow entry={spend} onOpen={() => open(spend)} />
-                    </li>
-                  ))}
-                </ul>
-              </section>
+          <ul className="-mx-4">
+            {entries.map((spend) => (
+              <li key={spend.key}>
+                <PrivatePurchaseRow entry={spend} onOpen={() => open(spend)} />
+              </li>
             ))}
-          </div>
+          </ul>
         )}
       </div>
 

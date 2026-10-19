@@ -3,10 +3,10 @@
 import {
   privateSpendAccessibleLabel,
   privateSpendAmountLabel,
-  privateSpendSubtitle,
+  privateSpendDateParts,
+  privateSpendDetail,
   type PrivateSpendEntry,
 } from "@kinwoo/core/grocery";
-import { LockIcon } from "@kinwoo/icons";
 
 import { CategoryIcon } from "@/components/grocery/CategoryIcon";
 
@@ -17,42 +17,40 @@ export function PrivatePurchaseRow({
   entry: PrivateSpendEntry;
   onOpen: () => void;
 }) {
+  const { month, day } = privateSpendDateParts(entry);
+  const detail = privateSpendDetail(entry);
   return (
     <button
       type="button"
       aria-haspopup="dialog"
       onClick={onOpen}
       aria-label={privateSpendAccessibleLabel(entry)}
-      className="flex w-full items-center gap-3 rounded-2xl border border-border bg-card p-3 text-left transition-colors hover:cursor-pointer hover:border-foreground/30 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
+      className="flex w-full items-center px-4 py-5 text-left transition-colors hover:cursor-pointer hover:bg-muted/50 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-foreground"
     >
+      <span aria-hidden className="flex w-8 shrink-0 flex-col items-center font-display">
+        <span className="text-xs text-muted-foreground">{month}</span>
+        <span className="text-lg leading-6 text-muted-foreground">{day}</span>
+      </span>
       <span
         aria-hidden
-        className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-muted text-foreground"
+        className="ml-3 mr-4 flex size-10 shrink-0 items-center justify-center rounded-lg bg-muted text-foreground"
       >
         <CategoryIcon name={entry.categoryName ?? undefined} size={22} />
       </span>
-      <span className="flex min-w-0 flex-1 flex-col gap-0.5">
-        <span className="truncate font-display text-sm font-medium text-foreground">
-          {entry.label}
-        </span>
-        <span className="truncate font-display text-xs text-muted-foreground">
-          {privateSpendSubtitle(entry)}
-        </span>
+      <span className="mr-3 flex min-w-0 flex-1 flex-col gap-0.5">
+        <span className="truncate font-display text-base text-foreground">{entry.label}</span>
+        {detail ? (
+          <span className="truncate font-display text-xs text-muted-foreground">{detail}</span>
+        ) : null}
       </span>
-      <span className="flex shrink-0 flex-col items-end gap-0.5">
-        <span
-          className={
-            entry.amountPaise === null
-              ? "font-display text-sm text-muted-foreground"
-              : "font-display text-sm font-medium text-foreground"
-          }
-        >
-          {privateSpendAmountLabel(entry)}
-        </span>
-        <span className="flex items-center gap-1 font-display text-xs text-muted-foreground">
-          <LockIcon size={11} />
-          Not split
-        </span>
+      <span
+        className={
+          entry.amountPaise === null
+            ? "shrink-0 font-display text-base text-muted-foreground"
+            : "shrink-0 font-display text-base font-medium text-foreground"
+        }
+      >
+        {privateSpendAmountLabel(entry)}
       </span>
     </button>
   );

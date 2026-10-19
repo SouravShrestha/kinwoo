@@ -375,14 +375,14 @@ isOneToOne: false
                   ]
                 },"houses": {
                   Row: {
-                    "address": string | null,"created_at": string,"created_by": string,"default_split": string,"deleted_at": string | null,"id": string,"join_mode": string,"member_limit": number,"name": string,"require_approval": boolean,"settings": NonNullable<Json>,"updated_at": string
+                    "address": string | null,"created_at": string,"created_by": string,"default_split": string,"deleted_at": string | null,"id": string,"join_mode": string,"member_limit": number,"name": string,"require_approval": boolean,"settings": NonNullable<Json>,"simplify_debts": boolean,"updated_at": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "address"?: string | null,"created_at"?: string,"created_by": string,"default_split"?: string,"deleted_at"?: string | null,"id"?: string,"join_mode"?: string,"member_limit"?: number,"name": string,"require_approval"?: boolean,"settings"?: NonNullable<Json>,"updated_at"?: string
+                    "address"?: string | null,"created_at"?: string,"created_by": string,"default_split"?: string,"deleted_at"?: string | null,"id"?: string,"join_mode"?: string,"member_limit"?: number,"name": string,"require_approval"?: boolean,"settings"?: NonNullable<Json>,"simplify_debts"?: boolean,"updated_at"?: string
                   }
                   Update: {
-                    "address"?: string | null,"created_at"?: string,"created_by"?: string,"default_split"?: string,"deleted_at"?: string | null,"id"?: string,"join_mode"?: string,"member_limit"?: number,"name"?: string,"require_approval"?: boolean,"settings"?: NonNullable<Json>,"updated_at"?: string
+                    "address"?: string | null,"created_at"?: string,"created_by"?: string,"default_split"?: string,"deleted_at"?: string | null,"id"?: string,"join_mode"?: string,"member_limit"?: number,"name"?: string,"require_approval"?: boolean,"settings"?: NonNullable<Json>,"simplify_debts"?: boolean,"updated_at"?: string
                   }
                   Relationships: [
                     {
@@ -550,6 +550,7 @@ isOneToOne: false
 "name": string,
 "require_approval": boolean,
 "settings": NonNullable<Json>,
+"simplify_debts": boolean,
 "updated_at": string
             }
                           SetofOptions: {
@@ -572,6 +573,9 @@ isOneToOne: false
               "net_paise": number,"other_id": string
             }[]
                            },
+"expense_parts_snapshot":
+{ Args: { "p_expense_id": string }; Returns: Json
+                           },
 "generate_invite_code":
 { Args: Record<PropertyKey, never>; Returns: string
                            },
@@ -581,6 +585,11 @@ isOneToOne: false
 "house_balances":
 { Args: { "p_house_id": string }; Returns: {
               "avatar_url": string,"display_name": string,"net_paise": number,"user_id": string
+            }[]
+                           },
+"house_member_nets":
+{ Args: { "p_house_id": string }; Returns: {
+              "avatar_url": string,"display_name": string,"is_self": boolean,"net_paise": number,"user_id": string
             }[]
                            },
 "insert_expense":
@@ -641,6 +650,9 @@ isOneToOne: false
                            },
 "set_member_role":
 { Args: { "p_house_id": string,"p_role": Database["public"]['Enums']["house_role"],"p_user_id": string }; Returns: undefined
+                           },
+"set_simplify_debts":
+{ Args: { "p_enabled": boolean,"p_house_id": string }; Returns: undefined
                            },
 "shares_house_with":
 { Args: { "p_user_id": string }; Returns: boolean

@@ -7,6 +7,7 @@ export type House = {
   name: string;
   address: string | null;
   joinMode: HouseJoinMode;
+  simplifyDebts: boolean;
 };
 
 export type HouseMembership = {

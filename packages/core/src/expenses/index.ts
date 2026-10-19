@@ -4,6 +4,7 @@ export * from "./errors";
 export * from "./ledger";
 export * from "./parts";
 export * from "./payers";
+export * from "./simplify";
 export * from "./splits";
 export * from "./types";
 export * from "./validation";

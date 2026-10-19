@@ -91,7 +91,7 @@ export function AddItemScreen({ listId }: { listId: string | null }) {
       onAnimationEnd={onAnimationEnd}
       className={cn(
         "flex h-dvh flex-col overflow-hidden bg-background",
-        closing ? "sheet-panel-out" : "sheet-panel-in",
+        closing ? "form-screen-out" : "form-screen-in",
       )}
     >
       <form

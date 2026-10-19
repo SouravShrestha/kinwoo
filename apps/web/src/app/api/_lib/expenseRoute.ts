@@ -25,6 +25,7 @@ const STATUS_BY_CODE: Record<ExpensesServiceErrorCode, number> = {
   NOT_FOUND: 404,
   NOT_A_MEMBER: 409,
   PRIVATE_LIST: 409,
+  RATE_LIMITED: 429,
   UNAVAILABLE: 503,
 };
 

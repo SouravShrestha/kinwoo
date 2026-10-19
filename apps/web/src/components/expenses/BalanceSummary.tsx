@@ -1,47 +1,48 @@
 "use client";
 
 import {
-  balanceHeadline,
-  pairBalanceLabel,
+  balanceHeadlineParts,
+  pairBalanceParts,
   unsettledPairs,
+  type BalanceText,
   type HouseBalances,
 } from "@kinwoo/core/expenses";
 
 import { Avatar } from "@/components/houses/Avatar";
 import { cn } from "@/lib/utils";
 
+const AMOUNT_TONE = {
+  owed: "text-accent",
+  owe: "text-destructive",
+  neutral: "text-foreground",
+} as const;
+
+function BalanceLine({ text }: { text: BalanceText }) {
+  return (
+    <>
+      {text.before}
+      {text.amount ? (
+        <span className={cn("font-medium", AMOUNT_TONE[text.tone])}>{text.amount}</span>
+      ) : null}
+      {text.after}
+    </>
+  );
+}
+
 export function BalanceSummary({ balances }: { balances: HouseBalances }) {
   const pairs = unsettledPairs(balances);
   return (
-    <section
-      aria-labelledby="balance-headline"
-      className="rounded-2xl border border-border bg-card p-4"
-    >
-      <h2
-        id="balance-headline"
-        className={cn(
-          "font-display text-lg font-medium",
-          balances.netPaise > 0
-            ? "text-accent"
-            : balances.netPaise < 0
-              ? "text-destructive"
-              : "text-foreground",
-        )}
-      >
-        {balanceHeadline(balances)}
+    <section aria-labelledby="balance-headline">
+      <h2 id="balance-headline" className="font-display text-xl font-normal text-foreground">
+        <BalanceLine text={balanceHeadlineParts(balances)} />
       </h2>
       {pairs.length > 0 ? (
-        <ul className="mt-3 space-y-2.5">
+        <ul className="mt-5 space-y-4">
           {pairs.map((pair) => (
             <li key={pair.userId} className="flex items-center gap-3">
-              <Avatar name={pair.name} url={pair.avatarUrl} size={28} />
-              <span
-                className={cn(
-                  "font-display text-sm",
-                  pair.netPaise > 0 ? "text-foreground" : "text-destructive",
-                )}
-              >
-                {pairBalanceLabel(pair)}
+              <Avatar name={pair.name} url={pair.avatarUrl} size={20} />
+              <span className="font-display text-sm text-foreground">
+                <BalanceLine text={pairBalanceParts(pair)} />
               </span>
             </li>
           ))}

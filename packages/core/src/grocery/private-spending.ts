@@ -3,6 +3,7 @@ import {
   formatPaise,
   groupBoughtItems,
   itemCountLabel,
+  SHORT_MONTHS,
   type BoughtEntry,
 } from "./bought-groups";
 import { monthLabel } from "./purchase-date";
@@ -109,6 +110,18 @@ export function privateSpendSubtitle(entry: PrivateSpendEntry, now: number = Dat
   ]
     .filter(Boolean)
     .join(" · ");
+}
+
+export function privateSpendDateParts(entry: PrivateSpendEntry): { month: string; day: string } {
+  const date = new Date(entry.boughtAt);
+  return {
+    month: SHORT_MONTHS[date.getMonth()] ?? "",
+    day: String(date.getDate()).padStart(2, "0"),
+  };
+}
+
+export function privateSpendDetail(entry: PrivateSpendEntry): string {
+  return entry.itemCount > 1 ? itemCountLabel(entry.itemCount) : "";
 }
 
 export function privateSpendAccessibleLabel(entry: PrivateSpendEntry, now: number = Date.now()) {

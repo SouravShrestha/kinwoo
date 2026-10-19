@@ -16,7 +16,13 @@ import {
 } from "./realtime";
 import { createMemoryStorage } from "./storage";
 
-const house = (id: string, name = id): House => ({ id, name, address: null, joinMode: "anyone" });
+const house = (id: string, name = id): House => ({
+  id,
+  name,
+  address: null,
+  joinMode: "anyone",
+  simplifyDebts: false,
+});
 const membership = (id: string): HouseMembership => ({ role: "member", house: house(id) });
 
 describe("resolveActiveHouse", () => {

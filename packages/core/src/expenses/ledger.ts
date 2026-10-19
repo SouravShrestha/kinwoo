@@ -1,4 +1,4 @@
-import { formatPaise } from "../grocery/bought-groups";
+import { formatPaise, SHORT_MONTHS } from "../grocery/bought-groups";
 import { monthLabel } from "../grocery/purchase-date";
 import { memberDisplayName } from "../houses/members";
 import { formatHundredths } from "./splits";
@@ -16,6 +16,14 @@ export function spentOnFor(date: Date): string {
   const month = String(date.getMonth() + 1).padStart(2, "0");
   const day = String(date.getDate()).padStart(2, "0");
   return `${date.getFullYear()}-${month}-${day}`;
+}
+
+export function spentOnParts(spentOn: string): { month: string; day: string } {
+  const date = parseSpentOn(spentOn);
+  return {
+    month: SHORT_MONTHS[date.getMonth()] ?? "",
+    day: String(date.getDate()).padStart(2, "0"),
+  };
 }
 
 // Keeps the incoming order, which the API already sorts newest first.
@@ -62,6 +70,20 @@ export function expenseYourShare(
   return { label: "You paid your share", tone: "neutral" };
 }
 
+export function expenseShareSummary(
+  expense: Expense,
+  userId: string | null,
+): { label: string; amountPaise: number | null; tone: ExpenseShareTone } {
+  const involved =
+    expense.payers.some((payer) => payer.userId === userId) ||
+    expense.shares.some((entry) => entry.userId === userId);
+  if (!involved) return { label: "not involved", amountPaise: null, tone: "neutral" };
+  const difference = paidBy(expense, userId) - shareOf(expense, userId);
+  if (difference > 0) return { label: "you lent", amountPaise: difference, tone: "lent" };
+  if (difference < 0) return { label: "you borrowed", amountPaise: -difference, tone: "borrowed" };
+  return { label: "no balance", amountPaise: null, tone: "neutral" };
+}
+
 export function expensePayersLabel(expense: Expense, currentUserId: string | null): string {
   const names = expense.payers.map((payer) =>
     payer.userId === currentUserId ? "You" : memberDisplayName(payer.name),
@@ -84,19 +106,63 @@ export function canManageExpense(
   );
 }
 
-export function balanceHeadline(balances: HouseBalances): string {
-  if (balances.netPaise > 0) return `You're owed ${formatPaise(balances.netPaise)} overall`;
-  if (balances.netPaise < 0) return `You owe ${formatPaise(-balances.netPaise)} overall`;
-  return balances.pairs.some((pair) => pair.netPaise !== 0)
+export type BalanceTone = "owed" | "owe" | "neutral";
+
+// Split around the amount so it can be coloured on its own.
+export type BalanceText = { before: string; amount: string; after: string; tone: BalanceTone };
+
+const joinBalanceText = (text: BalanceText) => `${text.before}${text.amount}${text.after}`;
+
+export function balanceHeadlineParts(balances: HouseBalances): BalanceText {
+  if (balances.netPaise > 0) {
+    return {
+      before: "You're owed ",
+      amount: formatPaise(balances.netPaise),
+      after: " overall",
+      tone: "owed",
+    };
+  }
+  if (balances.netPaise < 0) {
+    return {
+      before: "You owe ",
+      amount: formatPaise(-balances.netPaise),
+      after: " overall",
+      tone: "owe",
+    };
+  }
+  const before = balances.pairs.some((pair) => pair.netPaise !== 0)
     ? "You're even overall"
     : "All settled up";
+  return { before, amount: "", after: "", tone: "neutral" };
+}
+
+export function balanceHeadline(balances: HouseBalances): string {
+  return joinBalanceText(balanceHeadlineParts(balances));
+}
+
+export function pairBalanceParts(pair: PairBalance): BalanceText {
+  const name = memberDisplayName(pair.name);
+  if (pair.netPaise > 0) {
+    return {
+      before: `${name} owes you `,
+      amount: formatPaise(pair.netPaise),
+      after: "",
+      tone: "owed",
+    };
+  }
+  if (pair.netPaise < 0) {
+    return {
+      before: `You owe ${name} `,
+      amount: formatPaise(-pair.netPaise),
+      after: "",
+      tone: "owe",
+    };
+  }
+  return { before: `Settled with ${name}`, amount: "", after: "", tone: "neutral" };
 }
 
 export function pairBalanceLabel(pair: PairBalance): string {
-  const name = memberDisplayName(pair.name);
-  if (pair.netPaise > 0) return `${name} owes you ${formatPaise(pair.netPaise)}`;
-  if (pair.netPaise < 0) return `You owe ${name} ${formatPaise(-pair.netPaise)}`;
-  return `Settled with ${name}`;
+  return joinBalanceText(pairBalanceParts(pair));
 }
 
 export function unsettledPairs(balances: HouseBalances): PairBalance[] {

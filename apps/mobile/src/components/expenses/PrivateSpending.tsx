@@ -6,27 +6,27 @@ import {
   summarizePrivateSpending,
   type PrivateSpendEntry,
 } from "@kinwoo/core/grocery";
+import { ArrowRightIcon } from "@kinwoo/icons/native";
+import { colors } from "@kinwoo/tokens/native";
 import { useMemo, useState } from "react";
-import { SectionList, Text, View } from "react-native";
+import { FlatList, Text, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { BoughtGroupSheet } from "@/components/grocery/BoughtGroupSheet";
 import { ItemDetailSheet } from "@/components/grocery/ItemDetailSheet";
+import { Pressable } from "@/components/Pressable";
+import { goBack } from "@/lib/house-navigation";
+import { useTheme } from "@/theme/ThemeProvider";
 
 import { PrivatePurchaseRow } from "./PrivatePurchaseRow";
 
 export function PrivateSpending({ houseId }: { houseId: string }) {
+  const insets = useSafeAreaInsets();
+  const { resolvedTheme } = useTheme();
+  const palette = colors[resolvedTheme];
   const { data: items } = usePrivatePurchases(houseId);
   const spending = useMemo(() => summarizePrivateSpending(items ?? []), [items]);
-  const sections = useMemo(
-    () =>
-      spending.months.map((month) => ({
-        key: month.key,
-        title: month.label,
-        totalPaise: month.totalPaise,
-        data: month.entries,
-      })),
-    [spending],
-  );
+  const entries = useMemo(() => spending.months.flatMap((month) => month.entries), [spending]);
 
   const [activeItem, setActiveItem] = useState<{ id: string; listId: string } | null>(null);
   const [activeBatchId, setActiveBatchId] = useState<string | null>(null);
@@ -49,45 +49,45 @@ export function PrivateSpending({ houseId }: { houseId: string }) {
 
   return (
     <>
-      <SectionList
-        sections={loaded ? sections : []}
+      <FlatList
+        data={loaded ? entries : []}
         keyExtractor={(spend) => spend.key}
-        stickySectionHeadersEnabled={false}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingHorizontal: 24, paddingTop: 24, paddingBottom: 96 }}
+        contentContainerStyle={{ paddingBottom: insets.bottom + 40 }}
         ListHeaderComponent={
-          loaded ? (
-            <View className="rounded-2xl border border-border bg-card p-4">
-              <Text
-                accessibilityRole="header"
-                className="font-display-medium text-lg text-foreground"
-              >
-                {formatPaise(spending.totalPaise)} spent privately
-              </Text>
-              <Text className="mt-1 font-display-normal text-sm text-muted-foreground">
-                {PRIVATE_SPENDING_NOTE}
-              </Text>
-            </View>
-          ) : null
-        }
-        renderSectionHeader={({ section }) => (
-          <View className="flex-row items-baseline justify-between gap-3 pb-3 pt-6">
-            <Text
-              accessibilityRole="header"
-              className="font-display-medium text-sm text-muted-foreground"
+          <View className="px-6 pb-4" style={{ paddingTop: insets.top + 12 }}>
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel="Back"
+              onPress={goBack}
+              hitSlop={12}
+              className="-ml-1 size-10 items-start justify-center"
             >
-              {section.title}
-            </Text>
-            <Text className="font-display-normal text-sm text-muted-foreground">
-              {formatPaise(section.totalPaise)}
-            </Text>
+              <View style={{ transform: [{ rotate: "90deg" }] }}>
+                <ArrowRightIcon size={28} color={palette.foreground} />
+              </View>
+            </Pressable>
+            {loaded ? (
+              <View className="mt-2">
+                <Text
+                  accessibilityRole="header"
+                  className="font-display-normal text-xl text-foreground"
+                >
+                  You&apos;ve spent{" "}
+                  <Text className="font-display-medium">{formatPaise(spending.totalPaise)}</Text>{" "}
+                  privately
+                </Text>
+                <Text className="mt-2 font-display-normal text-sm text-muted-foreground">
+                  {PRIVATE_SPENDING_NOTE}
+                </Text>
+              </View>
+            ) : null}
           </View>
-        )}
-        ItemSeparatorComponent={() => <View className="h-2.5" />}
+        }
         renderItem={({ item }) => <PrivatePurchaseRow entry={item} onOpen={() => open(item)} />}
         ListEmptyComponent={
           loaded ? (
-            <View className="mt-6 items-center gap-2 rounded-2xl border border-dashed border-border px-6 py-16">
+            <View className="mx-4 mt-4 items-center gap-2 rounded-2xl border border-dashed border-border px-6 py-16">
               <Text className="font-display-medium text-base text-foreground">
                 No private purchases yet
               </Text>

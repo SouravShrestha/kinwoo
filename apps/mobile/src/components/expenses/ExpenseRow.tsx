@@ -1,7 +1,8 @@
 import {
   expensePayersLabel,
-  expenseYourShare,
+  expenseShareSummary,
   parseSpentOn,
+  spentOnParts,
   type Expense,
 } from "@kinwoo/core/expenses";
 import { formatPaise, formatPickedDate } from "@kinwoo/core/grocery";
@@ -30,33 +31,41 @@ export function ExpenseRow({
 }) {
   const { resolvedTheme } = useTheme();
   const palette = colors[resolvedTheme];
-  const share = expenseYourShare(expense, currentUserId);
-  const date = formatPickedDate(parseSpentOn(expense.spentOn));
+  const share = expenseShareSummary(expense, currentUserId);
+  const shareAmount = share.amountPaise === null ? null : formatPaise(share.amountPaise);
+  const { month, day } = spentOnParts(expense.spentOn);
+  const payers = expensePayersLabel(expense, currentUserId);
   return (
     <Pressable
       accessibilityRole="button"
-      accessibilityLabel={`${expense.title}, ${formatPaise(expense.amountPaise)}, ${date}. ${share.label}`}
+      accessibilityLabel={`${expense.title}, ${formatPickedDate(parseSpentOn(expense.spentOn))}. ${payers}. ${share.label}${shareAmount ? ` ${shareAmount}` : ""}`}
       onPress={onOpen}
-      className="flex-row items-center gap-3 rounded-2xl border border-border bg-card p-3 active:opacity-80"
+      className="flex-row items-center px-4 py-5 active:opacity-70"
     >
-      <View className="size-10 items-center justify-center rounded-xl bg-muted">
+      <View className="w-8 items-center">
+        <Text className="font-display-normal text-xs text-muted-foreground">{month}</Text>
+        <Text className="font-display-normal text-lg leading-6 text-muted-foreground">{day}</Text>
+      </View>
+      <View className="ml-3 mr-4 size-10 items-center justify-center rounded-lg bg-muted">
         <ExpenseCategoryIcon category={expense.category} size={22} color={palette.foreground} />
       </View>
-      <View className="min-w-0 flex-1 gap-0.5">
-        <Text numberOfLines={1} className="font-display-medium text-sm text-foreground">
+      <View className="mr-3 min-w-0 flex-1 gap-0.5">
+        <Text numberOfLines={1} className="font-display-normal text-base text-foreground">
           {expense.title}
         </Text>
         <Text numberOfLines={1} className="font-display-normal text-xs text-muted-foreground">
-          {date} · {expensePayersLabel(expense, currentUserId)}
+          {payers}
         </Text>
       </View>
       <View className="items-end gap-0.5">
-        <Text className="font-display-medium text-sm text-foreground">
-          {formatPaise(expense.amountPaise)}
-        </Text>
-        <Text className={`font-display-normal text-xs ${TONE_CLASS[share.tone]}`}>
+        <Text className={`font-display-normal text-[11px] ${TONE_CLASS[share.tone]}`}>
           {share.label}
         </Text>
+        {shareAmount ? (
+          <Text className={`font-display-medium text-base ${TONE_CLASS[share.tone]}`}>
+            {shareAmount}
+          </Text>
+        ) : null}
       </View>
     </Pressable>
   );

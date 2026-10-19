@@ -5,6 +5,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { useEffect } from "react";
 
 import { useAuth } from "../auth/use-auth";
+import { groceryKeys } from "../grocery/keys";
 import { useActiveHouse } from "./active-house-provider";
 import { houseKeys } from "./keys";
 import {
@@ -83,6 +84,8 @@ export function HousesRealtime({ client }: { client: SupabaseClient }) {
             houseRowActions(payload.new as HouseRow, houseId),
             dropHouse,
           );
+          // Settings such as simplify debts log an activity entry alongside the row change.
+          void queryClient.invalidateQueries({ queryKey: groceryKeys.recentActivity(houseId) });
         },
       )
       .subscribe((status) => {

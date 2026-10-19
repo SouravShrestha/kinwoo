@@ -53,7 +53,9 @@ export default function ActivitiesScreen() {
     () => (
       <>
         <View className="px-6 pb-3 pt-3">
-          <Text className="font-display-medium text-xl text-foreground">Recent Activity</Text>
+          <View className="min-h-10 justify-center">
+            <Text className="font-display-normal text-xl text-foreground">Recent Activity</Text>
+          </View>
         </View>
         <Filters groups={filterGroups} value={filters} onChange={setFilters} className="pb-6" />
       </>

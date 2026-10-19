@@ -19,16 +19,9 @@ import {
 import { memberDisplayName } from "@kinwoo/core/houses";
 import { TrashIcon } from "@kinwoo/icons/native";
 import { colors } from "@kinwoo/tokens/native";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Text, View } from "react-native";
-import Animated, {
-  Easing,
-  FadeInLeft,
-  FadeInRight,
-  useAnimatedStyle,
-  useSharedValue,
-  withTiming,
-} from "react-native-reanimated";
+import Animated, { Easing, FadeInLeft, FadeInRight } from "react-native-reanimated";
 
 import { BottomSheet, SheetTextInput } from "@/components/BottomSheet";
 import { Button } from "@/components/Button";
@@ -37,6 +30,7 @@ import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { Avatar } from "@/components/houses/Avatar";
 import { SheetHeader } from "@/components/houses/SheetHeader";
 import { Pressable } from "@/components/Pressable";
+import { Switch } from "@/components/Switch";
 import { useTheme } from "@/theme/ThemeProvider";
 
 import { ListIconPicker } from "./ListIconPicker";
@@ -253,10 +247,11 @@ export function EditListSheet({
                         : "New items land here"}
                     </Text>
                   </View>
-                  <DefaultToggle
+                  <Switch
                     checked={isDefault}
                     disabled={wasDefault}
                     onChange={setIsDefault}
+                    accessibilityLabel="Set as default list"
                   />
                 </View>
               ) : null}
@@ -343,52 +338,6 @@ function DeleteButton({ disabled, onPress }: { disabled: boolean; onPress: () =>
       className={`size-14 items-center justify-center rounded-xl ${disabled ? "opacity-50" : "active:opacity-80"}`}
     >
       <TrashIcon size={20} color={palette.destructive} />
-    </Pressable>
-  );
-}
-
-function DefaultToggle({
-  checked,
-  disabled,
-  onChange,
-}: {
-  checked: boolean;
-  disabled?: boolean;
-  onChange: (next: boolean) => void;
-}) {
-  const { resolvedTheme } = useTheme();
-  const palette = colors[resolvedTheme];
-  const progress = useSharedValue(checked ? 1 : 0);
-
-  useEffect(() => {
-    progress.value = withTiming(checked ? 1 : 0, {
-      duration: 200,
-      easing: Easing.out(Easing.cubic),
-    });
-  }, [checked, progress]);
-
-  const knobStyle = useAnimatedStyle(() => ({
-    transform: [{ translateX: progress.value * 20 }],
-    backgroundColor: checked ? palette.background : palette.mutedForeground,
-  }));
-
-  const trackStyle = useAnimatedStyle(() => ({
-    backgroundColor: checked ? palette.foreground : `${palette.mutedForeground}4D`,
-  }));
-
-  return (
-    <Pressable
-      accessibilityRole="switch"
-      accessibilityLabel="Set as default list"
-      accessibilityState={{ checked, disabled }}
-      onPress={() => onChange(!checked)}
-      disabled={disabled}
-      allowDoublePress
-      className={disabled ? "opacity-50" : "active:opacity-80"}
-    >
-      <Animated.View className="h-7 w-12 justify-center rounded-full px-1" style={trackStyle}>
-        <Animated.View className="size-5 rounded-full" style={knobStyle} />
-      </Animated.View>
     </Pressable>
   );
 }

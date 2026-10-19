@@ -3,8 +3,9 @@
 import {
   EXPENSE_CATEGORY_LABELS,
   expensePayersLabel,
-  expenseYourShare,
+  expenseShareSummary,
   parseSpentOn,
+  spentOnParts,
   type Expense,
 } from "@kinwoo/core/expenses";
 import { formatPaise, formatPickedDate } from "@kinwoo/core/grocery";
@@ -28,35 +29,37 @@ export function ExpenseRow({
   currentUserId: string | null;
   onOpen: () => void;
 }) {
-  const share = expenseYourShare(expense, currentUserId);
-  const date = formatPickedDate(parseSpentOn(expense.spentOn));
+  const share = expenseShareSummary(expense, currentUserId);
+  const shareAmount = share.amountPaise === null ? null : formatPaise(share.amountPaise);
+  const { month, day } = spentOnParts(expense.spentOn);
+  const payers = expensePayersLabel(expense, currentUserId);
   return (
     <button
       type="button"
       onClick={onOpen}
-      aria-label={`${expense.title}, ${formatPaise(expense.amountPaise)}, ${date}. ${share.label}`}
-      className="flex w-full items-center gap-3 rounded-2xl border border-border bg-card p-3 text-left transition-colors hover:cursor-pointer hover:border-foreground/30 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
+      aria-label={`${expense.title}, ${formatPickedDate(parseSpentOn(expense.spentOn))}. ${payers}. ${share.label}${shareAmount ? ` ${shareAmount}` : ""}`}
+      className="flex w-full items-center px-4 py-5 text-left transition-colors hover:cursor-pointer hover:bg-muted/50 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-foreground"
     >
+      <span aria-hidden className="flex w-8 shrink-0 flex-col items-center font-display">
+        <span className="text-xs text-muted-foreground">{month}</span>
+        <span className="text-lg leading-6 text-muted-foreground">{day}</span>
+      </span>
       <span
         aria-hidden
         title={EXPENSE_CATEGORY_LABELS[expense.category]}
-        className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-muted text-foreground"
+        className="ml-3 mr-4 flex size-10 shrink-0 items-center justify-center rounded-lg bg-muted text-foreground"
       >
         <ExpenseCategoryIcon category={expense.category} size={22} />
       </span>
-      <span className="flex min-w-0 flex-1 flex-col gap-0.5">
-        <span className="truncate font-display text-sm font-medium text-foreground">
-          {expense.title}
-        </span>
-        <span className="truncate font-display text-xs text-muted-foreground">
-          {date} · {expensePayersLabel(expense, currentUserId)}
-        </span>
+      <span className="mr-3 flex min-w-0 flex-1 flex-col gap-0.5">
+        <span className="truncate font-display text-base text-foreground">{expense.title}</span>
+        <span className="truncate font-display text-xs text-muted-foreground">{payers}</span>
       </span>
-      <span className="flex shrink-0 flex-col items-end gap-0.5">
-        <span className="font-display text-sm font-medium text-foreground">
-          {formatPaise(expense.amountPaise)}
-        </span>
-        <span className={cn("font-display text-xs", TONE_CLASS[share.tone])}>{share.label}</span>
+      <span className={cn("flex shrink-0 flex-col items-end gap-0.5", TONE_CLASS[share.tone])}>
+        <span className="font-display text-[11px]">{share.label}</span>
+        {shareAmount ? (
+          <span className="font-display text-base font-medium">{shareAmount}</span>
+        ) : null}
       </span>
     </button>
   );

@@ -18,6 +18,8 @@ function serviceWith(overrides: Partial<IExpensesRepository> = {}) {
     updateExpense: vi.fn().mockResolvedValue(undefined),
     deleteExpense: vi.fn().mockResolvedValue(undefined),
     getBalances: vi.fn().mockResolvedValue({ netPaise: 0, pairs: [] }),
+    getMemberNets: vi.fn().mockResolvedValue([]),
+    setSimplifyDebts: vi.fn().mockResolvedValue(undefined),
     ...overrides,
   } satisfies IExpensesRepository;
   return { service: new ExpensesService(repository), repository };
@@ -132,11 +134,52 @@ describe("listExpenses", () => {
   });
 });
 
+describe("setSimplifyDebts", () => {
+  it("saves the setting through the repository", async () => {
+    const { service, repository } = serviceWith();
+
+    expect(await service.setSimplifyDebts("h1", true)).toEqual({ ok: true, data: null });
+    expect(repository.setSimplifyDebts).toHaveBeenCalledWith("h1", true);
+  });
+
+  it("reports a refusal from the database", async () => {
+    const { service } = serviceWith({
+      setSimplifyDebts: vi
+        .fn()
+        .mockRejectedValue(new ExpensesRepositoryError("FORBIDDEN", "FORBIDDEN")),
+    });
+
+    expect(await service.setSimplifyDebts("h1", true)).toMatchObject({
+      ok: false,
+      code: "FORBIDDEN",
+    });
+  });
+});
+
 describe("getBalances", () => {
   it("returns the repository balances", async () => {
     const balances = { netPaise: 100, pairs: [] };
     const { service } = serviceWith({ getBalances: vi.fn().mockResolvedValue(balances) });
 
-    expect(await service.getBalances("h1")).toEqual({ ok: true, data: balances });
+    expect(await service.getBalances("h1", false)).toEqual({ ok: true, data: balances });
+  });
+
+  it("simplifies from every member's net when asked", async () => {
+    const { service, repository } = serviceWith({
+      getMemberNets: vi.fn().mockResolvedValue([
+        { userId: "a", name: "Asha", avatarUrl: null, netPaise: 10000, isSelf: false },
+        { userId: "b", name: "Rohan", avatarUrl: null, netPaise: 0, isSelf: false },
+        { userId: "c", name: "Meera", avatarUrl: null, netPaise: -10000, isSelf: true },
+      ]),
+    });
+
+    expect(await service.getBalances("h1", true)).toEqual({
+      ok: true,
+      data: {
+        netPaise: -10000,
+        pairs: [{ userId: "a", name: "Asha", avatarUrl: null, netPaise: -10000 }],
+      },
+    });
+    expect(repository.getBalances).not.toHaveBeenCalled();
   });
 });

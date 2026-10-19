@@ -42,7 +42,12 @@ export async function deleteExpense(houseId: string, expenseId: string): Promise
   await apiRequest(expenseBase(houseId, expenseId), { method: "DELETE" });
 }
 
-export async function fetchBalances(houseId: string): Promise<HouseBalances> {
-  const body = await apiRequest<{ balances: HouseBalances }>(`${base(houseId)}/balances`);
+export async function setSimplifyDebts(houseId: string, enabled: boolean): Promise<void> {
+  await apiRequest(`${base(houseId)}/simplify-debts`, { method: "PUT", body: { enabled } });
+}
+
+export async function fetchBalances(houseId: string, simplify = false): Promise<HouseBalances> {
+  const query = simplify ? "?simplify=1" : "";
+  const body = await apiRequest<{ balances: HouseBalances }>(`${base(houseId)}/balances${query}`);
   return body.balances;
 }

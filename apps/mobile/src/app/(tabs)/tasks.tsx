@@ -70,7 +70,7 @@ import { openBatchMarkBought, openMarkBought } from "@/lib/house-navigation";
 import { houseStorage } from "@/lib/house-storage";
 import { useTheme } from "@/theme/ThemeProvider";
 
-const SCREEN_PADDING = 20;
+const SCREEN_PADDING = 16;
 const PENDING_COLUMNS = 2;
 const PENDING_CARD_GAP = 12;
 const FAB_SIZE = 48;
@@ -529,7 +529,7 @@ export default function TasksScreen() {
           onPress={() =>
             router.push({ pathname: "/item/new", params: { listId: activeSelectedListId } })
           }
-          className="absolute right-6 bottom-6 size-12 items-center justify-center active:opacity-80"
+          className="absolute right-4 bottom-6 size-12 items-center justify-center active:opacity-80"
         >
           <View className="absolute inset-2.5 rounded-full bg-primary-foreground" />
           <PlusCircleIcon size={FAB_SIZE} color={palette.primary} />

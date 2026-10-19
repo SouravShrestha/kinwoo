@@ -24,10 +24,13 @@ export function useExpense(houseId: string | null, expenseId: string | null) {
   });
 }
 
-export function useHouseBalances(houseId: string | null) {
+export function useHouseBalances(houseId: string | null, simplify = false) {
   return useQuery({
-    queryKey: expenseKeys.balances(houseId ?? ""),
-    queryFn: () => fetchBalances(houseId as string),
+    queryKey: expenseKeys.balancesView(houseId ?? "", simplify),
+    queryFn: () => fetchBalances(houseId as string, simplify),
     enabled: houseId !== null,
+    // Toggling simplify keeps the other view on screen until it loads, but never across houses.
+    placeholderData: (previous, previousQuery) =>
+      previousQuery?.queryKey[1] === houseId ? previous : undefined,
   });
 }
