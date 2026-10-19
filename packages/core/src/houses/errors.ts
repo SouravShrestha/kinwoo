@@ -34,7 +34,8 @@ const MESSAGES: Record<HouseErrorCode, string> = {
   LAST_ADMIN: "Promote another member to admin first.",
   NOT_A_MEMBER: "That person is no longer in this house.",
   USE_LEAVE_HOUSE: "To remove yourself, leave the house instead.",
-  OUTSTANDING_BALANCE: "There is an unsettled balance.",
+  OUTSTANDING_BALANCE:
+    "There is an unsettled balance. Every balance in Bills has to be zero first.",
   RATE_LIMITED: "Too many attempts. Try again in a few minutes.",
   HOUSE_LIMIT_REACHED: "You can only be in one house for now. Leave your current house first.",
   HOUSE_FULL: "This house is full.",

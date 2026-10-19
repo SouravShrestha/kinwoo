@@ -7,6 +7,7 @@ import {
 } from "@kinwoo/core/houses";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
+import { toPublicAvatarUrl } from "../avatars/avatarUrls";
 import {
   HouseRepositoryError,
   type House,
@@ -139,7 +140,7 @@ export class HousesRepository implements IHousesRepository {
       return {
         userId: row.user_id,
         displayName: profile?.display_name ?? null,
-        avatarUrl: profile?.avatar_url ?? null,
+        avatarUrl: toPublicAvatarUrl(this.client, profile?.avatar_url),
         email: emailByUser.get(row.user_id) ?? null,
         role: row.role,
         joinedAt: row.joined_at,
@@ -213,7 +214,18 @@ export class HousesRepository implements IHousesRepository {
   async previewInvite(code: string): Promise<InvitePreview> {
     const { data, error } = await this.client.rpc("get_invite_preview", { p_code: code });
     if (error) fail(error);
-    return parseInvitePreview(data);
+
+    const preview = parseInvitePreview(data);
+    if (!("houseId" in preview)) return preview;
+
+    return {
+      ...preview,
+      invitedByAvatarUrl: toPublicAvatarUrl(this.client, preview.invitedByAvatarUrl),
+      members: preview.members.map((member) => ({
+        ...member,
+        avatarUrl: toPublicAvatarUrl(this.client, member.avatarUrl),
+      })),
+    };
   }
 
   async joinHouse(code: string): Promise<JoinResult> {

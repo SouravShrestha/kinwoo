@@ -5,6 +5,7 @@ import {
   batchBoughtTimelinePhrase,
   filterActivity,
   formatActivityParts,
+  formatActivityTimestamp,
   formatTimelineTime,
 } from "./activity";
 import type { GroceryActivityEntry } from "./types";
@@ -30,7 +31,7 @@ describe("batch bought activity", () => {
       { text: "Sourav", emphasis: true },
       { text: " bought ", emphasis: false },
       { text: "Tomato + 2 others", emphasis: true },
-      { text: " · ₹450", emphasis: false },
+      { text: " for ₹450", emphasis: false },
     ]);
   });
 
@@ -53,6 +54,59 @@ describe("batch bought activity", () => {
       "marked this item as bought with 1 other",
     );
     expect(batchBoughtTimelinePhrase(batchEntry({}))).toBe("marked this item as bought");
+  });
+});
+
+describe("expense activity", () => {
+  const entry: GroceryActivityEntry = {
+    ...batchEntry({ title: "Electricity", amount_paise: 240000, category: "utilities" }),
+    type: "expense.created",
+    entityType: "expense",
+  };
+
+  it("names the expense and its amount", () => {
+    expect(formatActivityParts(entry, "u1")).toEqual([
+      { text: "You", emphasis: true },
+      { text: " added expense ", emphasis: false },
+      { text: "Electricity", emphasis: true },
+      { text: " for ₹2,400", emphasis: false },
+    ]);
+    expect(formatActivityParts({ ...entry, type: "expense.updated" }, "u1")).toEqual([
+      { text: "You", emphasis: true },
+      { text: " updated expense ", emphasis: false },
+      { text: "Electricity", emphasis: true },
+      { text: " to ₹2,400", emphasis: false },
+    ]);
+    expect(formatActivityParts({ ...entry, type: "expense.deleted", payload: {} })).toEqual([
+      { text: "Sourav", emphasis: true },
+      { text: " deleted expense ", emphasis: false },
+      { text: "an expense", emphasis: true },
+    ]);
+  });
+
+  it("uses the expenses filter and icons", () => {
+    expect(filterActivity([entry], { type: ["expenses"] })).toEqual([entry]);
+    expect(activityIconName(entry)).toBe("transaction");
+    expect(activityIconName({ ...entry, type: "expense.deleted" })).toBe("trash");
+  });
+});
+
+describe("formatActivityTimestamp", () => {
+  const now = new Date(2026, 9, 17, 12, 0).getTime();
+  const at = (...args: [number, number, number, number, number]) => new Date(...args).toISOString();
+
+  it("names today and yesterday with the time", () => {
+    expect(formatActivityTimestamp(at(2026, 9, 17, 22, 0), now)).toBe("Today at 10:00 PM");
+    expect(formatActivityTimestamp(at(2026, 9, 16, 9, 30), now)).toBe("Yesterday at 09:30 AM");
+  });
+
+  it("shows the full date and time for older entries", () => {
+    expect(formatActivityTimestamp(at(2026, 9, 15, 17, 51), now)).toBe("15 Oct, 2026 at 05:51 PM");
+    expect(formatActivityTimestamp(at(2025, 11, 3, 0, 5), now)).toBe("3 Dec, 2025 at 12:05 AM");
+  });
+
+  it("returns an empty string for invalid dates", () => {
+    expect(formatActivityTimestamp("nope", now)).toBe("");
   });
 });
 

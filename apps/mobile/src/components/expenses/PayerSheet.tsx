@@ -1,5 +1,6 @@
-import type { PayerMember, PayerSplitForm } from "@kinwoo/client/grocery";
-import { formatPaise, payerRemainingLabel } from "@kinwoo/core/grocery";
+import type { PayerMember, PayerSplitForm } from "@kinwoo/client/expenses";
+import { payerRemainingLabel } from "@kinwoo/core/expenses";
+import { formatPaise } from "@kinwoo/core/grocery";
 import { splitMemberName } from "@kinwoo/core/houses";
 import { ArrowRightIcon, CheckCircleIcon, CheckIcon } from "@kinwoo/icons/native";
 import { colors } from "@kinwoo/tokens/native";

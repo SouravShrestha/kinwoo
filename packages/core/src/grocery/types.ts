@@ -1,3 +1,5 @@
+import type { LinkedExpenseInput } from "../expenses/types";
+
 export type ListVisibility = "shared" | "private";
 export type ItemStatus = "pending" | "claimed" | "assigned" | "bought";
 export type ItemUrgency = "now" | "soon" | "today" | "tomorrow" | "this_week" | "whenever";
@@ -115,6 +117,7 @@ export type MarkBoughtInput = {
   pricePaise?: number | null;
   store?: string | null;
   boughtAt?: string | null;
+  expense?: LinkedExpenseInput | null;
 };
 
 export type MarkItemsBoughtInput = {
@@ -123,6 +126,7 @@ export type MarkItemsBoughtInput = {
   name?: string | null;
   store?: string | null;
   itemPricesPaise?: (number | null)[];
+  expense?: LinkedExpenseInput | null;
 };
 
 export type MarkItemsBoughtResult = { batchId: string };

@@ -3,6 +3,7 @@ import type {
   AssignItemsResult,
   GroceryActivityPage,
   GroceryErrorCode,
+  GroceryOverviewItem,
   MarkItemsBoughtResult,
 } from "@kinwoo/core/grocery";
 
@@ -60,6 +61,10 @@ export interface IGroceryService {
   addCategory(houseId: string, name: string): Promise<GroceryResult<GroceryCategory>>;
 
   getOverview(houseId: string, userId: string): Promise<GroceryResult<GroceryOverview>>;
+  listPrivatePurchases(
+    houseId: string,
+    userId: string,
+  ): Promise<GroceryResult<GroceryOverviewItem[]>>;
   getRecentActivity(
     houseId: string,
     limit: number,

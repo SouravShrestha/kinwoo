@@ -1,5 +1,5 @@
-import { formatPaise } from "./bought-groups";
-import { parseRupeesToPaise } from "./validation";
+import { formatPaise } from "../grocery/bought-groups";
+import { parseRupeesToPaise } from "../grocery/validation";
 
 export type PayerSplitState = "short" | "balanced" | "over";
 

@@ -265,3 +265,11 @@ export const CalendarIcon = (props: IconProps) => (
 export const SharesIcon = (props: IconProps) => (
   <SvgIcon {...props} geometry={geometry.sharesIcon} />
 );
+export const BoltIcon = (props: IconProps) => <SvgIcon {...props} geometry={geometry.boltIcon} />;
+export const CarIcon = (props: IconProps) => <SvgIcon {...props} geometry={geometry.carIcon} />;
+export const GlobeFilledIcon = (props: IconProps) => (
+  <SvgIcon {...props} geometry={geometry.globeFilledIcon} />
+);
+export const CloudLockFilledIcon = (props: IconProps) => (
+  <SvgIcon {...props} geometry={geometry.cloudLockFilledIcon} />
+);

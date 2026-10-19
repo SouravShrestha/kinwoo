@@ -1,7 +1,7 @@
 "use client";
 
 import type { ListVisibility } from "@kinwoo/core/grocery";
-import { LockFilledIcon, WorldIcon } from "@kinwoo/icons";
+import { GlobeFilledIcon, LockFilledIcon } from "@kinwoo/icons";
 
 import { cn } from "@/lib/utils";
 
@@ -39,7 +39,7 @@ export function ListVisibilityToggle({
         <LockFilledIcon size={16} />
       </span>
       <span className={cn(SEGMENT, "relative", isPublic ? "text-background" : "text-foreground")}>
-        <WorldIcon size={16} />
+        <GlobeFilledIcon size={16} />
       </span>
     </button>
   );

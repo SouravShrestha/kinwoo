@@ -4,7 +4,7 @@ import {
   SPLIT_METHOD_LABELS,
   type SplitInput,
   type SplitMethod,
-} from "@kinwoo/core/grocery";
+} from "@kinwoo/core/expenses";
 import { useState } from "react";
 
 import type { PayerMember } from "./payer-split";
@@ -43,15 +43,35 @@ function inputOf(choice: SplitChoice, memberIds: readonly string[]): SplitInput 
   return { method: choice.method, values: choice.values[choice.method] };
 }
 
+export type ExpenseSplitSeed = {
+  method: SplitMethod;
+  excluded: readonly string[];
+  values: Readonly<Record<string, string>>;
+};
+
+function choiceFrom(seed: ExpenseSplitSeed | undefined): SplitChoice {
+  if (!seed) return DEFAULT_CHOICE;
+  return {
+    method: seed.method,
+    excluded: [...seed.excluded],
+    values:
+      seed.method === "equal"
+        ? EMPTY_VALUES
+        : { ...EMPTY_VALUES, [seed.method]: { ...seed.values } },
+  };
+}
+
 // Edits in the sheet stay a draft until `commit`; `discard` drops them.
 export function useExpenseSplit({
   members,
   totalPaise,
+  initial,
 }: {
   members: readonly PayerMember[];
   totalPaise: number;
+  initial?: ExpenseSplitSeed;
 }) {
-  const [choice, setChoice] = useState<SplitChoice>(DEFAULT_CHOICE);
+  const [choice, setChoice] = useState<SplitChoice>(() => choiceFrom(initial));
   const [draft, setDraft] = useState<SplitChoice | null>(null);
 
   const [choiceTotal, setChoiceTotal] = useState(totalPaise);
@@ -97,6 +117,8 @@ export function useExpenseSplit({
       editing.method === "equal" ? "" : (editing.values[editing.method][userId] ?? ""),
     setValue,
     shareOf: (userId: string) => result.sharesPaise[userId] ?? 0,
+    sharesPaise: result.sharesPaise,
+    values: editing.method === "equal" ? {} : editing.values[editing.method],
     summary: result.summary,
     canCommit: result.valid,
     commit: (): boolean => {

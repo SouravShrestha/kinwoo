@@ -1,5 +1,5 @@
 import type { ListVisibility } from "@kinwoo/core/grocery";
-import { LockFilledIcon, WorldIcon } from "@kinwoo/icons/native";
+import { GlobeFilledIcon, LockFilledIcon } from "@kinwoo/icons/native";
 import { colors } from "@kinwoo/tokens/native";
 import { useEffect } from "react";
 import { View } from "react-native";
@@ -63,7 +63,7 @@ export function ListVisibilityToggle({
         <LockFilledIcon size={16} color={isPublic ? palette.foreground : palette.background} />
       </View>
       <View className="h-10 w-14 items-center justify-center">
-        <WorldIcon size={16} color={isPublic ? palette.background : palette.foreground} />
+        <GlobeFilledIcon size={16} color={isPublic ? palette.background : palette.foreground} />
       </View>
     </Pressable>
   );

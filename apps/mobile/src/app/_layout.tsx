@@ -61,6 +61,18 @@ export default function RootLayout() {
                 options={{ animation: "slide_from_bottom", gestureDirection: "vertical" }}
               />
               <Stack.Screen
+                name="expense/new"
+                options={{ animation: "slide_from_bottom", gestureDirection: "vertical" }}
+              />
+              <Stack.Screen
+                name="expense/edit"
+                options={{ animation: "slide_from_bottom", gestureDirection: "vertical" }}
+              />
+              <Stack.Screen
+                name="expense/[expenseId]"
+                options={{ animation: "slide_from_right" }}
+              />
+              <Stack.Screen
                 name="item/bought-batch"
                 // Transparent so the screen below shows through while the sheet is dragged down;
                 // the screen handles its own swipe because the native one loses to its ScrollView.

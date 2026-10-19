@@ -8,6 +8,8 @@ export type FilterGroup = {
   id: string;
   label: string;
   options: readonly FilterOption[];
+  // Single-option group shown as its own toggle chip instead of a tab in the filter sheet.
+  toggle?: boolean;
 };
 
 // Option ids selected per group id. A group with no selection is absent, never an empty array.

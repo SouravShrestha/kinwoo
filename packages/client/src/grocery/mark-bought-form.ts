@@ -1,3 +1,4 @@
+import { spentOnFor, type ExpenseParts } from "@kinwoo/core/expenses";
 import {
   amountErrorMessage,
   boughtAtForDate,
@@ -14,7 +15,7 @@ import { useMarkBought } from "./mutations";
 
 // Name and category edits are saved to the item first, for people allowed to edit it. Quantity
 // and unit always travel with the purchase, so they stay editable for whoever is buying.
-// Split inputs are UI only for now: expenses are not recorded when marking bought.
+// Passing `expense` to `submit` also records the purchase as a split expense.
 export function useMarkBoughtForm({
   houseId,
   listId,
@@ -36,7 +37,7 @@ export function useMarkBoughtForm({
   const { draft } = edit;
   const submitting = markBought.isPending || edit.saving;
 
-  const submit = async () => {
+  const submit = async (expense: ExpenseParts | null = null) => {
     if (!item || !draft || submitting) return;
 
     const priceResult = parseRupeesToPaise(price);
@@ -55,6 +56,7 @@ export function useMarkBoughtForm({
           unit: draft.unit,
           pricePaise: priceResult.value,
           boughtAt: boughtAtForDate(date),
+          expense: expense ? { ...expense, spentOn: spentOnFor(date) } : null,
         },
       });
       toast.success(`Marked "${draft.name.trim() || item.name}" as bought`);

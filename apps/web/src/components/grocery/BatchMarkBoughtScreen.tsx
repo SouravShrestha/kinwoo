@@ -1,19 +1,20 @@
 "use client";
 
 import { useAuth } from "@kinwoo/client/auth";
-import { useBatchMarkBoughtForm, useExpenseSplit, usePayerSplit } from "@kinwoo/client/grocery";
+import { expensePartsFromForms, useExpenseSplit, usePayerSplit } from "@kinwoo/client/expenses";
+import { useBatchMarkBoughtForm, useGroceryList } from "@kinwoo/client/grocery";
 import { useActiveHouse } from "@kinwoo/client/houses";
 import { toast } from "@kinwoo/client/toast";
 import { BATCH_NAME_MAX_LENGTH, MIN_BATCH_ITEMS, type GroceryItem } from "@kinwoo/core/grocery";
 import { ArrowRightIcon, BasketIcon, CheckCircleIcon, CheckIcon, RupeeIcon } from "@kinwoo/icons";
 import { useEffect, useState, type AnimationEvent } from "react";
 
+import { PayerSheet } from "@/components/expenses/PayerSheet";
+import { SplitSheet } from "@/components/expenses/SplitSheet";
 import { useHouseNavigation } from "@/lib/house-navigation";
 import { cn } from "@/lib/utils";
 
 import { CategoryIcon } from "./CategoryIcon";
-import { PayerSheet } from "./PayerSheet";
-import { SplitSheet } from "./SplitSheet";
 
 type Picker = "payers" | "split";
 
@@ -42,6 +43,7 @@ export function BatchMarkBoughtScreen({
   const [picker, setPicker] = useState<Picker | null>(null);
   const [split, setSplit] = useState(true);
   const houseId = activeHouse?.house.id ?? "";
+  const { data: list } = useGroceryList(houseId || null, listId);
   const invalidLink = !listId || itemIds.length < MIN_BATCH_ITEMS;
 
   const form = useBatchMarkBoughtForm({
@@ -71,7 +73,8 @@ export function BatchMarkBoughtScreen({
     if (closing && event.target === event.currentTarget) goBack();
   };
 
-  const hasAmount = payers.totalPaise > 0;
+  // Private lists stay private, so their purchases are never split into expenses.
+  const showSplit = payers.totalPaise > 0 && list?.visibility === "shared";
   const closePicker = () => setPicker(null);
 
   return (
@@ -87,7 +90,7 @@ export function BatchMarkBoughtScreen({
         className="mx-auto flex w-full max-w-md flex-1 flex-col px-6 pb-[calc(2rem+env(safe-area-inset-bottom))]"
         onSubmit={(event) => {
           event.preventDefault();
-          void form.submit();
+          void form.submit(split && showSplit ? expensePartsFromForms(payers, expenseSplit) : null);
         }}
       >
         <header className="flex items-center justify-between pb-8 pt-[calc(1.25rem+env(safe-area-inset-top))]">
@@ -190,10 +193,10 @@ export function BatchMarkBoughtScreen({
           </div>
 
           <div
-            inert={!hasAmount}
+            inert={!showSplit}
             className={cn(
               "grid transition-[grid-template-rows,opacity] duration-200 ease-out motion-reduce:transition-none",
-              hasAmount ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0",
+              showSplit ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0",
             )}
           >
             {/* Padding keeps focus outlines from being clipped by the collapse. */}

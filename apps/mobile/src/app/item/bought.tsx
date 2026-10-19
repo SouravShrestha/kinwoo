@@ -1,10 +1,6 @@
 import { useAuth } from "@kinwoo/client/auth";
-import {
-  useExpenseSplit,
-  useGroceryItem,
-  useMarkBoughtForm,
-  usePayerSplit,
-} from "@kinwoo/client/grocery";
+import { expensePartsFromForms, useExpenseSplit, usePayerSplit } from "@kinwoo/client/expenses";
+import { useGroceryItem, useGroceryList, useMarkBoughtForm } from "@kinwoo/client/grocery";
 import { useActiveHouse } from "@kinwoo/client/houses";
 import {
   formatPickedDate,
@@ -37,8 +33,8 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { CategoryIcon } from "@/components/CategoryIcon";
 import { DatePickerSheet } from "@/components/grocery/DatePickerSheet";
-import { PayerSheet } from "@/components/grocery/PayerSheet";
-import { SplitSheet } from "@/components/grocery/SplitSheet";
+import { PayerSheet } from "@/components/expenses/PayerSheet";
+import { SplitSheet } from "@/components/expenses/SplitSheet";
 import { OptionSheet, type SheetOption } from "@/components/OptionSheet";
 import { Pressable } from "@/components/Pressable";
 import { goBack, goHome } from "@/lib/house-navigation";
@@ -67,6 +63,7 @@ export default function MarkBoughtScreen() {
   const [split, setSplit] = useState(true);
 
   const { data: item } = useGroceryItem(houseId || null, listId ?? null, itemId ?? null);
+  const { data: list } = useGroceryList(houseId || null, listId ?? null);
   const canEdit =
     !!item &&
     (activeHouse?.role === "admin" || item.createdBy === user?.id || item.claimedBy === user?.id);
@@ -80,6 +77,8 @@ export default function MarkBoughtScreen() {
 
   const payers = usePayerSplit({ houseId, currentUserId: user?.id ?? null, price: form.price });
   const expenseSplit = useExpenseSplit({ members: payers.members, totalPaise: payers.totalPaise });
+  // Private lists stay private, so their purchases are never split into expenses.
+  const showSplit = payers.totalPaise > 0 && list?.visibility === "shared";
 
   useEffect(() => {
     if (ready && !activeHouse) goHome();
@@ -131,7 +130,11 @@ export default function MarkBoughtScreen() {
               accessibilityLabel="Mark as bought"
               accessibilityState={{ disabled: submitDisabled, busy: form.submitting }}
               disabled={submitDisabled}
-              onPress={() => void form.submit()}
+              onPress={() =>
+                void form.submit(
+                  split && showSplit ? expensePartsFromForms(payers, expenseSplit) : null,
+                )
+              }
               allowDoublePress
               hitSlop={12}
               className={`size-10 items-end justify-center ${submitDisabled ? "opacity-40" : ""}`}
@@ -247,7 +250,7 @@ export default function MarkBoughtScreen() {
               ) : null}
             </View>
 
-            {payers.totalPaise > 0 ? (
+            {showSplit ? (
               <Animated.View entering={SPLIT_ENTERING} exiting={SPLIT_EXITING} className="gap-4">
                 <Pressable
                   accessibilityRole="checkbox"

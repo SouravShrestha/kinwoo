@@ -63,6 +63,7 @@ describe("POST .../items/buy", () => {
       name: null,
       store: "Market",
       itemPricesPaise: [12000, null],
+      expense: null,
     });
   });
 
@@ -72,6 +73,7 @@ describe("POST .../items/buy", () => {
     ["a missing total", { itemIds: [ITEM_A, ITEM_B] }],
     ["a non-string name", { itemIds: [ITEM_A, ITEM_B], totalPaise: 1, name: 5 }],
     ["bad prices", { itemIds: [ITEM_A, ITEM_B], totalPaise: 1, itemPricesPaise: ["1", null] }],
+    ["a malformed split", { itemIds: [ITEM_A, ITEM_B], totalPaise: 1, expense: { payers: [] } }],
   ])("400s %s", async (_label, body) => {
     const { POST } = await import("./route");
 

@@ -12,6 +12,7 @@
     "./auth": "./src/auth/index.ts",
     "./confirm": "./src/confirm/index.ts",
     "./db": "./src/db.ts",
+    "./expenses": "./src/expenses/index.ts",
     "./filters": "./src/filters/index.ts",
     "./houses": "./src/houses/index.ts",
     "./grocery": "./src/grocery/index.ts",

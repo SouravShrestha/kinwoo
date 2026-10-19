@@ -1,10 +1,10 @@
 import { useBusyWhile } from "@kinwoo/client/activity";
 import { useAuth } from "@kinwoo/client/auth";
 import { useRecentActivity } from "@kinwoo/client/grocery";
-import { useActiveHouse } from "@kinwoo/client/houses";
+import { useActiveHouse, useHouseMembers } from "@kinwoo/client/houses";
 import { countSelected, EMPTY_FILTER_SELECTION, type FilterSelection } from "@kinwoo/core/filters";
 import { activityFilterGroups, filterActivity } from "@kinwoo/core/grocery";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useDeferredValue, useMemo, useState } from "react";
 import { Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -27,18 +27,51 @@ export default function ActivitiesScreen() {
     fetchNextPage,
   } = useRecentActivity(houseId);
   useBusyWhile(isFetchingNextPage);
+  const { data: members } = useHouseMembers(houseId);
   const [filters, setFilters] = useState<FilterSelection>(EMPTY_FILTER_SELECTION);
 
   const filterGroups = useMemo(
     () => activityFilterGroups(entries ?? [], currentUserId),
     [entries, currentUserId],
   );
-  const filteredEntries = useMemo(() => filterActivity(entries ?? [], filters), [entries, filters]);
+  const deferredFilters = useDeferredValue(filters);
+  useBusyWhile(deferredFilters !== filters);
+  const filteredEntries = useMemo(
+    () => filterActivity(entries ?? [], deferredFilters, currentUserId),
+    [entries, deferredFilters, currentUserId],
+  );
 
   const moreToFetch = hasNextPage && !isFetchNextPageError;
   const loadMore = useCallback(() => {
     if (moreToFetch && !isFetchingNextPage) void fetchNextPage();
   }, [moreToFetch, isFetchingNextPage, fetchNextPage]);
+
+  const showEmpty = !isLoading && filteredEntries.length === 0 && !moreToFetch;
+  const hasActiveFilters = countSelected(deferredFilters) > 0;
+
+  const header = useMemo(
+    () => (
+      <>
+        <View className="px-6 pb-3 pt-3">
+          <Text className="font-display-medium text-xl text-foreground">Recent Activity</Text>
+        </View>
+        <Filters groups={filterGroups} value={filters} onChange={setFilters} className="pb-6" />
+      </>
+    ),
+    [filterGroups, filters],
+  );
+
+  const empty = useMemo(
+    () =>
+      showEmpty ? (
+        <View className="flex-1 items-center justify-center px-6">
+          <Text className="text-center text-sm text-muted-foreground font-display-normal">
+            {hasActiveFilters ? "No activity matches these filters" : "No activity yet"}
+          </Text>
+        </View>
+      ) : null,
+    [showEmpty, hasActiveFilters],
+  );
 
   if (!ready) {
     return <View className="flex-1 bg-background" />;
@@ -57,33 +90,15 @@ export default function ActivitiesScreen() {
     );
   }
 
-  const showEmpty = !isLoading && filteredEntries.length === 0 && !moreToFetch;
-
   return (
     <View className="flex-1 bg-background" style={{ paddingTop: insets.top }}>
       <ActivityList
         entries={filteredEntries}
+        members={members ?? []}
         currentUserId={currentUserId}
         onEndReached={loadMore}
-        header={
-          <>
-            <View className="px-6 pb-3 pt-3">
-              <Text className="font-display-medium text-xl text-foreground">Recent Activity</Text>
-            </View>
-            <Filters groups={filterGroups} value={filters} onChange={setFilters} className="pb-6" />
-          </>
-        }
-        empty={
-          showEmpty ? (
-            <View className="flex-1 items-center justify-center px-6">
-              <Text className="text-center text-sm text-muted-foreground font-display-normal">
-                {countSelected(filters) > 0
-                  ? "No activity matches these filters"
-                  : "No activity yet"}
-              </Text>
-            </View>
-          ) : null
-        }
+        header={header}
+        empty={empty}
       />
     </View>
   );

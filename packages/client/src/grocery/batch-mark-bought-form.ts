@@ -1,3 +1,4 @@
+import { spentOnFor, type ExpenseParts } from "@kinwoo/core/expenses";
 import {
   amountErrorMessage,
   BATCH_NAME_MAX_LENGTH,
@@ -46,7 +47,8 @@ function amountMismatch(totalPaise: number | null, prices: (number | null)[] | n
 }
 
 // Items are snapshotted on first load: marking them bought flips them optimistically in the
-// cache, and the screen keeps showing them while it closes. Split inputs are UI only for now.
+// cache, and the screen keeps showing them while it closes. Passing `expense` to `submit` also
+// records the batch as a split expense.
 export function useBatchMarkBoughtForm({
   houseId,
   listId,
@@ -97,7 +99,7 @@ export function useBatchMarkBoughtForm({
     return amountMismatch(totalResult.ok ? totalResult.value : null, prices);
   }, [total, amounts, list]);
 
-  const submit = async () => {
+  const submit = async (expense: ExpenseParts | null = null) => {
     if (!ready || unavailable || submitting) return;
 
     const totalResult = parseRupeesToPaise(total);
@@ -131,6 +133,7 @@ export function useBatchMarkBoughtForm({
         name: nameResult.value,
         store: null,
         itemPricesPaise: prices.some((price) => price !== null) ? prices : undefined,
+        expense: expense ? { ...expense, spentOn: spentOnFor(new Date()) } : null,
       });
       toast.success(`Marked ${list.length} items as bought`);
       onBought();

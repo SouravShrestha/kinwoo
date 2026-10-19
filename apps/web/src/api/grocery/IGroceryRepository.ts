@@ -8,6 +8,7 @@ import type {
   GroceryItem,
   GroceryList,
   GroceryOverview,
+  GroceryOverviewItem,
   GroceryPurchase,
   ItemStatus,
   ItemUrgency,
@@ -94,4 +95,5 @@ export interface IGroceryRepository {
   ): Promise<ActivityEntry[]>;
   listItemActivity(houseId: string, itemId: string): Promise<ActivityEntry[]>;
   getOverview(houseId: string, userId: string): Promise<GroceryOverview>;
+  listPrivatePurchases(houseId: string, userId: string): Promise<GroceryOverviewItem[]>;
 }

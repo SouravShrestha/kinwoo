@@ -318,3 +318,13 @@ export const CalendarIcon = (props: WebIconProps) => (
 export const SharesIcon = (props: WebIconProps) => (
   <SvgIcon {...props} geometry={geometry.sharesIcon} />
 );
+export const BoltIcon = (props: WebIconProps) => (
+  <SvgIcon {...props} geometry={geometry.boltIcon} />
+);
+export const CarIcon = (props: WebIconProps) => <SvgIcon {...props} geometry={geometry.carIcon} />;
+export const GlobeFilledIcon = (props: WebIconProps) => (
+  <SvgIcon {...props} geometry={geometry.globeFilledIcon} />
+);
+export const CloudLockFilledIcon = (props: WebIconProps) => (
+  <SvgIcon {...props} geometry={geometry.cloudLockFilledIcon} />
+);

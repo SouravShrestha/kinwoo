@@ -1,5 +1,6 @@
 "use client";
 
+import { mergeLinkedExpenses } from "@kinwoo/core/grocery";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 
 import {
@@ -10,6 +11,7 @@ import {
   fetchList,
   fetchLists,
   fetchOverview,
+  fetchPrivatePurchases,
   fetchRecentActivity,
 } from "./api";
 import { groceryKeys } from "./keys";
@@ -67,13 +69,21 @@ export function useGroceryOverview(houseId: string | null) {
   });
 }
 
+export function usePrivatePurchases(houseId: string | null) {
+  return useQuery({
+    queryKey: groceryKeys.privatePurchases(houseId ?? ""),
+    queryFn: () => fetchPrivatePurchases(houseId as string),
+    enabled: houseId !== null,
+  });
+}
+
 export function useRecentActivity(houseId: string | null) {
   return useInfiniteQuery({
     queryKey: groceryKeys.recentActivity(houseId ?? ""),
     queryFn: ({ pageParam }) => fetchRecentActivity(houseId as string, pageParam),
     initialPageParam: null as string | null,
     getNextPageParam: (lastPage) => lastPage.nextCursor,
-    select: (data) => data.pages.flatMap((page) => page.entries),
+    select: (data) => mergeLinkedExpenses(data.pages.flatMap((page) => page.entries)),
     enabled: houseId !== null,
   });
 }

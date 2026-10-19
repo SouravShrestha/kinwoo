@@ -42,3 +42,5 @@ apps/mobile/builds/*
 
 _current_branch*
 .plans
+# Local-only DB scripts (seed scenarios, data wipe)
+supabase/local/

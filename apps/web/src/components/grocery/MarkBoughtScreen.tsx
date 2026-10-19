@@ -1,12 +1,8 @@
 "use client";
 
 import { useAuth } from "@kinwoo/client/auth";
-import {
-  useExpenseSplit,
-  useGroceryItem,
-  useMarkBoughtForm,
-  usePayerSplit,
-} from "@kinwoo/client/grocery";
+import { expensePartsFromForms, useExpenseSplit, usePayerSplit } from "@kinwoo/client/expenses";
+import { useGroceryItem, useGroceryList, useMarkBoughtForm } from "@kinwoo/client/grocery";
 import { useActiveHouse } from "@kinwoo/client/houses";
 import {
   formatPickedDate,
@@ -24,14 +20,14 @@ import {
 } from "@kinwoo/icons";
 import { useEffect, useState, type AnimationEvent } from "react";
 
+import { PayerSheet } from "@/components/expenses/PayerSheet";
+import { SplitSheet } from "@/components/expenses/SplitSheet";
 import { useHouseNavigation } from "@/lib/house-navigation";
 import { cn } from "@/lib/utils";
 
 import { CategoryIcon } from "./CategoryIcon";
 import { DatePickerSheet } from "./DatePickerSheet";
 import { OptionSheet, type SheetOption } from "./OptionSheet";
-import { PayerSheet } from "./PayerSheet";
-import { SplitSheet } from "./SplitSheet";
 
 type Picker = "category" | "unit" | "date" | "payers" | "split";
 
@@ -60,6 +56,7 @@ export function MarkBoughtScreen({
   const houseId = activeHouse?.house.id ?? "";
 
   const { data: item } = useGroceryItem(houseId || null, listId, itemId);
+  const { data: list } = useGroceryList(houseId || null, listId);
   const canEdit =
     !!item &&
     (activeHouse?.role === "admin" || item.createdBy === user?.id || item.claimedBy === user?.id);
@@ -83,7 +80,8 @@ export function MarkBoughtScreen({
     if (closing && event.target === event.currentTarget) goBack();
   };
 
-  const hasAmount = payers.totalPaise > 0;
+  // Private lists stay private, so their purchases are never split into expenses.
+  const showSplit = payers.totalPaise > 0 && list?.visibility === "shared";
   const dateLabel = formatPickedDate(form.date);
   const category = form.categories.find((c) => c.id === form.categoryId);
   const closePicker = () => setPicker(null);
@@ -109,7 +107,7 @@ export function MarkBoughtScreen({
         className="mx-auto flex w-full max-w-md flex-1 flex-col px-6"
         onSubmit={(event) => {
           event.preventDefault();
-          void form.submit();
+          void form.submit(split && showSplit ? expensePartsFromForms(payers, expenseSplit) : null);
         }}
       >
         <header className="flex items-center justify-between pb-8 pt-[calc(1.25rem+env(safe-area-inset-top))]">
@@ -262,10 +260,10 @@ export function MarkBoughtScreen({
           </div>
 
           <div
-            inert={!hasAmount}
+            inert={!showSplit}
             className={cn(
               "grid transition-[grid-template-rows,opacity] duration-200 ease-out motion-reduce:transition-none",
-              hasAmount ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0",
+              showSplit ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0",
             )}
           >
             {/* Padding keeps focus outlines from being clipped by the collapse. */}

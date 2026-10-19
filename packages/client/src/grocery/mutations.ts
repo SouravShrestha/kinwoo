@@ -30,6 +30,7 @@ import {
   updateItem,
   updateList,
 } from "./api";
+import { expenseKeys } from "../expenses/keys";
 import { groceryKeys } from "./keys";
 
 export function useCreateList(houseId: string) {
@@ -368,6 +369,9 @@ export function useMarkBought(houseId: string, listId: string) {
       void queryClient.invalidateQueries({
         queryKey: groceryKeys.activity(houseId, listId, variables.itemId),
       });
+      if (variables.input.expense) {
+        void queryClient.invalidateQueries({ queryKey: expenseKeys.all(houseId) });
+      }
     },
   });
 }
@@ -415,8 +419,9 @@ export function useMarkItemsBought(
     onError: (_err, _input, context) => {
       if (context?.previous) queryClient.setQueryData(itemsKey, context.previous);
     },
-    onSettled: (_data, _error, { itemIds }) => {
+    onSettled: (_data, _error, { itemIds, expense }) => {
       void queryClient.invalidateQueries({ queryKey: itemsKey });
+      if (expense) void queryClient.invalidateQueries({ queryKey: expenseKeys.all(houseId) });
       void queryClient.invalidateQueries({ queryKey: groceryKeys.overview(houseId) });
       for (const itemId of itemIds) {
         void queryClient.invalidateQueries({

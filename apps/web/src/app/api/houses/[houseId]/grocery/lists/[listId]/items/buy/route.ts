@@ -6,6 +6,7 @@ import {
   isItemIdList,
   readJsonObject,
 } from "../../../../../../../_lib/groceryRoute";
+import { readLinkedExpense } from "../../../../../../../_lib/expenseRoute";
 
 type Context = { params: Promise<{ houseId: string; listId: string }> };
 
@@ -39,12 +40,15 @@ export async function POST(request: Request, { params }: Context) {
         return badRequest("itemPricesPaise must be a list of numbers or nulls");
       }
 
+      const expense = readLinkedExpense(body.expense);
+      if (expense === "invalid") return badRequest("expense must list payers and shares");
       return service.markItemsBought(listId, {
         itemIds: body.itemIds,
         totalPaise: body.totalPaise,
         name: body.name,
         store: body.store,
         itemPricesPaise: body.itemPricesPaise,
+        expense,
       });
     },
     { key: "result", uuids: [houseId, listId] },

@@ -11,6 +11,8 @@ export const GROCERY_ERROR_CODES = [
   "NOT_CLAIMER",
   "LIST_HAS_ASSIGNED_ITEMS",
   "DEFAULT_LIST_MUST_BE_PUBLIC",
+  "PRIVATE_LIST",
+  "NOT_A_MEMBER",
 ] as const;
 
 export type GroceryErrorCode = (typeof GROCERY_ERROR_CODES)[number];
@@ -39,6 +41,8 @@ const MESSAGES: Record<GroceryErrorCode, string> = {
     "This list has items assigned to other housemates. Reassign them before making it private.",
   DEFAULT_LIST_MUST_BE_PUBLIC:
     "The default list has to stay public. Make another list the default first.",
+  PRIVATE_LIST: "Purchases from a private list can't be split.",
+  NOT_A_MEMBER: "Everyone in a split has to be in the house.",
 };
 
 export const GENERIC_GROCERY_ERROR = "Something went wrong. Please try again.";

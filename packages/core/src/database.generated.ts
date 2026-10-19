@@ -33,6 +33,256 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"expense_payers": {
+                  Row: {
+                    "amount_paise": number,"expense_id": string,"user_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "amount_paise": number,"expense_id": string,"user_id": string
+                  }
+                  Update: {
+                    "amount_paise"?: number,"expense_id"?: string,"user_id"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "expense_payers_expense_id_fkey"
+      columns: ["expense_id"]
+isOneToOne: false
+      referencedRelation: "expenses"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "expense_payers_user_id_fkey"
+      columns: ["user_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"expense_shares": {
+                  Row: {
+                    "expense_id": string,"share_paise": number,"user_id": string,"weight": number | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "expense_id": string,"share_paise": number,"user_id": string,"weight"?: number | null
+                  }
+                  Update: {
+                    "expense_id"?: string,"share_paise"?: number,"user_id"?: string,"weight"?: number | null
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "expense_shares_expense_id_fkey"
+      columns: ["expense_id"]
+isOneToOne: false
+      referencedRelation: "expenses"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "expense_shares_user_id_fkey"
+      columns: ["user_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"expenses": {
+                  Row: {
+                    "amount_paise": number,"batch_id": string | null,"category": string,"created_at": string,"created_by": string,"deleted_at": string | null,"house_id": string,"id": string,"note": string | null,"purchase_id": string | null,"spent_on": string,"split_method": string,"title": string,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "amount_paise": number,"batch_id"?: string | null,"category": string,"created_at"?: string,"created_by": string,"deleted_at"?: string | null,"house_id": string,"id"?: string,"note"?: string | null,"purchase_id"?: string | null,"spent_on": string,"split_method": string,"title": string,"updated_at"?: string
+                  }
+                  Update: {
+                    "amount_paise"?: number,"batch_id"?: string | null,"category"?: string,"created_at"?: string,"created_by"?: string,"deleted_at"?: string | null,"house_id"?: string,"id"?: string,"note"?: string | null,"purchase_id"?: string | null,"spent_on"?: string,"split_method"?: string,"title"?: string,"updated_at"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "expenses_batch_id_fkey"
+      columns: ["batch_id"]
+isOneToOne: true
+      referencedRelation: "grocery_purchase_batches"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "expenses_created_by_fkey"
+      columns: ["created_by"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "expenses_house_id_fkey"
+      columns: ["house_id"]
+isOneToOne: false
+      referencedRelation: "houses"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "expenses_purchase_id_fkey"
+      columns: ["purchase_id"]
+isOneToOne: true
+      referencedRelation: "grocery_purchases"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"grocery_categories": {
+                  Row: {
+                    "created_at": string,"house_id": string | null,"id": string,"name": string,"position": number
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"house_id"?: string | null,"id"?: string,"name": string,"position"?: number
+                  }
+                  Update: {
+                    "created_at"?: string,"house_id"?: string | null,"id"?: string,"name"?: string,"position"?: number
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "grocery_categories_house_id_fkey"
+      columns: ["house_id"]
+isOneToOne: false
+      referencedRelation: "houses"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"grocery_items": {
+                  Row: {
+                    "assigned_at": string | null,"assigned_by": string | null,"assigned_to": string | null,"assignment_response": string | null,"category_id": string | null,"claimed_at": string | null,"claimed_by": string | null,"created_at": string,"created_by": string,"id": string,"idempotency_key": string | null,"list_id": string,"name": string,"note": string | null,"position": number,"quantity": number | null,"status": Database["public"]['Enums']["item_status"],"unit": string | null,"updated_at": string,"urgency": Database["public"]['Enums']["item_urgency"]
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "assigned_at"?: string | null,"assigned_by"?: string | null,"assigned_to"?: string | null,"assignment_response"?: string | null,"category_id"?: string | null,"claimed_at"?: string | null,"claimed_by"?: string | null,"created_at"?: string,"created_by": string,"id"?: string,"idempotency_key"?: string | null,"list_id": string,"name": string,"note"?: string | null,"position"?: number,"quantity"?: number | null,"status"?: Database["public"]['Enums']["item_status"],"unit"?: string | null,"updated_at"?: string,"urgency"?: Database["public"]['Enums']["item_urgency"]
+                  }
+                  Update: {
+                    "assigned_at"?: string | null,"assigned_by"?: string | null,"assigned_to"?: string | null,"assignment_response"?: string | null,"category_id"?: string | null,"claimed_at"?: string | null,"claimed_by"?: string | null,"created_at"?: string,"created_by"?: string,"id"?: string,"idempotency_key"?: string | null,"list_id"?: string,"name"?: string,"note"?: string | null,"position"?: number,"quantity"?: number | null,"status"?: Database["public"]['Enums']["item_status"],"unit"?: string | null,"updated_at"?: string,"urgency"?: Database["public"]['Enums']["item_urgency"]
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "grocery_items_assigned_by_fkey"
+      columns: ["assigned_by"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "grocery_items_assigned_to_fkey"
+      columns: ["assigned_to"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "grocery_items_category_id_fkey"
+      columns: ["category_id"]
+isOneToOne: false
+      referencedRelation: "grocery_categories"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "grocery_items_claimed_by_fkey"
+      columns: ["claimed_by"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "grocery_items_created_by_fkey"
+      columns: ["created_by"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "grocery_items_list_id_fkey"
+      columns: ["list_id"]
+isOneToOne: false
+      referencedRelation: "grocery_lists"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"grocery_lists": {
+                  Row: {
+                    "created_at": string,"created_by": string,"deleted_at": string | null,"house_id": string,"icon": string,"id": string,"is_default": boolean,"name": string,"position": number,"updated_at": string,"visibility": Database["public"]['Enums']["list_visibility"]
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"created_by": string,"deleted_at"?: string | null,"house_id": string,"icon"?: string,"id"?: string,"is_default"?: boolean,"name": string,"position"?: number,"updated_at"?: string,"visibility"?: Database["public"]['Enums']["list_visibility"]
+                  }
+                  Update: {
+                    "created_at"?: string,"created_by"?: string,"deleted_at"?: string | null,"house_id"?: string,"icon"?: string,"id"?: string,"is_default"?: boolean,"name"?: string,"position"?: number,"updated_at"?: string,"visibility"?: Database["public"]['Enums']["list_visibility"]
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "grocery_lists_created_by_fkey"
+      columns: ["created_by"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "grocery_lists_house_id_fkey"
+      columns: ["house_id"]
+isOneToOne: false
+      referencedRelation: "houses"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"grocery_purchase_batches": {
+                  Row: {
+                    "bought_at": string,"bought_by": string,"created_at": string,"house_id": string,"id": string,"list_id": string,"name": string | null,"store": string | null,"total_paise": number
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "bought_at"?: string,"bought_by": string,"created_at"?: string,"house_id": string,"id"?: string,"list_id": string,"name"?: string | null,"store"?: string | null,"total_paise": number
+                  }
+                  Update: {
+                    "bought_at"?: string,"bought_by"?: string,"created_at"?: string,"house_id"?: string,"id"?: string,"list_id"?: string,"name"?: string | null,"store"?: string | null,"total_paise"?: number
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "grocery_purchase_batches_bought_by_fkey"
+      columns: ["bought_by"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "grocery_purchase_batches_house_id_fkey"
+      columns: ["house_id"]
+isOneToOne: false
+      referencedRelation: "houses"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "grocery_purchase_batches_list_id_fkey"
+      columns: ["list_id"]
+isOneToOne: false
+      referencedRelation: "grocery_lists"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"grocery_purchases": {
+                  Row: {
+                    "batch_id": string | null,"batch_position": number | null,"bought_at": string,"bought_by": string,"created_at": string,"id": string,"item_id": string,"price_paise": number | null,"quantity": number | null,"store": string | null,"unit": string | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "batch_id"?: string | null,"batch_position"?: number | null,"bought_at"?: string,"bought_by": string,"created_at"?: string,"id"?: string,"item_id": string,"price_paise"?: number | null,"quantity"?: number | null,"store"?: string | null,"unit"?: string | null
+                  }
+                  Update: {
+                    "batch_id"?: string | null,"batch_position"?: number | null,"bought_at"?: string,"bought_by"?: string,"created_at"?: string,"id"?: string,"item_id"?: string,"price_paise"?: number | null,"quantity"?: number | null,"store"?: string | null,"unit"?: string | null
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "grocery_purchases_batch_id_fkey"
+      columns: ["batch_id"]
+isOneToOne: false
+      referencedRelation: "grocery_purchase_batches"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "grocery_purchases_bought_by_fkey"
+      columns: ["bought_by"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "grocery_purchases_item_id_fkey"
+      columns: ["item_id"]
+isOneToOne: false
+      referencedRelation: "grocery_items"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"house_invited_emails": {
                   Row: {
                     "created_at": string,"email": string,"house_id": string,"id": string,"invited_by": string
@@ -177,7 +427,53 @@ isOneToOne: false
             [_ in never]: never
           }
           Functions: {
-            "add_invited_email":
+            "activity_touches_hidden_list":
+{ Args: { "p_entity_id": string,"p_entity_type": string,"p_payload": Json }; Returns: boolean
+                           },
+"add_grocery_category":
+{ Args: { "p_house_id": string,"p_name": string }; Returns: {
+              "created_at": string,
+"house_id": string | null,
+"id": string,
+"name": string,
+"position": number
+            }
+                          SetofOptions: {
+        from: "*"
+        to: "grocery_categories"
+        isOneToOne: true
+        isSetofReturn: false
+      } },
+"add_grocery_item":
+{ Args: { "p_category_id"?: string,"p_idempotency_key"?: string,"p_list_id": string,"p_name": string,"p_note"?: string,"p_quantity"?: number,"p_unit"?: string,"p_urgency"?: string }; Returns: {
+              "assigned_at": string | null,
+"assigned_by": string | null,
+"assigned_to": string | null,
+"assignment_response": string | null,
+"category_id": string | null,
+"claimed_at": string | null,
+"claimed_by": string | null,
+"created_at": string,
+"created_by": string,
+"id": string,
+"idempotency_key": string | null,
+"list_id": string,
+"name": string,
+"note": string | null,
+"position": number,
+"quantity": number | null,
+"status": Database["public"]['Enums']["item_status"],
+"unit": string | null,
+"updated_at": string,
+"urgency": Database["public"]['Enums']["item_urgency"]
+            }
+                          SetofOptions: {
+        from: "*"
+        to: "grocery_items"
+        isOneToOne: true
+        isSetofReturn: false
+      } },
+"add_invited_email":
 { Args: { "p_email": string,"p_house_id": string }; Returns: {
               "created_at": string,
 "email": string,
@@ -191,9 +487,56 @@ isOneToOne: false
         isOneToOne: true
         isSetofReturn: false
       } },
+"assign_grocery_item":
+{ Args: { "p_assigned_to": string,"p_item_id": string }; Returns: undefined
+                           },
+"assign_grocery_items":
+{ Args: { "p_assigned_to": string,"p_item_ids": (string)[],"p_list_id": string }; Returns: number
+                           },
+"can_manage_expense":
+{ Args: { "p_expense_id": string }; Returns: boolean
+                           },
+"can_read_list":
+{ Args: { "p_list_id": string }; Returns: boolean
+                           },
+"cancel_grocery_item":
+{ Args: { "p_item_id": string }; Returns: undefined
+                           },
+"check_expense_fields":
+{ Args: { "p_amount_paise": number,"p_category": string,"p_note": string,"p_spent_on": string,"p_split_method": string,"p_title": string }; Returns: undefined
+                           },
 "check_invite_rate_limit":
 { Args: Record<PropertyKey, never>; Returns: undefined
                            },
+"claim_grocery_item":
+{ Args: { "p_item_id": string }; Returns: Json
+                           },
+"claim_grocery_items":
+{ Args: { "p_item_ids": (string)[],"p_list_id": string }; Returns: number
+                           },
+"create_expense":
+{ Args: { "p_amount_paise": number,"p_category": string,"p_house_id": string,"p_note": string,"p_payers": Json,"p_shares": Json,"p_spent_on": string,"p_split_method": string,"p_title": string }; Returns: string
+                           },
+"create_grocery_list":
+{ Args: { "p_house_id": string,"p_icon"?: string,"p_name": string,"p_visibility"?: string }; Returns: {
+              "created_at": string,
+"created_by": string,
+"deleted_at": string | null,
+"house_id": string,
+"icon": string,
+"id": string,
+"is_default": boolean,
+"name": string,
+"position": number,
+"updated_at": string,
+"visibility": Database["public"]['Enums']["list_visibility"]
+            }
+                          SetofOptions: {
+        from: "*"
+        to: "grocery_lists"
+        isOneToOne: true
+        isSetofReturn: false
+      } },
 "create_house":
 { Args: { "p_address"?: string,"p_name": string }; Returns: {
               "address": string | null,
@@ -215,11 +558,36 @@ isOneToOne: false
         isOneToOne: true
         isSetofReturn: false
       } },
+"delete_expense":
+{ Args: { "p_expense_id": string }; Returns: undefined
+                           },
+"delete_grocery_item":
+{ Args: { "p_item_id": string }; Returns: undefined
+                           },
+"delete_grocery_list":
+{ Args: { "p_list_id": string }; Returns: undefined
+                           },
+"expense_pair_balances":
+{ Args: { "p_house_id": string,"p_user_id": string }; Returns: {
+              "net_paise": number,"other_id": string
+            }[]
+                           },
 "generate_invite_code":
 { Args: Record<PropertyKey, never>; Returns: string
                            },
 "get_invite_preview":
 { Args: { "p_code": string }; Returns: Json
+                           },
+"house_balances":
+{ Args: { "p_house_id": string }; Returns: {
+              "avatar_url": string,"display_name": string,"net_paise": number,"user_id": string
+            }[]
+                           },
+"insert_expense":
+{ Args: { "p_actor": string,"p_amount_paise": number,"p_batch_id"?: string,"p_category": string,"p_house_id": string,"p_note": string,"p_payers": Json,"p_purchase_id"?: string,"p_shares": Json,"p_spent_on": string,"p_split_method": string,"p_title": string }; Returns: string
+                           },
+"insert_linked_expense":
+{ Args: { "p_actor": string,"p_amount_paise": number,"p_batch_id": string,"p_expense": Json,"p_fallback_spent_on": string,"p_house_id": string,"p_purchase_id": string,"p_title": string }; Returns: string
                            },
 "is_house_admin":
 { Args: { "p_house_id": string }; Returns: boolean
@@ -244,8 +612,20 @@ isOneToOne: false
 "log_activity":
 { Args: { "p_actor": string,"p_entity_id"?: string,"p_entity_type"?: string,"p_house_id": string,"p_payload"?: Json,"p_type": string }; Returns: undefined
                            },
+"mark_item_bought":
+{ Args: { "p_bought_at"?: string,"p_expense"?: Json,"p_item_id": string,"p_price_paise"?: number,"p_quantity"?: number,"p_store"?: string,"p_unit"?: string }; Returns: undefined
+                           },
+"mark_items_bought":
+{ Args: { "p_expense"?: Json,"p_item_ids": (string)[],"p_item_prices"?: (number)[],"p_list_id": string,"p_name"?: string,"p_store"?: string,"p_total_paise": number }; Returns: string
+                           },
 "max_houses_per_user":
 { Args: Record<PropertyKey, never>; Returns: number
+                           },
+"move_grocery_item":
+{ Args: { "p_item_id": string,"p_target_list_id": string }; Returns: undefined
+                           },
+"normalize_expense_title":
+{ Args: { "p_title": string }; Returns: string
                            },
 "remove_invited_email":
 { Args: { "p_id": string }; Returns: undefined
@@ -256,18 +636,82 @@ isOneToOne: false
 "resolve_join_request":
 { Args: { "p_approve": boolean,"p_house_id": string,"p_user_id": string }; Returns: undefined
                            },
+"respond_to_assignment":
+{ Args: { "p_accept": boolean,"p_item_id": string }; Returns: undefined
+                           },
 "set_member_role":
 { Args: { "p_house_id": string,"p_role": Database["public"]['Enums']["house_role"],"p_user_id": string }; Returns: undefined
                            },
 "shares_house_with":
 { Args: { "p_user_id": string }; Returns: boolean
                            },
+"unassign_grocery_item":
+{ Args: { "p_item_id": string }; Returns: undefined
+                           },
+"unclaim_grocery_item":
+{ Args: { "p_item_id": string }; Returns: undefined
+                           },
+"update_expense":
+{ Args: { "p_amount_paise": number,"p_category": string,"p_expense_id": string,"p_note": string,"p_payers": Json,"p_shares": Json,"p_spent_on": string,"p_split_method": string,"p_title": string }; Returns: undefined
+                           },
+"update_grocery_item":
+{ Args: { "p_category_id"?: string,"p_item_id": string,"p_name"?: string,"p_note"?: string,"p_quantity"?: number,"p_unit"?: string,"p_urgency"?: string }; Returns: {
+              "assigned_at": string | null,
+"assigned_by": string | null,
+"assigned_to": string | null,
+"assignment_response": string | null,
+"category_id": string | null,
+"claimed_at": string | null,
+"claimed_by": string | null,
+"created_at": string,
+"created_by": string,
+"id": string,
+"idempotency_key": string | null,
+"list_id": string,
+"name": string,
+"note": string | null,
+"position": number,
+"quantity": number | null,
+"status": Database["public"]['Enums']["item_status"],
+"unit": string | null,
+"updated_at": string,
+"urgency": Database["public"]['Enums']["item_urgency"]
+            }
+                          SetofOptions: {
+        from: "*"
+        to: "grocery_items"
+        isOneToOne: true
+        isSetofReturn: false
+      } },
+"update_grocery_list":
+{ Args: { "p_icon"?: string,"p_is_default"?: boolean,"p_list_id": string,"p_name"?: string,"p_position"?: number,"p_visibility"?: Database["public"]['Enums']["list_visibility"] }; Returns: {
+              "created_at": string,
+"created_by": string,
+"deleted_at": string | null,
+"house_id": string,
+"icon": string,
+"id": string,
+"is_default": boolean,
+"name": string,
+"position": number,
+"updated_at": string,
+"visibility": Database["public"]['Enums']["list_visibility"]
+            }
+                          SetofOptions: {
+        from: "*"
+        to: "grocery_lists"
+        isOneToOne: true
+        isSetofReturn: false
+      } },
 "user_has_outstanding_balance":
 { Args: { "p_house_id": string,"p_user_id": string }; Returns: boolean
+                           },
+"write_expense_parts":
+{ Args: { "p_amount_paise": number,"p_expense_id": string,"p_house_id": string,"p_payers": Json,"p_shares": Json,"p_split_method": string }; Returns: undefined
                            }
           }
           Enums: {
-            "house_role": "admin"|"member","member_status": "active"|"pending"|"left"|"removed"|"rejected"
+            "house_role": "admin"|"member","item_status": "pending"|"claimed"|"assigned"|"bought"|"cancelled","item_urgency": "now"|"soon"|"today"|"tomorrow"|"this_week"|"whenever","list_visibility": "shared"|"private","member_status": "active"|"pending"|"left"|"removed"|"rejected"
           }
           CompositeTypes: {
             [_ in never]: never
@@ -383,7 +827,7 @@ export type CompositeTypes<
 export const Constants = {
   "public": {
           Enums: {
-            "house_role": ["admin", "member"],"member_status": ["active", "pending", "left", "removed", "rejected"]
+            "house_role": ["admin", "member"],"item_status": ["pending", "claimed", "assigned", "bought", "cancelled"],"item_urgency": ["now", "soon", "today", "tomorrow", "this_week", "whenever"],"list_visibility": ["shared", "private"],"member_status": ["active", "pending", "left", "removed", "rejected"]
           }
         }
 } as const

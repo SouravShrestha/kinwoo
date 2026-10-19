@@ -1,4 +1,5 @@
 import type { Database } from "@kinwoo/core/db";
+import type { LinkedExpenseInput } from "@kinwoo/core/expenses";
 import {
   parseGroceryRpcError,
   type ActivityCursor,
@@ -6,6 +7,7 @@ import {
 } from "@kinwoo/core/grocery";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
+import { toRpcParts } from "../expenses/ExpensesRepository";
 import {
   GroceryRepositoryError,
   type ActivityEntry,
@@ -30,6 +32,7 @@ const PURCHASE_COLUMNS =
   "grocery_purchases(bought_by, bought_at, price_paise, store, batch_id, batch_position, bought_profiles:profiles!bought_by(display_name), grocery_purchase_batches(id, name, total_paise))";
 const ITEM_COLUMNS = `*, grocery_categories!left(name), claimed_profiles:profiles!claimed_by(display_name), assigned_profiles:profiles!assigned_to(display_name), ${PURCHASE_COLUMNS}`;
 const OVERVIEW_ITEM_COLUMNS = `*, grocery_lists!inner(id, name, icon, house_id, deleted_at), grocery_categories!left(name), claimed_profiles:profiles!claimed_by(display_name), assigned_profiles:profiles!assigned_to(display_name), ${PURCHASE_COLUMNS}`;
+const PRIVATE_PURCHASE_COLUMNS = `*, grocery_lists!inner(id, name, icon, house_id, deleted_at, visibility, created_by), grocery_categories!left(name), ${PURCHASE_COLUMNS}`;
 const ACTIVITY_COLUMNS =
   "id, actor_id, type, entity_type, entity_id, payload, created_at, profiles!activity_log_actor_id_fkey(display_name)";
 
@@ -156,6 +159,10 @@ function toActivityEntry(row: any): ActivityEntry {
     payload: (row.payload ?? {}) as Record<string, unknown>,
     createdAt: row.created_at,
   };
+}
+
+function linkedExpenseArg(expense: LinkedExpenseInput | null | undefined) {
+  return expense ? { ...toRpcParts(expense), spent_on: expense.spentOn } : null;
 }
 
 function fail(error: { message: string }): never {
@@ -355,6 +362,7 @@ export class GroceryRepository implements IGroceryRepository {
       p_price_paise: input.pricePaise ?? null,
       p_store: input.store ?? null,
       p_bought_at: input.boughtAt ?? null,
+      p_expense: linkedExpenseArg(input.expense),
     });
 
     if (error) fail(error);
@@ -368,6 +376,7 @@ export class GroceryRepository implements IGroceryRepository {
       p_name: input.name ?? null,
       p_store: input.store ?? null,
       p_item_prices: input.itemPricesPaise ?? null,
+      p_expense: linkedExpenseArg(input.expense),
     });
 
     if (error) fail(error);
@@ -481,5 +490,22 @@ export class GroceryRepository implements IGroceryRepository {
       todayItems: (todayData ?? []).map(toOverviewItem),
       myToBuy: (myData ?? []).map(toOverviewItem),
     };
+  }
+
+  // RLS already hides other people's private lists; the creator filter keeps this to the caller's
+  // own lists even for an admin.
+  async listPrivatePurchases(houseId: string, userId: string): Promise<GroceryOverviewItem[]> {
+    const { data, error } = await (this.client.from("grocery_items" as any) as any)
+      .select(PRIVATE_PURCHASE_COLUMNS)
+      .eq("grocery_lists.house_id", houseId)
+      .is("grocery_lists.deleted_at", null)
+      .eq("grocery_lists.visibility", "private")
+      .eq("grocery_lists.created_by", userId)
+      .eq("status", "bought")
+      .order("updated_at", { ascending: false });
+
+    if (error) fail(error);
+
+    return (data ?? []).map(toOverviewItem);
   }
 }

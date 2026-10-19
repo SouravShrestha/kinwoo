@@ -3,6 +3,7 @@ import {
   handleGroceryRequest,
   readJsonObject,
 } from "../../../../../../../../_lib/groceryRoute";
+import { readLinkedExpense } from "../../../../../../../../_lib/expenseRoute";
 
 type Context = { params: Promise<{ houseId: string; listId: string; itemId: string }> };
 
@@ -37,7 +38,9 @@ export async function POST(request: Request, { params }: Context) {
         return badRequest("boughtAt must be an ISO date string");
       }
 
-      return service.markBought(itemId, { quantity, unit, pricePaise, store, boughtAt });
+      const expense = readLinkedExpense(body.expense);
+      if (expense === "invalid") return badRequest("expense must list payers and shares");
+      return service.markBought(itemId, { quantity, unit, pricePaise, store, boughtAt, expense });
     },
     { uuids: [houseId, listId, itemId] },
   );

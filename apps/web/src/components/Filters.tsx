@@ -57,12 +57,32 @@ export function Filters({
   const openSheet = (groupId?: string) => {
     setDraft(value);
     setDraftSort(sort?.value ?? "");
-    setActiveGroupId(groupId ?? groups[0]?.id ?? null);
+    setActiveGroupId(groupId ?? sheetGroups[0]?.id ?? null);
     setOpen(true);
   };
 
-  const selectedGroups = groups.filter((group) => (value[group.id]?.length ?? 0) > 0);
-  const otherGroups = groups.filter((group) => (value[group.id]?.length ?? 0) === 0);
+  const toggleGroups = groups.filter((group) => group.toggle);
+  const sheetGroups = groups.filter((group) => !group.toggle);
+  const selectedGroups = sheetGroups.filter((group) => (value[group.id]?.length ?? 0) > 0);
+  const otherGroups = sheetGroups.filter((group) => (value[group.id]?.length ?? 0) === 0);
+
+  const renderToggleChip = (group: FilterGroup) => {
+    const option = group.options[0];
+    if (!option) return null;
+    const active = isSelected(value, group.id, option.id);
+    return (
+      <Chip key={group.id} active={active}>
+        <button
+          type="button"
+          aria-pressed={active}
+          onClick={() => onChange(toggleOption(value, group.id, option.id))}
+          className={cn("rounded-xl px-3 py-2 hover:cursor-pointer hover:opacity-70", FOCUS_RING)}
+        >
+          {option.label}
+        </button>
+      </Chip>
+    );
+  };
 
   const renderGroupChip = (group: FilterGroup) => {
     const count = value[group.id]?.length ?? 0;
@@ -126,6 +146,8 @@ export function Filters({
           ) : null}
         </Chip>
 
+        {toggleGroups.map(renderToggleChip)}
+
         {selectedGroups.map(renderGroupChip)}
 
         {sort ? (
@@ -153,7 +175,8 @@ export function Filters({
       <FilterSheet
         open={open}
         onClose={() => setOpen(false)}
-        groups={groups}
+        groups={sheetGroups}
+        selectionGroups={groups}
         draft={draft}
         onDraftChange={setDraft}
         sortOptions={sort?.options}
@@ -190,6 +213,7 @@ function FilterSheet({
   open,
   onClose,
   groups,
+  selectionGroups,
   draft,
   onDraftChange,
   sortOptions,
@@ -203,6 +227,7 @@ function FilterSheet({
   open: boolean;
   onClose: () => void;
   groups: readonly FilterGroup[];
+  selectionGroups: readonly FilterGroup[];
   draft: FilterSelection;
   onDraftChange: (draft: FilterSelection) => void;
   sortOptions: readonly SortOption[] | undefined;
@@ -215,7 +240,7 @@ function FilterSheet({
 }) {
   const sortTabActive = sortOptions !== undefined && activeGroupId === SORT_TAB_ID;
   const activeGroup = groups.find((group) => group.id === activeGroupId) ?? groups[0];
-  const selected = selectedEntries(groups, draft);
+  const selected = selectedEntries(selectionGroups, draft);
   const nothingToClear = selected.length === 0 && draftSort === defaultSort;
   const clearAll = () => {
     onDraftChange(EMPTY_FILTER_SELECTION);

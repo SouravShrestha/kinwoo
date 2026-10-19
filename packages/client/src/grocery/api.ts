@@ -9,6 +9,7 @@ import type {
   GroceryItem,
   GroceryList,
   GroceryOverview,
+  GroceryOverviewItem,
   MarkBoughtInput,
   MarkItemsBoughtInput,
   MarkItemsBoughtResult,
@@ -224,6 +225,13 @@ export async function addCategory(houseId: string, name: string): Promise<Grocer
 export async function fetchOverview(houseId: string): Promise<GroceryOverview> {
   const body = await apiRequest<{ overview: GroceryOverview }>(`${base(houseId)}/overview`);
   return body.overview;
+}
+
+export async function fetchPrivatePurchases(houseId: string): Promise<GroceryOverviewItem[]> {
+  const body = await apiRequest<{ items: GroceryOverviewItem[] }>(
+    `${base(houseId)}/private-purchases`,
+  );
+  return body.items;
 }
 
 export async function fetchRecentActivity(

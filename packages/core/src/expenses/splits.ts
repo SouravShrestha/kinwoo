@@ -1,4 +1,4 @@
-import { formatPaise } from "./bought-groups";
+import { formatPaise } from "../grocery/bought-groups";
 import { amountDraftToPaise, payerRemainingLabel, payerSplit } from "./payers";
 
 export type SplitMethod = "equal" | "exact" | "percent" | "shares";

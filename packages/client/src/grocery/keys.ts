@@ -10,6 +10,8 @@ export const groceryKeys = {
   overview: (houseId: string) => ["grocery", houseId, "overview"] as const,
   // Nested under overview so every existing overview invalidation also refreshes the feed.
   recentActivity: (houseId: string) => ["grocery", houseId, "overview", "activity"] as const,
+  privatePurchases: (houseId: string) =>
+    ["grocery", houseId, "overview", "private-purchases"] as const,
   activity: (houseId: string, listId: string, itemId: string) =>
     ["grocery", houseId, "lists", listId, "items", itemId, "activity"] as const,
 };

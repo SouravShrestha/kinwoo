@@ -27,6 +27,7 @@ describe("markItemsBought", () => {
       name: "Weekly veg",
       store: "Market",
       itemPricesPaise: [12000, null],
+      expense: null,
     });
   });
 
@@ -45,6 +46,7 @@ describe("markItemsBought", () => {
       name: null,
       store: null,
       itemPricesPaise: [null, 50],
+      expense: null,
     });
   });
 
@@ -89,6 +91,101 @@ describe("markItemsBought", () => {
       ok: false,
       code: "ALREADY_BOUGHT",
       message: "Someone already bought one of these items.",
+    });
+  });
+});
+
+const SPLIT = {
+  splitMethod: "equal" as const,
+  spentOn: "2026-10-12",
+  payers: [{ userId: "a", amountPaise: 6000 }],
+  shares: [
+    { userId: "a", sharePaise: 3000, weight: null },
+    { userId: "b", sharePaise: 3000, weight: null },
+  ],
+};
+
+describe("linked expenses", () => {
+  it("forwards a valid split with a single buy", async () => {
+    const markBought = vi.fn().mockResolvedValue(undefined);
+    const service = new GroceryService({ markBought } as unknown as IGroceryRepository);
+
+    const result = await service.markBought("i1", { pricePaise: 6000, expense: SPLIT });
+
+    expect(result).toEqual({ ok: true, data: null });
+    expect(markBought).toHaveBeenCalledWith("i1", { pricePaise: 6000, expense: SPLIT });
+  });
+
+  it("rejects a split that does not match the price", async () => {
+    const markBought = vi.fn();
+    const service = new GroceryService({ markBought } as unknown as IGroceryRepository);
+
+    expect(await service.markBought("i1", { pricePaise: 5000, expense: SPLIT })).toMatchObject({
+      ok: false,
+      code: "INVALID_INPUT",
+    });
+    expect(await service.markBought("i1", { pricePaise: null, expense: SPLIT })).toMatchObject({
+      ok: false,
+      code: "INVALID_INPUT",
+    });
+    expect(markBought).not.toHaveBeenCalled();
+  });
+
+  it("forwards a valid split with a batch and rejects a mismatched one", async () => {
+    const { service, markItemsBought } = serviceWith();
+
+    await service.markItemsBought("l1", {
+      itemIds: ["i1", "i2"],
+      totalPaise: 6000,
+      expense: SPLIT,
+    });
+    expect(markItemsBought.mock.calls[0]?.[1]).toMatchObject({ expense: SPLIT });
+
+    const result = await service.markItemsBought("l1", {
+      itemIds: ["i1", "i2"],
+      totalPaise: 7000,
+      expense: SPLIT,
+    });
+    expect(result).toMatchObject({ ok: false, code: "INVALID_INPUT" });
+  });
+
+  it("explains that private lists cannot be split", async () => {
+    const { service } = serviceWith(
+      vi.fn().mockRejectedValue(new GroceryRepositoryError("PRIVATE_LIST", "PRIVATE_LIST")),
+    );
+
+    const result = await service.markItemsBought("l1", {
+      itemIds: ["i1", "i2"],
+      totalPaise: 6000,
+      expense: SPLIT,
+    });
+
+    expect(result).toEqual({
+      ok: false,
+      code: "PRIVATE_LIST",
+      message: "Purchases from a private list can't be split.",
+    });
+  });
+});
+
+describe("listPrivatePurchases", () => {
+  it("scopes the lookup to the caller", async () => {
+    const listPrivatePurchases = vi.fn().mockResolvedValue([]);
+    const service = new GroceryService({ listPrivatePurchases } as unknown as IGroceryRepository);
+
+    expect(await service.listPrivatePurchases("h1", "u1")).toEqual({ ok: true, data: [] });
+    expect(listPrivatePurchases).toHaveBeenCalledWith("h1", "u1");
+  });
+
+  it("maps repository failures to an error result", async () => {
+    const listPrivatePurchases = vi
+      .fn()
+      .mockRejectedValue(new GroceryRepositoryError("permission denied", "FORBIDDEN"));
+    const service = new GroceryService({ listPrivatePurchases } as unknown as IGroceryRepository);
+
+    expect(await service.listPrivatePurchases("h1", "u1")).toMatchObject({
+      ok: false,
+      code: "FORBIDDEN",
     });
   });
 });

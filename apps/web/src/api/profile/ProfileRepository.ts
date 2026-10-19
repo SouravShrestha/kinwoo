@@ -1,28 +1,28 @@
 import type { Database, ProfileRow, ProfileUpdate } from "@kinwoo/core/db";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
+import { AVATAR_BUCKET, toPublicAvatarUrl, toStoredAvatar } from "../avatars/avatarUrls";
 import type { IProfileRepository, Profile, ProfilePreferences } from "./IProfileRepository";
 
 const COLUMNS = "id, display_name, avatar_url, locale, theme, notifications_enabled";
-const AVATAR_BUCKET = "avatars";
 const AVATAR_LIST_LIMIT = 100;
 const IMAGE_FILE = /\.(png|jpe?g|webp)$/i;
-
-function toProfile(row: ProfileRow): Profile {
-  return {
-    id: row.id,
-    displayName: row.display_name,
-    avatarUrl: row.avatar_url,
-    locale: row.locale,
-    theme: row.theme,
-    notificationsEnabled: row.notifications_enabled,
-  };
-}
 
 // Takes the session-scoped client, not service-role, so RLS enforces ownership
 // rather than a WHERE clause we could forget.
 export class ProfileRepository implements IProfileRepository {
   constructor(private readonly client: SupabaseClient<Database>) {}
+
+  private toProfile(row: ProfileRow): Profile {
+    return {
+      id: row.id,
+      displayName: row.display_name,
+      avatarUrl: toPublicAvatarUrl(this.client, row.avatar_url),
+      locale: row.locale,
+      theme: row.theme,
+      notificationsEnabled: row.notifications_enabled,
+    };
+  }
 
   async findById(userId: string): Promise<Profile | null> {
     const { data, error } = await this.client
@@ -32,7 +32,7 @@ export class ProfileRepository implements IProfileRepository {
       .maybeSingle();
 
     if (error) throw new Error(error.message);
-    return data ? toProfile(data as ProfileRow) : null;
+    return data ? this.toProfile(data as ProfileRow) : null;
   }
 
   async updateDisplayName(userId: string, displayName: string): Promise<Profile | null> {
@@ -55,20 +55,20 @@ export class ProfileRepository implements IProfileRepository {
   }
 
   async updateAvatarUrl(userId: string, avatarUrl: string): Promise<Profile | null> {
-    return this.update(userId, { avatar_url: avatarUrl });
+    return this.update(userId, { avatar_url: toStoredAvatar(this.client, avatarUrl) });
   }
 
   async setAvatarUrlIfMissing(userId: string, avatarUrl: string): Promise<Profile | null> {
     const { data, error } = await this.client
       .from("profiles")
-      .update({ avatar_url: avatarUrl })
+      .update({ avatar_url: toStoredAvatar(this.client, avatarUrl) })
       .eq("id", userId)
       .is("avatar_url", null)
       .select(COLUMNS)
       .maybeSingle();
 
     if (error) throw new Error(error.message);
-    return data ? toProfile(data as ProfileRow) : null;
+    return data ? this.toProfile(data as ProfileRow) : null;
   }
 
   async listAvatarUrls(): Promise<string[]> {
@@ -94,6 +94,6 @@ export class ProfileRepository implements IProfileRepository {
       .maybeSingle();
 
     if (error) throw new Error(error.message);
-    return data ? toProfile(data as ProfileRow) : null;
+    return data ? this.toProfile(data as ProfileRow) : null;
   }
 }

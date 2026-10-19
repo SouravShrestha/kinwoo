@@ -1,6 +1,7 @@
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { useAuth } from "@kinwoo/client/auth";
-import { useBatchMarkBoughtForm, useExpenseSplit, usePayerSplit } from "@kinwoo/client/grocery";
+import { expensePartsFromForms, useExpenseSplit, usePayerSplit } from "@kinwoo/client/expenses";
+import { useBatchMarkBoughtForm, useGroceryList } from "@kinwoo/client/grocery";
 import { useActiveHouse } from "@kinwoo/client/houses";
 import { toast } from "@kinwoo/client/toast";
 import { BATCH_NAME_MAX_LENGTH, MIN_BATCH_ITEMS, type GroceryItem } from "@kinwoo/core/grocery";
@@ -40,8 +41,8 @@ import Animated, {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { CategoryIcon } from "@/components/CategoryIcon";
-import { PayerSheet } from "@/components/grocery/PayerSheet";
-import { SplitSheet } from "@/components/grocery/SplitSheet";
+import { PayerSheet } from "@/components/expenses/PayerSheet";
+import { SplitSheet } from "@/components/expenses/SplitSheet";
 import { Pressable } from "@/components/Pressable";
 import { goBack, goHome } from "@/lib/house-navigation";
 import { useTheme } from "@/theme/ThemeProvider";
@@ -172,6 +173,7 @@ export default function BatchMarkBoughtScreen() {
   const { user } = useAuth();
   const { activeHouse, ready } = useActiveHouse();
   const houseId = activeHouse?.house.id ?? "";
+  const { data: list } = useGroceryList(houseId || null, listId);
   const [picker, setPicker] = useState<Picker | null>(null);
   const [split, setSplit] = useState(true);
   const invalidLink = !listId || itemIds.length < MIN_BATCH_ITEMS;
@@ -187,6 +189,8 @@ export default function BatchMarkBoughtScreen() {
 
   const payers = usePayerSplit({ houseId, currentUserId: user?.id ?? null, price: form.total });
   const expenseSplit = useExpenseSplit({ members: payers.members, totalPaise: payers.totalPaise });
+  // Private lists stay private, so their purchases are never split into expenses.
+  const showSplit = payers.totalPaise > 0 && list?.visibility === "shared";
 
   useEffect(() => {
     if ((ready && !activeHouse) || invalidLink) goHome();
@@ -251,7 +255,11 @@ export default function BatchMarkBoughtScreen() {
                     accessibilityLabel={`Mark ${form.items.length} items as bought`}
                     accessibilityState={{ disabled: submitDisabled, busy: form.submitting }}
                     disabled={submitDisabled}
-                    onPress={() => void form.submit()}
+                    onPress={() =>
+                      void form.submit(
+                        split && showSplit ? expensePartsFromForms(payers, expenseSplit) : null,
+                      )
+                    }
                     allowDoublePress
                     hitSlop={12}
                     className={`size-10 items-end justify-center ${submitDisabled ? "opacity-40" : ""}`}
@@ -323,7 +331,7 @@ export default function BatchMarkBoughtScreen() {
                   ) : null}
                 </View>
 
-                {payers.totalPaise > 0 ? (
+                {showSplit ? (
                   <Animated.View
                     entering={SPLIT_ENTERING}
                     exiting={SPLIT_EXITING}

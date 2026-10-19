@@ -29,7 +29,16 @@ export const CONFIRM_COPY = {
     icon: "trash",
     tone: "destructive",
     title: "Delete List?",
-    message: "Are you sure you want to delete this list?\nThis action is irreversible",
+    message:
+      "This will delete the list and all its items. Recorded expenses won't be affected.\nThis action is irreversible",
+    confirmLabel: "Delete",
+  },
+  deletePrivateList: {
+    icon: "trash",
+    tone: "destructive",
+    title: "Delete List?",
+    message:
+      "This will delete the list, all its items and their purchases from your Private spending.\nThis action is irreversible",
     confirmLabel: "Delete",
   },
   deleteItem: {
@@ -53,6 +62,13 @@ export const CONFIRM_COPY = {
     title: "Delete items?",
     message:
       "Are you sure you want to delete all items in this purchase? Its transaction won't be affected.\nThis action is irreversible",
+    confirmLabel: "Delete",
+  },
+  deleteExpense: {
+    icon: "trash",
+    tone: "destructive",
+    title: "Delete expense?",
+    message: "It will be removed from everyone's balances.\nThis action is irreversible",
     confirmLabel: "Delete",
   },
   listPrivate: {
@@ -81,6 +97,10 @@ export const CONFIRM_COPY = {
 
 export function visibilityConfirmCopy(next: ListVisibility): ConfirmCopy {
   return next === "private" ? CONFIRM_COPY.listPrivate : CONFIRM_COPY.listPublic;
+}
+
+export function deleteListConfirmCopy(visibility: ListVisibility): ConfirmCopy {
+  return visibility === "private" ? CONFIRM_COPY.deletePrivateList : CONFIRM_COPY.deleteList;
 }
 
 export function leaveConfirmCopy(state: LeaveState, houseName: string): ConfirmCopy {

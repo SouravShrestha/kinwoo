@@ -6,7 +6,7 @@ import {
 } from "@kinwoo/client/grocery";
 import { useHouseMembers } from "@kinwoo/client/houses";
 import { toast } from "@kinwoo/client/toast";
-import { CONFIRM_COPY, visibilityConfirmCopy } from "@kinwoo/core/confirm";
+import { deleteListConfirmCopy, visibilityConfirmCopy } from "@kinwoo/core/confirm";
 import {
   groceryErrorMessage,
   itemsAssignedToOthers,
@@ -317,7 +317,7 @@ export function EditListSheet({
 
       <ConfirmDialog
         open={confirmDelete}
-        copy={CONFIRM_COPY.deleteList}
+        copy={deleteListConfirmCopy(list.visibility)}
         isPending={isDeleting}
         onConfirm={() => void handleDelete()}
         onCancel={() => setConfirmDelete(false)}

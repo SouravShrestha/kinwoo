@@ -1,3 +1,4 @@
+import { isSpentOn, validateExpenseParts, type LinkedExpenseInput } from "@kinwoo/core/expenses";
 import {
   batchNameErrorMessage,
   encodeActivityCursor,
@@ -14,6 +15,7 @@ import {
   type ActivityCursor,
   type AssignItemsResult,
   type GroceryActivityPage,
+  type GroceryOverviewItem,
   type MarkItemsBoughtResult,
 } from "@kinwoo/core/grocery";
 
@@ -45,6 +47,12 @@ function failure(code: GroceryServiceErrorCode, message?: string): GroceryResult
 
 function invalidInput(message: string): GroceryResult<never> {
   return failure("INVALID_INPUT", message);
+}
+
+const LINKED_EXPENSE_ERROR = "Who paid and how it's split must both add up to the amount.";
+
+function isValidLinkedExpense(amountPaise: number, expense: LinkedExpenseInput): boolean {
+  return isSpentOn(expense.spentOn) && validateExpenseParts(amountPaise, expense);
 }
 
 function fromError(cause: unknown): GroceryResult<never> {
@@ -201,6 +209,9 @@ export class GroceryService implements IGroceryService {
   }
 
   async markBought(itemId: string, input: MarkBoughtInput): Promise<GroceryResult<null>> {
+    if (input.expense && !isValidLinkedExpense(input.pricePaise ?? 0, input.expense)) {
+      return invalidInput(LINKED_EXPENSE_ERROR);
+    }
     return this.run(async () => {
       await this.repository.markBought(itemId, input);
       return null;
@@ -237,6 +248,10 @@ export class GroceryService implements IGroceryService {
       return invalidInput("Enter the total you paid.");
     }
 
+    if (input.expense && !isValidLinkedExpense(input.totalPaise, input.expense)) {
+      return invalidInput(LINKED_EXPENSE_ERROR);
+    }
+
     const name = validateBatchName(input.name);
     if (!name.ok) return invalidInput(batchNameErrorMessage(name.error));
 
@@ -252,6 +267,7 @@ export class GroceryService implements IGroceryService {
         name: name.value,
         store,
         itemPricesPaise: itemPrices.some((price) => price !== null) ? itemPrices : undefined,
+        expense: input.expense ?? null,
       }),
     }));
   }
@@ -273,6 +289,13 @@ export class GroceryService implements IGroceryService {
 
   async getOverview(houseId: string, userId: string): Promise<GroceryResult<GroceryOverview>> {
     return this.run(() => this.repository.getOverview(houseId, userId));
+  }
+
+  async listPrivatePurchases(
+    houseId: string,
+    userId: string,
+  ): Promise<GroceryResult<GroceryOverviewItem[]>> {
+    return this.run(() => this.repository.listPrivatePurchases(houseId, userId));
   }
 
   async getRecentActivity(

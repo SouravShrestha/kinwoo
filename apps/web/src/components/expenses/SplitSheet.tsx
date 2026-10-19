@@ -1,12 +1,8 @@
 "use client";
 
-import type { ExpenseSplitForm, PayerMember } from "@kinwoo/client/grocery";
-import {
-  formatPaise,
-  SPLIT_METHOD_TITLES,
-  SPLIT_METHODS,
-  type SplitMethod,
-} from "@kinwoo/core/grocery";
+import type { ExpenseSplitForm, PayerMember } from "@kinwoo/client/expenses";
+import { SPLIT_METHOD_TITLES, SPLIT_METHODS, type SplitMethod } from "@kinwoo/core/expenses";
+import { formatPaise } from "@kinwoo/core/grocery";
 import { ArrowRightIcon, CheckCircleIcon, CheckIcon, SharesIcon } from "@kinwoo/icons";
 import { useRef, type KeyboardEvent, type ReactNode } from "react";
 

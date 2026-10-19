@@ -2,10 +2,10 @@ import {
   amountDraftToPaise,
   isAmountDraft,
   paiseToAmountDraft,
-  parseRupeesToPaise,
   payerNamesLabel,
   payerSplit,
-} from "@kinwoo/core/grocery";
+} from "@kinwoo/core/expenses";
+import { parseRupeesToPaise } from "@kinwoo/core/grocery";
 import { memberDisplayName, sortMembers } from "@kinwoo/core/houses";
 import { useMemo, useState } from "react";
 
@@ -33,13 +33,19 @@ export function usePayerSplit({
   houseId,
   currentUserId,
   price,
+  initialAmounts,
 }: {
   houseId: string;
   currentUserId: string | null;
   price: string;
+  initialAmounts?: Readonly<Record<string, string>>;
 }) {
   const membersQuery = useHouseMembers(houseId || null);
-  const [choice, setChoice] = useState<Choice | null>(null);
+  const [choice, setChoice] = useState<Choice | null>(() =>
+    initialAmounts
+      ? { selected: Object.keys(initialAmounts), amounts: { ...initialAmounts } }
+      : null,
+  );
   const [draft, setDraft] = useState<Choice | null>(null);
 
   const totalPaise = useMemo(() => {
@@ -106,6 +112,9 @@ export function usePayerSplit({
         .filter((member) => committed.selected.includes(member.userId))
         .map((member) => (member.isYou ? "You" : member.name.split(/\s+/)[0])),
     ),
+    amounts: Object.fromEntries(
+      committed.selected.map((id) => [id, committed.amounts[id] ?? ""]),
+    ) as Record<string, string>,
     isSelected: (userId: string) => editing.selected.includes(userId),
     amountText: (userId: string) => editing.amounts[userId] ?? "",
     split,

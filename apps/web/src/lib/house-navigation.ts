@@ -10,6 +10,16 @@ export function batchMarkBoughtPath(listId: string, itemIds: readonly string[]) 
   return `/item/bought-batch?listId=${encodeURIComponent(listId)}&itemIds=${ids}`;
 }
 
+export const NEW_EXPENSE_PATH = "/expense/new";
+
+export function expensePath(expenseId: string) {
+  return `/expense/${encodeURIComponent(expenseId)}`;
+}
+
+export function editExpensePath(expenseId: string) {
+  return `${expensePath(expenseId)}/edit`;
+}
+
 export function useHouseNavigation() {
   const router = useRouter();
 

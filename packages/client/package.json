@@ -11,6 +11,7 @@
     "./activity": "./src/activity/index.ts",
     "./api": "./src/api/index.ts",
     "./auth": "./src/auth/index.ts",
+    "./expenses": "./src/expenses/index.ts",
     "./profile": "./src/profile/index.ts",
     "./houses": "./src/houses/index.ts",
     "./grocery": "./src/grocery/index.ts",

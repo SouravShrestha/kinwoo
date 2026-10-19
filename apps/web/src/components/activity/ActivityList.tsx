@@ -2,30 +2,39 @@
 
 import {
   activityIconName,
+  formatActivityDetail,
   formatActivityParts,
-  formatRelativeTime,
+  formatActivityTimestamp,
   groupActivityByDay,
   type ActivityIconName,
   type GroceryActivityEntry,
 } from "@kinwoo/core/grocery";
+import type { HouseMember } from "@kinwoo/core/houses";
 import {
+  ArrowRightIcon,
   BagDollarIcon,
   CartCheckIcon,
   CartCrossIcon,
   CartMinusIcon,
   CartPlusIcon,
+  EmailIcon,
   FilePlusIcon,
   FrownIcon,
   HeartIcon,
   HousePlusIcon,
+  InviteIcon,
   ListSettingsIcon,
   PulseIcon,
+  ShieldCheckIcon,
+  TransactionIcon,
   TrashOutlineIcon,
   UserCheckIcon,
   UserCrossIcon,
   type WebIconProps,
 } from "@kinwoo/icons";
-import { useEffect, useMemo, useRef, type ComponentType } from "react";
+import { memo, useEffect, useMemo, useRef, type ComponentType } from "react";
+
+import { Avatar } from "@/components/houses/Avatar";
 
 const ICONS: Record<ActivityIconName, ComponentType<WebIconProps>> = {
   "cart-plus": CartPlusIcon,
@@ -33,6 +42,7 @@ const ICONS: Record<ActivityIconName, ComponentType<WebIconProps>> = {
   "cart-minus": CartMinusIcon,
   "cart-cross": CartCrossIcon,
   "bag-dollar": BagDollarIcon,
+  transaction: TransactionIcon,
   "user-check": UserCheckIcon,
   "user-cross": UserCrossIcon,
   heart: HeartIcon,
@@ -41,33 +51,88 @@ const ICONS: Record<ActivityIconName, ComponentType<WebIconProps>> = {
   "list-settings": ListSettingsIcon,
   trash: TrashOutlineIcon,
   "house-plus": HousePlusIcon,
+  "shield-check": ShieldCheckIcon,
+  invite: InviteIcon,
+  email: EmailIcon,
+  "arrow-right": ArrowRightIcon,
   pulse: PulseIcon,
 };
 
 const LOAD_MORE_MARGIN = "400px 0px";
 
-function ActivityIcon({ entry }: { entry: GroceryActivityEntry }) {
+const ACTOR_AVATAR_SIZE = 16;
+
+function ActivityIcon({
+  entry,
+  actor,
+}: {
+  entry: GroceryActivityEntry;
+  actor: HouseMember | undefined;
+}) {
   const Icon = ICONS[activityIconName(entry)];
 
   return (
-    <span className="mr-5 flex size-9 shrink-0 items-center justify-center rounded-lg bg-muted text-foreground pt-0.5">
-      <Icon size={20} />
+    <span className="relative mr-5 shrink-0">
+      <span className="flex size-9 items-center justify-center rounded-lg bg-muted pt-0.5 text-foreground">
+        <Icon size={20} />
+      </span>
+      {entry.actorId ? (
+        <span className="absolute -bottom-1.5 -right-1.5 rounded-full bg-background p-0.5">
+          <Avatar
+            name={actor?.displayName ?? entry.actorName}
+            url={actor?.avatarUrl ?? null}
+            size={ACTOR_AVATAR_SIZE}
+          />
+        </span>
+      ) : null}
     </span>
   );
 }
 
-export function ActivityList({
+function ActivityDetail({
+  entry,
+  currentUserId,
+}: {
+  entry: GroceryActivityEntry;
+  currentUserId: string | null;
+}) {
+  const detail = formatActivityDetail(entry, currentUserId);
+  if (!detail) return null;
+
+  const color = detail.tone === "lent" ? "text-accent" : "text-destructive";
+
+  return (
+    <p className={`mt-1 font-display text-sm leading-5 ${color}`}>
+      {detail.struck ? (
+        <del className="relative no-underline">
+          {detail.text}
+          <span
+            aria-hidden
+            className="absolute -inset-x-0.5 top-1/2 h-px -translate-y-1/2 bg-current"
+          />
+        </del>
+      ) : (
+        detail.text
+      )}
+    </p>
+  );
+}
+
+export const ActivityList = memo(function ActivityList({
   entries,
+  members,
   currentUserId,
   canLoadMore,
   onLoadMore,
 }: {
   entries: GroceryActivityEntry[];
+  members: HouseMember[];
   currentUserId: string | null;
   canLoadMore: boolean;
   onLoadMore: () => void;
 }) {
   const groups = useMemo(() => groupActivityByDay(entries), [entries]);
+  const membersById = useMemo(() => new Map(members.map((m) => [m.userId, m])), [members]);
   const sentinelRef = useRef<HTMLDivElement>(null);
 
   // Re-observing after every page makes the observer report the sentinel again, so a page that
@@ -99,21 +164,24 @@ export function ActivityList({
                 key={entry.id}
                 className={`flex items-start py-6 ${index > 0 ? "border-t border-border" : ""}`}
               >
-                <ActivityIcon entry={entry} />
-                <p className="mr-3 min-w-0 flex-1 font-display text-base leading-6 text-foreground">
-                  {formatActivityParts(entry, currentUserId).map((part, index) =>
-                    part.emphasis ? (
-                      <em key={index} className="font-medium italic">
-                        {part.text}
-                      </em>
-                    ) : (
-                      <span key={index}>{part.text}</span>
-                    ),
-                  )}
-                </p>
-                <span className="shrink-0 pt-1 font-display text-xs text-muted-foreground">
-                  {formatRelativeTime(entry.createdAt)}
-                </span>
+                <ActivityIcon entry={entry} actor={membersById.get(entry.actorId ?? "")} />
+                <div className="mr-3 min-w-0 flex-1">
+                  <p className="font-display text-base leading-6 text-foreground">
+                    {formatActivityParts(entry, currentUserId).map((part, index) =>
+                      part.emphasis ? (
+                        <em key={index} className="font-medium italic">
+                          {part.text}
+                        </em>
+                      ) : (
+                        <span key={index}>{part.text}</span>
+                      ),
+                    )}
+                  </p>
+                  <ActivityDetail entry={entry} currentUserId={currentUserId} />
+                  <p className="mt-3 font-display text-xs text-muted-foreground">
+                    {formatActivityTimestamp(entry.createdAt)}
+                  </p>
+                </div>
               </li>
             ))}
           </ul>
@@ -122,4 +190,4 @@ export function ActivityList({
       {canLoadMore ? <div ref={sentinelRef} aria-hidden="true" className="h-px" /> : null}
     </div>
   );
-}
+});

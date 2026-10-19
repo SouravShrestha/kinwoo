@@ -3,11 +3,11 @@
 import { useBusyWhile } from "@kinwoo/client/activity";
 import { useAuth } from "@kinwoo/client/auth";
 import { useRecentActivity } from "@kinwoo/client/grocery";
-import { useActiveHouse } from "@kinwoo/client/houses";
+import { useActiveHouse, useHouseMembers } from "@kinwoo/client/houses";
 import { countSelected, EMPTY_FILTER_SELECTION, type FilterSelection } from "@kinwoo/core/filters";
 import { activityFilterGroups, filterActivity } from "@kinwoo/core/grocery";
 import { useRouter } from "next/navigation";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useDeferredValue, useMemo, useState } from "react";
 
 import { ActivityList } from "@/components/activity/ActivityList";
 import { Filters } from "@/components/Filters";
@@ -29,13 +29,19 @@ export function ActivitiesScreen() {
     fetchNextPage,
   } = useRecentActivity(houseId);
   useBusyWhile(isFetchingNextPage);
+  const { data: members } = useHouseMembers(houseId);
   const [filters, setFilters] = useState<FilterSelection>(EMPTY_FILTER_SELECTION);
 
   const filterGroups = useMemo(
     () => activityFilterGroups(entries ?? [], currentUserId),
     [entries, currentUserId],
   );
-  const filteredEntries = useMemo(() => filterActivity(entries ?? [], filters), [entries, filters]);
+  const deferredFilters = useDeferredValue(filters);
+  useBusyWhile(deferredFilters !== filters);
+  const filteredEntries = useMemo(
+    () => filterActivity(entries ?? [], deferredFilters, currentUserId),
+    [entries, deferredFilters, currentUserId],
+  );
 
   const moreToFetch = hasNextPage && !isFetchNextPageError;
   const canLoadMore = moreToFetch && !isFetchingNextPage;
@@ -67,12 +73,15 @@ export function ActivitiesScreen() {
         {!ready || isLoading ? null : filteredEntries.length === 0 && !moreToFetch ? (
           <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-border py-16 text-center">
             <p className="font-display font-medium text-foreground">
-              {countSelected(filters) > 0 ? "No activity matches these filters" : "No activity yet"}
+              {countSelected(deferredFilters) > 0
+                ? "No activity matches these filters"
+                : "No activity yet"}
             </p>
           </div>
         ) : (
           <ActivityList
             entries={filteredEntries}
+            members={members ?? []}
             currentUserId={currentUserId}
             canLoadMore={canLoadMore}
             onLoadMore={loadMore}

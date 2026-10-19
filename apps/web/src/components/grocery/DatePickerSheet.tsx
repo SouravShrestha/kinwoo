@@ -361,14 +361,16 @@ export function DatePickerSheet({
   onClose,
   value,
   onSelect,
+  label = "Choose the date bought",
 }: {
   open: boolean;
   onClose: () => void;
   value: Date;
   onSelect: (date: Date) => void;
+  label?: string;
 }) {
   return (
-    <BottomSheet open={open} onClose={onClose} label="Choose the date bought">
+    <BottomSheet open={open} onClose={onClose} label={label}>
       <Calendar
         value={value}
         onCancel={onClose}
