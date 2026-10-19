@@ -47,6 +47,9 @@ const MESSAGES: Record<GroceryErrorCode, string> = {
 
 export const GENERIC_GROCERY_ERROR = "Something went wrong. Please try again.";
 
+export const TRANSACTION_UNAVAILABLE =
+  "This transaction isn't available. It may have been deleted.";
+
 export function groceryErrorMessage(code: string | null | undefined): string {
   return isGroceryErrorCode(code) ? MESSAGES[code] : GENERIC_GROCERY_ERROR;
 }

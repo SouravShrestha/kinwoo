@@ -2,6 +2,7 @@
 
 import { useBusyWhile } from "@kinwoo/client/activity";
 import { useAuth } from "@kinwoo/client/auth";
+import { useOpenExpense } from "@kinwoo/client/expenses";
 import { useRecentActivity } from "@kinwoo/client/grocery";
 import { useActiveHouse, useHouseMembers } from "@kinwoo/client/houses";
 import { countSelected, EMPTY_FILTER_SELECTION, type FilterSelection } from "@kinwoo/core/filters";
@@ -12,6 +13,7 @@ import { useCallback, useDeferredValue, useMemo, useState } from "react";
 import { ActivityList } from "@/components/activity/ActivityList";
 import { Filters } from "@/components/Filters";
 import { SetupHousePrompt } from "@/components/houses/SetupHousePrompt";
+import { expensePath } from "@/lib/house-navigation";
 
 export function ActivitiesScreen() {
   const router = useRouter();
@@ -46,6 +48,12 @@ export function ActivitiesScreen() {
   const moreToFetch = hasNextPage && !isFetchNextPageError;
   const canLoadMore = moreToFetch && !isFetchingNextPage;
   const loadMore = useCallback(() => void fetchNextPage(), [fetchNextPage]);
+
+  const openExpense = useOpenExpense(houseId);
+  const handleOpenExpense = useCallback(
+    (expenseId: string | null) => void openExpense(expenseId, (id) => router.push(expensePath(id))),
+    [openExpense, router],
+  );
 
   if (ready && !activeHouse) {
     return (
@@ -87,6 +95,7 @@ export function ActivitiesScreen() {
             currentUserId={currentUserId}
             canLoadMore={canLoadMore}
             onLoadMore={loadMore}
+            onOpenExpense={handleOpenExpense}
           />
         )}
       </div>

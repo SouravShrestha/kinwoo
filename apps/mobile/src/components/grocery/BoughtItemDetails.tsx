@@ -1,4 +1,10 @@
-import { formatPaise, itemQuantityLabel, type GroceryItem } from "@kinwoo/core/grocery";
+import { toast } from "@kinwoo/client/toast";
+import {
+  formatPaise,
+  itemQuantityLabel,
+  TRANSACTION_UNAVAILABLE,
+  type GroceryItem,
+} from "@kinwoo/core/grocery";
 import { TransactionIcon, TrashIcon } from "@kinwoo/icons/native";
 import { colors } from "@kinwoo/tokens/native";
 import { Text, View } from "react-native";
@@ -6,6 +12,7 @@ import { Text, View } from "react-native";
 import { Button } from "@/components/Button";
 import { CategoryIcon } from "@/components/CategoryIcon";
 import { Pressable } from "@/components/Pressable";
+import { openExpense } from "@/lib/house-navigation";
 import { useTheme } from "@/theme/ThemeProvider";
 
 import { BoughtTimeline } from "./BoughtTimeline";
@@ -16,15 +23,24 @@ export function BoughtItemDetails({
   listId,
   canDelete,
   onDelete,
+  onClose,
 }: {
   item: GroceryItem;
   houseId: string;
   listId: string;
   canDelete: boolean;
   onDelete: () => void;
+  onClose: () => void;
 }) {
   const { resolvedTheme } = useTheme();
   const palette = colors[resolvedTheme];
+
+  const viewTransaction = () => {
+    const expenseId = item.purchase?.expenseId;
+    if (!expenseId) return toast.error(TRANSACTION_UNAVAILABLE);
+    onClose();
+    openExpense(expenseId);
+  };
 
   const quantity = itemQuantityLabel(item);
   const pricePaise = item.purchase?.pricePaise ?? null;
@@ -95,6 +111,7 @@ export function BoughtItemDetails({
         <Button
           label="View transaction"
           icon={<TransactionIcon size={22} color={palette.primaryForeground} />}
+          onPress={viewTransaction}
           className="h-12 flex-1 px-3"
         />
       </View>

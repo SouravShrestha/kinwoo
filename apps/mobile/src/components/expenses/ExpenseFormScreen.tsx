@@ -32,10 +32,10 @@ import { SplitSheet } from "./SplitSheet";
 
 type Picker = "category" | "date" | "payers" | "split";
 
-const SPLIT_ENTERING = FadeInUp.duration(220)
+const NOTE_ENTERING = FadeInUp.duration(220)
   .easing(Easing.out(Easing.cubic))
   .reduceMotion(ReduceMotion.System);
-const SPLIT_EXITING = FadeOutUp.duration(160).reduceMotion(ReduceMotion.System);
+const NOTE_EXITING = FadeOutUp.duration(160).reduceMotion(ReduceMotion.System);
 
 export function ExpenseFormScreen({
   houseId,
@@ -56,6 +56,7 @@ export function ExpenseFormScreen({
     onSaved: goBack,
   });
   const { payers, split } = form;
+  const [noteOpen, setNoteOpen] = useState(Boolean(expense?.note));
 
   const submitDisabled = !form.canSubmit;
   const dateLabel = formatPickedDate(form.date);
@@ -140,6 +141,7 @@ export function ExpenseFormScreen({
                   />
                 </Pressable>
                 <TextInput
+                  autoFocus={!form.isEditing}
                   accessibilityLabel="Title"
                   accessibilityHint={form.titleError ?? undefined}
                   autoCapitalize="sentences"
@@ -165,58 +167,101 @@ export function ExpenseFormScreen({
               ) : null}
             </View>
 
-            <View className="my-3">
-              <View className="flex-row items-center gap-3 border-b border-border pb-1">
-                <RupeeIcon size={28} color={palette.foreground} />
-                <TextInput
-                  autoFocus={!form.isEditing}
-                  accessibilityLabel="Amount"
-                  accessibilityHint={form.amountError ?? undefined}
-                  keyboardType="decimal-pad"
-                  placeholder="0.00"
-                  placeholderTextColor={palette.mutedForeground}
-                  onFocus={revealFocusedInput}
-                  value={form.amount}
-                  onChangeText={form.setAmount}
-                  className="h-11 min-w-0 flex-1 font-display-medium text-foreground"
-                  style={{ fontSize: 34, paddingVertical: 0 }}
-                />
+            <View className="my-3 flex-row items-start gap-3">
+              <View className="min-w-0 flex-1">
+                <View className="flex-row items-center gap-3 border-b border-border pb-1">
+                  <RupeeIcon size={28} color={palette.foreground} />
+                  <TextInput
+                    accessibilityLabel="Amount"
+                    accessibilityHint={form.amountError ?? undefined}
+                    keyboardType="decimal-pad"
+                    placeholder="0.00"
+                    placeholderTextColor={palette.mutedForeground}
+                    onFocus={revealFocusedInput}
+                    value={form.amount}
+                    onChangeText={form.setAmount}
+                    className="h-11 min-w-0 flex-1 font-display-medium text-foreground"
+                    style={{ fontSize: 34, paddingVertical: 0 }}
+                  />
+                </View>
+                {form.amountError ? (
+                  <Text
+                    accessibilityLiveRegion="polite"
+                    className="mt-2 font-display-normal text-sm text-destructive"
+                  >
+                    {form.amountError}
+                  </Text>
+                ) : null}
               </View>
-              {form.amountError ? (
-                <Text
-                  accessibilityLiveRegion="polite"
-                  className="mt-2 font-display-normal text-sm text-destructive"
-                >
-                  {form.amountError}
-                </Text>
-              ) : null}
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel={`Date: ${dateLabel}. Change date`}
+                onPress={() => openPicker("date")}
+                allowDoublePress
+                className="h-12 w-36 flex-row items-center gap-2 rounded-xl bg-muted px-3.5 active:opacity-80"
+              >
+                <CalendarIcon size={16} color={palette.foreground} />
+                <Text className="font-display-normal text-base text-foreground">{dateLabel}</Text>
+              </Pressable>
             </View>
 
-            <Pressable
-              accessibilityRole="button"
-              accessibilityLabel={`Date: ${dateLabel}. Change date`}
-              onPress={() => openPicker("date")}
-              allowDoublePress
-              className="h-12 flex-row items-center gap-2 rounded-xl bg-muted px-3.5 active:opacity-80"
-            >
-              <CalendarIcon size={16} color={palette.foreground} />
-              <Text className="font-display-normal text-base text-foreground">{dateLabel}</Text>
-            </Pressable>
+            <View className="flex-row flex-wrap items-center gap-x-2 gap-y-3">
+              <Text className="font-display-normal text-base text-muted-foreground">Paid by</Text>
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel={`Paid by ${payers.label}. Change who paid`}
+                onPress={() => openPicker("payers")}
+                allowDoublePress
+                className="rounded-lg bg-muted px-3.5 py-1.5 active:opacity-80"
+              >
+                <Text className="font-display-medium text-base text-foreground">
+                  {payers.label}
+                </Text>
+              </Pressable>
+              <Text className="font-display-normal text-base text-muted-foreground">and split</Text>
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel={`Split ${split.label.toLowerCase()}. Change how it is split`}
+                onPress={() => openPicker("split")}
+                allowDoublePress
+                className="rounded-lg bg-muted px-3.5 py-1.5 active:opacity-80"
+              >
+                <Text className="font-display-medium text-base text-foreground">{split.label}</Text>
+              </Pressable>
+            </View>
 
             <View>
-              <TextInput
-                accessibilityLabel="Note"
-                accessibilityHint={form.noteError ?? undefined}
-                multiline
-                maxLength={EXPENSE_NOTE_MAX}
-                placeholder="Add a note (optional)"
-                placeholderTextColor={palette.mutedForeground}
-                onFocus={revealFocusedInput}
-                value={form.note}
-                onChangeText={form.setNote}
-                className="min-h-20 rounded-xl bg-muted px-5 py-3 font-display-normal text-foreground"
-                style={{ fontSize: 16, textAlignVertical: "top" }}
-              />
+              <Pressable
+                accessibilityRole="button"
+                accessibilityState={{ expanded: noteOpen }}
+                onPress={() => setNoteOpen((open) => !open)}
+                allowDoublePress
+                className="flex-row items-center gap-2 self-start py-1 mt-1 active:opacity-80"
+              >
+                <View style={{ transform: [{ rotate: noteOpen ? "90deg" : "0deg" }] }}>
+                  <ArrowRightIcon size={18} color={palette.mutedForeground} />
+                </View>
+                <Text className="font-display-normal text-base text-muted-foreground">
+                  {form.note && !noteOpen ? "Note added" : "Add a note"}
+                </Text>
+              </Pressable>
+              {noteOpen ? (
+                <Animated.View entering={NOTE_ENTERING} exiting={NOTE_EXITING}>
+                  <TextInput
+                    accessibilityLabel="Note"
+                    accessibilityHint={form.noteError ?? undefined}
+                    multiline
+                    maxLength={EXPENSE_NOTE_MAX}
+                    placeholder="e.g. Electricity bill for March, paid via UPI"
+                    placeholderTextColor={palette.mutedForeground}
+                    onFocus={revealFocusedInput}
+                    value={form.note}
+                    onChangeText={form.setNote}
+                    className="mt-2 min-h-20 rounded-xl bg-muted px-5 py-3 font-display-normal text-foreground"
+                    style={{ fontSize: 16, textAlignVertical: "top" }}
+                  />
+                </Animated.View>
+              ) : null}
               {form.noteError ? (
                 <Text
                   accessibilityLiveRegion="polite"
@@ -226,41 +271,6 @@ export function ExpenseFormScreen({
                 </Text>
               ) : null}
             </View>
-
-            {payers.totalPaise > 0 ? (
-              <Animated.View
-                entering={SPLIT_ENTERING}
-                exiting={SPLIT_EXITING}
-                className="flex-row flex-wrap items-center gap-x-2 gap-y-3"
-              >
-                <Text className="font-display-normal text-base text-muted-foreground">Paid by</Text>
-                <Pressable
-                  accessibilityRole="button"
-                  accessibilityLabel={`Paid by ${payers.label}. Change who paid`}
-                  onPress={() => openPicker("payers")}
-                  allowDoublePress
-                  className="rounded-lg bg-muted px-3.5 py-1.5 active:opacity-80"
-                >
-                  <Text className="font-display-medium text-base text-foreground">
-                    {payers.label}
-                  </Text>
-                </Pressable>
-                <Text className="font-display-normal text-base text-muted-foreground">
-                  and split
-                </Text>
-                <Pressable
-                  accessibilityRole="button"
-                  accessibilityLabel={`Split ${split.label.toLowerCase()}. Change how it is split`}
-                  onPress={() => openPicker("split")}
-                  allowDoublePress
-                  className="rounded-lg bg-muted px-3.5 py-1.5 active:opacity-80"
-                >
-                  <Text className="font-display-medium text-base text-foreground">
-                    {split.label}
-                  </Text>
-                </Pressable>
-              </Animated.View>
-            ) : null}
           </Animated.ScrollView>
         </GestureDetector>
       </KeyboardAvoidingView>

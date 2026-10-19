@@ -14,7 +14,7 @@ import {
 } from "./IExpensesRepository";
 
 const EXPENSE_COLUMNS =
-  "id, house_id, title, amount_paise, category, note, spent_on, split_method, purchase_id, batch_id, created_by, created_at, updated_at, creator:profiles!created_by(display_name), expense_payers(user_id, amount_paise, profiles(display_name)), expense_shares(user_id, share_paise, weight, profiles(display_name))";
+  "id, house_id, title, amount_paise, category, note, spent_on, split_method, purchase_id, batch_id, created_by, created_at, updated_at, updated_by, creator:profiles!created_by(display_name), editor:profiles!updated_by(display_name), expense_payers(user_id, amount_paise, profiles(display_name)), expense_shares(user_id, share_paise, weight, profiles(display_name))";
 
 function one<T>(value: T | T[] | null | undefined): T | null {
   return (Array.isArray(value) ? value[0] : value) ?? null;
@@ -34,6 +34,8 @@ function toExpense(row: any): Expense {
     splitMethod: row.split_method,
     createdBy: row.created_by,
     createdByName: one<any>(row.creator)?.display_name ?? null,
+    updatedBy: row.updated_by ?? null,
+    updatedByName: one<any>(row.editor)?.display_name ?? null,
     source: row.purchase_id
       ? { kind: "purchase", id: row.purchase_id }
       : row.batch_id

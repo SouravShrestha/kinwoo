@@ -33,6 +33,8 @@ export type Expense = {
   splitMethod: SplitMethod;
   createdBy: string;
   createdByName: string | null;
+  updatedBy: string | null;
+  updatedByName: string | null;
   source: ExpenseSource | null;
   payers: ExpensePayer[];
   shares: ExpenseShare[];

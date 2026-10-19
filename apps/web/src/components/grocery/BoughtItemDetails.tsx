@@ -1,9 +1,17 @@
 "use client";
 
-import { formatPaise, itemQuantityLabel, type GroceryItem } from "@kinwoo/core/grocery";
+import { toast } from "@kinwoo/client/toast";
+import {
+  formatPaise,
+  itemQuantityLabel,
+  TRANSACTION_UNAVAILABLE,
+  type GroceryItem,
+} from "@kinwoo/core/grocery";
 import { TransactionIcon, TrashIcon } from "@kinwoo/icons";
+import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/Button";
+import { expensePath } from "@/lib/house-navigation";
 import { cn } from "@/lib/utils";
 
 import { BoughtTimeline } from "./BoughtTimeline";
@@ -16,13 +24,23 @@ export function BoughtItemDetails({
   listId,
   canDelete,
   onDelete,
+  onClose,
 }: {
   item: GroceryItem;
   houseId: string;
   listId: string;
   canDelete: boolean;
   onDelete: () => void;
+  onClose: () => void;
 }) {
+  const router = useRouter();
+  const viewTransaction = () => {
+    const expenseId = item.purchase?.expenseId;
+    if (!expenseId) return toast.error(TRANSACTION_UNAVAILABLE);
+    onClose();
+    router.push(expensePath(expenseId));
+  };
+
   const quantity = itemQuantityLabel(item);
   const pricePaise = item.purchase?.pricePaise ?? null;
   const store = item.purchase?.store ?? null;
@@ -79,6 +97,7 @@ export function BoughtItemDetails({
         <Button
           label="View transaction"
           icon={<TransactionIcon size={22} />}
+          onClick={viewTransaction}
           className="h-12 min-w-0 flex-1 px-3"
         />
       </div>

@@ -1,4 +1,10 @@
-import { formatPaise, itemCountLabel, type BoughtGroup } from "@kinwoo/core/grocery";
+import { toast } from "@kinwoo/client/toast";
+import {
+  formatPaise,
+  itemCountLabel,
+  TRANSACTION_UNAVAILABLE,
+  type BoughtGroup,
+} from "@kinwoo/core/grocery";
 import { TransactionIcon, TrashIcon } from "@kinwoo/icons/native";
 import { colors } from "@kinwoo/tokens/native";
 import { ScrollView, Text, View } from "react-native";
@@ -7,6 +13,7 @@ import { BottomSheet } from "@/components/BottomSheet";
 import { Button } from "@/components/Button";
 import { CategoryIcon } from "@/components/CategoryIcon";
 import { Pressable } from "@/components/Pressable";
+import { openExpense } from "@/lib/house-navigation";
 import { useTheme } from "@/theme/ThemeProvider";
 
 import { BoughtTimeline } from "./BoughtTimeline";
@@ -33,6 +40,13 @@ export function BoughtGroupSheet({
   const { resolvedTheme } = useTheme();
   const palette = colors[resolvedTheme];
   const lead = group?.items[0];
+
+  const viewTransaction = () => {
+    const expenseId = lead?.purchase?.expenseId;
+    if (!expenseId) return toast.error(TRANSACTION_UNAVAILABLE);
+    onClose();
+    openExpense(expenseId);
+  };
 
   return (
     <BottomSheet open={open && group !== null} onClose={onClose} label="Bought items" showClose>
@@ -128,6 +142,7 @@ export function BoughtGroupSheet({
             <Button
               label="View transaction"
               icon={<TransactionIcon size={22} color={palette.primaryForeground} />}
+              onPress={viewTransaction}
               className="h-12 flex-1 px-3"
             />
           </View>

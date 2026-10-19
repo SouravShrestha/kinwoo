@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  activityExpenseId,
   activityIconName,
   formatActivityDetail,
   formatActivityParts,
@@ -124,12 +125,14 @@ export const ActivityList = memo(function ActivityList({
   currentUserId,
   canLoadMore,
   onLoadMore,
+  onOpenExpense,
 }: {
   entries: GroceryActivityEntry[];
   members: HouseMember[];
   currentUserId: string | null;
   canLoadMore: boolean;
   onLoadMore: () => void;
+  onOpenExpense: (expenseId: string | null) => void;
 }) {
   const groups = useMemo(() => groupActivityByDay(entries), [entries]);
   const membersById = useMemo(() => new Map(members.map((m) => [m.userId, m])), [members]);
@@ -159,31 +162,48 @@ export const ActivityList = memo(function ActivityList({
             {group.label}
           </h2>
           <ul>
-            {group.entries.map((entry, index) => (
-              <li
-                key={entry.id}
-                className={`flex items-start py-6 ${index > 0 ? "border-t border-border" : ""}`}
-              >
-                <ActivityIcon entry={entry} actor={membersById.get(entry.actorId ?? "")} />
-                <div className="mr-3 min-w-0 flex-1">
-                  <p className="font-display text-base leading-6 text-foreground">
-                    {formatActivityParts(entry, currentUserId).map((part, index) =>
-                      part.emphasis ? (
-                        <em key={index} className="font-medium italic">
-                          {part.text}
-                        </em>
-                      ) : (
-                        <span key={index}>{part.text}</span>
-                      ),
-                    )}
-                  </p>
-                  <ActivityDetail entry={entry} currentUserId={currentUserId} />
-                  <p className="mt-3 font-display text-xs text-muted-foreground">
-                    {formatActivityTimestamp(entry.createdAt)}
-                  </p>
-                </div>
-              </li>
-            ))}
+            {group.entries.map((entry, index) => {
+              const expenseId = activityExpenseId(entry);
+              const className = "flex w-full items-start py-6 text-left";
+              const content = (
+                <>
+                  <ActivityIcon entry={entry} actor={membersById.get(entry.actorId ?? "")} />
+                  <div className="mr-3 min-w-0 flex-1">
+                    <p className="font-display text-base leading-6 text-foreground">
+                      {formatActivityParts(entry, currentUserId).map((part, index) =>
+                        part.emphasis ? (
+                          <em key={index} className="font-medium italic">
+                            {part.text}
+                          </em>
+                        ) : (
+                          <span key={index}>{part.text}</span>
+                        ),
+                      )}
+                    </p>
+                    <ActivityDetail entry={entry} currentUserId={currentUserId} />
+                    <p className="mt-3 font-display text-xs text-muted-foreground">
+                      {formatActivityTimestamp(entry.createdAt)}
+                    </p>
+                  </div>
+                </>
+              );
+
+              return (
+                <li key={entry.id} className={index > 0 ? "border-t border-border" : ""}>
+                  {expenseId ? (
+                    <button
+                      type="button"
+                      onClick={() => onOpenExpense(expenseId)}
+                      className={`${className} hover:cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground`}
+                    >
+                      {content}
+                    </button>
+                  ) : (
+                    <div className={className}>{content}</div>
+                  )}
+                </li>
+              );
+            })}
           </ul>
         </section>
       ))}

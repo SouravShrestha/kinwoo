@@ -1,4 +1,5 @@
 import {
+  activityExpenseId,
   activityIconName,
   formatActivityDetail,
   formatActivityParts,
@@ -36,6 +37,7 @@ import { SectionList, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Avatar } from "@/components/houses/Avatar";
+import { Pressable } from "@/components/Pressable";
 import { useTheme } from "@/theme/ThemeProvider";
 
 const ICONS: Record<ActivityIconName, ComponentType<IconProps>> = {
@@ -131,37 +133,56 @@ function DayEntries({
   entries,
   membersById,
   currentUserId,
+  onOpenExpense,
 }: {
   entries: GroceryActivityEntry[];
   membersById: Map<string, HouseMember>;
   currentUserId: string | null;
+  onOpenExpense: (expenseId: string | null) => void;
 }) {
   return (
     <View className="px-4">
-      {entries.map((entry, index) => (
-        <View
-          key={entry.id}
-          className={`flex-row items-start py-6 ${index > 0 ? "border-t border-border" : ""}`}
-        >
-          <ActivityIcon entry={entry} actor={membersById.get(entry.actorId ?? "")} />
-          <View className="mr-3 flex-1">
-            <Text className="font-display-normal text-base leading-6 text-foreground">
-              {formatActivityParts(entry, currentUserId).map((part, index) => (
-                <Text
-                  key={index}
-                  className={part.emphasis ? "font-display-medium-italic" : "font-display-normal"}
-                >
-                  {part.text}
-                </Text>
-              ))}
-            </Text>
-            <ActivityDetail entry={entry} currentUserId={currentUserId} />
-            <Text className="mt-3 font-display-normal text-xs text-muted-foreground">
-              {formatActivityTimestamp(entry.createdAt)}
-            </Text>
+      {entries.map((entry, index) => {
+        const expenseId = activityExpenseId(entry);
+        const className = `flex-row items-start py-6 ${index > 0 ? "border-t border-border" : ""}`;
+        const content = (
+          <>
+            <ActivityIcon entry={entry} actor={membersById.get(entry.actorId ?? "")} />
+            <View className="mr-3 flex-1">
+              <Text className="font-display-normal text-base leading-6 text-foreground">
+                {formatActivityParts(entry, currentUserId).map((part, index) => (
+                  <Text
+                    key={index}
+                    className={part.emphasis ? "font-display-medium-italic" : "font-display-normal"}
+                  >
+                    {part.text}
+                  </Text>
+                ))}
+              </Text>
+              <ActivityDetail entry={entry} currentUserId={currentUserId} />
+              <Text className="mt-3 font-display-normal text-xs text-muted-foreground">
+                {formatActivityTimestamp(entry.createdAt)}
+              </Text>
+            </View>
+          </>
+        );
+
+        return expenseId ? (
+          <Pressable
+            key={entry.id}
+            accessibilityRole="button"
+            accessibilityHint="Opens expense details"
+            onPress={() => onOpenExpense(expenseId)}
+            className={className}
+          >
+            {content}
+          </Pressable>
+        ) : (
+          <View key={entry.id} className={className}>
+            {content}
           </View>
-        </View>
-      ))}
+        );
+      })}
     </View>
   );
 }
@@ -182,6 +203,7 @@ export const ActivityList = memo(function ActivityList({
   header,
   empty,
   onEndReached,
+  onOpenExpense,
 }: {
   entries: GroceryActivityEntry[];
   members: HouseMember[];
@@ -189,6 +211,7 @@ export const ActivityList = memo(function ActivityList({
   header: ReactElement;
   empty: ReactElement | null;
   onEndReached: () => void;
+  onOpenExpense: (expenseId: string | null) => void;
 }) {
   const insets = useSafeAreaInsets();
   const membersById = useMemo(() => new Map(members.map((m) => [m.userId, m])), [members]);
@@ -205,9 +228,14 @@ export const ActivityList = memo(function ActivityList({
 
   const renderItem = useCallback(
     ({ item }: { item: GroceryActivityEntry[] }) => (
-      <DayEntries entries={item} membersById={membersById} currentUserId={currentUserId} />
+      <DayEntries
+        entries={item}
+        membersById={membersById}
+        currentUserId={currentUserId}
+        onOpenExpense={onOpenExpense}
+      />
     ),
-    [membersById, currentUserId],
+    [membersById, currentUserId, onOpenExpense],
   );
 
   return (

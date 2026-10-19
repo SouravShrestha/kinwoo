@@ -1,4 +1,5 @@
-import { useMemo } from "react";
+import { useNavigation } from "expo-router";
+import { useCallback, useMemo } from "react";
 import { Keyboard, useWindowDimensions } from "react-native";
 import { Gesture } from "react-native-gesture-handler";
 import {
@@ -25,6 +26,14 @@ export function useSwipeDownToDismiss(onDismiss: () => void) {
   const scrollY = useSharedValue(0);
   const dragY = useSharedValue(0);
   const anchor = useSharedValue<number | null>(null);
+  const navigation = useNavigation();
+
+  // The sheet is already off-screen, so the native exit animation would replay invisibly and
+  // the transparent modal would swallow taps on the screen below until it finished.
+  const dismissWithoutAnimation = useCallback(() => {
+    navigation.setOptions({ animation: "none" });
+    requestAnimationFrame(onDismiss);
+  }, [navigation, onDismiss]);
 
   const scrollGesture = useMemo(() => Gesture.Native(), []);
   const pan = useMemo(
@@ -52,14 +61,14 @@ export function useSwipeDownToDismiss(onDismiss: () => void) {
           if (pulled && (drag > DISMISS_DISTANCE || event.velocityY > DISMISS_VELOCITY)) {
             dragY.set(
               withTiming(height, { duration: SETTLE_MS }, (finished) => {
-                if (finished) runOnJS(onDismiss)();
+                if (finished) runOnJS(dismissWithoutAnimation)();
               }),
             );
             return;
           }
           dragY.set(withTiming(0, { duration: SETTLE_MS }));
         }),
-    [anchor, dragY, height, onDismiss, scrollGesture, scrollY],
+    [anchor, dragY, height, dismissWithoutAnimation, scrollGesture, scrollY],
   );
 
   const onScroll = useAnimatedScrollHandler((event) => {

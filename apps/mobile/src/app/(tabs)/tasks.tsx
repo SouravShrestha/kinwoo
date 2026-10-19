@@ -39,7 +39,7 @@ import {
   type GroceryItem,
   type GroceryTabKey,
 } from "@kinwoo/core/grocery";
-import { CaretDownIcon, MoreVerticalIcon, PlusCircleIcon } from "@kinwoo/icons/native";
+import { CaretDownIcon, MoreVerticalIcon } from "@kinwoo/icons/native";
 import { colors } from "@kinwoo/tokens/native";
 import { router } from "expo-router";
 import { useEffect, useMemo, useState } from "react";
@@ -48,6 +48,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { CategoryIcon } from "@/components/CategoryIcon";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
+import { Fab } from "@/components/Fab";
 import { Filters } from "@/components/Filters";
 import {
   ASSIGNED_SELECTION_BAR_HEIGHT,
@@ -73,7 +74,6 @@ import { useTheme } from "@/theme/ThemeProvider";
 const SCREEN_PADDING = 16;
 const PENDING_COLUMNS = 2;
 const PENDING_CARD_GAP = 12;
-const FAB_SIZE = 48;
 const FILTERS_TOP_MARGIN = 8;
 
 export default function TasksScreen() {
@@ -523,17 +523,12 @@ export default function TasksScreen() {
       />
 
       {selecting ? null : activeSelectedListId ? (
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel="Add item to list"
+        <Fab
+          label="Add item to list"
           onPress={() =>
             router.push({ pathname: "/item/new", params: { listId: activeSelectedListId } })
           }
-          className="absolute right-4 bottom-6 size-12 items-center justify-center active:opacity-80"
-        >
-          <View className="absolute inset-2.5 rounded-full bg-primary-foreground" />
-          <PlusCircleIcon size={FAB_SIZE} color={palette.primary} />
-        </Pressable>
+        />
       ) : null}
 
       <ConfirmDialog

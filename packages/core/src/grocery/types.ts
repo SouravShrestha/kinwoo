@@ -63,6 +63,8 @@ export type GroceryItemPurchase = {
   store: string | null;
   boughtAt: string;
   batch: GroceryPurchaseBatchRef | null;
+  // Null once the linked expense is deleted, or when the purchase never recorded one.
+  expenseId?: string | null;
 };
 
 export type GroceryPurchase = {

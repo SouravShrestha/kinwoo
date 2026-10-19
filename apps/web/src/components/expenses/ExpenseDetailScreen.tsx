@@ -134,6 +134,11 @@ function ExpenseDetails({
       <p className="font-display text-xs text-muted-foreground">
         {source ? `${source}. ` : ""}Added by{" "}
         {expense.createdBy === currentUserId ? "you" : memberDisplayName(expense.createdByName)}.
+        {expense.updatedBy
+          ? ` Last edited by ${
+              expense.updatedBy === currentUserId ? "you" : memberDisplayName(expense.updatedByName)
+            } on ${formatFullDate(new Date(expense.updatedAt).getTime())}.`
+          : ""}
       </p>
     </div>
   );

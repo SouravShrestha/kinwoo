@@ -112,6 +112,7 @@ export function ItemDetailSheet({
             listId={listId}
             canDelete={canManage}
             onDelete={() => setConfirmDelete(true)}
+            onClose={onClose}
           />
         ) : null}
       </BottomSheet>

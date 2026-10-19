@@ -29,7 +29,7 @@ import {
 const LIST_COLUMNS =
   "id, house_id, name, icon, position, visibility, is_default, deleted_at, created_by, created_at, updated_at";
 const PURCHASE_COLUMNS =
-  "grocery_purchases(bought_by, bought_at, price_paise, store, batch_id, batch_position, bought_profiles:profiles!bought_by(display_name), grocery_purchase_batches(id, name, total_paise))";
+  "grocery_purchases(bought_by, bought_at, price_paise, store, batch_id, batch_position, bought_profiles:profiles!bought_by(display_name), expenses(id), grocery_purchase_batches(id, name, total_paise, expenses(id)))";
 const ITEM_COLUMNS = `*, grocery_categories!left(name), claimed_profiles:profiles!claimed_by(display_name), assigned_profiles:profiles!assigned_to(display_name), ${PURCHASE_COLUMNS}`;
 const OVERVIEW_ITEM_COLUMNS = `*, grocery_lists!inner(id, name, icon, house_id, deleted_at), grocery_categories!left(name), claimed_profiles:profiles!claimed_by(display_name), assigned_profiles:profiles!assigned_to(display_name), ${PURCHASE_COLUMNS}`;
 const PRIVATE_PURCHASE_COLUMNS = `*, grocery_lists!inner(id, name, icon, house_id, deleted_at, visibility, created_by), grocery_categories!left(name), ${PURCHASE_COLUMNS}`;
@@ -73,6 +73,8 @@ function toItem(row: any): GroceryItem {
   const batch = Array.isArray(purchase?.grocery_purchase_batches)
     ? purchase.grocery_purchase_batches[0]
     : purchase?.grocery_purchase_batches;
+  const expenseId =
+    [purchase?.expenses, batch?.expenses].flat().find((expense) => expense?.id)?.id ?? null;
 
   return {
     id: row.id,
@@ -105,6 +107,7 @@ function toItem(row: any): GroceryItem {
                 position: purchase.batch_position ?? 0,
               }
             : null,
+          expenseId,
         }
       : null,
     note: row.note ?? null,

@@ -87,14 +87,14 @@ isOneToOne: false
                   ]
                 },"expenses": {
                   Row: {
-                    "amount_paise": number,"batch_id": string | null,"category": string,"created_at": string,"created_by": string,"deleted_at": string | null,"house_id": string,"id": string,"note": string | null,"purchase_id": string | null,"spent_on": string,"split_method": string,"title": string,"updated_at": string
+                    "amount_paise": number,"batch_id": string | null,"category": string,"created_at": string,"created_by": string,"deleted_at": string | null,"house_id": string,"id": string,"note": string | null,"purchase_id": string | null,"spent_on": string,"split_method": string,"title": string,"updated_at": string,"updated_by": string | null
                   }
                   ComputedFields: never
                   Insert: {
-                    "amount_paise": number,"batch_id"?: string | null,"category": string,"created_at"?: string,"created_by": string,"deleted_at"?: string | null,"house_id": string,"id"?: string,"note"?: string | null,"purchase_id"?: string | null,"spent_on": string,"split_method": string,"title": string,"updated_at"?: string
+                    "amount_paise": number,"batch_id"?: string | null,"category": string,"created_at"?: string,"created_by": string,"deleted_at"?: string | null,"house_id": string,"id"?: string,"note"?: string | null,"purchase_id"?: string | null,"spent_on": string,"split_method": string,"title": string,"updated_at"?: string,"updated_by"?: string | null
                   }
                   Update: {
-                    "amount_paise"?: number,"batch_id"?: string | null,"category"?: string,"created_at"?: string,"created_by"?: string,"deleted_at"?: string | null,"house_id"?: string,"id"?: string,"note"?: string | null,"purchase_id"?: string | null,"spent_on"?: string,"split_method"?: string,"title"?: string,"updated_at"?: string
+                    "amount_paise"?: number,"batch_id"?: string | null,"category"?: string,"created_at"?: string,"created_by"?: string,"deleted_at"?: string | null,"house_id"?: string,"id"?: string,"note"?: string | null,"purchase_id"?: string | null,"spent_on"?: string,"split_method"?: string,"title"?: string,"updated_at"?: string,"updated_by"?: string | null
                   }
                   Relationships: [
                     {
@@ -120,6 +120,12 @@ isOneToOne: false
       columns: ["purchase_id"]
 isOneToOne: true
       referencedRelation: "grocery_purchases"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "expenses_updated_by_fkey"
+      columns: ["updated_by"]
+isOneToOne: false
+      referencedRelation: "profiles"
       referencedColumns: ["id"]
     }
                   ]

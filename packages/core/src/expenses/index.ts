@@ -6,5 +6,6 @@ export * from "./parts";
 export * from "./payers";
 export * from "./simplify";
 export * from "./splits";
+export * from "./suggest-category";
 export * from "./types";
 export * from "./validation";

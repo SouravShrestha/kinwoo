@@ -38,6 +38,8 @@ function expense(overrides: Partial<Expense> = {}): Expense {
     splitMethod: "equal",
     createdBy: "a",
     createdByName: "Asha",
+    updatedBy: null,
+    updatedByName: null,
     source: null,
     payers: [{ userId: "a", name: "Asha", amountPaise: 30000 }],
     shares: [

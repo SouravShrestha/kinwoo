@@ -267,6 +267,9 @@ export const HeartIcon = (props: WebIconProps) => (
 export const TrashOutlineIcon = (props: WebIconProps) => (
   <SvgIcon {...props} geometry={geometry.trashOutlineIcon} />
 );
+export const EditIcon = (props: WebIconProps) => (
+  <SvgIcon {...props} geometry={geometry.editIcon} />
+);
 export const LogoutIcon = (props: WebIconProps) => (
   <SvgIcon {...props} geometry={geometry.logoutIcon} />
 );
@@ -339,4 +342,7 @@ export const BalancesIcon = (props: WebIconProps) => (
 );
 export const TotalsIcon = (props: WebIconProps) => (
   <SvgIcon {...props} geometry={geometry.totalsIcon} />
+);
+export const NoteIcon = (props: WebIconProps) => (
+  <SvgIcon {...props} geometry={geometry.noteIcon} />
 );

@@ -1,7 +1,11 @@
 "use client";
 
-import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
+import { TRANSACTION_UNAVAILABLE } from "@kinwoo/core/grocery";
+import { useInfiniteQuery, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useCallback, useState } from "react";
 
+import { useBusyWhile } from "../activity";
+import { toast } from "../toast";
 import { fetchBalances, fetchExpense, fetchExpenses } from "./api";
 import { expenseKeys } from "./keys";
 
@@ -22,6 +26,33 @@ export function useExpense(houseId: string | null, expenseId: string | null) {
     queryFn: () => fetchExpense(houseId as string, expenseId as string),
     enabled: houseId !== null && expenseId !== null,
   });
+}
+
+// Navigates only when the expense still exists; a deleted or unreachable one shows a toast.
+export function useOpenExpense(houseId: string | null) {
+  const queryClient = useQueryClient();
+  const [pending, setPending] = useState(false);
+  useBusyWhile(pending);
+
+  return useCallback(
+    async (expenseId: string | null, navigate: (expenseId: string) => void) => {
+      if (!houseId || !expenseId) return toast.error(TRANSACTION_UNAVAILABLE);
+      setPending(true);
+      try {
+        await queryClient.fetchQuery({
+          queryKey: expenseKeys.detail(houseId, expenseId),
+          queryFn: () => fetchExpense(houseId, expenseId),
+          staleTime: 0,
+        });
+      } catch {
+        return toast.error(TRANSACTION_UNAVAILABLE);
+      } finally {
+        setPending(false);
+      }
+      navigate(expenseId);
+    },
+    [houseId, queryClient],
+  );
 }
 
 export function useHouseBalances(houseId: string | null, simplify = false) {

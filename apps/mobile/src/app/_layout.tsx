@@ -60,13 +60,7 @@ export default function RootLayout() {
                 options={{ animation: "slide_from_bottom", gestureDirection: "vertical" }}
               />
               <Stack.Screen name="profile" options={{ animation: "slide_from_right" }} />
-              <Stack.Screen
-                name="item/new"
-                options={{
-                  animation: "slide_from_bottom",
-                  gestureDirection: "vertical",
-                }}
-              />
+              <Stack.Screen name="item/new" options={SWIPE_DOWN_SHEET} />
               <Stack.Screen
                 name="item/bought"
                 options={{ animation: "slide_from_bottom", gestureDirection: "vertical" }}
@@ -74,10 +68,7 @@ export default function RootLayout() {
               <Stack.Screen name="expense/new" options={SWIPE_DOWN_SHEET} />
               <Stack.Screen name="expense/edit" options={SWIPE_DOWN_SHEET} />
               <Stack.Screen name="expenses/private" options={SWIPE_DOWN_SHEET} />
-              <Stack.Screen
-                name="expense/[expenseId]"
-                options={{ animation: "slide_from_right" }}
-              />
+              <Stack.Screen name="expense/[expenseId]" options={SWIPE_DOWN_SHEET} />
               <Stack.Screen name="item/bought-batch" options={SWIPE_DOWN_SHEET} />
             </Stack>
           </AppProviders>

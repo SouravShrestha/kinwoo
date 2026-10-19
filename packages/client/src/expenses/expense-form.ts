@@ -3,6 +3,7 @@ import {
   expenseFormSeed,
   paiseToAmountDraft,
   parseSpentOn,
+  suggestExpenseCategory,
   type Expense,
   type ExpenseCategory,
 } from "@kinwoo/core/expenses";
@@ -41,9 +42,9 @@ export function useExpenseForm({
 
   const [title, setTitleText] = useState(expense?.title ?? "");
   const [amount, setAmountText] = useState(expense ? paiseToAmountDraft(expense.amountPaise) : "");
-  const [category, setCategory] = useState<ExpenseCategory>(
-    expense?.category ?? DEFAULT_EXPENSE_CATEGORY,
-  );
+  // undefined follows the category suggested from the title; once picked (or when editing) it sticks.
+  const [categoryChoice, setCategory] = useState<ExpenseCategory | undefined>(expense?.category);
+  const category = categoryChoice ?? suggestExpenseCategory(title) ?? DEFAULT_EXPENSE_CATEGORY;
   const [note, setNoteText] = useState(expense?.note ?? "");
   const [date, setDate] = useState(() => (expense ? parseSpentOn(expense.spentOn) : new Date()));
   const [error, setError] = useState<{ field: ExpenseFormField; message: string } | null>(null);

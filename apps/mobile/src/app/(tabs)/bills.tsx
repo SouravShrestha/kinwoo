@@ -8,7 +8,7 @@ import {
 } from "@kinwoo/client/expenses";
 import { useActiveHouse } from "@kinwoo/client/houses";
 import { toast } from "@kinwoo/client/toast";
-import { MoreVerticalIcon, PlusCircleIcon } from "@kinwoo/icons/native";
+import { MoreVerticalIcon } from "@kinwoo/icons/native";
 import { colors } from "@kinwoo/tokens/native";
 import { useCallback, useState } from "react";
 import { FlatList, Text, View } from "react-native";
@@ -19,11 +19,10 @@ import { BalanceSummary } from "@/components/expenses/BalanceSummary";
 import { ExpenseActions } from "@/components/expenses/ExpenseActions";
 import { ExpenseRow } from "@/components/expenses/ExpenseRow";
 import { ExpensesMenuSheet } from "@/components/expenses/ExpensesMenuSheet";
+import { Fab } from "@/components/Fab";
 import { Pressable } from "@/components/Pressable";
 import { openExpense, openNewExpense, openPrivateSpending } from "@/lib/house-navigation";
 import { useTheme } from "@/theme/ThemeProvider";
-
-const FAB_SIZE = 48;
 
 export default function BillsScreen() {
   const insets = useSafeAreaInsets();
@@ -129,17 +128,7 @@ export default function BillsScreen() {
         }
       />
 
-      {empty ? null : (
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel="Add expense"
-          onPress={openNewExpense}
-          className="absolute bottom-6 right-4 size-12 items-center justify-center active:opacity-80"
-        >
-          <View className="absolute inset-2.5 rounded-full bg-primary-foreground" />
-          <PlusCircleIcon size={FAB_SIZE} color={palette.primary} />
-        </Pressable>
-      )}
+      {empty ? null : <Fab label="Add expense" onPress={openNewExpense} />}
 
       <ExpensesMenuSheet
         open={menuOpen}

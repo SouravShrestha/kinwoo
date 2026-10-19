@@ -1,10 +1,18 @@
 "use client";
 
-import { formatPaise, itemCountLabel, type BoughtGroup } from "@kinwoo/core/grocery";
+import { toast } from "@kinwoo/client/toast";
+import {
+  formatPaise,
+  itemCountLabel,
+  TRANSACTION_UNAVAILABLE,
+  type BoughtGroup,
+} from "@kinwoo/core/grocery";
 import { TransactionIcon, TrashIcon } from "@kinwoo/icons";
+import { useRouter } from "next/navigation";
 
 import { BottomSheet } from "@/components/BottomSheet";
 import { Button } from "@/components/Button";
+import { expensePath } from "@/lib/house-navigation";
 import { cn } from "@/lib/utils";
 
 import { BoughtTimeline } from "./BoughtTimeline";
@@ -28,7 +36,15 @@ export function BoughtGroupSheet({
   onOpenItem: (itemId: string) => void;
   onDelete: () => void;
 }) {
+  const router = useRouter();
   const lead = group?.items[0];
+
+  const viewTransaction = () => {
+    const expenseId = lead?.purchase?.expenseId;
+    if (!expenseId) return toast.error(TRANSACTION_UNAVAILABLE);
+    onClose();
+    router.push(expensePath(expenseId));
+  };
 
   return (
     <BottomSheet open={open && group !== null} onClose={onClose} label="Bought items" showClose>
@@ -101,6 +117,7 @@ export function BoughtGroupSheet({
             <Button
               label="View transaction"
               icon={<TransactionIcon size={22} />}
+              onClick={viewTransaction}
               className="h-12 min-w-0 flex-1 px-3"
             />
           </div>

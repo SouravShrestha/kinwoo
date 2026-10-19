@@ -397,11 +397,20 @@ export function mergeLinkedExpenses(
     const { amount_paise, payers, shares } = expense.payload;
     result.push({
       ...entry,
-      payload: { ...entry.payload, [LINKED_EXPENSE_KEY]: { amount_paise, payers, shares } },
+      payload: {
+        ...entry.payload,
+        [LINKED_EXPENSE_KEY]: { id: expense.entityId, amount_paise, payers, shares },
+      },
     });
   }
 
   return result.filter((entry) => !merged.has(entry.id));
+}
+
+/** The expense an entry is about, or null when the entry is not an expense one. */
+export function activityExpenseId(entry: GroceryActivityEntry): string | null {
+  const id = entry.type.startsWith("expense.") ? entry.entityId : linkedExpense(entry)?.id;
+  return typeof id === "string" ? id : null;
 }
 
 function sumForUser(value: unknown, field: string, userId: string): number | null {

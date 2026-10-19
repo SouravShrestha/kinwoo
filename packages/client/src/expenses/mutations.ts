@@ -39,7 +39,11 @@ export function useDeleteExpense(houseId: string) {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (expenseId: string) => deleteExpense(houseId, expenseId),
-    onSuccess: () => invalidateExpenses(queryClient, houseId),
+    onSuccess: () => {
+      invalidateExpenses(queryClient, houseId);
+      // Bought items carry the id of their linked expense.
+      void queryClient.invalidateQueries({ queryKey: groceryKeys.all(houseId) });
+    },
   });
 }
 
