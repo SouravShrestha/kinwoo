@@ -4,7 +4,10 @@ import "react-native-url-polyfill/auto";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import type { Database } from "@kinwoo/core/db";
 import { createClient } from "@supabase/supabase-js";
+import * as SecureStore from "expo-secure-store";
 import { AppState } from "react-native";
+
+import { createChunkedSecureStorage } from "./secure-storage";
 
 function createSupabaseClient() {
   const url = process.env.EXPO_PUBLIC_SUPABASE_URL;
@@ -20,7 +23,7 @@ function createSupabaseClient() {
 
   return createClient<Database>(url, anonKey, {
     auth: {
-      storage: AsyncStorage,
+      storage: createChunkedSecureStorage(SecureStore, AsyncStorage),
       autoRefreshToken: true,
       persistSession: true,
       // The OAuth code is exchanged by hand in the auth adapter.
