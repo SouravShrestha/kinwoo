@@ -42,18 +42,18 @@ export function LoginScreen() {
         <div className="flex flex-1 items-center justify-center">
           {/* Toggled with CSS rather than useTheme so the right image renders on first paint. */}
           <Image
-            src="/images/landing-screen-image.png"
+            src="/images/landing-screen-image.webp"
             alt="Three people filling a shared shopping list together"
-            width={400}
-            height={300}
+            width={725}
+            height={512}
             priority
             className="h-auto w-full max-w-sm dark:hidden"
           />
           <Image
-            src="/images/landing-screen-image-dark-theme.png"
+            src="/images/landing-screen-image-dark-theme.webp"
             alt="Three people filling a shared shopping list together"
-            width={400}
-            height={300}
+            width={770}
+            height={512}
             priority
             className="hidden h-auto w-full max-w-sm dark:block"
           />
@@ -62,18 +62,18 @@ export function LoginScreen() {
         <div>
           <h1>
             <Image
-              src="/images/logo-typed-black.png"
+              src="/images/logo-typed-black.webp"
               alt={APP_NAME}
-              width={512}
-              height={144}
+              width={320}
+              height={90}
               priority
               className="h-auto w-40 dark:hidden"
             />
             <Image
-              src="/images/logo-typed-white.png"
+              src="/images/logo-typed-white.webp"
               alt={APP_NAME}
-              width={512}
-              height={144}
+              width={320}
+              height={90}
               priority
               className="hidden h-auto w-40 dark:block"
             />

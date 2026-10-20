@@ -66,7 +66,7 @@ export function ProfileScreen() {
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src={profile?.avatarUrl ?? "/images/profile-image.png"}
+            src={profile?.avatarUrl ?? "/images/profile-image.webp"}
             alt=""
             width={64}
             height={64}

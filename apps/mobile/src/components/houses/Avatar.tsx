@@ -1,5 +1,6 @@
 import { memberInitial } from "@kinwoo/core/houses";
-import { Image, Text, View } from "react-native";
+import { Image } from "expo-image";
+import { Text, View } from "react-native";
 
 export function Avatar({
   name,
@@ -24,10 +25,12 @@ export function Avatar({
       style={frame}
     >
       {url ? (
+        // expo-image keeps avatars in a disk cache, so lists of members do not re-download them.
         <Image
           source={{ uri: url }}
           accessibilityIgnoresInvertColors
-          resizeMode="cover"
+          contentFit="cover"
+          cachePolicy="memory-disk"
           style={frame}
         />
       ) : (

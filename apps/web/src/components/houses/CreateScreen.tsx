@@ -38,7 +38,7 @@ export function CreateScreen() {
         >
           {/* The artwork is white linework; inverted in light mode so it stays visible. */}
           <Image
-            src="/images/build-your-house.png"
+            src="/images/build-your-house.webp"
             alt=""
             width={512}
             height={311}

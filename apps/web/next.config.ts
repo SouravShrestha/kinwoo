@@ -13,6 +13,10 @@ const nextConfig: NextConfig = {
   env: {
     NEXT_PUBLIC_APP_VERSION: pkg.version,
   },
+  // OpenNext only resizes images through a Cloudflare Images binding, which this app does not use;
+  // without it every /_next/image request runs the Worker to return the original. Images ship
+  // pre-sized instead and load straight from static assets.
+  images: { unoptimized: true },
   eslint: {
     ignoreDuringBuilds: true,
   },

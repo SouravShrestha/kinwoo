@@ -15,7 +15,7 @@ export function InviteFriendsCard({ canInvite, onPress }: InviteFriendsCardProps
       <div
         role="img"
         aria-label="Friends high-fiving"
-        style={{ aspectRatio: 900 / 575, maskImage: "url(/images/invite-friends.png)" }}
+        style={{ aspectRatio: 900 / 575, maskImage: "url(/images/invite-friends.webp)" }}
         className="-mb-2 -ml-3 w-[45%] shrink-0 self-end bg-foreground mask-contain mask-bottom-left mask-no-repeat"
       />
       <div className="flex flex-1 flex-col justify-between gap-6 py-5 pr-5 pl-3 text-right -ml-10">
