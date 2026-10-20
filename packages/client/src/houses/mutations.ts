@@ -15,6 +15,7 @@ import {
   leaveHouse,
   removeInvitedEmail,
   removeMember,
+  rotateInvite,
   setMemberRole,
   updateHouse,
 } from "./api";
@@ -118,6 +119,15 @@ export function useSetJoinMode(houseId: string) {
       void queryClient.invalidateQueries({ queryKey: houseKeys.list() });
       void queryClient.invalidateQueries({ queryKey: houseKeys.detail(houseId), exact: true });
     },
+  });
+}
+
+export function useRotateInvite(houseId: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: () => rotateInvite(houseId),
+    onSuccess: (invite) => queryClient.setQueryData(houseKeys.invite(houseId), invite),
   });
 }
 

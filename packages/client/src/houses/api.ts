@@ -79,6 +79,13 @@ export async function fetchInvite(houseId: string): Promise<HouseInvite> {
   return body.invite;
 }
 
+export async function rotateInvite(houseId: string): Promise<HouseInvite> {
+  const body = await apiRequest<{ invite: HouseInvite }>(`/api/houses/${segment(houseId)}/invite`, {
+    method: "POST",
+  });
+  return body.invite;
+}
+
 export async function fetchInvitedEmails(houseId: string): Promise<InvitedEmail[]> {
   const body = await apiRequest<{ invitedEmails: InvitedEmail[] }>(
     `/api/houses/${segment(houseId)}/invited-emails`,

@@ -25,6 +25,7 @@ import {
   TickIcon,
 } from "@kinwoo/icons/native";
 import { toast } from "@kinwoo/client/toast";
+import { CONFIRM_COPY } from "@kinwoo/core/confirm";
 import { TOAST_MESSAGES } from "@kinwoo/core/toast";
 import { colors } from "@kinwoo/tokens/native";
 import * as Clipboard from "expo-clipboard";
@@ -32,6 +33,7 @@ import { useRef, useState } from "react";
 import { Modal, Text, View } from "react-native";
 
 import { Button } from "@/components/Button";
+import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { Pressable } from "@/components/Pressable";
 import { Avatar } from "@/components/houses/Avatar";
 import { Field } from "@/components/houses/Field";
@@ -63,6 +65,7 @@ function InviteManager({ membership }: { membership: HouseMembership }) {
   const { resolvedTheme } = useTheme();
   const palette = colors[resolvedTheme];
   const [sharing, setSharing] = useState(false);
+  const [confirmRotate, setConfirmRotate] = useState(false);
   const cardRef = useRef<View>(null);
   const emailSendDisabled = manager.emailBusy || manager.emailDraft.trim() === "";
 
@@ -116,6 +119,15 @@ function InviteManager({ membership }: { membership: HouseMembership }) {
                     {manager.code}
                   </Text>
                   <CopyIcon size={14} color={palette.foreground} />
+                </Pressable>
+                <Pressable
+                  accessibilityRole="button"
+                  accessibilityState={{ disabled: manager.rotating }}
+                  disabled={manager.rotating}
+                  onPress={() => setConfirmRotate(true)}
+                  className="mt-2 h-10 justify-center self-start active:opacity-70"
+                >
+                  <Text className="text-sm font-display-normal text-destructive">Reset code</Text>
                 </Pressable>
               </View>
             </View>
@@ -190,6 +202,16 @@ function InviteManager({ membership }: { membership: HouseMembership }) {
           <JoinModeMenu value={manager.joinMode} onChange={manager.setJoinMode} />
 
           <PeopleWithAccess manager={manager} />
+
+          <ConfirmDialog
+            open={confirmRotate}
+            copy={CONFIRM_COPY.rotateInvite}
+            isPending={manager.rotating}
+            onConfirm={() => {
+              void manager.rotateCode().then(() => setConfirmRotate(false));
+            }}
+            onCancel={() => setConfirmRotate(false)}
+          />
         </View>
       )}
     </HouseScreen>

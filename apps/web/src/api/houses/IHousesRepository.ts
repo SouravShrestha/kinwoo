@@ -52,6 +52,7 @@ export interface IHousesRepository {
   leaveHouse(houseId: string, acknowledgeDebt: boolean): Promise<void>;
 
   findInvite(houseId: string): Promise<HouseInvite | null>;
+  rotateInviteCode(houseId: string): Promise<void>;
 
   listInvitedEmails(houseId: string): Promise<InvitedEmail[]>;
   addInvitedEmail(houseId: string, email: string): Promise<InvitedEmail>;

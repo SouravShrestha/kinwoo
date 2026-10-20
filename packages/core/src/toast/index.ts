@@ -14,6 +14,7 @@ export const TOAST_MESSAGES = {
   joinRequested: "Request sent. An admin will review it.",
   inviteEmailAdded: "Invite sent.",
   inviteEmailRemoved: "Invite removed.",
+  inviteRotated: "New invite code ready. The old one no longer works.",
   houseRequired: "This feature needs a house. \nJoin or create one to get started.",
   inviteAdminOnly: "Only admins can invite housemates.",
   houseLimitReached: "You can only be in one house for now.",

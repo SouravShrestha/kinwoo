@@ -27,6 +27,7 @@ import {
 } from "@kinwoo/icons";
 import { useAuth } from "@kinwoo/client/auth";
 import { toast } from "@kinwoo/client/toast";
+import { CONFIRM_COPY } from "@kinwoo/core/confirm";
 import { TOAST_MESSAGES } from "@kinwoo/core/toast";
 import { useEffect, useId, useRef, useState, type KeyboardEvent } from "react";
 
@@ -35,6 +36,7 @@ import { siteOrigin } from "@/lib/site";
 import { cn } from "@/lib/utils";
 
 import { Button } from "../Button";
+import { ConfirmDialog } from "../ConfirmDialog";
 import { Avatar } from "./Avatar";
 import { Field } from "./Field";
 import { HouseScreen } from "./HouseScreen";
@@ -80,6 +82,7 @@ export function InviteScreen() {
 function InviteManager({ membership }: { membership: HouseMembership }) {
   const house = membership.house;
   const manager = useInviteManager({ house, origin: siteOrigin() });
+  const [confirmRotate, setConfirmRotate] = useState(false);
 
   if (manager.loading) return null;
 
@@ -123,6 +126,17 @@ function InviteManager({ membership }: { membership: HouseMembership }) {
                 {manager.code}
               </span>
               <CopyIcon size={14} />
+            </button>
+            <button
+              type="button"
+              disabled={manager.rotating}
+              onClick={() => setConfirmRotate(true)}
+              className={cn(
+                "mt-2 h-10 font-display text-sm font-normal text-destructive hover:cursor-pointer hover:opacity-70 disabled:cursor-not-allowed disabled:opacity-50",
+                FOCUS,
+              )}
+            >
+              Reset code
             </button>
           </div>
         </div>
@@ -190,6 +204,16 @@ function InviteManager({ membership }: { membership: HouseMembership }) {
       </section>
 
       <PeopleWithAccess manager={manager} />
+
+      <ConfirmDialog
+        open={confirmRotate}
+        copy={CONFIRM_COPY.rotateInvite}
+        isPending={manager.rotating}
+        onConfirm={() => {
+          void manager.rotateCode().then(() => setConfirmRotate(false));
+        }}
+        onCancel={() => setConfirmRotate(false)}
+      />
     </div>
   );
 }

@@ -14,7 +14,12 @@ import { useMemo, useState } from "react";
 
 import { toast } from "../toast";
 import { houseErrorFromCause } from "./errors";
-import { useAddInvitedEmail, useRemoveInvitedEmail, useSetJoinMode } from "./mutations";
+import {
+  useAddInvitedEmail,
+  useRemoveInvitedEmail,
+  useRotateInvite,
+  useSetJoinMode,
+} from "./mutations";
 import { useHouseInvite, useHouseMembers, useInvitedEmails } from "./queries";
 
 export type InviteManager = {
@@ -33,6 +38,8 @@ export type InviteManager = {
   emailBusy: boolean;
   addEmail: () => Promise<void>;
   removeEmail: (invitedEmailId: string) => Promise<void>;
+  rotating: boolean;
+  rotateCode: () => Promise<boolean>;
 };
 
 export function useInviteManager(input: { house: House; origin: string }): InviteManager {
@@ -44,6 +51,7 @@ export function useInviteManager(input: { house: House; origin: string }): Invit
   const setJoinMode = useSetJoinMode(house.id);
   const addInvitedEmail = useAddInvitedEmail(house.id);
   const removeInvitedEmail = useRemoveInvitedEmail(house.id);
+  const rotateInvite = useRotateInvite(house.id);
 
   const [emailDraft, setEmailDraft] = useState("");
   const [emailError, setEmailError] = useState<string | null>(null);
@@ -83,6 +91,12 @@ export function useInviteManager(input: { house: House; origin: string }): Invit
     if (removed) toast.info(TOAST_MESSAGES.inviteEmailRemoved);
   };
 
+  const rotateCode = async () => {
+    const rotated = await run(() => rotateInvite.mutateAsync());
+    if (rotated) toast.success(TOAST_MESSAGES.inviteRotated);
+    return rotated;
+  };
+
   return {
     loading: inviteQuery.isPending || membersQuery.isPending || invitedEmailsQuery.isPending,
     loadError: inviteQuery.isError,
@@ -105,5 +119,7 @@ export function useInviteManager(input: { house: House; origin: string }): Invit
     emailBusy: addInvitedEmail.isPending || removeInvitedEmail.isPending,
     addEmail,
     removeEmail,
+    rotating: rotateInvite.isPending,
+    rotateCode,
   };
 }

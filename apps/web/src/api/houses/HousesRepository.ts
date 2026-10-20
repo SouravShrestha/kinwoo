@@ -186,6 +186,11 @@ export class HousesRepository implements IHousesRepository {
     return data ? toInvite(data) : null;
   }
 
+  async rotateInviteCode(houseId: string): Promise<void> {
+    const { error } = await this.client.rpc("rotate_invite_code", { p_house_id: houseId });
+    if (error) fail(error);
+  }
+
   async listInvitedEmails(houseId: string): Promise<InvitedEmail[]> {
     const { data, error } = await this.client
       .from("house_invited_emails")

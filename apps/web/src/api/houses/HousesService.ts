@@ -174,6 +174,15 @@ export class HousesService implements IHousesService {
     }
   }
 
+  async rotateInvite(houseId: string): Promise<HouseResult<HouseInvite>> {
+    return this.run(async () => {
+      await this.repository.rotateInviteCode(houseId);
+      const invite = await this.repository.findInvite(houseId);
+      if (!invite) throw new Error("Invite missing after rotation");
+      return invite;
+    });
+  }
+
   async listInvitedEmails(userId: string, houseId: string): Promise<HouseResult<InvitedEmail[]>> {
     try {
       const membership = await this.repository.findMembership(userId, houseId);

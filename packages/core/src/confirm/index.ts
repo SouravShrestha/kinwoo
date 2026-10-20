@@ -93,6 +93,14 @@ export const CONFIRM_COPY = {
     message: "This will delete the house and is irreversible.",
     confirmLabel: "Delete",
   },
+  rotateInvite: {
+    icon: "lock",
+    tone: "destructive",
+    title: "Reset invite code?",
+    message:
+      "The current code, link and QR code stop working. Anyone who hasn't joined yet needs the new one.",
+    confirmLabel: "Reset",
+  },
 } as const satisfies Record<string, ConfirmCopy>;
 
 export function visibilityConfirmCopy(next: ListVisibility): ConfirmCopy {

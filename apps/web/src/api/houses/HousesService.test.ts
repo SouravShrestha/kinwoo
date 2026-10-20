@@ -35,6 +35,7 @@ function fakeRepository(overrides: Partial<IHousesRepository> = {}): IHousesRepo
     removeMember: vi.fn().mockResolvedValue(undefined),
     leaveHouse: vi.fn().mockResolvedValue(undefined),
     findInvite: vi.fn().mockResolvedValue(invite),
+    rotateInviteCode: vi.fn().mockResolvedValue(undefined),
     listInvitedEmails: vi.fn().mockResolvedValue([invitedEmail]),
     addInvitedEmail: vi.fn().mockResolvedValue(invitedEmail),
     removeInvitedEmail: vi.fn().mockResolvedValue(undefined),
@@ -224,6 +225,29 @@ describe("listMembers and getInvite", () => {
 
     expect(await asMember.getInvite("u1", "h1")).toMatchObject({ ok: false, code: "FORBIDDEN" });
     expect(await asAdmin.getInvite("u1", "h1")).toEqual({ ok: true, data: invite });
+  });
+});
+
+describe("rotateInvite", () => {
+  it("rotates the code and returns the fresh invite", async () => {
+    const fresh = { ...invite, code: "XYZ789" };
+    const repository = fakeRepository({ findInvite: vi.fn().mockResolvedValue(fresh) });
+
+    const result = await new HousesService(repository).rotateInvite("h1");
+
+    expect(result).toEqual({ ok: true, data: fresh });
+    expect(repository.rotateInviteCode).toHaveBeenCalledWith("h1");
+  });
+
+  it("passes on a refusal from the database", async () => {
+    const repository = fakeRepository({
+      rotateInviteCode: vi.fn().mockRejectedValue(new HouseRepositoryError("x", "FORBIDDEN")),
+    });
+
+    const result = await new HousesService(repository).rotateInvite("h1");
+
+    expect(result).toMatchObject({ ok: false, code: "FORBIDDEN" });
+    expect(repository.findInvite).not.toHaveBeenCalled();
   });
 });
 

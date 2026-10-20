@@ -186,8 +186,15 @@ select public.set_member_role(current_setting('tests.house')::uuid,
 select public.remove_member(current_setting('tests.house')::uuid,
   '00000000-0000-4000-8000-0000000000d2');
 select tests.as_user('00000000-0000-4000-8000-0000000000d2');
-select is(public.join_house(current_setting('tests.code'))->>'status', 'joined',
-  'a removed member can rejoin with a valid code');
+select is(public.join_house(current_setting('tests.code'))->>'status', 'pending',
+  'a removed member who uses the code waits for an admin');
+select tests.as_user('00000000-0000-4000-8000-0000000000d1');
+select public.resolve_join_request(current_setting('tests.house')::uuid,
+  '00000000-0000-4000-8000-0000000000d2', true);
+select is((select status::text from public.house_members
+            where house_id = current_setting('tests.house')::uuid
+              and user_id = '00000000-0000-4000-8000-0000000000d2'),
+  'active', 'an admin approves the removed member back in');
 select is((select role::text from public.house_members
             where house_id = current_setting('tests.house')::uuid
               and user_id = '00000000-0000-4000-8000-0000000000d2'),
@@ -206,6 +213,22 @@ select tests.as_user('00000000-0000-4000-8000-0000000000d1');
 select is((select count(*) from public.house_invited_emails), 0::bigint,
   'the joined person leaves the pending list');
 update public.houses set join_mode = 'anyone' where id = current_setting('tests.house')::uuid;
+
+-- Rotating the invite code
+select tests.as_user('00000000-0000-4000-8000-0000000000d2');
+select throws_ok(
+  format('select public.rotate_invite_code(%L)', current_setting('tests.house')),
+  'P0001', 'FORBIDDEN', 'a plain member cannot rotate the code');
+select tests.as_user('00000000-0000-4000-8000-0000000000d1');
+select set_config('tests.old_code', current_setting('tests.code'), true);
+select set_config('tests.code', public.rotate_invite_code(current_setting('tests.house')::uuid),
+  true);
+select isnt(current_setting('tests.code'), current_setting('tests.old_code'),
+  'rotation issues a new code');
+select is(public.get_invite_preview(current_setting('tests.old_code'))->>'status', 'invalid',
+  'the old code stops working');
+select is(public.get_invite_preview(current_setting('tests.code'))->>'status', 'already_member',
+  'the new code points at the same house');
 
 -- Last admin can leave once another admin exists
 select tests.as_user('00000000-0000-4000-8000-0000000000d1');

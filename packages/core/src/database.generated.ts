@@ -654,6 +654,9 @@ isOneToOne: false
 "respond_to_assignment":
 { Args: { "p_accept": boolean,"p_item_id": string }; Returns: undefined
                            },
+"rotate_invite_code":
+{ Args: { "p_house_id": string }; Returns: string
+                           },
 "set_member_role":
 { Args: { "p_house_id": string,"p_role": Database["public"]['Enums']["house_role"],"p_user_id": string }; Returns: undefined
                            },

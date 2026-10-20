@@ -35,6 +35,7 @@ export interface IHousesService {
   leaveHouse(houseId: string, acknowledgeDebt: boolean): Promise<HouseResult<null>>;
 
   getInvite(userId: string, houseId: string): Promise<HouseResult<HouseInvite>>;
+  rotateInvite(houseId: string): Promise<HouseResult<HouseInvite>>;
 
   listInvitedEmails(userId: string, houseId: string): Promise<HouseResult<InvitedEmail[]>>;
   addInvitedEmail(houseId: string, email: string): Promise<HouseResult<InvitedEmail>>;
