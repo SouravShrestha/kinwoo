@@ -1,6 +1,7 @@
 import { isHouseJoinMode } from "@kinwoo/core/houses";
 
-import { badRequest, handleHouseRequest, readJsonObject } from "../../_lib/houseRoute";
+import { badRequest, handleHouseRequest, readJsonObject } from "@/app/api/_lib/houseRoute";
+import { isOptional } from "@/app/api/_lib/route";
 
 type Context = { params: Promise<{ houseId: string }> };
 
@@ -26,7 +27,7 @@ export async function PATCH(request: Request, { params }: Context) {
       if (name !== undefined && typeof name !== "string") {
         return badRequest("name must be a string");
       }
-      if (address !== undefined && address !== null && typeof address !== "string") {
+      if (!isOptional(address, "string")) {
         return badRequest("address must be a string");
       }
       if (joinMode !== undefined && !isHouseJoinMode(joinMode)) {

@@ -1,33 +1,14 @@
-import { NextResponse } from "next/server";
-
-import { ProfileRepository } from "@/api/profile/ProfileRepository";
-import { ProfileService } from "@/api/profile/ProfileService";
-import { createRouteClient, getVerifiedUser } from "@/integrations/supabase/client.route";
-import { readJsonObject } from "../../_lib/json";
-import { profileResponse } from "../../_lib/profileResponse";
+import { badRequest, handleProfileRequest, readJsonObject } from "@/app/api/_lib/profileRoute";
 
 export async function PATCH(request: Request) {
-  const { supabase, applyCookies } = createRouteClient(request);
-
-  const user = await getVerifiedUser(request);
-  if (!user) {
-    return applyCookies(NextResponse.json({ error: "Not logged in" }, { status: 401 }));
-  }
-
-  const body = await readJsonObject(request);
-  if (!body) {
-    return applyCookies(NextResponse.json({ error: "Invalid JSON body" }, { status: 400 }));
-  }
-
-  const displayName = body.displayName;
-  if (typeof displayName !== "string") {
-    return applyCookies(
-      NextResponse.json({ error: "displayName must be a string" }, { status: 400 }),
-    );
-  }
-
-  const service = new ProfileService(new ProfileRepository(supabase));
-  const result = await service.setDisplayName(user.id, displayName);
-
-  return applyCookies(profileResponse(result));
+  return handleProfileRequest(
+    request,
+    async ({ service, userId }) => {
+      const body = await readJsonObject(request);
+      if (!body) return badRequest("Invalid JSON body");
+      if (typeof body.displayName !== "string") return badRequest("displayName must be a string");
+      return service.setDisplayName(userId, body.displayName);
+    },
+    { key: "profile" },
+  );
 }

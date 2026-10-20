@@ -1,29 +1,40 @@
 import { displayNameErrorMessage, validateDisplayName } from "@kinwoo/core/auth";
 
+import { serviceResults } from "../_shared/result";
 import type { IProfileRepository, Profile, ProfilePreferences } from "./IProfileRepository";
-import type { AvatarListResult, IProfileService, ProfileResult } from "./IProfileService";
+import type { IProfileService, ProfileResult, ProfileServiceErrorCode } from "./IProfileService";
 import { normaliseSocialAvatar } from "./socialAvatar";
 
 const VALID_THEMES = new Set(["light", "dark", "system"]);
 const LOCALE_PATTERN = /^[a-z]{2}(-[A-Za-z0-9]{2,8})?$/;
 
+const MESSAGES: Record<ProfileServiceErrorCode, string> = {
+  INVALID_INPUT: "Check the details and try again.",
+  NOT_FOUND: "Profile not found",
+  UNAVAILABLE: "Could not load the profile",
+};
+
+// The repository throws plain errors; none map to a specific code.
+const { ok, failure, invalidInput, run } = serviceResults<ProfileServiceErrorCode>({
+  messageFor: (code) => MESSAGES[code],
+  codeOf: () => null,
+  invalidInputCode: "INVALID_INPUT",
+  unavailableCode: "UNAVAILABLE",
+});
+
+const found = (profile: Profile | null): ProfileResult =>
+  profile ? ok(profile) : failure("NOT_FOUND");
+
 export class ProfileService implements IProfileService {
   constructor(private readonly repository: IProfileRepository) {}
 
   async getProfile(userId: string, socialAvatarUrl?: string): Promise<ProfileResult> {
-    try {
+    const result = await run(async () => {
       const profile = await this.repository.findById(userId);
-      if (!profile) return { status: "not-found" };
-
-      return {
-        status: "ok",
-        profile: profile.avatarUrl
-          ? profile
-          : await this.withAvatar(profile, normaliseSocialAvatar(socialAvatarUrl)),
-      };
-    } catch {
-      return { status: "error" };
-    }
+      if (!profile || profile.avatarUrl) return profile;
+      return this.withAvatar(profile, normaliseSocialAvatar(socialAvatarUrl));
+    });
+    return result.ok ? found(result.data) : result;
   }
 
   // Never fails the profile load: without a default avatar the clients fall back to a placeholder.
@@ -51,35 +62,23 @@ export class ProfileService implements IProfileService {
   async setDisplayName(userId: string, input: string): Promise<ProfileResult> {
     // Validated before the write so a name the client accepts can never be
     // rejected by the matching database constraint.
-    const result = validateDisplayName(input);
-    if (!result.ok) return { status: "invalid", message: displayNameErrorMessage(result.error) };
+    const name = validateDisplayName(input);
+    if (!name.ok) return invalidInput(displayNameErrorMessage(name.error));
 
-    try {
-      const profile = await this.repository.updateDisplayName(userId, result.value);
-      return profile ? { status: "ok", profile } : { status: "not-found" };
-    } catch {
-      return { status: "error" };
-    }
+    const result = await run(() => this.repository.updateDisplayName(userId, name.value));
+    return result.ok ? found(result.data) : result;
   }
 
   async setPreferences(userId: string, preferences: ProfilePreferences): Promise<ProfileResult> {
     const invalid = validatePreferences(preferences);
-    if (invalid) return { status: "invalid", message: invalid };
+    if (invalid) return invalidInput(invalid);
 
-    try {
-      const profile = await this.repository.updatePreferences(userId, preferences);
-      return profile ? { status: "ok", profile } : { status: "not-found" };
-    } catch {
-      return { status: "error" };
-    }
+    const result = await run(() => this.repository.updatePreferences(userId, preferences));
+    return result.ok ? found(result.data) : result;
   }
 
-  async listAvatars(socialAvatarUrl?: string): Promise<AvatarListResult> {
-    try {
-      return { status: "ok", avatars: await this.selectableAvatars(socialAvatarUrl) };
-    } catch {
-      return { status: "error" };
-    }
+  async listAvatars(socialAvatarUrl?: string): Promise<ProfileResult<string[]>> {
+    return run(() => this.selectableAvatars(socialAvatarUrl));
   }
 
   async setAvatar(
@@ -87,19 +86,16 @@ export class ProfileService implements IProfileService {
     avatarUrl: string,
     socialAvatarUrl?: string,
   ): Promise<ProfileResult> {
-    try {
-      // Only a URL we list ourselves is stored, so a client cannot point a profile at an
-      // arbitrary image.
-      const avatars = await this.selectableAvatars(socialAvatarUrl);
-      if (!avatars.includes(avatarUrl)) {
-        return { status: "invalid", message: "Choose one of the available avatars." };
-      }
-
-      const profile = await this.repository.updateAvatarUrl(userId, avatarUrl);
-      return profile ? { status: "ok", profile } : { status: "not-found" };
-    } catch {
-      return { status: "error" };
+    // Only a URL we list ourselves is stored, so a client cannot point a profile at an
+    // arbitrary image.
+    const avatars = await run(() => this.selectableAvatars(socialAvatarUrl));
+    if (!avatars.ok) return avatars;
+    if (!avatars.data.includes(avatarUrl)) {
+      return invalidInput("Choose one of the available avatars.");
     }
+
+    const result = await run(() => this.repository.updateAvatarUrl(userId, avatarUrl));
+    return result.ok ? found(result.data) : result;
   }
 }
 

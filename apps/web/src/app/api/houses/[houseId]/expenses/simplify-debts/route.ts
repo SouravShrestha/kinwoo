@@ -1,5 +1,5 @@
-import { badRequest, handleExpenseRequest } from "../../../../_lib/expenseRoute";
-import { readJsonObject } from "../../../../_lib/groceryRoute";
+import { badRequest, handleExpenseRequest } from "@/app/api/_lib/expenseRoute";
+import { readJsonObject } from "@/app/api/_lib/groceryRoute";
 
 type Context = { params: Promise<{ houseId: string }> };
 

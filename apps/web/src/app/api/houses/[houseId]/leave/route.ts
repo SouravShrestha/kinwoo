@@ -1,4 +1,4 @@
-import { handleHouseRequest, readJsonObject } from "../../../_lib/houseRoute";
+import { handleHouseRequest, readJsonObject } from "@/app/api/_lib/houseRoute";
 
 export async function POST(request: Request, { params }: { params: Promise<{ houseId: string }> }) {
   const { houseId } = await params;

@@ -1,4 +1,4 @@
-import { handleExpenseRequest } from "../../../../_lib/expenseRoute";
+import { handleExpenseRequest } from "@/app/api/_lib/expenseRoute";
 
 type Context = { params: Promise<{ houseId: string }> };
 

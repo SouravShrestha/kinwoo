@@ -21,6 +21,8 @@ import {
   type MarkItemsBoughtResult,
 } from "@kinwoo/core/grocery";
 
+import { serviceResults } from "../_shared/result";
+
 import {
   GroceryRepositoryError,
   type ActivityEntry,
@@ -40,17 +42,12 @@ import {
 } from "./IGroceryRepository";
 import type { GroceryResult, GroceryServiceErrorCode, IGroceryService } from "./IGroceryService";
 
-function ok<T>(data: T): GroceryResult<T> {
-  return { ok: true, data };
-}
-
-function failure(code: GroceryServiceErrorCode, message?: string): GroceryResult<never> {
-  return { ok: false, code, message: message ?? groceryErrorMessage(code) };
-}
-
-function invalidInput(message: string): GroceryResult<never> {
-  return failure("INVALID_INPUT", message);
-}
+const { ok, failure, invalidInput, fromError, run } = serviceResults<GroceryServiceErrorCode>({
+  messageFor: groceryErrorMessage,
+  codeOf: (cause) => (cause instanceof GroceryRepositoryError ? cause.code : null),
+  invalidInputCode: "INVALID_INPUT",
+  unavailableCode: "UNAVAILABLE",
+});
 
 const LINKED_EXPENSE_ERROR = "Who paid and how it's split must both add up to the amount.";
 
@@ -58,16 +55,11 @@ function isValidLinkedExpense(amountPaise: number, expense: LinkedExpenseInput):
   return isSpentOn(expense.spentOn) && validateExpenseParts(amountPaise, expense);
 }
 
-function fromError(cause: unknown): GroceryResult<never> {
-  if (cause instanceof GroceryRepositoryError && cause.code) return failure(cause.code);
-  return failure("UNAVAILABLE", "Something went wrong. Please try again.");
-}
-
 export class GroceryService implements IGroceryService {
   constructor(private readonly repository: IGroceryRepository) {}
 
   async listLists(houseId: string): Promise<GroceryResult<GroceryList[]>> {
-    return this.run(() => this.repository.listLists(houseId));
+    return run(() => this.repository.listLists(houseId));
   }
 
   async getList(listId: string): Promise<GroceryResult<GroceryList>> {
@@ -83,7 +75,7 @@ export class GroceryService implements IGroceryService {
     const name = validateListName(input.name);
     if (!name.ok) return invalidInput(listNameErrorMessage(name.error));
 
-    return this.run(() =>
+    return run(() =>
       this.repository.createList(houseId, {
         ...input,
         name: name.value,
@@ -99,11 +91,11 @@ export class GroceryService implements IGroceryService {
       update = { ...input, name: name.value };
     }
 
-    return this.run(() => this.repository.updateList(listId, update));
+    return run(() => this.repository.updateList(listId, update));
   }
 
   async deleteList(listId: string): Promise<GroceryResult<null>> {
-    return this.run(async () => {
+    return run(async () => {
       await this.repository.deleteList(listId);
       return null;
     });
@@ -113,9 +105,9 @@ export class GroceryService implements IGroceryService {
     listId: string,
     boughtSince?: string | null,
   ): Promise<GroceryResult<GroceryItem[]>> {
-    if (boughtSince == null) return this.run(() => this.repository.listItems(listId));
+    if (boughtSince == null) return run(() => this.repository.listItems(listId));
     if (!isTimestamp(boughtSince)) return invalidInput("boughtSince must be a date.");
-    return this.run(() => this.repository.listItems(listId, { boughtSince }));
+    return run(() => this.repository.listItems(listId, { boughtSince }));
   }
 
   async listBoughtItems(
@@ -123,7 +115,7 @@ export class GroceryService implements IGroceryService {
     before: string | null,
   ): Promise<GroceryResult<BoughtItemsPage>> {
     if (before === null || !isTimestamp(before)) return invalidInput("before must be a date.");
-    return this.run(() => this.repository.listBoughtItems(listId, before, BOUGHT_PAGE_SIZE));
+    return run(() => this.repository.listBoughtItems(listId, before, BOUGHT_PAGE_SIZE));
   }
 
   async getItem(itemId: string): Promise<GroceryResult<GroceryItem>> {
@@ -139,7 +131,7 @@ export class GroceryService implements IGroceryService {
     const name = validateItemName(input.name);
     if (!name.ok) return invalidInput(itemNameErrorMessage(name.error));
 
-    return this.run(() =>
+    return run(() =>
       this.repository.addItem({
         ...input,
         name: name.value,
@@ -155,36 +147,36 @@ export class GroceryService implements IGroceryService {
       update = { ...input, name: name.value };
     }
 
-    return this.run(() => this.repository.updateItem(itemId, update));
+    return run(() => this.repository.updateItem(itemId, update));
   }
 
   async deleteItem(itemId: string): Promise<GroceryResult<null>> {
-    return this.run(async () => {
+    return run(async () => {
       await this.repository.deleteItem(itemId);
       return null;
     });
   }
 
   async claimItem(itemId: string): Promise<GroceryResult<ClaimResult>> {
-    return this.run(() => this.repository.claimItem(itemId));
+    return run(() => this.repository.claimItem(itemId));
   }
 
   async unclaimItem(itemId: string): Promise<GroceryResult<null>> {
-    return this.run(async () => {
+    return run(async () => {
       await this.repository.unclaimItem(itemId);
       return null;
     });
   }
 
   async assignItem(itemId: string, assignedTo: string): Promise<GroceryResult<null>> {
-    return this.run(async () => {
+    return run(async () => {
       await this.repository.assignItem(itemId, assignedTo);
       return null;
     });
   }
 
   async unassignItem(itemId: string): Promise<GroceryResult<null>> {
-    return this.run(async () => {
+    return run(async () => {
       await this.repository.unassignItem(itemId);
       return null;
     });
@@ -207,7 +199,7 @@ export class GroceryService implements IGroceryService {
       return invalidInput(`Delete up to ${MAX_BULK_ASSIGN} items at a time.`);
     }
 
-    return this.run(async () => ({
+    return run(async () => ({
       deleted: await this.repository.deleteItems(listId, unique),
       requested: unique.length,
     }));
@@ -227,11 +219,11 @@ export class GroceryService implements IGroceryService {
       return invalidInput(`Assign up to ${MAX_BULK_ASSIGN} items at a time.`);
     }
 
-    return this.run(async () => ({ assigned: await action(unique), requested: unique.length }));
+    return run(async () => ({ assigned: await action(unique), requested: unique.length }));
   }
 
   async respondToAssignment(itemId: string, accept: boolean): Promise<GroceryResult<null>> {
-    return this.run(async () => {
+    return run(async () => {
       await this.repository.respondToAssignment(itemId, accept);
       return null;
     });
@@ -241,7 +233,7 @@ export class GroceryService implements IGroceryService {
     if (input.expense && !isValidLinkedExpense(input.pricePaise ?? 0, input.expense)) {
       return invalidInput(LINKED_EXPENSE_ERROR);
     }
-    return this.run(async () => {
+    return run(async () => {
       await this.repository.markBought(itemId, input);
       return null;
     });
@@ -289,7 +281,7 @@ export class GroceryService implements IGroceryService {
       return invalidInput(`Use ${ITEM_STORE_MAX_LENGTH} characters or fewer for the store.`);
     }
 
-    return this.run(async () => ({
+    return run(async () => ({
       batchId: await this.repository.markItemsBought(listId, {
         itemIds,
         totalPaise: input.totalPaise,
@@ -302,29 +294,29 @@ export class GroceryService implements IGroceryService {
   }
 
   async moveItem(itemId: string, targetListId: string): Promise<GroceryResult<null>> {
-    return this.run(async () => {
+    return run(async () => {
       await this.repository.moveItem(itemId, targetListId);
       return null;
     });
   }
 
   async listCategories(houseId: string): Promise<GroceryResult<GroceryCategory[]>> {
-    return this.run(() => this.repository.listCategories(houseId));
+    return run(() => this.repository.listCategories(houseId));
   }
 
   async addCategory(houseId: string, name: string): Promise<GroceryResult<GroceryCategory>> {
-    return this.run(() => this.repository.addCategory(houseId, name));
+    return run(() => this.repository.addCategory(houseId, name));
   }
 
   async getOverview(houseId: string, userId: string): Promise<GroceryResult<GroceryOverview>> {
-    return this.run(() => this.repository.getOverview(houseId, userId));
+    return run(() => this.repository.getOverview(houseId, userId));
   }
 
   async listPrivatePurchases(
     houseId: string,
     userId: string,
   ): Promise<GroceryResult<GroceryOverviewItem[]>> {
-    return this.run(() => this.repository.listPrivatePurchases(houseId, userId));
+    return run(() => this.repository.listPrivatePurchases(houseId, userId));
   }
 
   async getRecentActivity(
@@ -332,7 +324,7 @@ export class GroceryService implements IGroceryService {
     limit: number,
     before: ActivityCursor | null,
   ): Promise<GroceryResult<GroceryActivityPage>> {
-    return this.run(async () => {
+    return run(async () => {
       // One extra row tells us whether another page exists without a count query.
       const rows = await this.repository.listRecentActivity(houseId, limit + 1, before);
       const entries = rows.slice(0, limit);
@@ -345,15 +337,7 @@ export class GroceryService implements IGroceryService {
   }
 
   async getItemActivity(houseId: string, itemId: string): Promise<GroceryResult<ActivityEntry[]>> {
-    return this.run(() => this.repository.listItemActivity(houseId, itemId));
-  }
-
-  private async run<T>(action: () => Promise<T>): Promise<GroceryResult<T>> {
-    try {
-      return ok(await action());
-    } catch (cause) {
-      return fromError(cause);
-    }
+    return run(() => this.repository.listItemActivity(houseId, itemId));
   }
 }
 

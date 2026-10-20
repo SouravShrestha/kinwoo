@@ -15,6 +15,8 @@ import {
   type ExpensePage,
 } from "@kinwoo/core/expenses";
 
+import { serviceResults } from "../_shared/result";
+
 import {
   ExpensesRepositoryError,
   type Expense,
@@ -28,22 +30,12 @@ import type {
   IExpensesService,
 } from "./IExpensesService";
 
-function ok<T>(data: T): ExpensesResult<T> {
-  return { ok: true, data };
-}
-
-function failure(code: ExpensesServiceErrorCode, message?: string): ExpensesResult<never> {
-  return { ok: false, code, message: message ?? expenseErrorMessage(code) };
-}
-
-function invalidInput(message: string): ExpensesResult<never> {
-  return failure("INVALID_INPUT", message);
-}
-
-function fromError(cause: unknown): ExpensesResult<never> {
-  if (cause instanceof ExpensesRepositoryError && cause.code) return failure(cause.code);
-  return failure("UNAVAILABLE", "Something went wrong. Please try again.");
-}
+const { ok, failure, invalidInput, fromError, run } = serviceResults<ExpensesServiceErrorCode>({
+  messageFor: expenseErrorMessage,
+  codeOf: (cause) => (cause instanceof ExpensesRepositoryError ? cause.code : null),
+  invalidInputCode: "INVALID_INPUT",
+  unavailableCode: "UNAVAILABLE",
+});
 
 function normalize(input: ExpenseInput): ExpensesResult<ExpenseInput> {
   const title = validateExpenseTitle(input.title);
@@ -66,7 +58,7 @@ export class ExpensesService implements IExpensesService {
     houseId: string,
     after: ExpenseCursor | null,
   ): Promise<ExpensesResult<ExpensePage>> {
-    return this.run(async () => {
+    return run(async () => {
       const expenses = await this.repository.listExpenses(houseId, EXPENSE_PAGE_SIZE + 1, after);
       const page = expenses.slice(0, EXPENSE_PAGE_SIZE);
       const last = page[page.length - 1];
@@ -113,29 +105,21 @@ export class ExpensesService implements IExpensesService {
   }
 
   async deleteExpense(expenseId: string): Promise<ExpensesResult<null>> {
-    return this.run(async () => {
+    return run(async () => {
       await this.repository.deleteExpense(expenseId);
       return null;
     });
   }
 
   async getBalances(houseId: string, simplify: boolean): Promise<ExpensesResult<HouseBalances>> {
-    if (!simplify) return this.run(() => this.repository.getBalances(houseId));
-    return this.run(async () => simplifiedBalances(await this.repository.getMemberNets(houseId)));
+    if (!simplify) return run(() => this.repository.getBalances(houseId));
+    return run(async () => simplifiedBalances(await this.repository.getMemberNets(houseId)));
   }
 
   async setSimplifyDebts(houseId: string, enabled: boolean): Promise<ExpensesResult<null>> {
-    return this.run(async () => {
+    return run(async () => {
       await this.repository.setSimplifyDebts(houseId, enabled);
       return null;
     });
-  }
-
-  private async run<T>(work: () => Promise<T>): Promise<ExpensesResult<T>> {
-    try {
-      return ok(await work());
-    } catch (cause) {
-      return fromError(cause);
-    }
   }
 }

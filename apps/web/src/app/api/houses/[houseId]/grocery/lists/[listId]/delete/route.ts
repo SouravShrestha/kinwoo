@@ -1,4 +1,4 @@
-import { handleGroceryRequest } from "../../../../../../_lib/groceryRoute";
+import { handleGroceryRequest } from "@/app/api/_lib/groceryRoute";
 
 type Context = { params: Promise<{ houseId: string; listId: string }> };
 

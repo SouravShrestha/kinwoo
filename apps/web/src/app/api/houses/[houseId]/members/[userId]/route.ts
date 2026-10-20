@@ -1,4 +1,4 @@
-import { badRequest, handleHouseRequest, readJsonObject } from "../../../../_lib/houseRoute";
+import { badRequest, handleHouseRequest, readJsonObject } from "@/app/api/_lib/houseRoute";
 
 type Context = { params: Promise<{ houseId: string; userId: string }> };
 

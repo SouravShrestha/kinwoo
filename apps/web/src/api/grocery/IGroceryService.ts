@@ -23,11 +23,11 @@ import type {
   UpdateItemInput,
   UpdateListInput,
 } from "./IGroceryRepository";
+import type { ServiceResult } from "../_shared/result";
 
 export type GroceryServiceErrorCode = GroceryErrorCode | "INVALID_INPUT" | "UNAVAILABLE";
 
-export type GroceryResult<T> =
-  { ok: true; data: T } | { ok: false; code: GroceryServiceErrorCode; message: string };
+export type GroceryResult<T> = ServiceResult<T, GroceryServiceErrorCode>;
 
 export interface IGroceryService {
   listLists(houseId: string): Promise<GroceryResult<GroceryList[]>>;

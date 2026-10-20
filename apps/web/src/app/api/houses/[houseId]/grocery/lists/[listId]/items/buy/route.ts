@@ -5,8 +5,8 @@ import {
   handleGroceryRequest,
   isItemIdList,
   readJsonObject,
-} from "../../../../../../../_lib/groceryRoute";
-import { readLinkedExpense } from "../../../../../../../_lib/expenseRoute";
+} from "@/app/api/_lib/groceryRoute";
+import { readLinkedExpense } from "@/app/api/_lib/expenseRoute";
 
 type Context = { params: Promise<{ houseId: string; listId: string }> };
 

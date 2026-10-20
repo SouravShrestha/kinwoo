@@ -55,7 +55,7 @@ const jsonRequest = (body: unknown) =>
 describe("GET /api/profile", () => {
   it("returns the profile for a verified caller", async () => {
     getVerifiedUser.mockResolvedValue({ id: "user-1" });
-    getProfile.mockResolvedValue({ status: "ok", profile });
+    getProfile.mockResolvedValue({ ok: true, data: profile });
 
     const response = await get(plainRequest());
 
@@ -75,7 +75,7 @@ describe("GET /api/profile", () => {
 
   it("flushes cookies on the success path", async () => {
     getVerifiedUser.mockResolvedValue({ id: "user-1" });
-    getProfile.mockResolvedValue({ status: "ok", profile });
+    getProfile.mockResolvedValue({ ok: true, data: profile });
 
     await get(plainRequest());
 
@@ -93,10 +93,10 @@ describe("GET /api/profile", () => {
   it("maps a missing row to 404 and a repository failure to 503", async () => {
     getVerifiedUser.mockResolvedValue({ id: "user-1" });
 
-    getProfile.mockResolvedValue({ status: "not-found" });
+    getProfile.mockResolvedValue({ ok: false, code: "NOT_FOUND", message: "Profile not found" });
     expect((await get(plainRequest())).status).toBe(404);
 
-    getProfile.mockResolvedValue({ status: "error" });
+    getProfile.mockResolvedValue({ ok: false, code: "UNAVAILABLE", message: "Try again" });
     expect((await get(plainRequest())).status).toBe(503);
   });
 });
@@ -104,7 +104,7 @@ describe("GET /api/profile", () => {
 describe("PATCH /api/profile/display-name", () => {
   it("passes the name to the service and returns the updated profile", async () => {
     getVerifiedUser.mockResolvedValue({ id: "user-1" });
-    setDisplayName.mockResolvedValue({ status: "ok", profile });
+    setDisplayName.mockResolvedValue({ ok: true, data: profile });
 
     const response = await patch(jsonRequest({ displayName: "Daisy" }));
 
@@ -130,12 +130,19 @@ describe("PATCH /api/profile/display-name", () => {
 
   it("surfaces the service's rejection message as a 400", async () => {
     getVerifiedUser.mockResolvedValue({ id: "user-1" });
-    setDisplayName.mockResolvedValue({ status: "invalid", message: "Enter a name." });
+    setDisplayName.mockResolvedValue({
+      ok: false,
+      code: "INVALID_INPUT",
+      message: "Enter a name.",
+    });
 
     const response = await patch(jsonRequest({ displayName: "  " }));
 
     expect(response.status).toBe(400);
-    await expect(response.json()).resolves.toEqual({ error: "Enter a name." });
+    await expect(response.json()).resolves.toEqual({
+      error: "Enter a name.",
+      code: "INVALID_INPUT",
+    });
   });
 });
 
@@ -152,7 +159,7 @@ describe("PATCH /api/profile/preferences", () => {
 
   it("passes only the fields that were sent", async () => {
     getVerifiedUser.mockResolvedValue({ id: "user-1" });
-    setPreferences.mockResolvedValue({ status: "ok", profile });
+    setPreferences.mockResolvedValue({ ok: true, data: profile });
 
     const response = await patchPreferences(jsonRequest({ theme: "dark" }));
 
@@ -173,11 +180,11 @@ describe("route sources", () => {
     }
   });
 
-  it("flush cookies on every response they construct", () => {
-    for (const file of files) {
+  it("delegate to the shared handler so cookies are always flushed", () => {
+    for (const file of [...files, "avatars/route.ts"]) {
       const source = readFileSync(path.join(here, file), "utf8");
-      const returns = [...source.matchAll(/return (?!applyCookies)/g)];
-      expect(returns, `${file} returns a response without applyCookies`).toHaveLength(0);
+      expect(source, file).toContain("handleProfileRequest");
+      expect(source, file).not.toContain("createRouteClient");
     }
   });
 });

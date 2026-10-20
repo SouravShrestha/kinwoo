@@ -10,11 +10,11 @@ import type {
   InvitePreview,
   JoinResult,
 } from "./IHousesRepository";
+import type { ServiceResult } from "../_shared/result";
 
 export type HouseServiceErrorCode = HouseErrorCode | "INVALID_INPUT" | "UNAVAILABLE";
 
-export type HouseResult<T> =
-  { ok: true; data: T } | { ok: false; code: HouseServiceErrorCode; message: string };
+export type HouseResult<T> = ServiceResult<T, HouseServiceErrorCode>;
 
 export interface IHousesService {
   listHouses(userId: string): Promise<HouseResult<HouseMembership[]>>;

@@ -6,7 +6,7 @@ import {
   isItemIdList,
   isUuid,
   readJsonObject,
-} from "../../../../../../../_lib/groceryRoute";
+} from "@/app/api/_lib/groceryRoute";
 
 type Context = { params: Promise<{ houseId: string; listId: string }> };
 

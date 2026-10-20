@@ -12,6 +12,8 @@ import {
   type UpdateHouseInput,
 } from "@kinwoo/core/houses";
 
+import { serviceResults } from "../_shared/result";
+
 import {
   HouseRepositoryError,
   type House,
@@ -27,28 +29,18 @@ import {
 } from "./IHousesRepository";
 import type { HouseResult, HouseServiceErrorCode, IHousesService } from "./IHousesService";
 
-function ok<T>(data: T): HouseResult<T> {
-  return { ok: true, data };
-}
-
-function failure(code: HouseServiceErrorCode, message?: string): HouseResult<never> {
-  return { ok: false, code, message: message ?? houseErrorMessage(code) };
-}
-
-function invalidInput(message: string): HouseResult<never> {
-  return failure("INVALID_INPUT", message);
-}
-
-function fromError(cause: unknown): HouseResult<never> {
-  if (cause instanceof HouseRepositoryError && cause.code) return failure(cause.code);
-  return failure("UNAVAILABLE", "Something went wrong. Please try again.");
-}
+const { ok, failure, invalidInput, fromError, run } = serviceResults<HouseServiceErrorCode>({
+  messageFor: houseErrorMessage,
+  codeOf: (cause) => (cause instanceof HouseRepositoryError ? cause.code : null),
+  invalidInputCode: "INVALID_INPUT",
+  unavailableCode: "UNAVAILABLE",
+});
 
 export class HousesService implements IHousesService {
   constructor(private readonly repository: IHousesRepository) {}
 
   async listHouses(userId: string): Promise<HouseResult<HouseMembership[]>> {
-    return this.run(() => this.repository.listMemberships(userId));
+    return run(() => this.repository.listMemberships(userId));
   }
 
   async getHouse(userId: string, houseId: string): Promise<HouseResult<HouseMembership>> {
@@ -71,7 +63,7 @@ export class HousesService implements IHousesService {
     if (!address.ok) return invalidInput(houseAddressErrorMessage(address.error));
 
     // The database enforces this too; checking first saves a write and keeps the rule readable here.
-    return this.run(async () => {
+    return run(async () => {
       const memberships = await this.repository.listMemberships(userId);
       if (!canAddHouse(memberships.length)) {
         throw new HouseRepositoryError("HOUSE_LIMIT_REACHED", "HOUSE_LIMIT_REACHED");
@@ -138,7 +130,7 @@ export class HousesService implements IHousesService {
     userId: string,
     role: HouseRole,
   ): Promise<HouseResult<null>> {
-    return this.run(async () => {
+    return run(async () => {
       await this.repository.setMemberRole(houseId, userId, role);
       return null;
     });
@@ -149,14 +141,14 @@ export class HousesService implements IHousesService {
     userId: string,
     keepDebt: boolean,
   ): Promise<HouseResult<null>> {
-    return this.run(async () => {
+    return run(async () => {
       await this.repository.removeMember(houseId, userId, keepDebt);
       return null;
     });
   }
 
   async leaveHouse(houseId: string, acknowledgeDebt: boolean): Promise<HouseResult<null>> {
-    return this.run(async () => {
+    return run(async () => {
       await this.repository.leaveHouse(houseId, acknowledgeDebt);
       return null;
     });
@@ -175,7 +167,7 @@ export class HousesService implements IHousesService {
   }
 
   async rotateInvite(houseId: string): Promise<HouseResult<HouseInvite>> {
-    return this.run(async () => {
+    return run(async () => {
       await this.repository.rotateInviteCode(houseId);
       const invite = await this.repository.findInvite(houseId);
       if (!invite) throw new Error("Invite missing after rotation");
@@ -197,11 +189,11 @@ export class HousesService implements IHousesService {
   async addInvitedEmail(houseId: string, email: string): Promise<HouseResult<InvitedEmail>> {
     const parsed = validateInviteEmail(email);
     if (!parsed.ok) return invalidInput(inviteEmailErrorMessage(parsed.error));
-    return this.run(() => this.repository.addInvitedEmail(houseId, parsed.value));
+    return run(() => this.repository.addInvitedEmail(houseId, parsed.value));
   }
 
   async removeInvitedEmail(invitedEmailId: string): Promise<HouseResult<null>> {
-    return this.run(async () => {
+    return run(async () => {
       await this.repository.removeInvitedEmail(invitedEmailId);
       return null;
     });
@@ -212,20 +204,12 @@ export class HousesService implements IHousesService {
   async previewInvite(code: string): Promise<HouseResult<InvitePreview>> {
     const parsed = parseInviteInput(code);
     if (!parsed.ok) return ok({ status: "invalid" });
-    return this.run(() => this.repository.previewInvite(parsed.code));
+    return run(() => this.repository.previewInvite(parsed.code));
   }
 
   async joinHouse(code: string): Promise<HouseResult<JoinResult>> {
     const parsed = parseInviteInput(code);
     if (!parsed.ok) return ok({ status: "invalid" });
-    return this.run(() => this.repository.joinHouse(parsed.code));
-  }
-
-  private async run<T>(action: () => Promise<T>): Promise<HouseResult<T>> {
-    try {
-      return ok(await action());
-    } catch (cause) {
-      return fromError(cause);
-    }
+    return run(() => this.repository.joinHouse(parsed.code));
   }
 }

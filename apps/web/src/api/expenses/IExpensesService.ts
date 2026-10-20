@@ -1,11 +1,11 @@
 import type { ExpenseCursor, ExpenseErrorCode, ExpensePage } from "@kinwoo/core/expenses";
 
 import type { Expense, ExpenseInput, HouseBalances } from "./IExpensesRepository";
+import type { ServiceResult } from "../_shared/result";
 
 export type ExpensesServiceErrorCode = ExpenseErrorCode | "UNAVAILABLE";
 
-export type ExpensesResult<T> =
-  { ok: true; data: T } | { ok: false; code: ExpensesServiceErrorCode; message: string };
+export type ExpensesResult<T> = ServiceResult<T, ExpensesServiceErrorCode>;
 
 export interface IExpensesService {
   listExpenses(houseId: string, after: ExpenseCursor | null): Promise<ExpensesResult<ExpensePage>>;

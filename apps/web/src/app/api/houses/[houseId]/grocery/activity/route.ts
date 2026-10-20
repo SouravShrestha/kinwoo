@@ -1,6 +1,6 @@
 import { ACTIVITY_PAGE_SIZE, parseActivityCursor } from "@kinwoo/core/grocery";
 
-import { badRequest, handleGroceryRequest } from "../../../../_lib/groceryRoute";
+import { badRequest, handleGroceryRequest } from "@/app/api/_lib/groceryRoute";
 
 type Context = { params: Promise<{ houseId: string }> };
 

@@ -1,33 +1,14 @@
-import { NextResponse } from "next/server";
-
-import { ProfileRepository } from "@/api/profile/ProfileRepository";
-import { ProfileService } from "@/api/profile/ProfileService";
-import { createRouteClient, getVerifiedUser } from "@/integrations/supabase/client.route";
-import { readJsonObject } from "../../_lib/json";
-import { profileResponse } from "../../_lib/profileResponse";
+import { badRequest, handleProfileRequest, readJsonObject } from "@/app/api/_lib/profileRoute";
 
 export async function PATCH(request: Request) {
-  const { supabase, applyCookies } = createRouteClient(request);
-
-  const user = await getVerifiedUser(request);
-  if (!user) {
-    return applyCookies(NextResponse.json({ error: "Not logged in" }, { status: 401 }));
-  }
-
-  const body = await readJsonObject(request);
-  if (!body) {
-    return applyCookies(NextResponse.json({ error: "Invalid JSON body" }, { status: 400 }));
-  }
-
-  const avatarUrl = body.avatarUrl;
-  if (typeof avatarUrl !== "string") {
-    return applyCookies(
-      NextResponse.json({ error: "avatarUrl must be a string" }, { status: 400 }),
-    );
-  }
-
-  const service = new ProfileService(new ProfileRepository(supabase));
-  const result = await service.setAvatar(user.id, avatarUrl, user.socialAvatarUrl);
-
-  return applyCookies(profileResponse(result));
+  return handleProfileRequest(
+    request,
+    async ({ service, userId, socialAvatarUrl }) => {
+      const body = await readJsonObject(request);
+      if (!body) return badRequest("Invalid JSON body");
+      if (typeof body.avatarUrl !== "string") return badRequest("avatarUrl must be a string");
+      return service.setAvatar(userId, body.avatarUrl, socialAvatarUrl);
+    },
+    { key: "profile" },
+  );
 }

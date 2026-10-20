@@ -1,4 +1,4 @@
-import { handleHouseRequest } from "../../../_lib/houseRoute";
+import { handleHouseRequest } from "@/app/api/_lib/houseRoute";
 
 export async function GET(request: Request, { params }: { params: Promise<{ houseId: string }> }) {
   const { houseId } = await params;

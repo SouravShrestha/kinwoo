@@ -1,6 +1,6 @@
 import { isListVisibility } from "@kinwoo/core/grocery";
 
-import { badRequest, handleGroceryRequest, readJsonObject } from "../../../../_lib/groceryRoute";
+import { badRequest, handleGroceryRequest, readJsonObject } from "@/app/api/_lib/groceryRoute";
 
 type Context = { params: Promise<{ houseId: string }> };
 

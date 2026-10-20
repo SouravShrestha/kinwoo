@@ -5,7 +5,7 @@ import {
   type ExpenseParts,
   type LinkedExpenseInput,
 } from "@kinwoo/core/expenses";
-import { NextResponse } from "next/server";
+import type { NextResponse } from "next/server";
 
 import { ExpensesRepository } from "@/api/expenses/ExpensesRepository";
 import { ExpensesService } from "@/api/expenses/ExpensesService";
@@ -14,9 +14,10 @@ import type {
   ExpensesServiceErrorCode,
   IExpensesService,
 } from "@/api/expenses/IExpensesService";
-import { createRouteClient, getVerifiedUser } from "@/integrations/supabase/client.route";
 
-import { isUuid } from "./groceryRoute";
+import { createRouteHandler, isOptional, isUuid, type RouteOptions } from "./route";
+
+export { badRequest } from "./route";
 
 const STATUS_BY_CODE: Record<ExpensesServiceErrorCode, number> = {
   INVALID_INPUT: 400,
@@ -29,41 +30,17 @@ const STATUS_BY_CODE: Record<ExpensesServiceErrorCode, number> = {
   UNAVAILABLE: 503,
 };
 
-const NO_STORE = { "Cache-Control": "no-store" };
+const handle = createRouteHandler(
+  (client) => new ExpensesService(new ExpensesRepository(client)),
+  STATUS_BY_CODE,
+);
 
-function expenseResponse<T>(result: ExpensesResult<T>, key?: string): NextResponse {
-  if (!result.ok) {
-    return NextResponse.json(
-      { error: result.message, code: result.code },
-      { status: STATUS_BY_CODE[result.code] ?? 500, headers: NO_STORE },
-    );
-  }
-  const body = key ? { [key]: result.data } : { ok: true };
-  return NextResponse.json(body, { headers: NO_STORE });
-}
-
-export function badRequest(message: string): NextResponse {
-  return NextResponse.json({ error: message, code: "INVALID_INPUT" }, { status: 400 });
-}
-
-export async function handleExpenseRequest<T>(
+export function handleExpenseRequest<T>(
   request: Request,
   run: (service: IExpensesService) => Promise<ExpensesResult<T> | NextResponse>,
-  options: { key?: string; uuids?: string[] } = {},
+  options: RouteOptions = {},
 ): Promise<NextResponse> {
-  const { supabase, applyCookies } = createRouteClient(request);
-  const user = await getVerifiedUser(request);
-  if (!user) {
-    return applyCookies(NextResponse.json({ error: "Not logged in" }, { status: 401 }));
-  }
-  if (options.uuids?.some((value) => !isUuid(value))) {
-    return applyCookies(
-      NextResponse.json({ error: "Not found", code: "NOT_FOUND" }, { status: 404 }),
-    );
-  }
-  const result = await run(new ExpensesService(new ExpensesRepository(supabase)));
-  if (result instanceof NextResponse) return applyCookies(result);
-  return applyCookies(expenseResponse(result, options.key));
+  return handle(request, ({ service }) => run(service), options);
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -112,7 +89,7 @@ export function readExpenseInput(body: Record<string, unknown>): ExpenseInput | 
   if (typeof body.title !== "string") return "title must be a string";
   if (!Number.isInteger(body.amountPaise)) return "amountPaise must be a whole number";
   if (!isExpenseCategory(body.category)) return "category is not recognised";
-  if (body.note !== undefined && body.note !== null && typeof body.note !== "string") {
+  if (!isOptional(body.note, "string")) {
     return "note must be a string";
   }
   if (typeof body.spentOn !== "string") return "spentOn must be a date";

@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import type { IProfileRepository, Profile } from "./IProfileRepository";
 import { ProfileService } from "./ProfileService";
@@ -28,22 +28,32 @@ const throwing = () => {
   throw new Error("boom");
 };
 
+// fromError logs unexpected failures; keep the expected ones out of the test output.
+beforeEach(() => {
+  vi.spyOn(console, "error").mockImplementation(() => {});
+});
+
+const unavailable = { ok: false, code: "UNAVAILABLE", message: expect.any(String) };
+
 describe("ProfileService.getProfile", () => {
   it("returns the profile", async () => {
     await expect(new ProfileService(fakeRepository()).getProfile("user-1")).resolves.toEqual({
-      status: "ok",
-      profile,
+      ok: true,
+      data: profile,
     });
   });
 
   it("reports not-found when the row is missing", async () => {
     const service = new ProfileService(fakeRepository({ findById: async () => null }));
-    await expect(service.getProfile("user-1")).resolves.toEqual({ status: "not-found" });
+    await expect(service.getProfile("user-1")).resolves.toMatchObject({
+      ok: false,
+      code: "NOT_FOUND",
+    });
   });
 
   it("reports an error state when the repository throws", async () => {
     const service = new ProfileService(fakeRepository({ findById: throwing }));
-    await expect(service.getProfile("user-1")).resolves.toEqual({ status: "error" });
+    await expect(service.getProfile("user-1")).resolves.toEqual(unavailable);
   });
 });
 
@@ -60,7 +70,7 @@ describe("ProfileService social avatar", () => {
     const result = await service.getProfile("user-1", GOOGLE_AVATAR);
 
     expect(setAvatarUrlIfMissing).toHaveBeenCalledWith("user-1", GOOGLE_AVATAR);
-    expect(result).toMatchObject({ profile: { avatarUrl: GOOGLE_AVATAR } });
+    expect(result).toMatchObject({ ok: true, data: { avatarUrl: GOOGLE_AVATAR } });
   });
 
   it("falls back to a preset when the social URL is not from Google", async () => {
@@ -82,8 +92,8 @@ describe("ProfileService social avatar", () => {
     );
 
     await expect(service.getProfile("user-1", GOOGLE_AVATAR)).resolves.toEqual({
-      status: "ok",
-      profile: owned,
+      ok: true,
+      data: owned,
     });
     expect(setAvatarUrlIfMissing).not.toHaveBeenCalled();
   });
@@ -92,10 +102,10 @@ describe("ProfileService social avatar", () => {
     const service = new ProfileService(fakeRepository({ listAvatarUrls: async () => [PRESET] }));
 
     await expect(service.listAvatars(GOOGLE_AVATAR)).resolves.toEqual({
-      status: "ok",
-      avatars: [GOOGLE_AVATAR, PRESET],
+      ok: true,
+      data: [GOOGLE_AVATAR, PRESET],
     });
-    await expect(service.listAvatars()).resolves.toEqual({ status: "ok", avatars: [PRESET] });
+    await expect(service.listAvatars()).resolves.toEqual({ ok: true, data: [PRESET] });
   });
 
   it("lets the user switch back to the social avatar", async () => {
@@ -117,7 +127,7 @@ describe("ProfileService social avatar", () => {
 
     const result = await service.setAvatar("user-1", GOOGLE_AVATAR);
 
-    expect(result.status).toBe("invalid");
+    expect(result).toMatchObject({ ok: false, code: "INVALID_INPUT" });
     expect(updateAvatarUrl).not.toHaveBeenCalled();
   });
 });
@@ -138,7 +148,7 @@ describe("ProfileService.setDisplayName", () => {
 
     const result = await service.setDisplayName("user-1", "   ");
 
-    expect(result.status).toBe("invalid");
+    expect(result).toMatchObject({ ok: false, code: "INVALID_INPUT" });
     expect(updateDisplayName).not.toHaveBeenCalled();
   });
 
@@ -146,12 +156,16 @@ describe("ProfileService.setDisplayName", () => {
     const service = new ProfileService(fakeRepository());
     const result = await service.setDisplayName("user-1", "a".repeat(41));
 
-    expect(result).toEqual({ status: "invalid", message: "Use 40 characters or fewer." });
+    expect(result).toEqual({
+      ok: false,
+      code: "INVALID_INPUT",
+      message: "Use 40 characters or fewer.",
+    });
   });
 
   it("reports an error state when the write throws", async () => {
     const service = new ProfileService(fakeRepository({ updateDisplayName: throwing }));
-    await expect(service.setDisplayName("user-1", "Daisy")).resolves.toEqual({ status: "error" });
+    await expect(service.setDisplayName("user-1", "Daisy")).resolves.toEqual(unavailable);
   });
 });
 
@@ -171,22 +185,22 @@ describe("ProfileService.setPreferences", () => {
       theme: "neon" as never,
     });
 
-    expect(result.status).toBe("invalid");
+    expect(result).toMatchObject({ ok: false, code: "INVALID_INPUT" });
   });
 
   it("rejects a malformed locale", async () => {
     const service = new ProfileService(fakeRepository());
-    expect((await service.setPreferences("user-1", { locale: "english" })).status).toBe("invalid");
-    expect((await service.setPreferences("user-1", { locale: "en-GB" })).status).toBe("ok");
+    expect((await service.setPreferences("user-1", { locale: "english" })).ok).toBe(false);
+    expect((await service.setPreferences("user-1", { locale: "en-GB" })).ok).toBe(true);
     // A one-element array stringifies to a valid code, so the type is checked too.
     const array = ["en"] as unknown as string;
-    expect((await service.setPreferences("user-1", { locale: array })).status).toBe("invalid");
+    expect((await service.setPreferences("user-1", { locale: array })).ok).toBe(false);
   });
 
   it("reports an error state when the write throws", async () => {
     const service = new ProfileService(fakeRepository({ updatePreferences: throwing }));
-    await expect(service.setPreferences("user-1", { theme: "light" })).resolves.toEqual({
-      status: "error",
-    });
+    await expect(service.setPreferences("user-1", { theme: "light" })).resolves.toEqual(
+      unavailable,
+    );
   });
 });

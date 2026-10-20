@@ -1,4 +1,4 @@
-import { handleHouseRequest } from "../../../_lib/houseRoute";
+import { handleHouseRequest } from "@/app/api/_lib/houseRoute";
 
 type Context = { params: Promise<{ houseId: string }> };
 

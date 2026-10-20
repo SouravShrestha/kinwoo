@@ -1,4 +1,5 @@
-import { badRequest, handleHouseRequest, readJsonObject } from "../_lib/houseRoute";
+import { badRequest, handleHouseRequest, readJsonObject } from "@/app/api/_lib/houseRoute";
+import { isOptional } from "@/app/api/_lib/route";
 
 export async function GET(request: Request) {
   return handleHouseRequest(request, ({ service, userId }) => service.listHouses(userId), {
@@ -15,7 +16,7 @@ export async function POST(request: Request) {
 
       const { name, address } = body;
       if (typeof name !== "string") return badRequest("name must be a string");
-      if (address !== undefined && address !== null && typeof address !== "string") {
+      if (!isOptional(address, "string")) {
         return badRequest("address must be a string");
       }
 

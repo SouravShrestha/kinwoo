@@ -1,9 +1,6 @@
-import {
-  badRequest,
-  handleGroceryRequest,
-  readJsonObject,
-} from "../../../../../../../../_lib/groceryRoute";
-import { readLinkedExpense } from "../../../../../../../../_lib/expenseRoute";
+import { badRequest, handleGroceryRequest, readJsonObject } from "@/app/api/_lib/groceryRoute";
+import { readLinkedExpense } from "@/app/api/_lib/expenseRoute";
+import { isOptional } from "@/app/api/_lib/route";
 
 type Context = { params: Promise<{ houseId: string; listId: string; itemId: string }> };
 
@@ -17,16 +14,16 @@ export async function POST(request: Request, { params }: Context) {
       if (!body) return badRequest("Invalid JSON body");
 
       const { quantity, unit, pricePaise, store, boughtAt } = body;
-      if (quantity !== undefined && quantity !== null && typeof quantity !== "number") {
+      if (!isOptional(quantity, "number")) {
         return badRequest("quantity must be a number");
       }
-      if (unit !== undefined && unit !== null && typeof unit !== "string") {
+      if (!isOptional(unit, "string")) {
         return badRequest("unit must be a string");
       }
-      if (pricePaise !== undefined && pricePaise !== null && typeof pricePaise !== "number") {
+      if (!isOptional(pricePaise, "number")) {
         return badRequest("pricePaise must be a number");
       }
-      if (store !== undefined && store !== null && typeof store !== "string") {
+      if (!isOptional(store, "string")) {
         return badRequest("store must be a string");
       }
 

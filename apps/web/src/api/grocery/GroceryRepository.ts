@@ -176,7 +176,7 @@ export class GroceryRepository implements IGroceryRepository {
   constructor(private readonly client: SupabaseClient<Database>) {}
 
   async listLists(houseId: string): Promise<GroceryList[]> {
-    const { data, error } = await (this.client.from("grocery_lists" as any) as any)
+    const { data, error } = await this.client.from("grocery_lists")
       .select(LIST_COLUMNS)
       .eq("house_id", houseId)
       .is("deleted_at", null)
@@ -187,7 +187,7 @@ export class GroceryRepository implements IGroceryRepository {
   }
 
   async findList(listId: string): Promise<GroceryList | null> {
-    const { data, error } = await (this.client.from("grocery_lists" as any) as any)
+    const { data, error } = await this.client.from("grocery_lists")
       .select(LIST_COLUMNS)
       .eq("id", listId)
       .maybeSingle();
@@ -197,7 +197,7 @@ export class GroceryRepository implements IGroceryRepository {
   }
 
   async createList(houseId: string, input: CreateListInput): Promise<GroceryList> {
-    const { data, error } = await (this.client.rpc as any)("create_grocery_list", {
+    const { data, error } = await this.client.rpc("create_grocery_list", {
       p_house_id: houseId,
       p_name: input.name,
       p_icon: input.icon ?? "🛒",
@@ -209,13 +209,13 @@ export class GroceryRepository implements IGroceryRepository {
   }
 
   async updateList(listId: string, input: UpdateListInput): Promise<GroceryList> {
-    const { data, error } = await (this.client.rpc as any)("update_grocery_list", {
+    const { data, error } = await this.client.rpc("update_grocery_list", {
       p_list_id: listId,
-      p_name: input.name ?? null,
-      p_icon: input.icon ?? null,
-      p_visibility: input.visibility ?? null,
-      p_position: input.position ?? null,
-      p_is_default: input.isDefault ?? null,
+      p_name: input.name ?? undefined,
+      p_icon: input.icon ?? undefined,
+      p_visibility: input.visibility ?? undefined,
+      p_position: input.position ?? undefined,
+      p_is_default: input.isDefault ?? undefined,
     });
 
     if (error) fail(error);
@@ -223,7 +223,7 @@ export class GroceryRepository implements IGroceryRepository {
   }
 
   async deleteList(listId: string): Promise<void> {
-    const { error } = await (this.client.rpc as any)("delete_grocery_list", {
+    const { error } = await this.client.rpc("delete_grocery_list", {
       p_list_id: listId,
     });
 
@@ -231,7 +231,7 @@ export class GroceryRepository implements IGroceryRepository {
   }
 
   async deleteItem(itemId: string): Promise<void> {
-    const { error } = await (this.client.rpc as any)("delete_grocery_item", {
+    const { error } = await this.client.rpc("delete_grocery_item", {
       p_item_id: itemId,
     });
 
@@ -240,7 +240,7 @@ export class GroceryRepository implements IGroceryRepository {
 
   async listItems(listId: string, options?: { boughtSince?: string }): Promise<GroceryItem[]> {
     const items = () =>
-      (this.client.from("grocery_items" as any) as any)
+      this.client.from("grocery_items")
         .select(ITEM_COLUMNS)
         .eq("list_id", listId)
         .order("position");
@@ -255,7 +255,7 @@ export class GroceryRepository implements IGroceryRepository {
     // since the cutoff, while the full purchase history still comes from ITEM_COLUMNS.
     const [open, bought] = await Promise.all([
       items().neq("status", "bought"),
-      (this.client.from("grocery_items" as any) as any)
+      this.client.from("grocery_items")
         .select(`${ITEM_COLUMNS}, recent_purchase:grocery_purchases!inner(bought_at)`)
         .eq("list_id", listId)
         .eq("status", "bought")
@@ -281,7 +281,7 @@ export class GroceryRepository implements IGroceryRepository {
     const rows = page ?? [];
     if (rows.length === 0) return { items: [], nextCursor: null };
 
-    const { data, error: itemsError } = await (this.client.from("grocery_items" as any) as any)
+    const { data, error: itemsError } = await this.client.from("grocery_items")
       .select(ITEM_COLUMNS)
       .in(
         "id",
@@ -302,7 +302,7 @@ export class GroceryRepository implements IGroceryRepository {
   }
 
   async findItem(itemId: string): Promise<GroceryItem | null> {
-    const { data, error } = await (this.client.from("grocery_items" as any) as any)
+    const { data, error } = await this.client.from("grocery_items")
       .select(ITEM_COLUMNS)
       .eq("id", itemId)
       .maybeSingle();
@@ -312,14 +312,14 @@ export class GroceryRepository implements IGroceryRepository {
   }
 
   async addItem(input: AddItemInput): Promise<GroceryItem> {
-    const { data, error } = await (this.client.rpc as any)("add_grocery_item", {
+    const { data, error } = await this.client.rpc("add_grocery_item", {
       p_list_id: input.listId,
       p_name: input.name,
-      p_quantity: input.quantity ?? null,
-      p_unit: input.unit ?? null,
-      p_category_id: input.categoryId ?? null,
+      p_quantity: input.quantity ?? undefined,
+      p_unit: input.unit ?? undefined,
+      p_category_id: input.categoryId ?? undefined,
       p_urgency: input.urgency ?? "whenever",
-      p_note: input.note ?? null,
+      p_note: input.note ?? undefined,
       p_idempotency_key: input.idempotencyKey,
     });
 
@@ -328,14 +328,14 @@ export class GroceryRepository implements IGroceryRepository {
   }
 
   async updateItem(itemId: string, input: UpdateItemInput): Promise<GroceryItem> {
-    const { data, error } = await (this.client.rpc as any)("update_grocery_item", {
+    const { data, error } = await this.client.rpc("update_grocery_item", {
       p_item_id: itemId,
-      p_name: input.name ?? null,
-      p_quantity: input.quantity ?? null,
-      p_unit: input.unit ?? null,
-      p_category_id: input.categoryId ?? null,
-      p_urgency: input.urgency ?? null,
-      p_note: input.note ?? null,
+      p_name: input.name ?? undefined,
+      p_quantity: input.quantity ?? undefined,
+      p_unit: input.unit ?? undefined,
+      p_category_id: input.categoryId ?? undefined,
+      p_urgency: input.urgency ?? undefined,
+      p_note: input.note ?? undefined,
     });
 
     if (error) fail(error);
@@ -343,7 +343,7 @@ export class GroceryRepository implements IGroceryRepository {
   }
 
   async claimItem(itemId: string): Promise<ClaimResult> {
-    const { data, error } = await (this.client.rpc as any)("claim_grocery_item", {
+    const { data, error } = await this.client.rpc("claim_grocery_item", {
       p_item_id: itemId,
     });
 
@@ -352,7 +352,7 @@ export class GroceryRepository implements IGroceryRepository {
   }
 
   async unclaimItem(itemId: string): Promise<void> {
-    const { error } = await (this.client.rpc as any)("unclaim_grocery_item", {
+    const { error } = await this.client.rpc("unclaim_grocery_item", {
       p_item_id: itemId,
     });
 
@@ -360,7 +360,7 @@ export class GroceryRepository implements IGroceryRepository {
   }
 
   async assignItem(itemId: string, assignedTo: string): Promise<void> {
-    const { error } = await (this.client.rpc as any)("assign_grocery_item", {
+    const { error } = await this.client.rpc("assign_grocery_item", {
       p_item_id: itemId,
       p_assigned_to: assignedTo,
     });
@@ -369,14 +369,14 @@ export class GroceryRepository implements IGroceryRepository {
   }
 
   async unassignItem(itemId: string): Promise<void> {
-    const { error } = await (this.client.rpc as any)("unassign_grocery_item", {
+    const { error } = await this.client.rpc("unassign_grocery_item", {
       p_item_id: itemId,
     });
     if (error) fail(error);
   }
 
   async assignItems(listId: string, itemIds: string[], assignedTo: string): Promise<number> {
-    const { data, error } = await (this.client.rpc as any)("assign_grocery_items", {
+    const { data, error } = await this.client.rpc("assign_grocery_items", {
       p_list_id: listId,
       p_item_ids: itemIds,
       p_assigned_to: assignedTo,
@@ -397,7 +397,7 @@ export class GroceryRepository implements IGroceryRepository {
   }
 
   async claimItems(listId: string, itemIds: string[]): Promise<number> {
-    const { data, error } = await (this.client.rpc as any)("claim_grocery_items", {
+    const { data, error } = await this.client.rpc("claim_grocery_items", {
       p_list_id: listId,
       p_item_ids: itemIds,
     });
@@ -407,7 +407,7 @@ export class GroceryRepository implements IGroceryRepository {
   }
 
   async respondToAssignment(itemId: string, accept: boolean): Promise<void> {
-    const { error } = await (this.client.rpc as any)("respond_to_assignment", {
+    const { error } = await this.client.rpc("respond_to_assignment", {
       p_item_id: itemId,
       p_accept: accept,
     });
@@ -416,13 +416,13 @@ export class GroceryRepository implements IGroceryRepository {
   }
 
   async markBought(itemId: string, input: MarkBoughtInput): Promise<void> {
-    const { error } = await (this.client.rpc as any)("mark_item_bought", {
+    const { error } = await this.client.rpc("mark_item_bought", {
       p_item_id: itemId,
-      p_quantity: input.quantity ?? null,
-      p_unit: input.unit ?? null,
-      p_price_paise: input.pricePaise ?? null,
-      p_store: input.store ?? null,
-      p_bought_at: input.boughtAt ?? null,
+      p_quantity: input.quantity ?? undefined,
+      p_unit: input.unit ?? undefined,
+      p_price_paise: input.pricePaise ?? undefined,
+      p_store: input.store ?? undefined,
+      p_bought_at: input.boughtAt ?? undefined,
       p_expense: linkedExpenseArg(input.expense),
     });
 
@@ -430,13 +430,14 @@ export class GroceryRepository implements IGroceryRepository {
   }
 
   async markItemsBought(listId: string, input: MarkItemsBoughtInput): Promise<string> {
-    const { data, error } = await (this.client.rpc as any)("mark_items_bought", {
+    const { data, error } = await this.client.rpc("mark_items_bought", {
       p_list_id: listId,
       p_item_ids: input.itemIds,
       p_total_paise: input.totalPaise,
-      p_name: input.name ?? null,
-      p_store: input.store ?? null,
-      p_item_prices: input.itemPricesPaise ?? null,
+      p_name: input.name ?? undefined,
+      p_store: input.store ?? undefined,
+      // int[] allows null entries (an item without its own price); the generated type does not.
+      p_item_prices: (input.itemPricesPaise ?? undefined) as number[] | undefined,
       p_expense: linkedExpenseArg(input.expense),
     });
 
@@ -445,7 +446,7 @@ export class GroceryRepository implements IGroceryRepository {
   }
 
   async moveItem(itemId: string, targetListId: string): Promise<void> {
-    const { error } = await (this.client.rpc as any)("move_grocery_item", {
+    const { error } = await this.client.rpc("move_grocery_item", {
       p_item_id: itemId,
       p_target_list_id: targetListId,
     });
@@ -454,7 +455,7 @@ export class GroceryRepository implements IGroceryRepository {
   }
 
   async listCategories(houseId: string): Promise<GroceryCategory[]> {
-    const { data, error } = await (this.client.from("grocery_categories" as any) as any)
+    const { data, error } = await this.client.from("grocery_categories")
       .select("id, house_id, name, position")
       .or(`house_id.is.null,house_id.eq.${houseId}`)
       .order("position");
@@ -464,7 +465,7 @@ export class GroceryRepository implements IGroceryRepository {
   }
 
   async addCategory(houseId: string, name: string): Promise<GroceryCategory> {
-    const { data, error } = await (this.client.rpc as any)("add_grocery_category", {
+    const { data, error } = await this.client.rpc("add_grocery_category", {
       p_house_id: houseId,
       p_name: name,
     });
@@ -528,14 +529,14 @@ export class GroceryRepository implements IGroceryRepository {
     // Filtering on grocery_items.house_id uses its index; the embedded list still excludes
     // deleted lists.
     const [today, mine] = await Promise.all([
-      (this.client.from("grocery_items" as any) as any)
+      this.client.from("grocery_items")
         .select(OVERVIEW_ITEM_COLUMNS)
         .eq("house_id", houseId)
         .is("grocery_lists.deleted_at", null)
         .eq("urgency", "today")
         .in("status", ["pending", "claimed", "assigned"])
         .order("created_at", { ascending: false }),
-      (this.client.from("grocery_items" as any) as any)
+      this.client.from("grocery_items")
         .select(OVERVIEW_ITEM_COLUMNS)
         .eq("house_id", houseId)
         .is("grocery_lists.deleted_at", null)
@@ -556,7 +557,7 @@ export class GroceryRepository implements IGroceryRepository {
   // RLS already hides other people's private lists; the creator filter keeps this to the caller's
   // own lists even for an admin.
   async listPrivatePurchases(houseId: string, userId: string): Promise<GroceryOverviewItem[]> {
-    const { data, error } = await (this.client.from("grocery_items" as any) as any)
+    const { data, error } = await this.client.from("grocery_items")
       .select(PRIVATE_PURCHASE_COLUMNS)
       .eq("house_id", houseId)
       .is("grocery_lists.deleted_at", null)
