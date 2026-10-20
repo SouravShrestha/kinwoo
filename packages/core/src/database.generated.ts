@@ -151,14 +151,14 @@ isOneToOne: false
                   ]
                 },"grocery_items": {
                   Row: {
-                    "assigned_at": string | null,"assigned_by": string | null,"assigned_to": string | null,"assignment_response": string | null,"category_id": string | null,"claimed_at": string | null,"claimed_by": string | null,"created_at": string,"created_by": string,"id": string,"idempotency_key": string | null,"list_id": string,"name": string,"note": string | null,"position": number,"quantity": number | null,"status": Database["public"]['Enums']["item_status"],"unit": string | null,"updated_at": string,"urgency": Database["public"]['Enums']["item_urgency"]
+                    "assigned_at": string | null,"assigned_by": string | null,"assigned_to": string | null,"assignment_response": string | null,"category_id": string | null,"claimed_at": string | null,"claimed_by": string | null,"created_at": string,"created_by": string,"house_id": string,"id": string,"idempotency_key": string | null,"list_id": string,"name": string,"note": string | null,"position": number,"quantity": number | null,"status": Database["public"]['Enums']["item_status"],"unit": string | null,"updated_at": string,"urgency": Database["public"]['Enums']["item_urgency"]
                   }
                   ComputedFields: never
                   Insert: {
-                    "assigned_at"?: string | null,"assigned_by"?: string | null,"assigned_to"?: string | null,"assignment_response"?: string | null,"category_id"?: string | null,"claimed_at"?: string | null,"claimed_by"?: string | null,"created_at"?: string,"created_by": string,"id"?: string,"idempotency_key"?: string | null,"list_id": string,"name": string,"note"?: string | null,"position"?: number,"quantity"?: number | null,"status"?: Database["public"]['Enums']["item_status"],"unit"?: string | null,"updated_at"?: string,"urgency"?: Database["public"]['Enums']["item_urgency"]
+                    "assigned_at"?: string | null,"assigned_by"?: string | null,"assigned_to"?: string | null,"assignment_response"?: string | null,"category_id"?: string | null,"claimed_at"?: string | null,"claimed_by"?: string | null,"created_at"?: string,"created_by": string,"house_id": string,"id"?: string,"idempotency_key"?: string | null,"list_id": string,"name": string,"note"?: string | null,"position"?: number,"quantity"?: number | null,"status"?: Database["public"]['Enums']["item_status"],"unit"?: string | null,"updated_at"?: string,"urgency"?: Database["public"]['Enums']["item_urgency"]
                   }
                   Update: {
-                    "assigned_at"?: string | null,"assigned_by"?: string | null,"assigned_to"?: string | null,"assignment_response"?: string | null,"category_id"?: string | null,"claimed_at"?: string | null,"claimed_by"?: string | null,"created_at"?: string,"created_by"?: string,"id"?: string,"idempotency_key"?: string | null,"list_id"?: string,"name"?: string,"note"?: string | null,"position"?: number,"quantity"?: number | null,"status"?: Database["public"]['Enums']["item_status"],"unit"?: string | null,"updated_at"?: string,"urgency"?: Database["public"]['Enums']["item_urgency"]
+                    "assigned_at"?: string | null,"assigned_by"?: string | null,"assigned_to"?: string | null,"assignment_response"?: string | null,"category_id"?: string | null,"claimed_at"?: string | null,"claimed_by"?: string | null,"created_at"?: string,"created_by"?: string,"house_id"?: string,"id"?: string,"idempotency_key"?: string | null,"list_id"?: string,"name"?: string,"note"?: string | null,"position"?: number,"quantity"?: number | null,"status"?: Database["public"]['Enums']["item_status"],"unit"?: string | null,"updated_at"?: string,"urgency"?: Database["public"]['Enums']["item_urgency"]
                   }
                   Relationships: [
                     {
@@ -190,6 +190,12 @@ isOneToOne: false
       columns: ["created_by"]
 isOneToOne: false
       referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "grocery_items_house_id_fkey"
+      columns: ["house_id"]
+isOneToOne: false
+      referencedRelation: "houses"
       referencedColumns: ["id"]
     },{
       foreignKeyName: "grocery_items_list_id_fkey"
@@ -461,6 +467,7 @@ isOneToOne: false
 "claimed_by": string | null,
 "created_at": string,
 "created_by": string,
+"house_id": string,
 "id": string,
 "idempotency_key": string | null,
 "list_id": string,
@@ -604,6 +611,9 @@ isOneToOne: false
 "insert_linked_expense":
 { Args: { "p_actor": string,"p_amount_paise": number,"p_batch_id": string,"p_expense": Json,"p_fallback_spent_on": string,"p_house_id": string,"p_purchase_id": string,"p_title": string }; Returns: string
                            },
+"is_allowed_avatar":
+{ Args: { "p_value": string }; Returns: boolean
+                           },
 "is_house_admin":
 { Args: { "p_house_id": string }; Returns: boolean
                            },
@@ -638,6 +648,15 @@ isOneToOne: false
                            },
 "move_grocery_item":
 { Args: { "p_item_id": string,"p_target_list_id": string }; Returns: undefined
+                           },
+"my_hidden_list_keys":
+{ Args: Record<PropertyKey, never>; Returns: (string)[]
+                           },
+"my_house_ids":
+{ Args: Record<PropertyKey, never>; Returns: (string)[]
+                           },
+"my_readable_list_ids":
+{ Args: Record<PropertyKey, never>; Returns: (string)[]
                            },
 "normalize_expense_title":
 { Args: { "p_title": string }; Returns: string
@@ -686,6 +705,7 @@ isOneToOne: false
 "claimed_by": string | null,
 "created_at": string,
 "created_by": string,
+"house_id": string,
 "id": string,
 "idempotency_key": string | null,
 "list_id": string,
