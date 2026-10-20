@@ -16,6 +16,6 @@ describe("suggestExpenseCategory", () => {
 
   it("returns null when nothing matches and ignores partial words", () => {
     expect(suggestExpenseCategory("Birthday gift")).toBeNull();
-    expect(suggestExpenseCategory("Watermelon")).toBeNull();
+    expect(suggestExpenseCategory("Melonade")).toBeNull();
   });
 });

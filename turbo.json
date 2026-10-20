@@ -1,7 +1,12 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "ui": "stream",
-  "globalDependencies": ["tsconfig.base.json", ".prettierrc", "eslint.config.js"],
+  "agentGuidance": false,
+  "globalDependencies": [
+    "tsconfig.base.json",
+    ".prettierrc",
+    "eslint.config.js"
+  ],
   "globalEnv": [
     "NODE_ENV",
     "NEXT_PUBLIC_SUPABASE_URL",
@@ -16,15 +21,27 @@
   ],
   "tasks": {
     "build": {
-      "dependsOn": ["^build"],
-      "outputs": [".next/**", "!.next/cache/**", ".open-next/**", "dist/**", ".expo/**"]
+      "dependsOn": [
+        "^build"
+      ],
+      "outputs": [
+        ".next/**",
+        "!.next/cache/**",
+        ".open-next/**",
+        "dist/**",
+        ".expo/**"
+      ]
     },
     "typecheck": {
-      "dependsOn": ["^build"],
+      "dependsOn": [
+        "^build"
+      ],
       "outputs": []
     },
     "test": {
-      "dependsOn": ["^build"],
+      "dependsOn": [
+        "^build"
+      ],
       "outputs": []
     },
     "lint": {
