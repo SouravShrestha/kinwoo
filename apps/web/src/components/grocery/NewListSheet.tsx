@@ -12,11 +12,12 @@ import {
 } from "@kinwoo/core/grocery";
 import { useRef, useState } from "react";
 
+import { CategoryIcon } from "@kinwoo/icons";
+
 import { BottomSheet } from "@/components/BottomSheet";
 import { Button } from "@/components/Button";
 import { SheetHeader } from "@/components/houses/SheetHeader";
 
-import { CategoryIcon } from "./CategoryIcon";
 import { ListIconPicker } from "./ListIconPicker";
 import { ListVisibilityToggle } from "./ListVisibilityToggle";
 

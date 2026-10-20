@@ -7,8 +7,7 @@ import {
   privateSpendDetail,
   type PrivateSpendEntry,
 } from "@kinwoo/core/grocery";
-
-import { CategoryIcon } from "@/components/grocery/CategoryIcon";
+import { CategoryIcon } from "@kinwoo/icons";
 
 export function PrivatePurchaseRow({
   entry,

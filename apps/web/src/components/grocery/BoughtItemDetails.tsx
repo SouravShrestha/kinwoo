@@ -7,7 +7,7 @@ import {
   TRANSACTION_UNAVAILABLE,
   type GroceryItem,
 } from "@kinwoo/core/grocery";
-import { TransactionIcon, TrashIcon } from "@kinwoo/icons";
+import { CategoryIcon, TransactionIcon, TrashIcon } from "@kinwoo/icons";
 import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/Button";
@@ -15,7 +15,6 @@ import { expensePath } from "@/lib/house-navigation";
 import { cn } from "@/lib/utils";
 
 import { BoughtTimeline } from "./BoughtTimeline";
-import { CategoryIcon } from "./CategoryIcon";
 import { FOCUS_RING, ICON_BUTTON } from "./ItemDetailsEditor";
 
 export function BoughtItemDetails({

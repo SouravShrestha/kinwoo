@@ -6,7 +6,13 @@ import { CONFIRM_COPY } from "@kinwoo/core/confirm";
 import { canManageExpense, type Expense } from "@kinwoo/core/expenses";
 import { formatFullDate, formatPaise } from "@kinwoo/core/grocery";
 import { memberDisplayName } from "@kinwoo/core/houses";
-import { ArrowRightIcon, EditIcon, NoteIcon, TrashIcon } from "@kinwoo/icons/native";
+import {
+  ArrowRightIcon,
+  EditIcon,
+  ExpenseCategoryIcon,
+  NoteIcon,
+  TrashIcon,
+} from "@kinwoo/icons/native";
 import { colors } from "@kinwoo/tokens/native";
 import { useEffect, useState } from "react";
 import { Text, View } from "react-native";
@@ -21,8 +27,6 @@ import { SwipeDownScreen } from "@/components/SwipeDownScreen";
 import { goBack, goHome, openEditExpense } from "@/lib/house-navigation";
 import { useSwipeDownToDismiss } from "@/lib/use-swipe-down-to-dismiss";
 import { useTheme } from "@/theme/ThemeProvider";
-
-import { ExpenseCategoryIcon } from "./ExpenseCategoryIcon";
 
 const ROOT_AVATAR = 36;
 const SHARE_ROW_HEIGHT = 48;

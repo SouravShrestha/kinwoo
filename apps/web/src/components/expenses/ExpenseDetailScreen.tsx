@@ -17,7 +17,7 @@ import {
 } from "@kinwoo/core/expenses";
 import { formatFullDate, formatPaise } from "@kinwoo/core/grocery";
 import { memberDisplayName } from "@kinwoo/core/houses";
-import { ArrowRightIcon } from "@kinwoo/icons";
+import { ArrowRightIcon, ExpenseCategoryIcon } from "@kinwoo/icons";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, type AnimationEvent } from "react";
 
@@ -26,8 +26,6 @@ import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { Avatar } from "@/components/houses/Avatar";
 import { editExpensePath, useHouseNavigation } from "@/lib/house-navigation";
 import { cn } from "@/lib/utils";
-
-import { ExpenseCategoryIcon } from "./ExpenseCategoryIcon";
 
 const FOCUS_RING =
   "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground";

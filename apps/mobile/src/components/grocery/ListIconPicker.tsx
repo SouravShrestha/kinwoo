@@ -2,7 +2,8 @@ import { LIST_ICON_OPTIONS } from "@kinwoo/core/grocery";
 import { colors } from "@kinwoo/tokens/native";
 import { View } from "react-native";
 
-import { CategoryIcon } from "@/components/CategoryIcon";
+import { CategoryIcon } from "@kinwoo/icons/native";
+
 import { SheetHeader } from "@/components/houses/SheetHeader";
 import { Pressable } from "@/components/Pressable";
 import { useTheme } from "@/theme/ThemeProvider";

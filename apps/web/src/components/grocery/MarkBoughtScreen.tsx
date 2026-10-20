@@ -14,6 +14,7 @@ import {
   ArrowRightIcon,
   CalendarIcon,
   CaretDownIcon,
+  CategoryIcon,
   CheckCircleIcon,
   CheckIcon,
   RupeeIcon,
@@ -25,7 +26,6 @@ import { SplitSheet } from "@/components/expenses/SplitSheet";
 import { useHouseNavigation } from "@/lib/house-navigation";
 import { cn } from "@/lib/utils";
 
-import { CategoryIcon } from "./CategoryIcon";
 import { DatePickerSheet } from "./DatePickerSheet";
 import { OptionSheet, type SheetOption } from "./OptionSheet";
 

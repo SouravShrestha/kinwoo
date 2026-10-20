@@ -6,15 +6,20 @@ import { useBatchMarkBoughtForm, useGroceryList } from "@kinwoo/client/grocery";
 import { useActiveHouse } from "@kinwoo/client/houses";
 import { toast } from "@kinwoo/client/toast";
 import { BATCH_NAME_MAX_LENGTH, MIN_BATCH_ITEMS, type GroceryItem } from "@kinwoo/core/grocery";
-import { ArrowRightIcon, BasketIcon, CheckCircleIcon, CheckIcon, RupeeIcon } from "@kinwoo/icons";
+import {
+  ArrowRightIcon,
+  BasketIcon,
+  CategoryIcon,
+  CheckCircleIcon,
+  CheckIcon,
+  RupeeIcon,
+} from "@kinwoo/icons";
 import { useEffect, useState, type AnimationEvent } from "react";
 
 import { PayerSheet } from "@/components/expenses/PayerSheet";
 import { SplitSheet } from "@/components/expenses/SplitSheet";
 import { useHouseNavigation } from "@/lib/house-navigation";
 import { cn } from "@/lib/utils";
-
-import { CategoryIcon } from "./CategoryIcon";
 
 type Picker = "payers" | "split";
 

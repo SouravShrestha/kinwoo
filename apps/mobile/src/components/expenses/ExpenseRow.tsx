@@ -9,10 +9,10 @@ import { formatPaise, formatPickedDate } from "@kinwoo/core/grocery";
 import { colors } from "@kinwoo/tokens/native";
 import { Text, View } from "react-native";
 
+import { ExpenseCategoryIcon } from "@kinwoo/icons/native";
+
 import { Pressable } from "@/components/Pressable";
 import { useTheme } from "@/theme/ThemeProvider";
-
-import { ExpenseCategoryIcon } from "./ExpenseCategoryIcon";
 
 const TONE_CLASS = {
   lent: "text-accent",

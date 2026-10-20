@@ -14,14 +14,13 @@ import {
   type GroceryItem,
   type StoreId,
 } from "@kinwoo/core/grocery";
-import { CaretDownIcon, CheckCircleIcon, ClockIcon, CloseIcon } from "@kinwoo/icons";
+import { CaretDownIcon, CategoryIcon, CheckCircleIcon, ClockIcon, CloseIcon } from "@kinwoo/icons";
 import Image from "next/image";
 import { useState, type ReactNode } from "react";
 
 import { Avatar } from "@/components/houses/Avatar";
 import { cn } from "@/lib/utils";
 
-import { CategoryIcon } from "./CategoryIcon";
 import { OptionSheet, type SheetOption } from "./OptionSheet";
 
 type Picker = "category" | "unit" | "urgency";

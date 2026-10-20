@@ -12,6 +12,7 @@ import {
   ArrowRightIcon,
   CalendarIcon,
   CaretDownIcon,
+  CategoryIcon,
   CheckCircleIcon,
   CheckIcon,
   RupeeIcon,
@@ -31,7 +32,6 @@ import {
 import Animated, { Easing, FadeInUp, FadeOutUp, ReduceMotion } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { CategoryIcon } from "@/components/CategoryIcon";
 import { DatePickerSheet } from "@/components/grocery/DatePickerSheet";
 import { PayerSheet } from "@/components/expenses/PayerSheet";
 import { SplitSheet } from "@/components/expenses/SplitSheet";

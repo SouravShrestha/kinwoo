@@ -14,9 +14,10 @@ import { useState } from "react";
 import { Text, View } from "react-native";
 import Animated, { Easing, FadeInLeft, FadeInRight } from "react-native-reanimated";
 
+import { CategoryIcon } from "@kinwoo/icons/native";
+
 import { BottomSheet, SheetTextInput } from "@/components/BottomSheet";
 import { Button } from "@/components/Button";
-import { CategoryIcon } from "@/components/CategoryIcon";
 import { SheetHeader } from "@/components/houses/SheetHeader";
 import { Pressable } from "@/components/Pressable";
 import { useTheme } from "@/theme/ThemeProvider";

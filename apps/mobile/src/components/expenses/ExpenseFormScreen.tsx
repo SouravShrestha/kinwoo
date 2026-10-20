@@ -9,7 +9,13 @@ import {
   type ExpenseCategory,
 } from "@kinwoo/core/expenses";
 import { formatPickedDate } from "@kinwoo/core/grocery";
-import { ArrowRightIcon, CalendarIcon, CheckCircleIcon, RupeeIcon } from "@kinwoo/icons/native";
+import {
+  ArrowRightIcon,
+  CalendarIcon,
+  CheckCircleIcon,
+  ExpenseCategoryIcon,
+  RupeeIcon,
+} from "@kinwoo/icons/native";
 import { colors } from "@kinwoo/tokens/native";
 import { useState } from "react";
 import { Keyboard, KeyboardAvoidingView, Platform, Text, TextInput, View } from "react-native";
@@ -26,7 +32,6 @@ import { useFocusedInputAboveKeyboard } from "@/lib/use-focused-input-above-keyb
 import { useSwipeDownToDismiss } from "@/lib/use-swipe-down-to-dismiss";
 import { useTheme } from "@/theme/ThemeProvider";
 
-import { ExpenseCategoryIcon } from "./ExpenseCategoryIcon";
 import { PayerSheet } from "./PayerSheet";
 import { SplitSheet } from "./SplitSheet";
 

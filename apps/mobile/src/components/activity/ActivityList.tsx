@@ -5,62 +5,18 @@ import {
   formatActivityParts,
   formatActivityTimestamp,
   groupActivityByDay,
-  type ActivityIconName,
   type GroceryActivityEntry,
 } from "@kinwoo/core/grocery";
 import type { HouseMember } from "@kinwoo/core/houses";
-import {
-  ArrowRightIcon,
-  BagDollarIcon,
-  CartCheckIcon,
-  CartCrossIcon,
-  CartMinusIcon,
-  CartPlusIcon,
-  EmailIcon,
-  FilePlusIcon,
-  FrownIcon,
-  HeartIcon,
-  HousePlusIcon,
-  InviteIcon,
-  ListSettingsIcon,
-  PulseIcon,
-  ShieldCheckIcon,
-  TransactionIcon,
-  TrashOutlineIcon,
-  UserCheckIcon,
-  UserCrossIcon,
-  type IconProps,
-} from "@kinwoo/icons/native";
+import { ActivityKindIcon } from "@kinwoo/icons/native";
 import { colors } from "@kinwoo/tokens/native";
-import { memo, useCallback, useMemo, type ComponentType, type ReactElement } from "react";
+import { memo, useCallback, useMemo, type ReactElement } from "react";
 import { SectionList, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Avatar } from "@/components/houses/Avatar";
 import { Pressable } from "@/components/Pressable";
 import { useTheme } from "@/theme/ThemeProvider";
-
-const ICONS: Record<ActivityIconName, ComponentType<IconProps>> = {
-  "cart-plus": CartPlusIcon,
-  "cart-check": CartCheckIcon,
-  "cart-minus": CartMinusIcon,
-  "cart-cross": CartCrossIcon,
-  "bag-dollar": BagDollarIcon,
-  transaction: TransactionIcon,
-  "user-check": UserCheckIcon,
-  "user-cross": UserCrossIcon,
-  heart: HeartIcon,
-  frown: FrownIcon,
-  "file-plus": FilePlusIcon,
-  "list-settings": ListSettingsIcon,
-  trash: TrashOutlineIcon,
-  "house-plus": HousePlusIcon,
-  "shield-check": ShieldCheckIcon,
-  invite: InviteIcon,
-  email: EmailIcon,
-  "arrow-right": ArrowRightIcon,
-  pulse: PulseIcon,
-};
 
 const END_REACHED_THRESHOLD = 0.5;
 const ACTOR_AVATAR_SIZE = 16;
@@ -79,12 +35,15 @@ function ActivityIcon({
   actor: HouseMember | undefined;
 }) {
   const { resolvedTheme } = useTheme();
-  const Icon = ICONS[activityIconName(entry)];
 
   return (
     <View className="mr-5 mt-px">
       <View className="size-9 items-center justify-center rounded-lg bg-muted pt-0.5">
-        <Icon size={20} color={colors[resolvedTheme].foreground} />
+        <ActivityKindIcon
+          name={activityIconName(entry)}
+          size={20}
+          color={colors[resolvedTheme].foreground}
+        />
       </View>
       {entry.actorId ? (
         <View className="absolute -bottom-1.5 -right-1.5 rounded-full bg-background p-0.5">

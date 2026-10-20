@@ -1,8 +1,7 @@
 "use client";
 
 import { listIconOption, type GroceryOverviewItem } from "@kinwoo/core/grocery";
-
-import { CategoryIcon } from "@/components/grocery/CategoryIcon";
+import { CategoryIcon } from "@kinwoo/icons";
 
 export function MyToBuySection({
   items,

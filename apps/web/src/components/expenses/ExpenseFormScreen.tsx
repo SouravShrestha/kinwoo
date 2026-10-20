@@ -11,7 +11,13 @@ import {
   type ExpenseCategory,
 } from "@kinwoo/core/expenses";
 import { formatPickedDate } from "@kinwoo/core/grocery";
-import { ArrowRightIcon, CalendarIcon, CheckCircleIcon, RupeeIcon } from "@kinwoo/icons";
+import {
+  ArrowRightIcon,
+  CalendarIcon,
+  CheckCircleIcon,
+  ExpenseCategoryIcon,
+  RupeeIcon,
+} from "@kinwoo/icons";
 import { useState, type AnimationEvent } from "react";
 
 import { DatePickerSheet } from "@/components/grocery/DatePickerSheet";
@@ -19,7 +25,6 @@ import { OptionSheet } from "@/components/grocery/OptionSheet";
 import { useHouseNavigation } from "@/lib/house-navigation";
 import { cn } from "@/lib/utils";
 
-import { ExpenseCategoryIcon } from "./ExpenseCategoryIcon";
 import { PayerSheet } from "./PayerSheet";
 import { SplitSheet } from "./SplitSheet";
 

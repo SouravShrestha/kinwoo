@@ -7,57 +7,13 @@ import {
   formatActivityParts,
   formatActivityTimestamp,
   groupActivityByDay,
-  type ActivityIconName,
   type GroceryActivityEntry,
 } from "@kinwoo/core/grocery";
 import type { HouseMember } from "@kinwoo/core/houses";
-import {
-  ArrowRightIcon,
-  BagDollarIcon,
-  CartCheckIcon,
-  CartCrossIcon,
-  CartMinusIcon,
-  CartPlusIcon,
-  EmailIcon,
-  FilePlusIcon,
-  FrownIcon,
-  HeartIcon,
-  HousePlusIcon,
-  InviteIcon,
-  ListSettingsIcon,
-  PulseIcon,
-  ShieldCheckIcon,
-  TransactionIcon,
-  TrashOutlineIcon,
-  UserCheckIcon,
-  UserCrossIcon,
-  type WebIconProps,
-} from "@kinwoo/icons";
-import { memo, useEffect, useMemo, useRef, type ComponentType } from "react";
+import { ActivityKindIcon } from "@kinwoo/icons";
+import { memo, useEffect, useMemo, useRef } from "react";
 
 import { Avatar } from "@/components/houses/Avatar";
-
-const ICONS: Record<ActivityIconName, ComponentType<WebIconProps>> = {
-  "cart-plus": CartPlusIcon,
-  "cart-check": CartCheckIcon,
-  "cart-minus": CartMinusIcon,
-  "cart-cross": CartCrossIcon,
-  "bag-dollar": BagDollarIcon,
-  transaction: TransactionIcon,
-  "user-check": UserCheckIcon,
-  "user-cross": UserCrossIcon,
-  heart: HeartIcon,
-  frown: FrownIcon,
-  "file-plus": FilePlusIcon,
-  "list-settings": ListSettingsIcon,
-  trash: TrashOutlineIcon,
-  "house-plus": HousePlusIcon,
-  "shield-check": ShieldCheckIcon,
-  invite: InviteIcon,
-  email: EmailIcon,
-  "arrow-right": ArrowRightIcon,
-  pulse: PulseIcon,
-};
 
 const LOAD_MORE_MARGIN = "400px 0px";
 
@@ -70,12 +26,10 @@ function ActivityIcon({
   entry: GroceryActivityEntry;
   actor: HouseMember | undefined;
 }) {
-  const Icon = ICONS[activityIconName(entry)];
-
   return (
     <span className="relative mr-5 shrink-0">
       <span className="flex size-9 items-center justify-center rounded-lg bg-muted pt-0.5 text-foreground">
-        <Icon size={20} />
+        <ActivityKindIcon name={activityIconName(entry)} size={20} />
       </span>
       {entry.actorId ? (
         <span className="absolute -bottom-1.5 -right-1.5 rounded-full bg-background p-0.5">

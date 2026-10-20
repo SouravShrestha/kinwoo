@@ -40,7 +40,7 @@ import {
   sortGroceryItems,
   type GroceryTabKey,
 } from "@kinwoo/core/grocery";
-import { CaretDownIcon, MoreVerticalIcon, PlusCircleIcon } from "@kinwoo/icons";
+import { CaretDownIcon, CategoryIcon, MoreVerticalIcon, PlusCircleIcon } from "@kinwoo/icons";
 import { useEffect, useMemo, useState } from "react";
 
 import { ConfirmDialog } from "@/components/ConfirmDialog";
@@ -48,7 +48,6 @@ import { Filters } from "@/components/Filters";
 import { AssignedSelectionBar } from "@/components/grocery/AssignedSelectionBar";
 import { BoughtGroupCard } from "@/components/grocery/BoughtGroupCard";
 import { BoughtGroupSheet } from "@/components/grocery/BoughtGroupSheet";
-import { CategoryIcon } from "@/components/grocery/CategoryIcon";
 import { EmptyItems } from "@/components/grocery/EmptyItems";
 import { OlderPurchasesButton } from "@/components/grocery/OlderPurchasesButton";
 import { GroceryTabView } from "@/components/grocery/GroceryTabView";

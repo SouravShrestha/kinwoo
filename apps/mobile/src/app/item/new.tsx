@@ -11,6 +11,7 @@ import {
 import {
   ArrowRightIcon,
   CaretDownIcon,
+  CategoryIcon,
   CheckCircleIcon,
   CheckIcon,
   ClockIcon,
@@ -31,7 +32,6 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { CategoryIcon } from "@/components/CategoryIcon";
 import { NewListSheet } from "@/components/grocery/NewListSheet";
 import { OptionSheet, type SheetOption } from "@/components/OptionSheet";
 import { Pressable } from "@/components/Pressable";

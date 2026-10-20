@@ -1,8 +1,7 @@
 import { listIconOption, type GroceryList } from "@kinwoo/core/grocery";
-import { PlusCircleIcon } from "@kinwoo/icons/native";
+import { CategoryIcon, PlusCircleIcon } from "@kinwoo/icons/native";
 import { useState } from "react";
 
-import { CategoryIcon } from "@/components/CategoryIcon";
 import { OptionSheet } from "@/components/OptionSheet";
 import { NewListSheet } from "./NewListSheet";
 

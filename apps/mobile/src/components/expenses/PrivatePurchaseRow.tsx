@@ -8,7 +8,8 @@ import {
 import { colors } from "@kinwoo/tokens/native";
 import { Text, View } from "react-native";
 
-import { CategoryIcon } from "@/components/CategoryIcon";
+import { CategoryIcon } from "@kinwoo/icons/native";
+
 import { Pressable } from "@/components/Pressable";
 import { useTheme } from "@/theme/ThemeProvider";
 

@@ -1,12 +1,10 @@
 "use client";
 
 import { itemUrgencyLabel, itemUrgencyTone, type GroceryItem } from "@kinwoo/core/grocery";
-import { ArrowRightIcon, TickIcon } from "@kinwoo/icons";
+import { ArrowRightIcon, CategoryIcon, TickIcon } from "@kinwoo/icons";
 
 import { Avatar } from "@/components/houses/Avatar";
 import { cn } from "@/lib/utils";
-
-import { CategoryIcon } from "./CategoryIcon";
 
 const FOCUS_RING =
   "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground";

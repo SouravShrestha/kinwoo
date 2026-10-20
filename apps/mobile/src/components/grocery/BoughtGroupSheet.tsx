@@ -5,13 +5,12 @@ import {
   TRANSACTION_UNAVAILABLE,
   type BoughtGroup,
 } from "@kinwoo/core/grocery";
-import { TransactionIcon, TrashIcon } from "@kinwoo/icons/native";
+import { CategoryIcon, TransactionIcon, TrashIcon } from "@kinwoo/icons/native";
 import { colors } from "@kinwoo/tokens/native";
 import { ScrollView, Text, View } from "react-native";
 
 import { BottomSheet } from "@/components/BottomSheet";
 import { Button } from "@/components/Button";
-import { CategoryIcon } from "@/components/CategoryIcon";
 import { Pressable } from "@/components/Pressable";
 import { openExpense } from "@/lib/house-navigation";
 import { useTheme } from "@/theme/ThemeProvider";

@@ -63,3 +63,16 @@ describe("icon geometry", () => {
     }
   });
 });
+
+describe("named icons", () => {
+  it("falls back for names without an icon", async () => {
+    const { activityGeometry, expenseCategoryGeometry, groceryCategoryGeometry } =
+      await import("./semantic");
+    expect(groceryCategoryGeometry("Dairy")).toBe(geometry.dairyIcon);
+    expect(groceryCategoryGeometry(undefined)).toBe(geometry.otherIcon);
+    expect(expenseCategoryGeometry("rent")).toBe(geometry.homeIcon);
+    expect(expenseCategoryGeometry("unknown")).toBe(geometry.otherIcon);
+    expect(activityGeometry("heart")).toBe(geometry.heartIcon);
+    expect(activityGeometry("unknown")).toBe(geometry.pulseIcon);
+  });
+});

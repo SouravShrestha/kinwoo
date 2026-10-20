@@ -19,7 +19,7 @@ import {
   type UpdateListInput,
 } from "@kinwoo/core/grocery";
 import { memberDisplayName } from "@kinwoo/core/houses";
-import { TrashIcon } from "@kinwoo/icons";
+import { CategoryIcon, TrashIcon } from "@kinwoo/icons";
 import { useRef, useState } from "react";
 
 import { BottomSheet } from "@/components/BottomSheet";
@@ -28,7 +28,6 @@ import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { Avatar } from "@/components/houses/Avatar";
 import { SheetHeader } from "@/components/houses/SheetHeader";
 import { Switch } from "@/components/Switch";
-import { CategoryIcon } from "./CategoryIcon";
 import { ListIconPicker } from "./ListIconPicker";
 import { ListVisibilityToggle } from "./ListVisibilityToggle";
 

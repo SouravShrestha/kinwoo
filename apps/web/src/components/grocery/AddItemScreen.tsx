@@ -13,6 +13,7 @@ import {
 import {
   ArrowRightIcon,
   CaretDownIcon,
+  CategoryIcon,
   CheckCircleIcon,
   CheckIcon,
   ClockIcon,
@@ -23,7 +24,6 @@ import { useEffect, useRef, useState, type AnimationEvent } from "react";
 import { useHouseNavigation } from "@/lib/house-navigation";
 import { cn } from "@/lib/utils";
 
-import { CategoryIcon } from "./CategoryIcon";
 import { NewListSheet } from "./NewListSheet";
 import { OptionSheet, type SheetOption } from "./OptionSheet";
 

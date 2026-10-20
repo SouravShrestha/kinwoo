@@ -12,13 +12,18 @@ import {
   type GroceryItem,
   type StoreId,
 } from "@kinwoo/core/grocery";
-import { CaretDownIcon, CheckCircleIcon, ClockIcon, CloseIcon } from "@kinwoo/icons/native";
+import {
+  CaretDownIcon,
+  CategoryIcon,
+  CheckCircleIcon,
+  ClockIcon,
+  CloseIcon,
+} from "@kinwoo/icons/native";
 import { colors } from "@kinwoo/tokens/native";
 import { useState, type ReactNode } from "react";
 import { Image, Keyboard, Text, View } from "react-native";
 
 import { SheetTextInput } from "@/components/BottomSheet";
-import { CategoryIcon } from "@/components/CategoryIcon";
 import { Avatar } from "@/components/houses/Avatar";
 import { OptionSheet, type SheetOption } from "@/components/OptionSheet";
 import { Pressable } from "@/components/Pressable";

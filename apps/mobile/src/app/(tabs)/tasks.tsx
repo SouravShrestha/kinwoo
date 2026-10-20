@@ -39,14 +39,13 @@ import {
   type GroceryItem,
   type GroceryTabKey,
 } from "@kinwoo/core/grocery";
-import { CaretDownIcon, MoreVerticalIcon } from "@kinwoo/icons/native";
+import { CaretDownIcon, CategoryIcon, MoreVerticalIcon } from "@kinwoo/icons/native";
 import { colors } from "@kinwoo/tokens/native";
 import { router } from "expo-router";
 import { useEffect, useMemo, useState } from "react";
 import { ScrollView, Text, useWindowDimensions, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { CategoryIcon } from "@/components/CategoryIcon";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { Fab } from "@/components/Fab";
 import { Filters } from "@/components/Filters";

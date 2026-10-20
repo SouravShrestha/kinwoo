@@ -2,10 +2,10 @@
 
 import { LIST_ICON_OPTIONS } from "@kinwoo/core/grocery";
 
+import { CategoryIcon } from "@kinwoo/icons";
+
 import { SheetHeader } from "@/components/houses/SheetHeader";
 import { cn } from "@/lib/utils";
-
-import { CategoryIcon } from "./CategoryIcon";
 
 export function ListIconPicker({
   selected,

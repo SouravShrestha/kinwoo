@@ -4,7 +4,8 @@ import { colors } from "@kinwoo/tokens/native";
 import { useEffect, useState } from "react";
 import { Text, View } from "react-native";
 
-import { CategoryIcon } from "@/components/CategoryIcon";
+import { CategoryIcon } from "@kinwoo/icons/native";
+
 import { Pressable } from "@/components/Pressable";
 import { houseStorage } from "@/lib/house-storage";
 import { useTheme } from "@/theme/ThemeProvider";

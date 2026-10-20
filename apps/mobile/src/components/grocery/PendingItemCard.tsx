@@ -1,9 +1,8 @@
 import { itemUrgencyLabel, itemUrgencyTone, type GroceryItem } from "@kinwoo/core/grocery";
-import { ArrowRightIcon, TickIcon } from "@kinwoo/icons/native";
+import { ArrowRightIcon, CategoryIcon, TickIcon } from "@kinwoo/icons/native";
 import { colors } from "@kinwoo/tokens/native";
 import { Text, View } from "react-native";
 
-import { CategoryIcon } from "@/components/CategoryIcon";
 import { Avatar } from "@/components/houses/Avatar";
 import { Pressable } from "@/components/Pressable";
 import { useTheme } from "@/theme/ThemeProvider";

@@ -10,9 +10,9 @@ import {
 } from "@kinwoo/core/expenses";
 import { formatPaise, formatPickedDate } from "@kinwoo/core/grocery";
 
-import { cn } from "@/lib/utils";
+import { ExpenseCategoryIcon } from "@kinwoo/icons";
 
-import { ExpenseCategoryIcon } from "./ExpenseCategoryIcon";
+import { cn } from "@/lib/utils";
 
 const TONE_CLASS = {
   lent: "text-accent",

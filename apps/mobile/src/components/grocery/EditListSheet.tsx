@@ -17,7 +17,7 @@ import {
   type UpdateListInput,
 } from "@kinwoo/core/grocery";
 import { memberDisplayName } from "@kinwoo/core/houses";
-import { TrashIcon } from "@kinwoo/icons/native";
+import { CategoryIcon, TrashIcon } from "@kinwoo/icons/native";
 import { colors } from "@kinwoo/tokens/native";
 import { useState } from "react";
 import { Text, View } from "react-native";
@@ -25,7 +25,6 @@ import Animated, { Easing, FadeInLeft, FadeInRight } from "react-native-reanimat
 
 import { BottomSheet, SheetTextInput } from "@/components/BottomSheet";
 import { Button } from "@/components/Button";
-import { CategoryIcon } from "@/components/CategoryIcon";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { Avatar } from "@/components/houses/Avatar";
 import { SheetHeader } from "@/components/houses/SheetHeader";

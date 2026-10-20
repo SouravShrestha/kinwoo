@@ -1,10 +1,9 @@
 "use client";
 
 import { listIconOption, type GroceryList } from "@kinwoo/core/grocery";
-import { PlusCircleIcon } from "@kinwoo/icons";
+import { CategoryIcon, PlusCircleIcon } from "@kinwoo/icons";
 import { useState } from "react";
 
-import { CategoryIcon } from "./CategoryIcon";
 import { NewListSheet } from "./NewListSheet";
 import { OptionSheet } from "./OptionSheet";
 

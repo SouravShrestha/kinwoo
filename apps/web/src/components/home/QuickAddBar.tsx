@@ -4,7 +4,8 @@ import { createListStorage, useGroceryLists } from "@kinwoo/client/grocery";
 import { listIconOption } from "@kinwoo/core/grocery";
 import { useEffect, useState } from "react";
 
-import { CategoryIcon } from "@/components/grocery/CategoryIcon";
+import { CategoryIcon } from "@kinwoo/icons";
+
 import { houseStorage } from "@/lib/house-storage";
 
 export function QuickAddBar({

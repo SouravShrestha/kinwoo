@@ -1,12 +1,11 @@
 "use client";
 
 import { boughtGroupAccessibleLabel, itemCountLabel, type BoughtGroup } from "@kinwoo/core/grocery";
-import { ArrowRightIcon } from "@kinwoo/icons";
+import { ArrowRightIcon, CategoryIcon } from "@kinwoo/icons";
 
 import { Avatar } from "@/components/houses/Avatar";
 import { cn } from "@/lib/utils";
 
-import { CategoryIcon } from "./CategoryIcon";
 import type { CardAssignee } from "./PendingItemCard";
 
 export function BoughtGroupCard({

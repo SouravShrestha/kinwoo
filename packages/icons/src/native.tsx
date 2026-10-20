@@ -1,6 +1,7 @@
 import * as geometry from "./data";
 import type { IconGeometry } from "./data";
 import { SvgIcon } from "./native/icon";
+import { activityGeometry, expenseCategoryGeometry, groceryCategoryGeometry } from "./semantic";
 import type { IconProps } from "./types";
 
 export { DEFAULT_ICON_SIZE, type IconProps } from "./types";
@@ -116,3 +117,22 @@ export const SettleUpIcon = /*#__PURE__*/ icon(geometry.settleUpIcon);
 export const BalancesIcon = /*#__PURE__*/ icon(geometry.balancesIcon);
 export const TotalsIcon = /*#__PURE__*/ icon(geometry.totalsIcon);
 export const NoteIcon = /*#__PURE__*/ icon(geometry.noteIcon);
+
+// Icons chosen by name; see semantic.ts.
+
+type NamedIconProps = { size: number; color: string };
+
+export function CategoryIcon({
+  name,
+  ...props
+}: NamedIconProps & { name: string | null | undefined }) {
+  return <SvgIcon {...props} geometry={groceryCategoryGeometry(name)} />;
+}
+
+export function ExpenseCategoryIcon({ category, ...props }: NamedIconProps & { category: string }) {
+  return <SvgIcon {...props} geometry={expenseCategoryGeometry(category)} />;
+}
+
+export function ActivityKindIcon({ name, ...props }: NamedIconProps & { name: string }) {
+  return <SvgIcon {...props} geometry={activityGeometry(name)} />;
+}

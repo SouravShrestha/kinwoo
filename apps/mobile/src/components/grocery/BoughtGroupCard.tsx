@@ -1,9 +1,8 @@
 import { boughtGroupAccessibleLabel, itemCountLabel, type BoughtGroup } from "@kinwoo/core/grocery";
-import { ArrowRightIcon } from "@kinwoo/icons/native";
+import { ArrowRightIcon, CategoryIcon } from "@kinwoo/icons/native";
 import { colors } from "@kinwoo/tokens/native";
 import { Text, View } from "react-native";
 
-import { CategoryIcon } from "@/components/CategoryIcon";
 import { Avatar } from "@/components/houses/Avatar";
 import { Pressable } from "@/components/Pressable";
 import { useTheme } from "@/theme/ThemeProvider";

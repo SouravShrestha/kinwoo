@@ -7,7 +7,7 @@ import {
   TRANSACTION_UNAVAILABLE,
   type BoughtGroup,
 } from "@kinwoo/core/grocery";
-import { TransactionIcon, TrashIcon } from "@kinwoo/icons";
+import { CategoryIcon, TransactionIcon, TrashIcon } from "@kinwoo/icons";
 import { useRouter } from "next/navigation";
 
 import { BottomSheet } from "@/components/BottomSheet";
@@ -16,7 +16,6 @@ import { expensePath } from "@/lib/house-navigation";
 import { cn } from "@/lib/utils";
 
 import { BoughtTimeline } from "./BoughtTimeline";
-import { CategoryIcon } from "./CategoryIcon";
 import { FOCUS_RING, ICON_BUTTON } from "./ItemDetailsEditor";
 
 export function BoughtGroupSheet({
