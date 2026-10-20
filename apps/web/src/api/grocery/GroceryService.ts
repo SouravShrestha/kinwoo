@@ -161,13 +161,6 @@ export class GroceryService implements IGroceryService {
     return run(() => this.repository.claimItem(itemId));
   }
 
-  async unclaimItem(itemId: string): Promise<GroceryResult<null>> {
-    return run(async () => {
-      await this.repository.unclaimItem(itemId);
-      return null;
-    });
-  }
-
   async assignItem(itemId: string, assignedTo: string): Promise<GroceryResult<null>> {
     return run(async () => {
       await this.repository.assignItem(itemId, assignedTo);
@@ -220,13 +213,6 @@ export class GroceryService implements IGroceryService {
     }
 
     return run(async () => ({ assigned: await action(unique), requested: unique.length }));
-  }
-
-  async respondToAssignment(itemId: string, accept: boolean): Promise<GroceryResult<null>> {
-    return run(async () => {
-      await this.repository.respondToAssignment(itemId, accept);
-      return null;
-    });
   }
 
   async markBought(itemId: string, input: MarkBoughtInput): Promise<GroceryResult<null>> {
@@ -293,19 +279,8 @@ export class GroceryService implements IGroceryService {
     }));
   }
 
-  async moveItem(itemId: string, targetListId: string): Promise<GroceryResult<null>> {
-    return run(async () => {
-      await this.repository.moveItem(itemId, targetListId);
-      return null;
-    });
-  }
-
   async listCategories(houseId: string): Promise<GroceryResult<GroceryCategory[]>> {
     return run(() => this.repository.listCategories(houseId));
-  }
-
-  async addCategory(houseId: string, name: string): Promise<GroceryResult<GroceryCategory>> {
-    return run(() => this.repository.addCategory(houseId, name));
   }
 
   async getOverview(houseId: string, userId: string): Promise<GroceryResult<GroceryOverview>> {

@@ -130,12 +130,6 @@ export async function claimItem(
   return (body.result ?? body.claim)!;
 }
 
-export async function unclaimItem(houseId: string, listId: string, itemId: string): Promise<void> {
-  await apiRequest(`${itemBase(houseId, listId, itemId)}/claim`, {
-    method: "DELETE",
-  });
-}
-
 export async function assignItem(
   houseId: string,
   listId: string,
@@ -175,18 +169,6 @@ export async function claimItems(
     { method: "POST", body: { itemIds } },
   );
   return body.result;
-}
-
-export async function respondToAssignment(
-  houseId: string,
-  listId: string,
-  itemId: string,
-  accept: boolean,
-): Promise<void> {
-  await apiRequest(`${itemBase(houseId, listId, itemId)}/respond`, {
-    method: "POST",
-    body: { accept },
-  });
 }
 
 export async function markBought(
@@ -231,29 +213,9 @@ export async function deleteItem(houseId: string, listId: string, itemId: string
   });
 }
 
-export async function moveItem(
-  houseId: string,
-  listId: string,
-  itemId: string,
-  targetListId: string,
-): Promise<void> {
-  await apiRequest(`${itemBase(houseId, listId, itemId)}/move`, {
-    method: "POST",
-    body: { targetListId },
-  });
-}
-
 export async function fetchCategories(houseId: string): Promise<GroceryCategory[]> {
   const body = await apiRequest<{ categories: GroceryCategory[] }>(`${base(houseId)}/categories`);
   return body.categories;
-}
-
-export async function addCategory(houseId: string, name: string): Promise<GroceryCategory> {
-  const body = await apiRequest<{ category: GroceryCategory }>(`${base(houseId)}/categories`, {
-    method: "POST",
-    body: { name },
-  });
-  return body.category;
 }
 
 export async function fetchOverview(houseId: string): Promise<GroceryOverview> {

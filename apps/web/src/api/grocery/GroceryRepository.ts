@@ -176,7 +176,8 @@ export class GroceryRepository implements IGroceryRepository {
   constructor(private readonly client: SupabaseClient<Database>) {}
 
   async listLists(houseId: string): Promise<GroceryList[]> {
-    const { data, error } = await this.client.from("grocery_lists")
+    const { data, error } = await this.client
+      .from("grocery_lists")
       .select(LIST_COLUMNS)
       .eq("house_id", houseId)
       .is("deleted_at", null)
@@ -187,7 +188,8 @@ export class GroceryRepository implements IGroceryRepository {
   }
 
   async findList(listId: string): Promise<GroceryList | null> {
-    const { data, error } = await this.client.from("grocery_lists")
+    const { data, error } = await this.client
+      .from("grocery_lists")
       .select(LIST_COLUMNS)
       .eq("id", listId)
       .maybeSingle();
@@ -240,7 +242,8 @@ export class GroceryRepository implements IGroceryRepository {
 
   async listItems(listId: string, options?: { boughtSince?: string }): Promise<GroceryItem[]> {
     const items = () =>
-      this.client.from("grocery_items")
+      this.client
+        .from("grocery_items")
         .select(ITEM_COLUMNS)
         .eq("list_id", listId)
         .order("position");
@@ -255,7 +258,8 @@ export class GroceryRepository implements IGroceryRepository {
     // since the cutoff, while the full purchase history still comes from ITEM_COLUMNS.
     const [open, bought] = await Promise.all([
       items().neq("status", "bought"),
-      this.client.from("grocery_items")
+      this.client
+        .from("grocery_items")
         .select(`${ITEM_COLUMNS}, recent_purchase:grocery_purchases!inner(bought_at)`)
         .eq("list_id", listId)
         .eq("status", "bought")
@@ -281,7 +285,8 @@ export class GroceryRepository implements IGroceryRepository {
     const rows = page ?? [];
     if (rows.length === 0) return { items: [], nextCursor: null };
 
-    const { data, error: itemsError } = await this.client.from("grocery_items")
+    const { data, error: itemsError } = await this.client
+      .from("grocery_items")
       .select(ITEM_COLUMNS)
       .in(
         "id",
@@ -302,7 +307,8 @@ export class GroceryRepository implements IGroceryRepository {
   }
 
   async findItem(itemId: string): Promise<GroceryItem | null> {
-    const { data, error } = await this.client.from("grocery_items")
+    const { data, error } = await this.client
+      .from("grocery_items")
       .select(ITEM_COLUMNS)
       .eq("id", itemId)
       .maybeSingle();
@@ -349,14 +355,6 @@ export class GroceryRepository implements IGroceryRepository {
 
     if (error) fail(error);
     return toClaimResult(data);
-  }
-
-  async unclaimItem(itemId: string): Promise<void> {
-    const { error } = await this.client.rpc("unclaim_grocery_item", {
-      p_item_id: itemId,
-    });
-
-    if (error) fail(error);
   }
 
   async assignItem(itemId: string, assignedTo: string): Promise<void> {
@@ -406,15 +404,6 @@ export class GroceryRepository implements IGroceryRepository {
     return typeof data === "number" ? data : 0;
   }
 
-  async respondToAssignment(itemId: string, accept: boolean): Promise<void> {
-    const { error } = await this.client.rpc("respond_to_assignment", {
-      p_item_id: itemId,
-      p_accept: accept,
-    });
-
-    if (error) fail(error);
-  }
-
   async markBought(itemId: string, input: MarkBoughtInput): Promise<void> {
     const { error } = await this.client.rpc("mark_item_bought", {
       p_item_id: itemId,
@@ -445,33 +434,15 @@ export class GroceryRepository implements IGroceryRepository {
     return data as string;
   }
 
-  async moveItem(itemId: string, targetListId: string): Promise<void> {
-    const { error } = await this.client.rpc("move_grocery_item", {
-      p_item_id: itemId,
-      p_target_list_id: targetListId,
-    });
-
-    if (error) fail(error);
-  }
-
   async listCategories(houseId: string): Promise<GroceryCategory[]> {
-    const { data, error } = await this.client.from("grocery_categories")
+    const { data, error } = await this.client
+      .from("grocery_categories")
       .select("id, house_id, name, position")
       .or(`house_id.is.null,house_id.eq.${houseId}`)
       .order("position");
 
     if (error) fail(error);
     return (data ?? []).map(toCategory);
-  }
-
-  async addCategory(houseId: string, name: string): Promise<GroceryCategory> {
-    const { data, error } = await this.client.rpc("add_grocery_category", {
-      p_house_id: houseId,
-      p_name: name,
-    });
-
-    if (error) fail(error);
-    return toCategory(data);
   }
 
   async listRecentActivity(
@@ -529,14 +500,16 @@ export class GroceryRepository implements IGroceryRepository {
     // Filtering on grocery_items.house_id uses its index; the embedded list still excludes
     // deleted lists.
     const [today, mine] = await Promise.all([
-      this.client.from("grocery_items")
+      this.client
+        .from("grocery_items")
         .select(OVERVIEW_ITEM_COLUMNS)
         .eq("house_id", houseId)
         .is("grocery_lists.deleted_at", null)
         .eq("urgency", "today")
         .in("status", ["pending", "claimed", "assigned"])
         .order("created_at", { ascending: false }),
-      this.client.from("grocery_items")
+      this.client
+        .from("grocery_items")
         .select(OVERVIEW_ITEM_COLUMNS)
         .eq("house_id", houseId)
         .is("grocery_lists.deleted_at", null)
@@ -557,7 +530,8 @@ export class GroceryRepository implements IGroceryRepository {
   // RLS already hides other people's private lists; the creator filter keeps this to the caller's
   // own lists even for an admin.
   async listPrivatePurchases(houseId: string, userId: string): Promise<GroceryOverviewItem[]> {
-    const { data, error } = await this.client.from("grocery_items")
+    const { data, error } = await this.client
+      .from("grocery_items")
       .select(PRIVATE_PURCHASE_COLUMNS)
       .eq("house_id", houseId)
       .is("grocery_lists.deleted_at", null)

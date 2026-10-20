@@ -44,7 +44,6 @@ export interface IGroceryService {
   deleteItem(itemId: string): Promise<GroceryResult<null>>;
   deleteItems(listId: string, itemIds: string[]): Promise<GroceryResult<DeleteItemsResult>>;
   claimItem(itemId: string): Promise<GroceryResult<ClaimResult>>;
-  unclaimItem(itemId: string): Promise<GroceryResult<null>>;
   assignItem(itemId: string, assignedTo: string): Promise<GroceryResult<null>>;
   unassignItem(itemId: string): Promise<GroceryResult<null>>;
   assignItems(
@@ -53,16 +52,13 @@ export interface IGroceryService {
     assignedTo: string,
   ): Promise<GroceryResult<AssignItemsResult>>;
   claimItems(listId: string, itemIds: string[]): Promise<GroceryResult<AssignItemsResult>>;
-  respondToAssignment(itemId: string, accept: boolean): Promise<GroceryResult<null>>;
   markBought(itemId: string, input: MarkBoughtInput): Promise<GroceryResult<null>>;
   markItemsBought(
     listId: string,
     input: MarkItemsBoughtInput,
   ): Promise<GroceryResult<MarkItemsBoughtResult>>;
-  moveItem(itemId: string, targetListId: string): Promise<GroceryResult<null>>;
 
   listCategories(houseId: string): Promise<GroceryResult<GroceryCategory[]>>;
-  addCategory(houseId: string, name: string): Promise<GroceryResult<GroceryCategory>>;
 
   getOverview(houseId: string, userId: string): Promise<GroceryResult<GroceryOverview>>;
   listPrivatePurchases(

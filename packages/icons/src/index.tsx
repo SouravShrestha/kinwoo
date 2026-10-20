@@ -1,348 +1,119 @@
 import * as geometry from "./data";
+import type { IconGeometry } from "./data";
 import { SvgIcon, type WebIconProps } from "./icon";
 
 export { DEFAULT_ICON_SIZE, type IconProps } from "./types";
 export type { WebIconProps } from "./icon";
 
-export const HomeIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.homeIcon} />
-);
+// One component per geometry. Each export stays a separate, pure call so bundlers drop the
+// icons (and their path data) a screen never imports.
+function icon(shape: IconGeometry) {
+  return function Icon(props: WebIconProps) {
+    return <SvgIcon {...props} geometry={shape} />;
+  };
+}
 
-export const CartIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.cartIcon} />
-);
-
-export const BillIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.billIcon} />
-);
-
-export const ProfileIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.profileIcon} />
-);
-
-export const HomeActiveIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.homeActiveIcon} />
-);
-
-export const CartActiveIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.cartActiveIcon} />
-);
-
-export const BillActiveIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.billActiveIcon} />
-);
-
-export const ProfileActiveIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.profileActiveIcon} />
-);
-
-export const ActivitiesIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.activitiesIcon} />
-);
-
-export const ActivitiesActiveIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.activitiesActiveIcon} />
-);
-
-export const BellIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.bellIcon} />
-);
-
-export const NotificationIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.notificationIcon} />
-);
-
-export const GlobeIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.globeIcon} />
-);
-
-export const AppearanceIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.appearanceIcon} />
-);
-
-export const ArrowRightIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.arrowRightIcon} />
-);
-
-export const GoogleIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.googleIcon} />
-);
-export const HousePinIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.housePinIcon} />
-);
-
-export const BuildIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.buildIcon} />
-);
-
-export const CodeIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.codeIcon} />
-);
-
-export const CloseIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.closeIcon} />
-);
-export const CopyIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.copyIcon} />
-);
-export const EmailIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.emailIcon} />
-);
-export const LockIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.lockIcon} />
-);
-export const TickIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.tickIcon} />
-);
-
-export const SunIcon = (props: WebIconProps) => <SvgIcon {...props} geometry={geometry.sunIcon} />;
-
-export const MoonIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.moonIcon} />
-);
-
-export const AutoThemeIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.autoThemeIcon} />
-);
-export const QrIcon = (props: WebIconProps) => <SvgIcon {...props} geometry={geometry.qrIcon} />;
-export const CameraIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.cameraIcon} />
-);
-export const SettingsIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.settingsIcon} />
-);
-export const TextInputIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.textInputIcon} />
-);
-export const EnterIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.enterIcon} />
-);
-export const ShareIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.shareIcon} />
-);
-export const InviteIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.inviteIcon} />
-);
-export const HouseSettingsIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.houseSettingsIcon} />
-);
-export const MemberIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.memberIcon} />
-);
-export const BasketIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.basketIcon} />
-);
-export const MoreVerticalIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.moreVerticalIcon} />
-);
-export const FilterIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.filterIcon} />
-);
-export const SortIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.sortIcon} />
-);
-export const CaretDownIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.caretDownIcon} />
-);
-export const PlusCircleIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.plusCircleIcon} />
-);
-export const CartMinusIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.cartMinusIcon} />
-);
-export const CartCheckIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.cartCheckIcon} />
-);
-export const CartPlusIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.cartPlusIcon} />
-);
-export const CartCrossIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.cartCrossIcon} />
-);
-export const UserCrossIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.userCrossIcon} />
-);
-export const BagDollarIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.bagDollarIcon} />
-);
-export const UserCheckIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.userCheckIcon} />
-);
-export const FilePlusIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.filePlusIcon} />
-);
-export const ArchiveIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.archiveIcon} />
-);
-export const ArchiveFilledIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.archiveFilledIcon} />
-);
-export const TrashIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.trashIcon} />
-);
-export const HousePlusIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.housePlusIcon} />
-);
-export const HandshakeIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.handshakeIcon} />
-);
-export const FrownIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.frownIcon} />
-);
-export const PulseIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.pulseIcon} />
-);
-export const CheckCircleIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.checkCircleIcon} />
-);
-export const VegetablesIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.vegetablesIcon} />
-);
-export const FruitsIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.fruitsIcon} />
-);
-export const ClockIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.clockIcon} />
-);
-export const CheckIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.checkIcon} />
-);
-export const StaplesIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.staplesIcon} />
-);
-export const SpicesIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.spicesIcon} />
-);
-export const DairyIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.dairyIcon} />
-);
-export const MeatFishIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.meatFishIcon} />
-);
-export const BakeryIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.bakeryIcon} />
-);
-export const SnacksIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.snacksIcon} />
-);
-export const BeveragesIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.beveragesIcon} />
-);
-export const HouseholdIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.householdIcon} />
-);
-export const OtherIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.otherIcon} />
-);
-export const PersonalCareIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.personalCareIcon} />
-);
-export const ListIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.listIcon} />
-);
-export const GroceryIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.groceryIcon} />
-);
-export const TodoIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.todoIcon} />
-);
-export const WalletIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.walletIcon} />
-);
-export const EventsIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.eventsIcon} />
-);
-export const ShoppingIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.shoppingIcon} />
-);
-export const DiningIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.diningIcon} />
-);
-export const ListSettingsIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.listSettingsIcon} />
-);
-export const HeartIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.heartIcon} />
-);
-export const TrashOutlineIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.trashOutlineIcon} />
-);
-export const EditIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.editIcon} />
-);
-export const LogoutIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.logoutIcon} />
-);
-export const LockFilledIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.lockFilledIcon} />
-);
-export const WorldIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.worldIcon} />
-);
-export const LeaveHouseIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.leaveHouseIcon} />
-);
-export const PendingIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.pendingIcon} />
-);
-export const UserCircleIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.userCircleIcon} />
-);
-export const BadgeCheckIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.badgeCheckIcon} />
-);
-export const PendingActiveIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.pendingActiveIcon} />
-);
-export const UserCircleActiveIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.userCircleActiveIcon} />
-);
-export const BadgeCheckActiveIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.badgeCheckActiveIcon} />
-);
-export const VerifiedIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.verifiedIcon} />
-);
-export const TransactionIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.transactionIcon} />
-);
-export const DocumentIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.documentIcon} />
-);
-export const ShieldCheckIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.shieldCheckIcon} />
-);
-export const RupeeIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.rupeeIcon} />
-);
-export const CalendarIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.calendarIcon} />
-);
-export const SharesIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.sharesIcon} />
-);
-export const BoltIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.boltIcon} />
-);
-export const CarIcon = (props: WebIconProps) => <SvgIcon {...props} geometry={geometry.carIcon} />;
-export const GlobeFilledIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.globeFilledIcon} />
-);
-export const CloudLockFilledIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.cloudLockFilledIcon} />
-);
-export const SimplifyIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.simplifyIcon} />
-);
-export const SettleUpIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.settleUpIcon} />
-);
-export const BalancesIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.balancesIcon} />
-);
-export const TotalsIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.totalsIcon} />
-);
-export const NoteIcon = (props: WebIconProps) => (
-  <SvgIcon {...props} geometry={geometry.noteIcon} />
-);
+export const HomeIcon = /*#__PURE__*/ icon(geometry.homeIcon);
+export const CartIcon = /*#__PURE__*/ icon(geometry.cartIcon);
+export const BillIcon = /*#__PURE__*/ icon(geometry.billIcon);
+export const ProfileIcon = /*#__PURE__*/ icon(geometry.profileIcon);
+export const HomeActiveIcon = /*#__PURE__*/ icon(geometry.homeActiveIcon);
+export const CartActiveIcon = /*#__PURE__*/ icon(geometry.cartActiveIcon);
+export const BillActiveIcon = /*#__PURE__*/ icon(geometry.billActiveIcon);
+export const ActivitiesIcon = /*#__PURE__*/ icon(geometry.activitiesIcon);
+export const ActivitiesActiveIcon = /*#__PURE__*/ icon(geometry.activitiesActiveIcon);
+export const BellIcon = /*#__PURE__*/ icon(geometry.bellIcon);
+export const NotificationIcon = /*#__PURE__*/ icon(geometry.notificationIcon);
+export const GlobeIcon = /*#__PURE__*/ icon(geometry.globeIcon);
+export const AppearanceIcon = /*#__PURE__*/ icon(geometry.appearanceIcon);
+export const ArrowRightIcon = /*#__PURE__*/ icon(geometry.arrowRightIcon);
+export const GoogleIcon = /*#__PURE__*/ icon(geometry.googleIcon);
+export const HousePinIcon = /*#__PURE__*/ icon(geometry.housePinIcon);
+export const BuildIcon = /*#__PURE__*/ icon(geometry.buildIcon);
+export const CodeIcon = /*#__PURE__*/ icon(geometry.codeIcon);
+export const CloseIcon = /*#__PURE__*/ icon(geometry.closeIcon);
+export const CopyIcon = /*#__PURE__*/ icon(geometry.copyIcon);
+export const EmailIcon = /*#__PURE__*/ icon(geometry.emailIcon);
+export const LockIcon = /*#__PURE__*/ icon(geometry.lockIcon);
+export const TickIcon = /*#__PURE__*/ icon(geometry.tickIcon);
+export const SunIcon = /*#__PURE__*/ icon(geometry.sunIcon);
+export const MoonIcon = /*#__PURE__*/ icon(geometry.moonIcon);
+export const AutoThemeIcon = /*#__PURE__*/ icon(geometry.autoThemeIcon);
+export const QrIcon = /*#__PURE__*/ icon(geometry.qrIcon);
+export const CameraIcon = /*#__PURE__*/ icon(geometry.cameraIcon);
+export const SettingsIcon = /*#__PURE__*/ icon(geometry.settingsIcon);
+export const TextInputIcon = /*#__PURE__*/ icon(geometry.textInputIcon);
+export const EnterIcon = /*#__PURE__*/ icon(geometry.enterIcon);
+export const ShareIcon = /*#__PURE__*/ icon(geometry.shareIcon);
+export const InviteIcon = /*#__PURE__*/ icon(geometry.inviteIcon);
+export const HouseSettingsIcon = /*#__PURE__*/ icon(geometry.houseSettingsIcon);
+export const MemberIcon = /*#__PURE__*/ icon(geometry.memberIcon);
+export const BasketIcon = /*#__PURE__*/ icon(geometry.basketIcon);
+export const MoreVerticalIcon = /*#__PURE__*/ icon(geometry.moreVerticalIcon);
+export const FilterIcon = /*#__PURE__*/ icon(geometry.filterIcon);
+export const SortIcon = /*#__PURE__*/ icon(geometry.sortIcon);
+export const CaretDownIcon = /*#__PURE__*/ icon(geometry.caretDownIcon);
+export const PlusCircleIcon = /*#__PURE__*/ icon(geometry.plusCircleIcon);
+export const CartMinusIcon = /*#__PURE__*/ icon(geometry.cartMinusIcon);
+export const CartCheckIcon = /*#__PURE__*/ icon(geometry.cartCheckIcon);
+export const CartPlusIcon = /*#__PURE__*/ icon(geometry.cartPlusIcon);
+export const CartCrossIcon = /*#__PURE__*/ icon(geometry.cartCrossIcon);
+export const UserCrossIcon = /*#__PURE__*/ icon(geometry.userCrossIcon);
+export const BagDollarIcon = /*#__PURE__*/ icon(geometry.bagDollarIcon);
+export const UserCheckIcon = /*#__PURE__*/ icon(geometry.userCheckIcon);
+export const FilePlusIcon = /*#__PURE__*/ icon(geometry.filePlusIcon);
+export const TrashIcon = /*#__PURE__*/ icon(geometry.trashIcon);
+export const HousePlusIcon = /*#__PURE__*/ icon(geometry.housePlusIcon);
+export const FrownIcon = /*#__PURE__*/ icon(geometry.frownIcon);
+export const PulseIcon = /*#__PURE__*/ icon(geometry.pulseIcon);
+export const CheckCircleIcon = /*#__PURE__*/ icon(geometry.checkCircleIcon);
+export const VegetablesIcon = /*#__PURE__*/ icon(geometry.vegetablesIcon);
+export const FruitsIcon = /*#__PURE__*/ icon(geometry.fruitsIcon);
+export const ClockIcon = /*#__PURE__*/ icon(geometry.clockIcon);
+export const CheckIcon = /*#__PURE__*/ icon(geometry.checkIcon);
+export const StaplesIcon = /*#__PURE__*/ icon(geometry.staplesIcon);
+export const SpicesIcon = /*#__PURE__*/ icon(geometry.spicesIcon);
+export const DairyIcon = /*#__PURE__*/ icon(geometry.dairyIcon);
+export const MeatFishIcon = /*#__PURE__*/ icon(geometry.meatFishIcon);
+export const BakeryIcon = /*#__PURE__*/ icon(geometry.bakeryIcon);
+export const SnacksIcon = /*#__PURE__*/ icon(geometry.snacksIcon);
+export const BeveragesIcon = /*#__PURE__*/ icon(geometry.beveragesIcon);
+export const HouseholdIcon = /*#__PURE__*/ icon(geometry.householdIcon);
+export const OtherIcon = /*#__PURE__*/ icon(geometry.otherIcon);
+export const PersonalCareIcon = /*#__PURE__*/ icon(geometry.personalCareIcon);
+export const GroceryIcon = /*#__PURE__*/ icon(geometry.groceryIcon);
+export const TodoIcon = /*#__PURE__*/ icon(geometry.todoIcon);
+export const WalletIcon = /*#__PURE__*/ icon(geometry.walletIcon);
+export const EventsIcon = /*#__PURE__*/ icon(geometry.eventsIcon);
+export const ShoppingIcon = /*#__PURE__*/ icon(geometry.shoppingIcon);
+export const DiningIcon = /*#__PURE__*/ icon(geometry.diningIcon);
+export const ListSettingsIcon = /*#__PURE__*/ icon(geometry.listSettingsIcon);
+export const HeartIcon = /*#__PURE__*/ icon(geometry.heartIcon);
+export const TrashOutlineIcon = /*#__PURE__*/ icon(geometry.trashOutlineIcon);
+export const EditIcon = /*#__PURE__*/ icon(geometry.editIcon);
+export const LogoutIcon = /*#__PURE__*/ icon(geometry.logoutIcon);
+export const LockFilledIcon = /*#__PURE__*/ icon(geometry.lockFilledIcon);
+export const WorldIcon = /*#__PURE__*/ icon(geometry.worldIcon);
+export const LeaveHouseIcon = /*#__PURE__*/ icon(geometry.leaveHouseIcon);
+export const PendingIcon = /*#__PURE__*/ icon(geometry.pendingIcon);
+export const UserCircleIcon = /*#__PURE__*/ icon(geometry.userCircleIcon);
+export const BadgeCheckIcon = /*#__PURE__*/ icon(geometry.badgeCheckIcon);
+export const PendingActiveIcon = /*#__PURE__*/ icon(geometry.pendingActiveIcon);
+export const UserCircleActiveIcon = /*#__PURE__*/ icon(geometry.userCircleActiveIcon);
+export const BadgeCheckActiveIcon = /*#__PURE__*/ icon(geometry.badgeCheckActiveIcon);
+export const VerifiedIcon = /*#__PURE__*/ icon(geometry.verifiedIcon);
+export const TransactionIcon = /*#__PURE__*/ icon(geometry.transactionIcon);
+export const DocumentIcon = /*#__PURE__*/ icon(geometry.documentIcon);
+export const ShieldCheckIcon = /*#__PURE__*/ icon(geometry.shieldCheckIcon);
+export const RupeeIcon = /*#__PURE__*/ icon(geometry.rupeeIcon);
+export const CalendarIcon = /*#__PURE__*/ icon(geometry.calendarIcon);
+export const SharesIcon = /*#__PURE__*/ icon(geometry.sharesIcon);
+export const BoltIcon = /*#__PURE__*/ icon(geometry.boltIcon);
+export const CarIcon = /*#__PURE__*/ icon(geometry.carIcon);
+export const GlobeFilledIcon = /*#__PURE__*/ icon(geometry.globeFilledIcon);
+export const CloudLockFilledIcon = /*#__PURE__*/ icon(geometry.cloudLockFilledIcon);
+export const SimplifyIcon = /*#__PURE__*/ icon(geometry.simplifyIcon);
+export const SettleUpIcon = /*#__PURE__*/ icon(geometry.settleUpIcon);
+export const BalancesIcon = /*#__PURE__*/ icon(geometry.balancesIcon);
+export const TotalsIcon = /*#__PURE__*/ icon(geometry.totalsIcon);
+export const NoteIcon = /*#__PURE__*/ icon(geometry.noteIcon);

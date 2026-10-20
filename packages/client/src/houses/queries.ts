@@ -2,7 +2,6 @@ import { useQuery } from "@tanstack/react-query";
 
 import { useAuth } from "../auth/use-auth";
 import {
-  fetchHouse,
   fetchHouses,
   fetchInvitedEmails,
   fetchInvite,
@@ -24,14 +23,6 @@ export function useMyHouses() {
     queryFn: fetchHouses,
     enabled: userId !== null,
     refetchInterval: HOUSE_LIST_REFRESH_MS,
-  });
-}
-
-export function useHouse(houseId: string | null) {
-  return useQuery({
-    queryKey: houseKeys.detail(houseId ?? ""),
-    queryFn: () => fetchHouse(houseId as string),
-    enabled: houseId !== null,
   });
 }
 

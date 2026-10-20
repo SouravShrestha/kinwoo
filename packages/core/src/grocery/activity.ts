@@ -457,13 +457,6 @@ export function formatActivityDetail(
   return null;
 }
 
-export function batchBoughtTimelinePhrase(entry: GroceryActivityEntry): string {
-  const count = entry.payload?.item_count;
-  const others = typeof count === "number" ? count - 1 : 0;
-  if (others < 1) return "marked this item as bought";
-  return `marked this item as bought with ${others} ${others === 1 ? "other" : "others"}`;
-}
-
 export const ACTIVITY_PAGE_SIZE = 30;
 
 export type ActivityCursor = { createdAt: string; id: string };

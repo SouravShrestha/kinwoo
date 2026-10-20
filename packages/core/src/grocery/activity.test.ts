@@ -2,7 +2,6 @@ import { describe, expect, it } from "vitest";
 
 import {
   activityIconName,
-  batchBoughtTimelinePhrase,
   filterActivity,
   formatActivityParts,
   formatActivityTimestamp,
@@ -46,14 +45,6 @@ describe("batch bought activity", () => {
   it("uses the bought filter and icon", () => {
     expect(filterActivity([entry], { type: ["bought"] })).toEqual([entry]);
     expect(activityIconName(entry)).toBe("bag-dollar");
-  });
-
-  it("describes the item's companions in its timeline", () => {
-    expect(batchBoughtTimelinePhrase(entry)).toBe("marked this item as bought with 2 others");
-    expect(batchBoughtTimelinePhrase(batchEntry({ item_count: 2 }))).toBe(
-      "marked this item as bought with 1 other",
-    );
-    expect(batchBoughtTimelinePhrase(batchEntry({}))).toBe("marked this item as bought");
   });
 });
 

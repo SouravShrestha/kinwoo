@@ -20,11 +20,6 @@ export async function fetchHouses(): Promise<HouseMembership[]> {
   return body.houses;
 }
 
-export async function fetchHouse(houseId: string): Promise<HouseMembership> {
-  const body = await apiRequest<{ membership: HouseMembership }>(`/api/houses/${segment(houseId)}`);
-  return body.membership;
-}
-
 export async function createHouse(input: CreateHouseInput): Promise<House> {
   const body = await apiRequest<{ house: House }>("/api/houses", { method: "POST", body: input });
   return body.house;

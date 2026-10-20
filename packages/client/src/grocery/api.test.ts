@@ -2,7 +2,6 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { configureApiClient } from "../api/config";
 import {
-  addCategory,
   addItem,
   assignItem,
   claimItem,
@@ -18,9 +17,6 @@ import {
   fetchOverview,
   markBought,
   markItemsBought,
-  moveItem,
-  respondToAssignment,
-  unclaimItem,
   updateItem,
   updateList,
 } from "./api";
@@ -145,7 +141,7 @@ describe("grocery api", () => {
     expect(init.body).toBe(JSON.stringify({ quantity: 5 }));
   });
 
-  it("claims and unclaims an item", async () => {
+  it("claims an item", async () => {
     fetchMock.mockResolvedValueOnce(jsonResponse({ result: { claimed: true } }));
     await expect(claimItem("h1", "l1", "i1")).resolves.toEqual({ claimed: true });
     expect(lastCall().url).toBe(
@@ -161,13 +157,6 @@ describe("grocery api", () => {
       claimed: false,
       claimedByName: "Bob",
     });
-
-    fetchMock.mockResolvedValueOnce(jsonResponse({ ok: true }));
-    await unclaimItem("h1", "l1", "i1");
-    expect(lastCall().url).toBe(
-      "https://kinwoo.cbsdev.me/api/houses/h1/grocery/lists/l1/items/i1/claim",
-    );
-    expect(lastCall().init.method).toBe("DELETE");
   });
 
   it("marks an item as bought", async () => {
@@ -193,20 +182,13 @@ describe("grocery api", () => {
     expect(init.body).toBe(JSON.stringify(input));
   });
 
-  it("assigns and responds to item assignment", async () => {
+  it("assigns an item", async () => {
     fetchMock.mockResolvedValueOnce(jsonResponse({ ok: true }));
     await assignItem("h1", "l1", "i1", "u2");
     expect(lastCall().url).toBe(
       "https://kinwoo.cbsdev.me/api/houses/h1/grocery/lists/l1/items/i1/assign",
     );
     expect(lastCall().init.body).toBe(JSON.stringify({ assignedTo: "u2" }));
-
-    fetchMock.mockResolvedValueOnce(jsonResponse({ ok: true }));
-    await respondToAssignment("h1", "l1", "i1", true);
-    expect(lastCall().url).toBe(
-      "https://kinwoo.cbsdev.me/api/houses/h1/grocery/lists/l1/items/i1/respond",
-    );
-    expect(lastCall().init.body).toBe(JSON.stringify({ accept: true }));
   });
 
   it("deletes an item", async () => {
@@ -219,26 +201,10 @@ describe("grocery api", () => {
     expect(init.method).toBe("DELETE");
   });
 
-  it("moves an item to another list", async () => {
-    fetchMock.mockResolvedValue(jsonResponse({ ok: true }));
-
-    await moveItem("h1", "l1", "i1", "l2");
-
-    const { url, init } = lastCall();
-    expect(url).toBe("https://kinwoo.cbsdev.me/api/houses/h1/grocery/lists/l1/items/i1/move");
-    expect(init.method).toBe("POST");
-    expect(init.body).toBe(JSON.stringify({ targetListId: "l2" }));
-  });
-
-  it("manages categories", async () => {
+  it("fetches categories", async () => {
     fetchMock.mockResolvedValueOnce(jsonResponse({ categories: [{ id: "c1", name: "Dairy" }] }));
     await expect(fetchCategories("h1")).resolves.toEqual([{ id: "c1", name: "Dairy" }]);
     expect(lastCall().url).toBe("https://kinwoo.cbsdev.me/api/houses/h1/grocery/categories");
-
-    fetchMock.mockResolvedValueOnce(jsonResponse({ category: { id: "c2", name: "Spices" } }));
-    await expect(addCategory("h1", "Spices")).resolves.toEqual({ id: "c2", name: "Spices" });
-    expect(lastCall().url).toBe("https://kinwoo.cbsdev.me/api/houses/h1/grocery/categories");
-    expect(lastCall().init.body).toBe(JSON.stringify({ name: "Spices" }));
   });
 
   it("fetches overview for a house", async () => {

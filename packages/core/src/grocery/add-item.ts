@@ -146,9 +146,3 @@ export function parseItemQuantity(input: string): number | null {
   if (!input.trim() || !Number.isFinite(value) || value <= 0) return null;
   return value;
 }
-
-export function stepItemQuantity(input: string, delta: 1 | -1): string {
-  const current = parseItemQuantity(input) ?? 0;
-  const next = Math.max(0, Math.round((current + delta) * 100) / 100);
-  return next === 0 ? "" : String(next);
-}

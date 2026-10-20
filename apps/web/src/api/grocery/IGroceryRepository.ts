@@ -76,7 +76,6 @@ export interface IGroceryRepository {
   deleteItem(itemId: string): Promise<void>;
   deleteItems(listId: string, itemIds: string[]): Promise<number>;
   claimItem(itemId: string): Promise<ClaimResult>;
-  unclaimItem(itemId: string): Promise<void>;
   assignItem(itemId: string, assignedTo: string): Promise<void>;
   /** Returns a claimed or assigned item to pending. */
   unassignItem(itemId: string): Promise<void>;
@@ -84,14 +83,11 @@ export interface IGroceryRepository {
   assignItems(listId: string, itemIds: string[], assignedTo: string): Promise<number>;
   /** Claims for the caller; returns how many were still pending and got claimed. */
   claimItems(listId: string, itemIds: string[]): Promise<number>;
-  respondToAssignment(itemId: string, accept: boolean): Promise<void>;
   markBought(itemId: string, input: MarkBoughtInput): Promise<void>;
   /** Buys every item or none; returns the new batch id. */
   markItemsBought(listId: string, input: MarkItemsBoughtInput): Promise<string>;
-  moveItem(itemId: string, targetListId: string): Promise<void>;
 
   listCategories(houseId: string): Promise<GroceryCategory[]>;
-  addCategory(houseId: string, name: string): Promise<GroceryCategory>;
 
   listRecentActivity(
     houseId: string,

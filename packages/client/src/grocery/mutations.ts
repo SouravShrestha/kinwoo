@@ -13,7 +13,6 @@ import {
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import {
-  addCategory,
   addItem,
   assignItem,
   assignItems,
@@ -25,10 +24,7 @@ import {
   deleteList,
   markBought,
   markItemsBought,
-  moveItem,
-  respondToAssignment,
   unassignItem,
-  unclaimItem,
   updateItem,
   updateList,
 } from "./api";
@@ -204,45 +200,6 @@ export function useClaimItem(
   });
 }
 
-export function useUnclaimItem(houseId: string, listId: string) {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: (itemId: string) => unclaimItem(houseId, listId, itemId),
-    onMutate: async (itemId) => {
-      await queryClient.cancelQueries({ queryKey: groceryKeys.items(houseId, listId) });
-      const previous = queryClient.getQueryData<GroceryItem[]>(groceryKeys.items(houseId, listId));
-      queryClient.setQueryData<GroceryItem[]>(
-        groceryKeys.items(houseId, listId),
-        (old) =>
-          old?.map((item) =>
-            item.id === itemId
-              ? {
-                  ...item,
-                  status: "pending" as const,
-                  claimedBy: null,
-                  claimedByName: null,
-                }
-              : item,
-          ) ?? old,
-      );
-      return { previous };
-    },
-    onError: (_err, _itemId, context) => {
-      if (context?.previous) {
-        queryClient.setQueryData(groceryKeys.items(houseId, listId), context.previous);
-      }
-    },
-    onSettled: (_data, _error, itemId) => {
-      void queryClient.invalidateQueries({ queryKey: groceryKeys.items(houseId, listId) });
-      void queryClient.invalidateQueries({ queryKey: groceryKeys.overview(houseId) });
-      void queryClient.invalidateQueries({
-        queryKey: groceryKeys.activity(houseId, listId, itemId),
-      });
-    },
-  });
-}
-
 export function useUnassignItem(houseId: string, listId: string) {
   const queryClient = useQueryClient();
   const itemsKey = groceryKeys.items(houseId, listId);
@@ -396,22 +353,6 @@ export function useClaimItems(
   });
 }
 
-export function useRespondToAssignment(houseId: string, listId: string) {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: ({ itemId, accept }: { itemId: string; accept: boolean }) =>
-      respondToAssignment(houseId, listId, itemId, accept),
-    onSuccess: (_data, variables) => {
-      void queryClient.invalidateQueries({ queryKey: groceryKeys.items(houseId, listId) });
-      void queryClient.invalidateQueries({ queryKey: groceryKeys.overview(houseId) });
-      void queryClient.invalidateQueries({
-        queryKey: groceryKeys.activity(houseId, listId, variables.itemId),
-      });
-    },
-  });
-}
-
 export function useMarkBought(houseId: string, listId: string) {
   const queryClient = useQueryClient();
 
@@ -516,41 +457,6 @@ export function useDeleteItems(houseId: string, listId: string) {
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: groceryKeys.items(houseId, listId) });
       void queryClient.invalidateQueries({ queryKey: groceryKeys.overview(houseId) });
-    },
-  });
-}
-
-export function useMoveItem(houseId: string) {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: ({
-      itemId,
-      listId,
-      targetListId,
-    }: {
-      itemId: string;
-      listId: string;
-      targetListId: string;
-    }) => moveItem(houseId, listId, itemId, targetListId),
-    onSuccess: (_data, variables) => {
-      void queryClient.invalidateQueries({
-        queryKey: groceryKeys.items(houseId, variables.listId),
-      });
-      void queryClient.invalidateQueries({
-        queryKey: groceryKeys.items(houseId, variables.targetListId),
-      });
-    },
-  });
-}
-
-export function useAddCategory(houseId: string) {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: (name: string) => addCategory(houseId, name),
-    onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: groceryKeys.categories(houseId) });
     },
   });
 }

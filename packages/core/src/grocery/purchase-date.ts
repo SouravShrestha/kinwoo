@@ -51,16 +51,3 @@ export function boughtAtForDate(picked: Date, now: Date = new Date()): string | 
   if (isSameLocalDay(picked, now)) return null;
   return new Date(picked.getFullYear(), picked.getMonth(), picked.getDate(), 12).toISOString();
 }
-
-export function toDateInputValue(date: Date): string {
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
-  return `${date.getFullYear()}-${month}-${day}`;
-}
-
-export function fromDateInputValue(value: string): Date | null {
-  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
-  if (!match) return null;
-  const date = new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3]));
-  return Number.isNaN(date.getTime()) ? null : date;
-}
