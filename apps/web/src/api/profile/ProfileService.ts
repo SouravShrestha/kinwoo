@@ -108,7 +108,10 @@ function validatePreferences(preferences: ProfilePreferences): string | null {
     return "Choose light, dark or system.";
   }
 
-  if (preferences.locale !== undefined && !LOCALE_PATTERN.test(preferences.locale)) {
+  if (
+    preferences.locale !== undefined &&
+    (typeof preferences.locale !== "string" || !LOCALE_PATTERN.test(preferences.locale))
+  ) {
     return "That is not a supported language code.";
   }
 

@@ -4,6 +4,7 @@ import { ProfileRepository } from "@/api/profile/ProfileRepository";
 import { ProfileService } from "@/api/profile/ProfileService";
 import type { ProfilePreferences } from "@/api/profile/IProfileRepository";
 import { createRouteClient, getVerifiedUser } from "@/integrations/supabase/client.route";
+import { readJsonObject } from "../../_lib/json";
 import { profileResponse } from "../../_lib/profileResponse";
 
 export async function PATCH(request: Request) {
@@ -14,10 +15,8 @@ export async function PATCH(request: Request) {
     return applyCookies(NextResponse.json({ error: "Not logged in" }, { status: 401 }));
   }
 
-  let body: Record<string, unknown>;
-  try {
-    body = (await request.json()) as Record<string, unknown>;
-  } catch {
+  const body = await readJsonObject(request);
+  if (!body) {
     return applyCookies(NextResponse.json({ error: "Invalid JSON body" }, { status: 400 }));
   }
 

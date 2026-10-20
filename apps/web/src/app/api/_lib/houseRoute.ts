@@ -50,16 +50,7 @@ export function houseResponse<T>(
   return NextResponse.json(body, { status: options.status ?? 200, headers: NO_STORE });
 }
 
-export async function readJsonObject(request: Request): Promise<Record<string, unknown> | null> {
-  try {
-    const body: unknown = await request.json();
-    return typeof body === "object" && body !== null && !Array.isArray(body)
-      ? (body as Record<string, unknown>)
-      : null;
-  } catch {
-    return null;
-  }
-}
+export { readJsonObject } from "./json";
 
 export type HouseRouteContext = { service: IHousesService; userId: string };
 

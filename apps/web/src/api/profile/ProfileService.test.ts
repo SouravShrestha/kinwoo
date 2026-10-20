@@ -178,6 +178,9 @@ describe("ProfileService.setPreferences", () => {
     const service = new ProfileService(fakeRepository());
     expect((await service.setPreferences("user-1", { locale: "english" })).status).toBe("invalid");
     expect((await service.setPreferences("user-1", { locale: "en-GB" })).status).toBe("ok");
+    // A one-element array stringifies to a valid code, so the type is checked too.
+    const array = ["en"] as unknown as string;
+    expect((await service.setPreferences("user-1", { locale: array })).status).toBe("invalid");
   });
 
   it("reports an error state when the write throws", async () => {

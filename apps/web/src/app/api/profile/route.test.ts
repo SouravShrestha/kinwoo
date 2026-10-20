@@ -8,6 +8,7 @@ const getVerifiedUser = vi.fn();
 const applyCookies = vi.fn((response: unknown) => response);
 const getProfile = vi.fn();
 const setDisplayName = vi.fn();
+const setPreferences = vi.fn();
 
 vi.mock("@/integrations/supabase/client.route", () => ({
   createRouteClient: () => ({ supabase: {}, applyCookies }),
@@ -22,6 +23,7 @@ vi.mock("@/api/profile/ProfileService", () => ({
   ProfileService: class {
     getProfile = getProfile;
     setDisplayName = setDisplayName;
+    setPreferences = setPreferences;
   },
 }));
 
@@ -137,9 +139,31 @@ describe("PATCH /api/profile/display-name", () => {
   });
 });
 
+describe("PATCH /api/profile/preferences", () => {
+  const patchPreferences = async (request: Request) =>
+    (await import("./preferences/route")).PATCH(request);
+
+  it("400s a JSON null body instead of throwing", async () => {
+    getVerifiedUser.mockResolvedValue({ id: "user-1" });
+
+    expect((await patchPreferences(jsonRequest("null"))).status).toBe(400);
+    expect(setPreferences).not.toHaveBeenCalled();
+  });
+
+  it("passes only the fields that were sent", async () => {
+    getVerifiedUser.mockResolvedValue({ id: "user-1" });
+    setPreferences.mockResolvedValue({ status: "ok", profile });
+
+    const response = await patchPreferences(jsonRequest({ theme: "dark" }));
+
+    expect(response.status).toBe(200);
+    expect(setPreferences).toHaveBeenCalledWith("user-1", { theme: "dark" });
+  });
+});
+
 describe("route sources", () => {
   const here = path.dirname(new URL(import.meta.url).pathname);
-  const files = ["route.ts", "display-name/route.ts", "preferences/route.ts"];
+  const files = ["route.ts", "avatar/route.ts", "display-name/route.ts", "preferences/route.ts"];
 
   it("never import the service-role client", () => {
     for (const file of files) {

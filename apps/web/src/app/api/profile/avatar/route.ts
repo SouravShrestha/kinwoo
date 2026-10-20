@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { ProfileRepository } from "@/api/profile/ProfileRepository";
 import { ProfileService } from "@/api/profile/ProfileService";
 import { createRouteClient, getVerifiedUser } from "@/integrations/supabase/client.route";
+import { readJsonObject } from "../../_lib/json";
 import { profileResponse } from "../../_lib/profileResponse";
 
 export async function PATCH(request: Request) {
@@ -13,13 +14,12 @@ export async function PATCH(request: Request) {
     return applyCookies(NextResponse.json({ error: "Not logged in" }, { status: 401 }));
   }
 
-  let avatarUrl: unknown;
-  try {
-    ({ avatarUrl } = (await request.json()) as { avatarUrl?: unknown });
-  } catch {
+  const body = await readJsonObject(request);
+  if (!body) {
     return applyCookies(NextResponse.json({ error: "Invalid JSON body" }, { status: 400 }));
   }
 
+  const avatarUrl = body.avatarUrl;
   if (typeof avatarUrl !== "string") {
     return applyCookies(
       NextResponse.json({ error: "avatarUrl must be a string" }, { status: 400 }),
