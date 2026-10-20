@@ -7,6 +7,7 @@ import {
   ITEM_STORE_MAX_LENGTH,
   itemNameErrorMessage,
   listNameErrorMessage,
+  BOUGHT_PAGE_SIZE,
   MAX_BULK_ASSIGN,
   MIN_BATCH_ITEMS,
   validateBatchName,
@@ -24,6 +25,7 @@ import {
   GroceryRepositoryError,
   type ActivityEntry,
   type AddItemInput,
+  type BoughtItemsPage,
   type ClaimResult,
   type CreateListInput,
   type GroceryCategory,
@@ -107,8 +109,21 @@ export class GroceryService implements IGroceryService {
     });
   }
 
-  async listItems(listId: string): Promise<GroceryResult<GroceryItem[]>> {
-    return this.run(() => this.repository.listItems(listId));
+  async listItems(
+    listId: string,
+    boughtSince?: string | null,
+  ): Promise<GroceryResult<GroceryItem[]>> {
+    if (boughtSince == null) return this.run(() => this.repository.listItems(listId));
+    if (!isTimestamp(boughtSince)) return invalidInput("boughtSince must be a date.");
+    return this.run(() => this.repository.listItems(listId, { boughtSince }));
+  }
+
+  async listBoughtItems(
+    listId: string,
+    before: string | null,
+  ): Promise<GroceryResult<BoughtItemsPage>> {
+    if (before === null || !isTimestamp(before)) return invalidInput("before must be a date.");
+    return this.run(() => this.repository.listBoughtItems(listId, before, BOUGHT_PAGE_SIZE));
   }
 
   async getItem(itemId: string): Promise<GroceryResult<GroceryItem>> {
@@ -340,4 +355,8 @@ export class GroceryService implements IGroceryService {
       return fromError(cause);
     }
   }
+}
+
+function isTimestamp(value: string): boolean {
+  return value.length <= 40 && !Number.isNaN(Date.parse(value));
 }

@@ -118,6 +118,29 @@ select throws_ok(
   format('select public.delete_grocery_items(%L, %L)', tests.id('list'), '{}'::uuid[]),
   'P0001', 'INVALID_INPUT', 'an empty selection is refused');
 
+-- Bought items page newest first without splitting a batch
+select tests.as_user(tests.id('a'));
+select set_config('tests.hist',
+  (public.create_grocery_list(tests.id('house'), 'History', null, 'shared')).id::text, true);
+select set_config('tests.h' || n,
+  (public.add_grocery_item(tests.id('hist'), 'Old ' || n)).id::text, true)
+  from generate_series(1, 3) n;
+select public.mark_item_bought(tests.id('h' || n), null, null, 100, null,
+                               now() - make_interval(days => n), null)
+  from generate_series(1, 3) n;
+select set_config('tests.b1', (public.add_grocery_item(tests.id('hist'), 'Batch 1')).id::text, true);
+select set_config('tests.b2', (public.add_grocery_item(tests.id('hist'), 'Batch 2')).id::text, true);
+select public.mark_items_bought(tests.id('hist'), array[tests.id('b1'), tests.id('b2')], 200);
+
+select is((select count(*) from public.bought_item_page(tests.id('hist'), now() + interval '1 hour', 1)),
+  2::bigint, 'a page never splits a batch, even past its limit');
+select is(
+  (select array_agg(item_id order by bought_at desc)
+     from public.bought_item_page(tests.id('hist'), now() - interval '1 minute', 2)),
+  array[tests.id('h1'), tests.id('h2')], 'older pages continue newest first');
+select is((select count(*) from public.bought_item_page(tests.id('hist'), now() - interval '3 days', 5)),
+  0::bigint, 'nothing before the oldest purchase');
+
 -- house_member_nets matches the per-member pairwise sums it replaced
 select public.create_expense(tests.id('house'), 'Rent', 1000, 'rent', null, current_date, 'exact',
   jsonb_build_array(tests.payer('a', 600), tests.payer('b', 400)),

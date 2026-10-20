@@ -205,8 +205,8 @@ describe("route sources", () => {
   ];
 
   it("covers every houses and invites route", () => {
-    // 10 original house/invite routes + 20 grocery sub-routes + 4 expense routes.
-    expect(files.length).toBe(34);
+    // 10 original house/invite routes + 21 grocery sub-routes + 4 expense routes.
+    expect(files.length).toBe(35);
   });
 
   it("never import the service-role client", () => {

@@ -4,7 +4,7 @@ import {
   createListStorage,
   useClaimItems,
   useDeleteItems,
-  useGroceryItems,
+  useListItemsWithHistory,
   useGroceryLists,
   useItemSelection,
 } from "@kinwoo/client/grocery";
@@ -57,6 +57,7 @@ import {
 import { BoughtGroupCard } from "@/components/grocery/BoughtGroupCard";
 import { BoughtGroupSheet } from "@/components/grocery/BoughtGroupSheet";
 import { EmptyItems } from "@/components/grocery/EmptyItems";
+import { OlderPurchasesButton } from "@/components/grocery/OlderPurchasesButton";
 import { GroceryTabView } from "@/components/grocery/GroceryTabView";
 import { ItemDetailSheet } from "@/components/grocery/ItemDetailSheet";
 import { EditListSheet } from "@/components/grocery/EditListSheet";
@@ -137,7 +138,8 @@ export default function TasksScreen() {
   const isAdmin = activeHouse?.role === "admin";
   const canManageList = !!currentList && (isAdmin || currentList.createdBy === currentUserId);
 
-  const { data: items } = useGroceryItems(houseId || null, activeSelectedListId);
+  const history = useListItemsWithHistory(houseId || null, activeSelectedListId);
+  const items = history.items;
 
   const itemsByTab = useMemo(() => groceryItemsByTab(items ?? []), [items]);
 
@@ -378,7 +380,10 @@ export default function TasksScreen() {
               }}
             >
               {!itemsLoaded ? null : visibleByTab[key].length === 0 ? (
-                <EmptyItems {...groceryEmptyCopy(key, { filtering, listEmpty })} />
+                <>
+                  <EmptyItems {...groceryEmptyCopy(key, { filtering, listEmpty })} />
+                  {key === "bought" ? <OlderPurchasesButton history={history} /> : null}
+                </>
               ) : key === "pending" ? (
                 <View style={{ paddingHorizontal: SCREEN_PADDING, paddingTop: 8 }}>
                   <View className="mb-3 min-h-8 flex-row items-center justify-between gap-3">
@@ -503,6 +508,9 @@ export default function TasksScreen() {
                       />
                     );
                   })}
+                  <View className="w-full">
+                    <OlderPurchasesButton history={history} />
+                  </View>
                 </View>
               )}
             </ScrollView>

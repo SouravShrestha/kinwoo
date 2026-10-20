@@ -11,7 +11,10 @@ type Context = { params: Promise<{ houseId: string; listId: string }> };
 export async function GET(request: Request, { params }: Context) {
   const { houseId, listId } = await params;
 
-  return handleGroceryRequest(request, ({ service }) => service.listItems(listId), {
+  // Without boughtSince every item is returned, which older app builds rely on.
+  const boughtSince = new URL(request.url).searchParams.get("boughtSince");
+
+  return handleGroceryRequest(request, ({ service }) => service.listItems(listId, boughtSince), {
     key: "items",
     uuids: [houseId, listId],
   });

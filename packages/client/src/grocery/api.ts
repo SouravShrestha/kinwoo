@@ -1,6 +1,7 @@
 import type {
   AddItemInput,
   AssignItemsResult,
+  BoughtItemsPage,
   DeleteItemsResult,
   ClaimResult,
   CreateListInput,
@@ -62,9 +63,29 @@ export async function deleteList(houseId: string, listId: string): Promise<void>
   });
 }
 
-export async function fetchItems(houseId: string, listId: string): Promise<GroceryItem[]> {
-  const body = await apiRequest<{ items: GroceryItem[] }>(`${listBase(houseId, listId)}/items`);
+export async function fetchItems(
+  houseId: string,
+  listId: string,
+  options: { boughtSince?: string } = {},
+): Promise<GroceryItem[]> {
+  const query = options.boughtSince
+    ? `?boughtSince=${encodeURIComponent(options.boughtSince)}`
+    : "";
+  const body = await apiRequest<{ items: GroceryItem[] }>(
+    `${listBase(houseId, listId)}/items${query}`,
+  );
   return body.items;
+}
+
+export async function fetchBoughtItems(
+  houseId: string,
+  listId: string,
+  before: string,
+): Promise<BoughtItemsPage> {
+  const body = await apiRequest<{ page: BoughtItemsPage }>(
+    `${listBase(houseId, listId)}/items/bought?before=${encodeURIComponent(before)}`,
+  );
+  return body.page;
 }
 
 export async function fetchItem(

@@ -1,6 +1,7 @@
 import type {
   ActivityCursor,
   AddItemInput,
+  BoughtItemsPage,
   ClaimResult,
   CreateListInput,
   GroceryCategory,
@@ -21,6 +22,7 @@ import type {
 
 export type {
   AddItemInput,
+  BoughtItemsPage,
   ClaimResult,
   CreateListInput,
   GroceryCategory,
@@ -65,7 +67,9 @@ export interface IGroceryRepository {
   updateList(listId: string, input: UpdateListInput): Promise<GroceryList>;
   deleteList(listId: string): Promise<void>;
 
-  listItems(listId: string, options?: { status?: ItemStatus[] }): Promise<GroceryItem[]>;
+  // Without boughtSince, every item; with it, open items plus items bought since then.
+  listItems(listId: string, options?: { boughtSince?: string }): Promise<GroceryItem[]>;
+  listBoughtItems(listId: string, before: string, limit: number): Promise<BoughtItemsPage>;
   findItem(itemId: string): Promise<GroceryItem | null>;
   addItem(input: AddItemInput): Promise<GroceryItem>;
   updateItem(itemId: string, input: UpdateItemInput): Promise<GroceryItem>;

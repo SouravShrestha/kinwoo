@@ -6,7 +6,7 @@ import {
   createListStorage,
   useClaimItems,
   useDeleteItems,
-  useGroceryItems,
+  useListItemsWithHistory,
   useGroceryLists,
   useItemSelection,
 } from "@kinwoo/client/grocery";
@@ -50,6 +50,7 @@ import { BoughtGroupCard } from "@/components/grocery/BoughtGroupCard";
 import { BoughtGroupSheet } from "@/components/grocery/BoughtGroupSheet";
 import { CategoryIcon } from "@/components/grocery/CategoryIcon";
 import { EmptyItems } from "@/components/grocery/EmptyItems";
+import { OlderPurchasesButton } from "@/components/grocery/OlderPurchasesButton";
 import { GroceryTabView } from "@/components/grocery/GroceryTabView";
 import { ItemDetailSheet } from "@/components/grocery/ItemDetailSheet";
 import { EditListSheet } from "@/components/grocery/EditListSheet";
@@ -113,7 +114,8 @@ export function TasksScreen() {
 
   const canManageList = !!activeList && (isAdmin || activeList.createdBy === currentUserId);
 
-  const { data: items } = useGroceryItems(houseId || null, activeList?.id ?? null);
+  const history = useListItemsWithHistory(houseId || null, activeList?.id ?? null);
+  const items = history.items;
 
   const itemsByTab = useMemo(() => groceryItemsByTab(items ?? []), [items]);
 
@@ -325,7 +327,14 @@ export function TasksScreen() {
           if (!itemsLoaded) return null;
           const pageItems = visibleByTab[key];
           if (pageItems.length === 0) {
-            return <EmptyItems {...groceryEmptyCopy(key, { filtering, listEmpty })} />;
+            const empty = <EmptyItems {...groceryEmptyCopy(key, { filtering, listEmpty })} />;
+            if (key !== "bought") return empty;
+            return (
+              <div className="flex h-full flex-col">
+                <div className="flex-1">{empty}</div>
+                <OlderPurchasesButton history={history} />
+              </div>
+            );
           }
           if (key === "pending") {
             return (
@@ -420,39 +429,42 @@ export function TasksScreen() {
             );
           }
           return (
-            <ul className="grid grid-cols-2 gap-3">
-              {boughtEntries.map((entry) => {
-                const buyer = entry.kind === "group" ? entry.buyer : itemBuyer(entry.item);
-                const member = buyer ? memberById.get(buyer.userId) : undefined;
-                const cardBuyer = buyer
-                  ? {
-                      name: member?.displayName ?? buyer.name,
-                      avatarUrl: member?.avatarUrl ?? null,
-                    }
-                  : undefined;
-                if (entry.kind === "group") {
+            <>
+              <ul className="grid grid-cols-2 gap-3">
+                {boughtEntries.map((entry) => {
+                  const buyer = entry.kind === "group" ? entry.buyer : itemBuyer(entry.item);
+                  const member = buyer ? memberById.get(buyer.userId) : undefined;
+                  const cardBuyer = buyer
+                    ? {
+                        name: member?.displayName ?? buyer.name,
+                        avatarUrl: member?.avatarUrl ?? null,
+                      }
+                    : undefined;
+                  if (entry.kind === "group") {
+                    return (
+                      <li key={`batch:${entry.batchId}`} className="min-w-0">
+                        <BoughtGroupCard
+                          group={entry}
+                          buyer={cardBuyer}
+                          onOpen={() => openGroup(entry.batchId)}
+                        />
+                      </li>
+                    );
+                  }
                   return (
-                    <li key={`batch:${entry.batchId}`} className="min-w-0">
-                      <BoughtGroupCard
-                        group={entry}
-                        buyer={cardBuyer}
-                        onOpen={() => openGroup(entry.batchId)}
+                    <li key={entry.item.id} className="min-w-0">
+                      <PendingItemCard
+                        item={entry.item}
+                        onOpen={() => setActiveItemId(entry.item.id)}
+                        assigneeVerb="bought by"
+                        assignee={cardBuyer}
                       />
                     </li>
                   );
-                }
-                return (
-                  <li key={entry.item.id} className="min-w-0">
-                    <PendingItemCard
-                      item={entry.item}
-                      onOpen={() => setActiveItemId(entry.item.id)}
-                      assigneeVerb="bought by"
-                      assignee={cardBuyer}
-                    />
-                  </li>
-                );
-              })}
-            </ul>
+                })}
+              </ul>
+              <OlderPurchasesButton history={history} />
+            </>
           );
         }}
       />

@@ -1,8 +1,10 @@
+import type { GroceryItem } from "@kinwoo/core/grocery";
 import { QueryClient } from "@tanstack/react-query";
 import { describe, expect, it } from "vitest";
 
 import { createMemoryStorage } from "../houses/storage";
 import { groceryKeys } from "./keys";
+import { mergeBoughtHistory } from "./queries";
 import {
   applyGroceryRealtimeActions,
   createRealtimeBatcher,
@@ -154,5 +156,27 @@ describe("grocery storage", () => {
     await storage.persistSelectedList("h1", "l1");
     expect(await storage.loadSelectedList("h1")).toBe("l1");
     expect(await memory.getItem("kinwoo.selectedList.h1")).toBe("l1");
+  });
+});
+
+describe("mergeBoughtHistory", () => {
+  const item = (id: string) => ({ id }) as GroceryItem;
+
+  it("appends older purchases once, preferring the items query", () => {
+    const recent = [item("a"), item("b")];
+    const pages = [{ items: [item("b"), item("c")] }, { items: [item("c"), item("d")] }];
+
+    expect(mergeBoughtHistory(recent, pages).map((entry) => entry.id)).toEqual([
+      "a",
+      "b",
+      "c",
+      "d",
+    ]);
+    expect(mergeBoughtHistory(recent, pages)[1]).toBe(recent[1]);
+  });
+
+  it("returns the items unchanged before any history loads", () => {
+    const recent = [item("a")];
+    expect(mergeBoughtHistory(recent, [])).toBe(recent);
   });
 });

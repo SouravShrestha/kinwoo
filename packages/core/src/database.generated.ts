@@ -506,6 +506,11 @@ isOneToOne: false
 "assign_grocery_items":
 { Args: { "p_assigned_to": string,"p_item_ids": (string)[],"p_list_id": string }; Returns: number
                            },
+"bought_item_page":
+{ Args: { "p_before": string,"p_limit": number,"p_list_id": string }; Returns: {
+              "bought_at": string,"item_id": string
+            }[]
+                           },
 "can_manage_expense":
 { Args: { "p_expense_id": string }; Returns: boolean
                            },

@@ -12,6 +12,7 @@ import {
   GroceryRepositoryError,
   type ActivityEntry,
   type AddItemInput,
+  type BoughtItemsPage,
   type ClaimResult,
   type CreateListInput,
   type GroceryCategory,
@@ -19,7 +20,6 @@ import {
   type GroceryList,
   type GroceryOverview,
   type IGroceryRepository,
-  type ItemStatus,
   type MarkBoughtInput,
   type MarkItemsBoughtInput,
   type UpdateItemInput,
@@ -238,19 +238,67 @@ export class GroceryRepository implements IGroceryRepository {
     if (error) fail(error);
   }
 
-  async listItems(listId: string, options?: { status?: ItemStatus[] }): Promise<GroceryItem[]> {
-    let query = (this.client.from("grocery_items" as any) as any)
-      .select(ITEM_COLUMNS)
-      .eq("list_id", listId)
-      .order("position");
+  async listItems(listId: string, options?: { boughtSince?: string }): Promise<GroceryItem[]> {
+    const items = () =>
+      (this.client.from("grocery_items" as any) as any)
+        .select(ITEM_COLUMNS)
+        .eq("list_id", listId)
+        .order("position");
 
-    if (options?.status && options.status.length > 0) {
-      query = query.in("status", options.status);
+    if (!options?.boughtSince) {
+      const { data, error } = await items();
+      if (error) fail(error);
+      return (data ?? []).map(toItem);
     }
 
-    const { data, error } = await query;
+    // The second embed of grocery_purchases only filters: it keeps bought items with a purchase
+    // since the cutoff, while the full purchase history still comes from ITEM_COLUMNS.
+    const [open, bought] = await Promise.all([
+      items().neq("status", "bought"),
+      (this.client.from("grocery_items" as any) as any)
+        .select(`${ITEM_COLUMNS}, recent_purchase:grocery_purchases!inner(bought_at)`)
+        .eq("list_id", listId)
+        .eq("status", "bought")
+        .gte("recent_purchase.bought_at", options.boughtSince)
+        .order("position"),
+    ]);
+    if (open.error) fail(open.error);
+    if (bought.error) fail(bought.error);
+
+    return [...(open.data ?? []), ...(bought.data ?? [])]
+      .map(toItem)
+      .sort((a, b) => a.position - b.position);
+  }
+
+  async listBoughtItems(listId: string, before: string, limit: number): Promise<BoughtItemsPage> {
+    const { data: page, error } = await this.client.rpc("bought_item_page", {
+      p_list_id: listId,
+      p_before: before,
+      p_limit: limit,
+    });
     if (error) fail(error);
-    return (data ?? []).map(toItem);
+
+    const rows = page ?? [];
+    if (rows.length === 0) return { items: [], nextCursor: null };
+
+    const { data, error: itemsError } = await (this.client.from("grocery_items" as any) as any)
+      .select(ITEM_COLUMNS)
+      .in(
+        "id",
+        rows.map((row) => row.item_id),
+      );
+    if (itemsError) fail(itemsError);
+
+    const order = new Map(rows.map((row, index) => [row.item_id, index]));
+    const items = (data ?? [])
+      .map(toItem)
+      .sort((a: GroceryItem, b: GroceryItem) => (order.get(a.id) ?? 0) - (order.get(b.id) ?? 0));
+
+    return {
+      items,
+      // Fewer rows than asked for means the history ends here.
+      nextCursor: rows.length >= limit ? rows[rows.length - 1].bought_at : null,
+    };
   }
 
   async findItem(itemId: string): Promise<GroceryItem | null> {

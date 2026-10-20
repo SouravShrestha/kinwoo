@@ -142,6 +142,19 @@ export type AssignItemsResult = { assigned: number; requested: number };
 
 export type DeleteItemsResult = { deleted: number; requested: number };
 
+// Older bought items, newest first. nextCursor is the purchase time to page before, or null at
+// the end of the history.
+export type BoughtItemsPage = { items: GroceryItem[]; nextCursor: string | null };
+
+export const BOUGHT_PAGE_SIZE = 50;
+
+// The items query carries purchases from this many days; older ones load on request.
+export const RECENT_BOUGHT_DAYS = 90;
+
+export function recentBoughtSince(now: number = Date.now()): string {
+  return new Date(now - RECENT_BOUGHT_DAYS * 24 * 60 * 60 * 1000).toISOString();
+}
+
 // Mirrors the cap in the assign_grocery_items RPC.
 export const MAX_BULK_ASSIGN = 200;
 

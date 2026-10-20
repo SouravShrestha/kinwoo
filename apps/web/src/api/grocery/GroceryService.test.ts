@@ -220,3 +220,32 @@ describe("deleteItems", () => {
     expect(await service.deleteItems("l1", ["i1"])).toMatchObject({ ok: false, code: "FORBIDDEN" });
   });
 });
+
+describe("bought item paging", () => {
+  const withRepository = (overrides: Partial<IGroceryRepository>) =>
+    new GroceryService(overrides as unknown as IGroceryRepository);
+
+  it("keeps the full list when no cutoff is given, for older clients", async () => {
+    const listItems = vi.fn().mockResolvedValue([]);
+    await withRepository({ listItems }).listItems("l1", null);
+    expect(listItems).toHaveBeenCalledWith("l1");
+  });
+
+  it("passes a valid cutoff and rejects a malformed one", async () => {
+    const listItems = vi.fn().mockResolvedValue([]);
+    const service = withRepository({ listItems });
+
+    await service.listItems("l1", "2026-07-01T00:00:00.000Z");
+    expect(listItems).toHaveBeenCalledWith("l1", { boughtSince: "2026-07-01T00:00:00.000Z" });
+    expect(await service.listItems("l1", "soon")).toMatchObject({ code: "INVALID_INPUT" });
+  });
+
+  it("pages older purchases with a fixed page size", async () => {
+    const listBoughtItems = vi.fn().mockResolvedValue({ items: [], nextCursor: null });
+    const service = withRepository({ listBoughtItems });
+
+    await service.listBoughtItems("l1", "2026-07-01T00:00:00.000Z");
+    expect(listBoughtItems).toHaveBeenCalledWith("l1", "2026-07-01T00:00:00.000Z", 50);
+    expect(await service.listBoughtItems("l1", null)).toMatchObject({ code: "INVALID_INPUT" });
+  });
+});

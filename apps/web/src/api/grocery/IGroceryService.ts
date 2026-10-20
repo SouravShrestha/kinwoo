@@ -11,6 +11,7 @@ import type {
 import type {
   ActivityEntry,
   AddItemInput,
+  BoughtItemsPage,
   ClaimResult,
   CreateListInput,
   GroceryCategory,
@@ -35,7 +36,8 @@ export interface IGroceryService {
   updateList(listId: string, input: UpdateListInput): Promise<GroceryResult<GroceryList>>;
   deleteList(listId: string): Promise<GroceryResult<null>>;
 
-  listItems(listId: string): Promise<GroceryResult<GroceryItem[]>>;
+  listItems(listId: string, boughtSince?: string | null): Promise<GroceryResult<GroceryItem[]>>;
+  listBoughtItems(listId: string, before: string | null): Promise<GroceryResult<BoughtItemsPage>>;
   getItem(itemId: string): Promise<GroceryResult<GroceryItem>>;
   addItem(input: AddItemInput): Promise<GroceryResult<GroceryItem>>;
   updateItem(itemId: string, input: UpdateItemInput): Promise<GroceryResult<GroceryItem>>;
