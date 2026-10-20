@@ -140,6 +140,8 @@ export type ClaimResult = { claimed: true } | { claimed: false; claimedByName: s
 
 export type AssignItemsResult = { assigned: number; requested: number };
 
+export type DeleteItemsResult = { deleted: number; requested: number };
+
 // Mirrors the cap in the assign_grocery_items RPC.
 export const MAX_BULK_ASSIGN = 200;
 

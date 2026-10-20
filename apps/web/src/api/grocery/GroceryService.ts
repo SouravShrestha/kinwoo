@@ -14,6 +14,7 @@ import {
   validateListName,
   type ActivityCursor,
   type AssignItemsResult,
+  type DeleteItemsResult,
   type GroceryActivityPage,
   type GroceryOverviewItem,
   type MarkItemsBoughtResult,
@@ -182,6 +183,19 @@ export class GroceryService implements IGroceryService {
     return this.runBulk(itemIds, (unique) =>
       this.repository.assignItems(listId, unique, assignedTo),
     );
+  }
+
+  async deleteItems(listId: string, itemIds: string[]): Promise<GroceryResult<DeleteItemsResult>> {
+    const unique = [...new Set(itemIds)];
+    if (unique.length === 0) return invalidInput("Choose at least one item.");
+    if (unique.length > MAX_BULK_ASSIGN) {
+      return invalidInput(`Delete up to ${MAX_BULK_ASSIGN} items at a time.`);
+    }
+
+    return this.run(async () => ({
+      deleted: await this.repository.deleteItems(listId, unique),
+      requested: unique.length,
+    }));
   }
 
   async claimItems(listId: string, itemIds: string[]): Promise<GroceryResult<AssignItemsResult>> {

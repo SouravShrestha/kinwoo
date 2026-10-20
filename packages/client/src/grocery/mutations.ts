@@ -20,6 +20,7 @@ import {
   claimItems,
   createList,
   deleteItem,
+  deleteItems,
   deleteList,
   markBought,
   markItemsBought,
@@ -446,6 +447,18 @@ export function useDeleteItem(houseId: string, listId: string) {
       void queryClient.invalidateQueries({
         queryKey: groceryKeys.activity(houseId, listId, itemId),
       });
+    },
+  });
+}
+
+export function useDeleteItems(houseId: string, listId: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (itemIds: string[]) => deleteItems(houseId, listId, itemIds),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: groceryKeys.items(houseId, listId) });
+      void queryClient.invalidateQueries({ queryKey: groceryKeys.overview(houseId) });
     },
   });
 }

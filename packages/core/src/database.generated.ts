@@ -578,6 +578,9 @@ isOneToOne: false
 "delete_grocery_item":
 { Args: { "p_item_id": string }; Returns: undefined
                            },
+"delete_grocery_items":
+{ Args: { "p_item_ids": (string)[],"p_list_id": string }; Returns: number
+                           },
 "delete_grocery_list":
 { Args: { "p_list_id": string }; Returns: undefined
                            },

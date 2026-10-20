@@ -189,3 +189,34 @@ describe("listPrivatePurchases", () => {
     });
   });
 });
+
+describe("deleteItems", () => {
+  const withDelete = (deleteItems = vi.fn().mockResolvedValue(2)) => ({
+    service: new GroceryService({ deleteItems } as unknown as IGroceryRepository),
+    deleteItems,
+  });
+
+  it("dedupes ids and reports how many were deleted", async () => {
+    const { service, deleteItems } = withDelete();
+
+    const result = await service.deleteItems("l1", ["i1", "i2", "i1", "i3"]);
+
+    expect(result).toEqual({ ok: true, data: { deleted: 2, requested: 3 } });
+    expect(deleteItems).toHaveBeenCalledWith("l1", ["i1", "i2", "i3"]);
+  });
+
+  it("rejects an empty selection without calling the repository", async () => {
+    const { service, deleteItems } = withDelete();
+
+    expect(await service.deleteItems("l1", [])).toMatchObject({ ok: false, code: "INVALID_INPUT" });
+    expect(deleteItems).not.toHaveBeenCalled();
+  });
+
+  it("passes on a refusal from the database", async () => {
+    const { service } = withDelete(
+      vi.fn().mockRejectedValue(new GroceryRepositoryError("x", "FORBIDDEN")),
+    );
+
+    expect(await service.deleteItems("l1", ["i1"])).toMatchObject({ ok: false, code: "FORBIDDEN" });
+  });
+});

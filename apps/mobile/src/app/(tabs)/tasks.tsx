@@ -3,7 +3,7 @@ import { useBusyWhile } from "@kinwoo/client/activity";
 import {
   createListStorage,
   useClaimItems,
-  useDeleteItem,
+  useDeleteItems,
   useGroceryItems,
   useGroceryLists,
   useItemSelection,
@@ -180,7 +180,7 @@ export default function TasksScreen() {
     currentUserId,
     currentUserName,
   );
-  const deleteItem = useDeleteItem(houseId, activeSelectedListId ?? "");
+  const deleteItems = useDeleteItems(houseId, activeSelectedListId ?? "");
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [activeBatchId, setActiveBatchId] = useState<string | null>(null);
@@ -212,10 +212,13 @@ export default function TasksScreen() {
     const itemIds = activeGroup?.items.map((item) => item.id) ?? [];
     if (itemIds.length === 0) return;
     setDeleting(true);
-    const results = await Promise.allSettled(itemIds.map((id) => deleteItem.mutateAsync(id)));
+    // Failures count as nothing deleted, matching bulkDeleteOutcome's error case.
+    const deleted = await deleteItems.mutateAsync(itemIds).then(
+      (result) => result.deleted,
+      () => 0,
+    );
     setDeleting(false);
     setConfirmDeleteGroup(false);
-    const deleted = results.filter((r) => r.status === "fulfilled").length;
     const outcome = bulkDeleteOutcome(deleted, itemIds.length);
     if (outcome.tone === "error") toast.error(outcome.message);
     else {
@@ -228,10 +231,13 @@ export default function TasksScreen() {
     const itemIds = assignedSelection.selectedIds;
     if (itemIds.length === 0) return;
     setDeleting(true);
-    const results = await Promise.allSettled(itemIds.map((id) => deleteItem.mutateAsync(id)));
+    // Failures count as nothing deleted, matching bulkDeleteOutcome's error case.
+    const deleted = await deleteItems.mutateAsync(itemIds).then(
+      (result) => result.deleted,
+      () => 0,
+    );
     setDeleting(false);
     setConfirmDelete(false);
-    const deleted = results.filter((r) => r.status === "fulfilled").length;
     const outcome = bulkDeleteOutcome(deleted, itemIds.length);
     if (outcome.tone === "error") toast.error(outcome.message);
     else toast.success(outcome.message);

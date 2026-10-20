@@ -1,6 +1,7 @@
 import type {
   AddItemInput,
   AssignItemsResult,
+  DeleteItemsResult,
   ClaimResult,
   CreateListInput,
   GroceryActivityEntry,
@@ -187,6 +188,18 @@ export async function markItemsBought(
   const body = await apiRequest<{ result: MarkItemsBoughtResult }>(
     `${listBase(houseId, listId)}/items/buy`,
     { method: "POST", body: input },
+  );
+  return body.result;
+}
+
+export async function deleteItems(
+  houseId: string,
+  listId: string,
+  itemIds: string[],
+): Promise<DeleteItemsResult> {
+  const body = await apiRequest<{ result: DeleteItemsResult }>(
+    `${listBase(houseId, listId)}/items/delete`,
+    { method: "POST", body: { itemIds } },
   );
   return body.result;
 }

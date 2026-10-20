@@ -1,6 +1,7 @@
 import type {
   ActivityCursor,
   AssignItemsResult,
+  DeleteItemsResult,
   GroceryActivityPage,
   GroceryErrorCode,
   GroceryOverviewItem,
@@ -39,6 +40,7 @@ export interface IGroceryService {
   addItem(input: AddItemInput): Promise<GroceryResult<GroceryItem>>;
   updateItem(itemId: string, input: UpdateItemInput): Promise<GroceryResult<GroceryItem>>;
   deleteItem(itemId: string): Promise<GroceryResult<null>>;
+  deleteItems(listId: string, itemIds: string[]): Promise<GroceryResult<DeleteItemsResult>>;
   claimItem(itemId: string): Promise<GroceryResult<ClaimResult>>;
   unclaimItem(itemId: string): Promise<GroceryResult<null>>;
   assignItem(itemId: string, assignedTo: string): Promise<GroceryResult<null>>;

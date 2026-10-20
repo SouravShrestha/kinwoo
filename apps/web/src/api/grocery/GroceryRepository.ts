@@ -338,6 +338,16 @@ export class GroceryRepository implements IGroceryRepository {
     return typeof data === "number" ? data : 0;
   }
 
+  async deleteItems(listId: string, itemIds: string[]): Promise<number> {
+    const { data, error } = await this.client.rpc("delete_grocery_items", {
+      p_list_id: listId,
+      p_item_ids: itemIds,
+    });
+
+    if (error) fail(error);
+    return typeof data === "number" ? data : 0;
+  }
+
   async claimItems(listId: string, itemIds: string[]): Promise<number> {
     const { data, error } = await (this.client.rpc as any)("claim_grocery_items", {
       p_list_id: listId,

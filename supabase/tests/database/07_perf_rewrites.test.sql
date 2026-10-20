@@ -101,6 +101,23 @@ select is((select count(*) from public.grocery_items where list_id = tests.id('p
 select is((select count(*) from public.grocery_items where house_id = tests.id('house')), 0::bigint,
   'the shared lists are empty after the delete');
 
+-- Bulk delete applies the single-item rules and reports how many went
+select tests.as_user(tests.id('a'));
+select set_config('tests.mine', (public.add_grocery_item(tests.id('list'), 'Salt')).id::text, true);
+select tests.as_user(tests.id('b'));
+select set_config('tests.theirs', (public.add_grocery_item(tests.id('list'), 'Sugar')).id::text, true);
+select is(public.delete_grocery_items(tests.id('list'),
+            array[tests.id('mine'), tests.id('theirs')]), 1,
+  'a member deletes only their own items');
+select is((select count(*) from public.grocery_items where id = tests.id('mine')), 1::bigint,
+  'someone else''s item is kept');
+select tests.as_user(tests.id('a'));
+select is(public.delete_grocery_items(tests.id('list'), array[tests.id('mine')]), 1,
+  'an admin can delete it');
+select throws_ok(
+  format('select public.delete_grocery_items(%L, %L)', tests.id('list'), '{}'::uuid[]),
+  'P0001', 'INVALID_INPUT', 'an empty selection is refused');
+
 -- house_member_nets matches the per-member pairwise sums it replaced
 select public.create_expense(tests.id('house'), 'Rent', 1000, 'rent', null, current_date, 'exact',
   jsonb_build_array(tests.payer('a', 600), tests.payer('b', 400)),

@@ -70,6 +70,7 @@ export interface IGroceryRepository {
   addItem(input: AddItemInput): Promise<GroceryItem>;
   updateItem(itemId: string, input: UpdateItemInput): Promise<GroceryItem>;
   deleteItem(itemId: string): Promise<void>;
+  deleteItems(listId: string, itemIds: string[]): Promise<number>;
   claimItem(itemId: string): Promise<ClaimResult>;
   unclaimItem(itemId: string): Promise<void>;
   assignItem(itemId: string, assignedTo: string): Promise<void>;
