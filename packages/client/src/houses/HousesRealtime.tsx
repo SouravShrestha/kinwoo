@@ -6,6 +6,7 @@ import { useEffect } from "react";
 
 import { useAuth } from "../auth/use-auth";
 import { groceryKeys } from "../grocery/keys";
+import { refreshAfterSubscribe } from "../grocery/realtime";
 import { useActiveHouse } from "./active-house-provider";
 import { houseKeys } from "./keys";
 import {
@@ -32,6 +33,7 @@ export function HousesRealtime({ client }: { client: SupabaseClient }) {
   useEffect(() => {
     if (!userId) return;
 
+    let openedAt: number | null = Date.now();
     const channel = client
       .channel(`kinwoo:user:${userId}`)
       .on(
@@ -47,9 +49,9 @@ export function HousesRealtime({ client }: { client: SupabaseClient }) {
       )
       .subscribe((status) => {
         // A reconnect may have skipped events, so the list is re-read rather than trusted.
-        if (status === "SUBSCRIBED") {
-          void queryClient.invalidateQueries({ queryKey: houseKeys.list() });
-        }
+        if (status !== "SUBSCRIBED") return;
+        refreshAfterSubscribe(queryClient, houseKeys.list(), openedAt);
+        openedAt = null;
       });
 
     return () => {
@@ -61,6 +63,7 @@ export function HousesRealtime({ client }: { client: SupabaseClient }) {
     if (!userId || !activeHouseId) return;
 
     const houseId = activeHouseId;
+    let openedAt: number | null = Date.now();
 
     const channel = client
       .channel(`kinwoo:house:${houseId}`)
@@ -89,9 +92,9 @@ export function HousesRealtime({ client }: { client: SupabaseClient }) {
         },
       )
       .subscribe((status) => {
-        if (status === "SUBSCRIBED") {
-          void queryClient.invalidateQueries({ queryKey: houseKeys.members(houseId) });
-        }
+        if (status !== "SUBSCRIBED") return;
+        refreshAfterSubscribe(queryClient, houseKeys.members(houseId), openedAt);
+        openedAt = null;
       });
 
     return () => {

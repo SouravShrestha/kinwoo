@@ -467,31 +467,31 @@ export class GroceryRepository implements IGroceryRepository {
   }
 
   async getOverview(houseId: string, userId: string): Promise<GroceryOverview> {
-    const { data: todayData, error: todayError } = await (
-      this.client.from("grocery_items" as any) as any
-    )
-      .select(OVERVIEW_ITEM_COLUMNS)
-      .eq("grocery_lists.house_id", houseId)
-      .is("grocery_lists.deleted_at", null)
-      .eq("urgency", "today")
-      .in("status", ["pending", "claimed", "assigned"])
-      .order("created_at", { ascending: false });
+    // Filtering on grocery_items.house_id uses its index; the embedded list still excludes
+    // deleted lists.
+    const [today, mine] = await Promise.all([
+      (this.client.from("grocery_items" as any) as any)
+        .select(OVERVIEW_ITEM_COLUMNS)
+        .eq("house_id", houseId)
+        .is("grocery_lists.deleted_at", null)
+        .eq("urgency", "today")
+        .in("status", ["pending", "claimed", "assigned"])
+        .order("created_at", { ascending: false }),
+      (this.client.from("grocery_items" as any) as any)
+        .select(OVERVIEW_ITEM_COLUMNS)
+        .eq("house_id", houseId)
+        .is("grocery_lists.deleted_at", null)
+        .in("status", ["claimed", "assigned"])
+        .or(`claimed_by.eq.${userId},assigned_to.eq.${userId}`)
+        .order("created_at", { ascending: false }),
+    ]);
 
-    if (todayError) fail(todayError);
-
-    const { data: myData, error: myError } = await (this.client.from("grocery_items" as any) as any)
-      .select(OVERVIEW_ITEM_COLUMNS)
-      .eq("grocery_lists.house_id", houseId)
-      .is("grocery_lists.deleted_at", null)
-      .in("status", ["claimed", "assigned"])
-      .or(`claimed_by.eq.${userId},assigned_to.eq.${userId}`)
-      .order("created_at", { ascending: false });
-
-    if (myError) fail(myError);
+    if (today.error) fail(today.error);
+    if (mine.error) fail(mine.error);
 
     return {
-      todayItems: (todayData ?? []).map(toOverviewItem),
-      myToBuy: (myData ?? []).map(toOverviewItem),
+      todayItems: (today.data ?? []).map(toOverviewItem),
+      myToBuy: (mine.data ?? []).map(toOverviewItem),
     };
   }
 
@@ -500,7 +500,7 @@ export class GroceryRepository implements IGroceryRepository {
   async listPrivatePurchases(houseId: string, userId: string): Promise<GroceryOverviewItem[]> {
     const { data, error } = await (this.client.from("grocery_items" as any) as any)
       .select(PRIVATE_PURCHASE_COLUMNS)
-      .eq("grocery_lists.house_id", houseId)
+      .eq("house_id", houseId)
       .is("grocery_lists.deleted_at", null)
       .eq("grocery_lists.visibility", "private")
       .eq("grocery_lists.created_by", userId)

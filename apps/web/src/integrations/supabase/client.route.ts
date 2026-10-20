@@ -32,7 +32,7 @@ export function createRouteClient(request: Request): RouteClient {
 
   const supabase = createServerClient<Database>(url, anonKey, {
     cookies: {
-      getAll: () => (token ? [] : parseCookieHeader(request.headers.get("cookie"))),
+      getAll: () => (token ? [] : currentCookies(request, pending)),
       setAll: (cookiesToSet) => {
         pending.push(...(cookiesToSet as PendingCookie[]));
       },
@@ -41,6 +41,19 @@ export function createRouteClient(request: Request): RouteClient {
   });
 
   return { supabase, applyCookies: (response) => applyCookies(request, response) };
+}
+
+// Cookies already queued in this request (a session refreshed by getVerifiedUser) win over the
+// request's own: otherwise a second client would refresh again with a refresh token just used.
+function currentCookies(request: Request, pending: PendingCookie[]) {
+  const cookies = new Map(
+    parseCookieHeader(request.headers.get("cookie")).map((cookie) => [cookie.name, cookie.value]),
+  );
+  for (const { name, value, options } of pending) {
+    if (value === "" || options?.maxAge === 0) cookies.delete(name);
+    else cookies.set(name, value);
+  }
+  return [...cookies].map(([name, value]) => ({ name, value }));
 }
 
 export function queueCookie(request: Request, cookie: PendingCookie): void {

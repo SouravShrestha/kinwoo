@@ -294,6 +294,30 @@ describe("cookie buffering", () => {
     expect(set).toHaveBeenCalledWith("kinwoo-locale", "en", undefined);
   });
 
+  it("lets a later client in the same request see cookies an earlier one refreshed", async () => {
+    createServerClientMock.mockReturnValue(fakeClient({ getUser: vi.fn() }));
+
+    const { createRouteClient } = await loadModule();
+    const request = requestWithCookie("sb-auth-token=stale; other=1");
+    createRouteClient(request);
+    createRouteClient(request);
+
+    type Options = {
+      cookies: {
+        getAll: () => { name: string; value: string }[];
+        setAll: (c: { name: string; value: string; options?: object }[]) => void;
+      };
+    };
+    const first = createServerClientMock.mock.calls[0][2] as Options;
+    const second = createServerClientMock.mock.calls[1][2] as Options;
+    first.cookies.setAll([
+      { name: "sb-auth-token", value: "fresh" },
+      { name: "other", value: "", options: { maxAge: 0 } },
+    ]);
+
+    expect(second.cookies.getAll()).toEqual([{ name: "sb-auth-token", value: "fresh" }]);
+  });
+
   it("is a no-op for a request that never created a client", async () => {
     const { applyCookies } = await loadModule();
     const set = vi.fn();
