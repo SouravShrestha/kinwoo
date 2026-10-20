@@ -17,6 +17,7 @@ import {
 import { useMemo, useState } from "react";
 
 import { toast } from "../toast";
+import { useAuth } from "../auth/use-auth";
 import { useAddItem } from "./mutations";
 import { useGroceryCategories, useGroceryItems, useGroceryLists } from "./queries";
 
@@ -59,7 +60,8 @@ export function useAddItemForm({
 
   const { data: categories } = useGroceryCategories(houseId || null);
   const { data: items } = useGroceryItems(houseId || null, listId || null);
-  const addItem = useAddItem(houseId, listId);
+  const { user } = useAuth();
+  const addItem = useAddItem(houseId, listId, user?.id);
 
   const suggestedCategoryId = useMemo(() => {
     const known = (id: string | null) => (id && categories?.some((c) => c.id === id) ? id : null);

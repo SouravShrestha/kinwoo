@@ -1,6 +1,11 @@
 "use client";
 
-import { mergeLinkedExpenses, recentBoughtSince, type GroceryItem } from "@kinwoo/core/grocery";
+import {
+  mergeLinkedExpenses,
+  recentBoughtSince,
+  type GroceryActivityPage,
+  type GroceryItem,
+} from "@kinwoo/core/grocery";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 
@@ -142,13 +147,18 @@ export function usePrivatePurchases(houseId: string | null) {
   });
 }
 
+// Module-level so select keeps one identity and React Query reuses its result between renders.
+function selectActivityEntries(data: { pages: readonly GroceryActivityPage[] }) {
+  return mergeLinkedExpenses(data.pages.flatMap((page) => page.entries));
+}
+
 export function useRecentActivity(houseId: string | null) {
   return useInfiniteQuery({
     queryKey: groceryKeys.recentActivity(houseId ?? ""),
     queryFn: ({ pageParam }) => fetchRecentActivity(houseId as string, pageParam),
     initialPageParam: null as string | null,
     getNextPageParam: (lastPage) => lastPage.nextCursor,
-    select: (data) => mergeLinkedExpenses(data.pages.flatMap((page) => page.entries)),
+    select: selectActivityEntries,
     enabled: houseId !== null,
   });
 }

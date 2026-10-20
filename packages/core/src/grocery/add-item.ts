@@ -1,4 +1,4 @@
-import { CATALOG_ENTRIES, canonicalCatalogName } from "./item-catalog";
+import { canonicalCatalogName, catalogEntries } from "./item-catalog";
 import type { GroceryItem, ItemStatus, ItemUrgency } from "./types";
 
 export type ItemUnitOption = { value: string; label: string };
@@ -129,7 +129,7 @@ export function itemSuggestions(
 
   const ranked: { name: string; rank: number }[] = [];
 
-  for (const { name, aliases } of CATALOG_ENTRIES) {
+  for (const { name, aliases } of catalogEntries()) {
     if (name === needle || open.has(name)) continue;
     const rank = suggestionRank(name, aliases, needle);
     if (rank !== null) ranked.push({ name, rank });

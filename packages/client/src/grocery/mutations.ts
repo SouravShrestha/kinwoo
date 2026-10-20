@@ -1,13 +1,14 @@
 "use client";
 
-import type {
-  AddItemInput,
-  CreateListInput,
-  GroceryItem,
-  MarkBoughtInput,
-  MarkItemsBoughtInput,
-  UpdateItemInput,
-  UpdateListInput,
+import {
+  DEFAULT_ITEM_URGENCY,
+  type AddItemInput,
+  type CreateListInput,
+  type GroceryItem,
+  type MarkBoughtInput,
+  type MarkItemsBoughtInput,
+  type UpdateItemInput,
+  type UpdateListInput,
 } from "@kinwoo/core/grocery";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
@@ -71,14 +72,70 @@ export function useDeleteList(houseId: string) {
   });
 }
 
-export function useAddItem(houseId: string, listId: string) {
+// The placeholder row stands in until the server answers; its id is derived from the idempotency
+// key so the real row can replace it.
+export function optimisticItem(
+  input: Omit<AddItemInput, "listId">,
+  listId: string,
+  createdBy: string,
+  now: string = new Date().toISOString(),
+): GroceryItem {
+  return {
+    id: `optimistic:${input.idempotencyKey}`,
+    listId,
+    name: input.name.trim(),
+    quantity: input.quantity ?? null,
+    unit: input.unit ?? null,
+    categoryId: input.categoryId ?? null,
+    categoryName: null,
+    urgency: input.urgency ?? DEFAULT_ITEM_URGENCY,
+    status: "pending",
+    claimedBy: null,
+    claimedByName: null,
+    assignedTo: null,
+    assignedToName: null,
+    assignedBy: null,
+    assignmentResponse: null,
+    boughtBy: null,
+    boughtByName: null,
+    purchase: null,
+    note: input.note ?? null,
+    position: Number.MAX_SAFE_INTEGER,
+    createdBy,
+    createdAt: now,
+    updatedAt: now,
+  };
+}
+
+export function useAddItem(houseId: string, listId: string, currentUserId = "") {
   const queryClient = useQueryClient();
+  const itemsKey = groceryKeys.items(houseId, listId);
 
   return useMutation({
     mutationFn: (input: Omit<AddItemInput, "listId"> | AddItemInput) =>
       addItem(houseId, { ...input, listId }),
-    onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: groceryKeys.items(houseId, listId) });
+    // Quick add is the most frequent action, so the item shows before the round trip finishes.
+    onMutate: async (input) => {
+      await queryClient.cancelQueries({ queryKey: itemsKey });
+      const placeholder = optimisticItem(input, listId, currentUserId);
+      queryClient.setQueryData<GroceryItem[]>(itemsKey, (old) =>
+        old ? [...old, placeholder] : old,
+      );
+      return { placeholderId: placeholder.id };
+    },
+    onError: (_error, _input, context) => {
+      if (!context) return;
+      queryClient.setQueryData<GroceryItem[]>(itemsKey, (old) =>
+        old?.filter((item) => item.id !== context.placeholderId),
+      );
+    },
+    onSuccess: (item, _input, context) => {
+      queryClient.setQueryData<GroceryItem[]>(itemsKey, (old) =>
+        old?.map((entry) => (entry.id === context?.placeholderId ? item : entry)),
+      );
+    },
+    onSettled: () => {
+      void queryClient.invalidateQueries({ queryKey: itemsKey });
       void queryClient.invalidateQueries({ queryKey: groceryKeys.overview(houseId) });
     },
   });

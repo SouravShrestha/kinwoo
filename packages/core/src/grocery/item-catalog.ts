@@ -1,5 +1,5 @@
 import catalogData from "./item-catalog.json";
-import { bestKeywordMatch } from "./keyword-match";
+import { bestKeywordMatch, prepareKeywords, type PreparedKeyword } from "./keyword-match";
 
 export type ItemDefaults = { quantity: number; unit: string };
 
@@ -19,46 +19,76 @@ export type CatalogMatch = { category: string; defaults: ItemDefaults };
 
 export type CatalogEntry = { name: string; aliases: readonly string[] };
 
-export const CATALOG_ENTRIES: readonly CatalogEntry[] = Object.values(ITEM_CATALOG).flatMap(
-  ({ items }) => Object.entries(items).map(([name, { aliases = [] }]) => ({ name, aliases })),
-);
+type CatalogIndex = {
+  entries: readonly CatalogEntry[];
+  termToName: Map<string, string>;
+  keywords: Map<string, CatalogMatch>;
+  prepared: readonly PreparedKeyword<string>[];
+  fallbacks: Map<string, ItemDefaults>;
+};
 
-const TERM_TO_NAME = new Map<string, string>(
-  CATALOG_ENTRIES.flatMap(({ name, aliases }) =>
-    [name, ...aliases].map((term): [string, string] => [term, name]),
-  ),
-);
+// Built on first use: the catalog is large, and most screens and API routes never touch it.
+let index: CatalogIndex | null = null;
 
-const KEYWORDS = new Map<string, CatalogMatch>(
-  Object.entries(ITEM_CATALOG).flatMap(([category, { items }]) =>
-    Object.entries(items).flatMap(([name, { aliases = [], ...defaults }]) =>
-      [name, ...aliases].map((term): [string, CatalogMatch] => [
-        term.replaceAll("-", " "),
-        { category, defaults },
+function catalogIndex(): CatalogIndex {
+  if (index) return index;
+
+  const entries = Object.values(ITEM_CATALOG).flatMap(({ items }) =>
+    Object.entries(items).map(([name, { aliases = [] }]) => ({ name, aliases })),
+  );
+  const keywords = new Map<string, CatalogMatch>(
+    Object.entries(ITEM_CATALOG).flatMap(([category, { items }]) =>
+      Object.entries(items).flatMap(([name, { aliases = [], ...defaults }]) =>
+        [name, ...aliases].map((term): [string, CatalogMatch] => [
+          term.replaceAll("-", " "),
+          { category, defaults },
+        ]),
+      ),
+    ),
+  );
+
+  index = {
+    entries,
+    termToName: new Map(
+      entries.flatMap(({ name, aliases }) =>
+        [name, ...aliases].map((term): [string, string] => [term, name]),
+      ),
+    ),
+    keywords,
+    prepared: prepareKeywords([...keywords.keys()]),
+    fallbacks: new Map(
+      Object.entries(ITEM_CATALOG).map(([category, { fallback }]) => [
+        category.toLowerCase(),
+        fallback,
       ]),
     ),
-  ),
-);
+  };
+  return index;
+}
+
+export function catalogEntries(): readonly CatalogEntry[] {
+  return catalogIndex().entries;
+}
 
 // Resolves a lowercase item name that is exactly a catalog name or alias to the catalog name.
 export function canonicalCatalogName(term: string): string {
-  return TERM_TO_NAME.get(term) ?? term;
+  return catalogIndex().termToName.get(term) ?? term;
 }
 
-const CATEGORY_FALLBACKS = new Map(
-  Object.entries(ITEM_CATALOG).map(([category, { fallback }]) => [
-    category.toLowerCase(),
-    fallback,
-  ]),
-);
+// The add-item form asks for the category and the defaults of the same name in one render.
+let lastMatch: { itemName: string; match: CatalogMatch | null } | null = null;
 
 export function matchCatalogItem(itemName: string): CatalogMatch | null {
-  const keyword = bestKeywordMatch(itemName, [...KEYWORDS.keys()]);
-  return keyword ? (KEYWORDS.get(keyword) ?? null) : null;
+  if (lastMatch?.itemName === itemName) return lastMatch.match;
+  const { keywords, prepared } = catalogIndex();
+  const keyword = bestKeywordMatch(itemName, prepared);
+  const match = keyword ? (keywords.get(keyword) ?? null) : null;
+  lastMatch = { itemName, match };
+  return match;
 }
 
 export function categoryFallbackDefaults(
   categoryName: string | null | undefined,
 ): ItemDefaults | null {
-  return categoryName ? (CATEGORY_FALLBACKS.get(categoryName.toLowerCase()) ?? null) : null;
+  return categoryName ? (catalogIndex().fallbacks.get(categoryName.toLowerCase()) ?? null) : null;
 }

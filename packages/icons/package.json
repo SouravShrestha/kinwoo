@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
+  "sideEffects": false,
   "description": "Shared SVG icons. Geometry lives in src/data.ts; src/index.tsx renders it to the DOM and src/native.tsx to react-native-svg.",
   "main": "./src/index.tsx",
   "types": "./src/index.tsx",

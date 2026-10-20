@@ -41,8 +41,12 @@ export function useDeleteExpense(houseId: string) {
     mutationFn: (expenseId: string) => deleteExpense(houseId, expenseId),
     onSuccess: () => {
       invalidateExpenses(queryClient, houseId);
-      // Bought items carry the id of their linked expense.
-      void queryClient.invalidateQueries({ queryKey: groceryKeys.all(houseId) });
+      // Bought items carry the id of their linked expense; lists and categories do not change.
+      void queryClient.invalidateQueries({
+        queryKey: groceryKeys.lists(houseId),
+        predicate: ({ queryKey }) => queryKey[4] === "items" || queryKey[4] === "bought-history",
+      });
+      void queryClient.invalidateQueries({ queryKey: groceryKeys.overview(houseId) });
     },
   });
 }

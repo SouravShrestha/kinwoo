@@ -7,7 +7,7 @@ import {
   type Expense,
   type ExpenseCategory,
 } from "@kinwoo/core/expenses";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 import { useHouseMembers } from "../houses/queries";
 import { toast } from "../toast";
@@ -44,7 +44,9 @@ export function useExpenseForm({
   const [amount, setAmountText] = useState(expense ? paiseToAmountDraft(expense.amountPaise) : "");
   // undefined follows the category suggested from the title; once picked (or when editing) it sticks.
   const [categoryChoice, setCategory] = useState<ExpenseCategory | undefined>(expense?.category);
-  const category = categoryChoice ?? suggestExpenseCategory(title) ?? DEFAULT_EXPENSE_CATEGORY;
+  // Scans a few thousand keywords, so it runs when the title changes rather than on every render.
+  const suggestedCategory = useMemo(() => suggestExpenseCategory(title), [title]);
+  const category = categoryChoice ?? suggestedCategory ?? DEFAULT_EXPENSE_CATEGORY;
   const [note, setNoteText] = useState(expense?.note ?? "");
   const [date, setDate] = useState(() => (expense ? parseSpentOn(expense.spentOn) : new Date()));
   const [error, setError] = useState<{ field: ExpenseFormField; message: string } | null>(null);

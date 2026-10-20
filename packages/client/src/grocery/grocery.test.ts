@@ -4,6 +4,7 @@ import { describe, expect, it } from "vitest";
 
 import { createMemoryStorage } from "../houses/storage";
 import { groceryKeys } from "./keys";
+import { optimisticItem } from "./mutations";
 import { mergeBoughtHistory } from "./queries";
 import {
   applyGroceryRealtimeActions,
@@ -178,5 +179,27 @@ describe("mergeBoughtHistory", () => {
   it("returns the items unchanged before any history loads", () => {
     const recent = [item("a")];
     expect(mergeBoughtHistory(recent, [])).toBe(recent);
+  });
+});
+
+describe("optimisticItem", () => {
+  it("builds a pending placeholder keyed by the idempotency key", () => {
+    const item = optimisticItem(
+      { name: "  Rice ", idempotencyKey: "k1", quantity: 2, unit: "kg" },
+      "l1",
+      "u1",
+      "2026-10-20T00:00:00.000Z",
+    );
+
+    expect(item).toMatchObject({
+      id: "optimistic:k1",
+      listId: "l1",
+      name: "Rice",
+      quantity: 2,
+      unit: "kg",
+      status: "pending",
+      urgency: "whenever",
+      createdBy: "u1",
+    });
   });
 });
