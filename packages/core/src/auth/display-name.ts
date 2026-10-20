@@ -17,8 +17,11 @@ export function validateDisplayName(input: string): DisplayNameResult {
   if (value.length < DISPLAY_NAME_MIN_LENGTH) return { ok: false, error: "empty" };
   if (value.length > DISPLAY_NAME_MAX_LENGTH) return { ok: false, error: "too-long" };
 
+  // Control characters and bidi overrides, matching profiles_display_name_chars.
   // eslint-disable-next-line no-control-regex
-  if (/[\u0000-\u001f\u007f]/.test(value)) return { ok: false, error: "invalid-characters" };
+  if (/[\u0000-\u001f\u007f\u200e\u200f\u202a-\u202e\u2066-\u2069]/.test(value)) {
+    return { ok: false, error: "invalid-characters" };
+  }
 
   return { ok: true, value };
 }

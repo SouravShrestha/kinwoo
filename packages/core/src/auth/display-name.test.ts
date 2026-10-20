@@ -43,4 +43,11 @@ describe("validateDisplayName", () => {
       error: "invalid-characters",
     });
   });
+
+  it("rejects bidi overrides that can disguise a name", () => {
+    expect(validateDisplayName("Eve\u202elin")).toEqual({
+      ok: false,
+      error: "invalid-characters",
+    });
+  });
 });
