@@ -1,0 +1,30 @@
+{
+  "name": "@kinwoo/core",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "sideEffects": false,
+  "description": "Platform-agnostic logic shared by the web and mobile clients. Zero runtime dependencies, by design.",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./app": "./src/app/index.ts",
+    "./auth": "./src/auth/index.ts",
+    "./confirm": "./src/confirm/index.ts",
+    "./db": "./src/db.ts",
+    "./expenses": "./src/expenses/index.ts",
+    "./filters": "./src/filters/index.ts",
+    "./houses": "./src/houses/index.ts",
+    "./grocery": "./src/grocery/index.ts",
+    "./toast": "./src/toast/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "vitest": "^3.2.4"
+  }
+}

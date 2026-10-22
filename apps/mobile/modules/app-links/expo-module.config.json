@@ -1,0 +1,9 @@
+{
+  "platforms": ["apple", "android"],
+  "apple": {
+    "modules": ["AppLinksModule"]
+  },
+  "android": {
+    "modules": ["me.cbsdev.kinwoo.applinks.AppLinksModule"]
+  }
+}

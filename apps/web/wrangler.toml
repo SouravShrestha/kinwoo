@@ -1,0 +1,47 @@
+name = "kinwoo"
+main = ".open-next/worker.js"
+compatibility_date = "2026-10-01"
+compatibility_flags = ["nodejs_compat"]
+workers_dev = false
+preview_urls = false
+
+[assets]
+directory = ".open-next/assets"
+binding = "ASSETS"
+
+# open-next.config.ts uses the OpenNext KV incremental cache, which looks for this
+# binding. Without it OpenNext warns and silently skips incremental caching.
+# Create the namespaces first:
+#   wrangler kv namespace create kinwoo-cache-test
+#   wrangler kv namespace create kinwoo-cache-prod
+# then paste each id below.
+
+[env.test]
+name = "kinwoo-test"
+
+[env.test.vars]
+APP_HOSTNAME = "test.kinwoo.in"
+
+# workers_dev and preview_urls are both off, so without a route the deployed
+# Worker has no reachable hostname. kinwoo.in must be on Cloudflare DNS.
+[[env.test.routes]]
+pattern = "test.kinwoo.in"
+custom_domain = true
+
+[[env.test.kv_namespaces]]
+binding = "NEXT_INC_CACHE_KV"
+id = "a8f3764463f54bdc80760dc18a2aca5d"
+
+[env.production]
+name = "kinwoo-prod"
+
+[env.production.vars]
+APP_HOSTNAME = "kinwoo.in"
+
+[[env.production.routes]]
+pattern = "kinwoo.in"
+custom_domain = true
+
+[[env.production.kv_namespaces]]
+binding = "NEXT_INC_CACHE_KV"
+id = "42470d06915244ea8c1e3f7d5f27f35c"

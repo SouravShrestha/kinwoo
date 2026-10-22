@@ -1,0 +1,156 @@
+import { createServerClient } from "@supabase/ssr";
+import type { Database } from "@kinwoo/core/db";
+import type { SupabaseClient } from "@supabase/supabase-js";
+import type { NextResponse } from "next/server";
+
+import { parseCookieHeader } from "./cookies";
+import { readEnv } from "./env";
+
+export interface PendingCookie {
+  name: string;
+  value: string;
+  options?: Record<string, unknown>;
+}
+
+export interface RouteClient {
+  supabase: SupabaseClient<Database>;
+  applyCookies: <T extends NextResponse>(response: T) => T;
+}
+
+// Cookie writes are buffered per Request: Workers handlers cannot mutate a built
+// response and next/headers cookies are read-only. Keyed by WeakMap so requests never share.
+const pendingByRequest = new WeakMap<Request, PendingCookie[]>();
+
+export function createRouteClient(request: Request): RouteClient {
+  const { url, anonKey } = readEnv();
+
+  const pending = pendingByRequest.get(request) ?? [];
+  pendingByRequest.set(request, pending);
+
+  // Mobile has no cookie jar; without the bearer token the client is anonymous and RLS rejects every read.
+  const token = bearerToken(request);
+
+  const supabase = createServerClient<Database>(url, anonKey, {
+    cookies: {
+      getAll: () => (token ? [] : currentCookies(request, pending)),
+      setAll: (cookiesToSet) => {
+        pending.push(...(cookiesToSet as PendingCookie[]));
+      },
+    },
+    ...(token ? { global: { headers: { Authorization: `Bearer ${token}` } } } : {}),
+  });
+
+  return { supabase, applyCookies: (response) => applyCookies(request, response) };
+}
+
+// Cookies already queued in this request (a session refreshed by getVerifiedUser) win over the
+// request's own: otherwise a second client would refresh again with a refresh token just used.
+function currentCookies(request: Request, pending: PendingCookie[]) {
+  const cookies = new Map(
+    parseCookieHeader(request.headers.get("cookie")).map((cookie) => [cookie.name, cookie.value]),
+  );
+  for (const { name, value, options } of pending) {
+    if (value === "" || options?.maxAge === 0) cookies.delete(name);
+    else cookies.set(name, value);
+  }
+  return [...cookies].map(([name, value]) => ({ name, value }));
+}
+
+export function queueCookie(request: Request, cookie: PendingCookie): void {
+  const pending = pendingByRequest.get(request) ?? [];
+  pending.push(cookie);
+  pendingByRequest.set(request, pending);
+}
+
+// Call on every exit path, including errors: skipping it on a 401 drops a refreshed session.
+export function applyCookies<T extends NextResponse>(request: Request, response: T): T {
+  const pending = pendingByRequest.get(request);
+  if (!pending) return response;
+
+  for (const { name, value, options } of pending) {
+    response.cookies.set(name, value, options);
+  }
+
+  return response;
+}
+
+function bearerToken(request: Request): string | null {
+  const header = request.headers.get("authorization");
+  if (!header) return null;
+
+  const match = /^Bearer\s+(.+)$/i.exec(header.trim());
+  return match ? match[1].trim() : null;
+}
+
+export interface VerifiedUser {
+  id: string;
+  // Raw and unvalidated: it comes from user-writable metadata.
+  socialAvatarUrl?: string;
+}
+
+type ClaimsCapable = {
+  getClaims?: (jwt?: string) => Promise<{
+    data: { claims?: { sub?: string; user_metadata?: unknown } } | null;
+    error: unknown;
+  }>;
+};
+
+function verifiedUser(id: string, metadata: unknown): VerifiedUser {
+  const { avatar_url, picture } = (metadata ?? {}) as Record<string, unknown>;
+  const url = [avatar_url, picture].find((value) => typeof value === "string" && value);
+  return typeof url === "string" ? { id, socialAvatarUrl: url } : { id };
+}
+
+// A bearer token (mobile) wins over the session cookie. getClaims verifies locally and is
+// feature-detected (newer than the pinned types); getUser is the fallback. Returns null, never throws.
+export async function getVerifiedUser(request: Request): Promise<VerifiedUser | null> {
+  const token = bearerToken(request);
+  if (token) return verifyBearerToken(token);
+
+  const { supabase } = createRouteClient(request);
+  return verifyWithClient(supabase);
+}
+
+async function verifyBearerToken(token: string): Promise<VerifiedUser | null> {
+  const { url, anonKey } = readEnv();
+
+  const supabase = createServerClient<Database>(url, anonKey, {
+    cookies: { getAll: () => [], setAll: () => {} },
+    global: { headers: { Authorization: `Bearer ${token}` } },
+  });
+
+  const auth = supabase.auth as unknown as ClaimsCapable;
+  if (auth.getClaims) {
+    try {
+      const { data, error } = await auth.getClaims(token);
+      const sub = data?.claims?.sub;
+      if (!error && sub) return verifiedUser(sub, data?.claims?.user_metadata);
+      if (!error) return null;
+    } catch {
+      // Fall through to the remote check.
+    }
+  }
+
+  const { data, error } = await supabase.auth.getUser(token);
+  if (error || !data.user) return null;
+  return verifiedUser(data.user.id, data.user.user_metadata);
+}
+
+async function verifyWithClient(supabase: SupabaseClient<Database>): Promise<VerifiedUser | null> {
+  const auth = supabase.auth as unknown as ClaimsCapable;
+
+  if (auth.getClaims) {
+    try {
+      const { data, error } = await auth.getClaims();
+      const sub = data?.claims?.sub;
+      if (!error && sub) return verifiedUser(sub, data?.claims?.user_metadata);
+      if (!error) return null;
+    } catch {
+      // Fall through to the remote check.
+    }
+  }
+
+  const { data, error } = await supabase.auth.getUser();
+  if (error || !data.user) return null;
+  return verifiedUser(data.user.id, data.user.user_metadata);
+}

@@ -1,0 +1,24 @@
+{
+  "name": "@kinwoo/tokens",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Design tokens, authored once. Emits CSS custom properties for web and an sRGB hex map for React Native.",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./native": "./src/native.ts",
+    "./generated/tokens.css": "./generated/tokens.css",
+    "./generated/tokens.native.css": "./generated/tokens.native.css"
+  },
+  "scripts": {
+    "generate": "node --experimental-strip-types --disable-warning=ExperimentalWarning scripts/generate.mjs",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "vitest": "^3.2.4"
+  }
+}

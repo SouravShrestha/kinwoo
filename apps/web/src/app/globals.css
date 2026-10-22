@@ -1,0 +1,223 @@
+@import "tailwindcss";
+@source "../";
+
+@import "@kinwoo/tokens/generated/tokens.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 2px);
+  --radius-md: var(--radius);
+  --radius-lg: calc(var(--radius) + 2px);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-background: var(--background);
+  --color-sheet: var(--sheet);
+  --color-dialog: var(--dialog);
+  --color-dialog-header: var(--dialog-header);
+  --color-dialog-border: var(--dialog-border);
+  --color-backdrop: var(--backdrop);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
+  --font-sans: var(--font-inter), system-ui, sans-serif;
+  --font-display: var(--font-poppins), system-ui, sans-serif;
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    font-weight: 500;
+  }
+}
+
+* {
+  scrollbar-width: none;
+}
+
+*::-webkit-scrollbar {
+  display: none;
+}
+
+@keyframes kinwoo-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes kinwoo-fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes kinwoo-slide-up {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes kinwoo-slide-down {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(100%);
+  }
+}
+
+@utility sheet-backdrop-in {
+  animation: kinwoo-fade-in 200ms ease-out both;
+}
+
+@utility sheet-backdrop-out {
+  animation: kinwoo-fade-out 200ms ease-in both;
+}
+
+@utility sheet-panel-in {
+  animation: kinwoo-slide-up 300ms cubic-bezier(0.32, 0.72, 0, 1) both;
+}
+
+@utility sheet-panel-out {
+  animation: kinwoo-slide-down 200ms ease-in both;
+}
+
+@utility form-screen-in {
+  animation: kinwoo-slide-up 180ms cubic-bezier(0.32, 0.72, 0, 1) both;
+}
+
+@utility form-screen-out {
+  animation: kinwoo-slide-down 150ms ease-in both;
+}
+
+@keyframes kinwoo-view-in-forward {
+  from {
+    opacity: 0;
+    transform: translateX(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes kinwoo-view-in-back {
+  from {
+    opacity: 0;
+    transform: translateX(-24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@utility sheet-view-forward {
+  animation: kinwoo-view-in-forward 240ms cubic-bezier(0.32, 0.72, 0, 1) both;
+}
+
+@utility sheet-view-back {
+  animation: kinwoo-view-in-back 240ms cubic-bezier(0.32, 0.72, 0, 1) both;
+}
+
+@keyframes kinwoo-toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes kinwoo-toast-out {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+}
+
+@utility toast-in {
+  animation: kinwoo-toast-in 180ms ease-out both;
+}
+
+@utility toast-out {
+  animation: kinwoo-toast-out 200ms ease-in both;
+}
+
+@keyframes kinwoo-tab-activate {
+  0% {
+    transform: scale(0.8);
+  }
+  55% {
+    transform: scale(1.18);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes kinwoo-tab-deactivate {
+  from {
+    transform: scale(1.1);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+@utility tab-icon-activate {
+  animation: kinwoo-tab-activate 320ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@utility tab-icon-deactivate {
+  animation: kinwoo-tab-deactivate 200ms ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sheet-backdrop-in,
+  .sheet-backdrop-out,
+  .sheet-panel-in,
+  .sheet-panel-out,
+  .form-screen-in,
+  .form-screen-out,
+  .sheet-view-forward,
+  .sheet-view-back,
+  .toast-in,
+  .toast-out,
+  .tab-icon-activate,
+  .tab-icon-deactivate {
+    animation-duration: 1ms;
+  }
+}

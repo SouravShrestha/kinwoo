@@ -1,0 +1,69 @@
+import { describe, expect, it } from "vitest";
+
+import { TABS, activeTabFor, routeRequiresHouse } from "./tabs";
+
+describe("TABS", () => {
+  it("has unique keys and hrefs", () => {
+    expect(new Set(TABS.map((t) => t.key)).size).toBe(TABS.length);
+    expect(new Set(TABS.map((t) => t.href)).size).toBe(TABS.length);
+  });
+
+  it("gives every tab a label", () => {
+    for (const tab of TABS) expect(tab.label.length).toBeGreaterThan(0);
+  });
+});
+
+describe("activeTabFor", () => {
+  it("matches each tab's own route", () => {
+    expect(activeTabFor("/")).toBe("home");
+    expect(activeTabFor("/tasks")).toBe("tasks");
+    expect(activeTabFor("/bills")).toBe("bills");
+    expect(activeTabFor("/activities")).toBe("activities");
+  });
+
+  it("matches nested routes to their parent tab", () => {
+    expect(activeTabFor("/activities/today")).toBe("activities");
+    expect(activeTabFor("/bills/2026/january")).toBe("bills");
+  });
+
+  it("keeps profile out of the navigation", () => {
+    expect(activeTabFor("/profile")).toBeNull();
+    expect(activeTabFor("/profile/personal")).toBeNull();
+  });
+
+  it("does not let home claim every route", () => {
+    expect(activeTabFor("/tasks")).not.toBe("home");
+  });
+
+  it("does not match on a shared prefix", () => {
+    expect(activeTabFor("/billsomething")).toBeNull();
+    expect(activeTabFor("/activitiesfeed")).toBeNull();
+  });
+
+  it("ignores a trailing slash", () => {
+    expect(activeTabFor("/activities/")).toBe("activities");
+    expect(activeTabFor("/")).toBe("home");
+  });
+
+  it("returns null for routes outside the navigation", () => {
+    expect(activeTabFor("/login")).toBeNull();
+    expect(activeTabFor("/legal/privacy")).toBeNull();
+  });
+});
+
+describe("routeRequiresHouse", () => {
+  it("requires a house for tasks, bills and activities, including nested routes", () => {
+    expect(routeRequiresHouse("/tasks")).toBe(true);
+    expect(routeRequiresHouse("/bills")).toBe(true);
+    expect(routeRequiresHouse("/activities")).toBe(true);
+    expect(routeRequiresHouse("/bills/2026/january")).toBe(true);
+    expect(routeRequiresHouse("/tasks/")).toBe(true);
+  });
+
+  it("leaves home, profile and unrelated routes open", () => {
+    expect(routeRequiresHouse("/")).toBe(false);
+    expect(routeRequiresHouse("/profile")).toBe(false);
+    expect(routeRequiresHouse("/house/create")).toBe(false);
+    expect(routeRequiresHouse("/billsomething")).toBe(false);
+  });
+});

@@ -1,0 +1,37 @@
+{
+  "cli": {
+    "version": ">= 16.24.0",
+    "appVersionSource": "remote"
+  },
+  "build": {
+    "local": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "android": {
+        "buildType": "apk"
+      }
+    },
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "android": {
+        "buildType": "app-bundle"
+      },
+      "env": {
+        "EXPO_PUBLIC_API_URL": "https://test.kinwoo.in"
+      }
+    },
+    "production": {
+      "autoIncrement": true,
+      "android": {
+        "buildType": "app-bundle"
+      },
+      "env": {
+        "EXPO_PUBLIC_API_URL": "https://kinwoo.in"
+      }
+    }
+  },
+  "submit": {
+    "production": {}
+  }
+}

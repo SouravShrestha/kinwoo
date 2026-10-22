@@ -1,0 +1,103 @@
+name: Mobile Build & Deploy
+
+on:
+  workflow_call:
+    inputs:
+      profile:
+        description: "EAS build profile (development, production)"
+        required: true
+        type: string
+      ref:
+        description: "Git ref to checkout (optional)"
+        required: false
+        type: string
+    secrets:
+      EXPO_TOKEN:
+        required: true
+      NEXT_PUBLIC_SUPABASE_URL:
+        required: false
+      NEXT_PUBLIC_SUPABASE_ANON_KEY:
+        required: false
+  workflow_dispatch:
+    inputs:
+      profile:
+        description: "EAS build profile"
+        required: true
+        default: "development"
+        type: choice
+        options:
+          - development
+          - production
+      ref:
+        description: "Git ref to checkout (optional)"
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: mobile-${{ github.workflow }}-${{ inputs.ref || github.ref }}
+  # A production build is a release artifact; never cancel one mid-flight.
+  cancel-in-progress: ${{ (inputs.profile || 'development') != 'production' }}
+
+jobs:
+  build-android:
+    runs-on: ubuntu-latest
+    environment: ${{ (inputs.profile || 'development') == 'production' && 'production' || 'test' }}
+    env:
+      PROFILE: ${{ inputs.profile || 'development' }}
+      BUILD_REF: ${{ inputs.ref || github.sha }}
+      # Not in eas.json: `eas build --local` does not expand $VAR there, but it does pass
+      # the shell environment through to the build, where Metro inlines EXPO_PUBLIC_*.
+      EXPO_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL || vars.NEXT_PUBLIC_SUPABASE_URL }}
+      EXPO_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY || vars.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+    defaults:
+      run:
+        working-directory: apps/mobile
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          ref: ${{ env.BUILD_REF }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4.1.0
+        with:
+          node-version: 20
+          cache: "npm"
+
+      - name: Setup Java
+        uses: actions/setup-java@cf277c60eb25467037889841efdb72551f06f6c3 # v4.9.1
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Install dependencies
+        working-directory: .
+        run: npm ci
+
+      - name: Require Supabase config
+        run: |
+          [ -n "$EXPO_PUBLIC_SUPABASE_URL" ] && [ -n "$EXPO_PUBLIC_SUPABASE_ANON_KEY" ] \
+            || { echo "::error::NEXT_PUBLIC_SUPABASE_URL / NEXT_PUBLIC_SUPABASE_ANON_KEY missing in this environment"; exit 1; }
+
+      - name: Install EAS CLI
+        run: npm install -g eas-cli@24.8.0
+
+      - name: Build locally
+        run: |
+          eas build --platform android \
+            --profile ${{ env.PROFILE }} \
+            --local \
+            --non-interactive \
+            --output=./app-${{ env.PROFILE }}.aab
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: android-${{ env.PROFILE }}-${{ env.BUILD_REF }}
+          path: apps/mobile/app-${{ env.PROFILE }}.aab
+          retention-days: 30
