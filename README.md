@@ -130,6 +130,7 @@ Only needed if you want Android builds alongside the web app.
 
 - `ci-feature.yml`: on every non-`main` push — typecheck, test, build, lint, and the database tests (`db-test.yml`). Nothing is deployed, so branches never overwrite the shared test Worker.
 - `ci-main.yml`: on `main` — same checks, then apply migrations to the test Supabase project and deploy the test Worker. If the database tests also pass, release-please opens or updates the (draft) release PR. Merging it applies migrations to the production Supabase project, deploys the production Worker and builds the Android `.aab` via `mobile-deploy.yml`.
+- `deploy-test.yml`: manual (Actions → Deploy Test → Run workflow, pick a branch). Builds that branch and deploys it to the test Worker. Migrations are applied only if you tick the box, since the test database is shared. The next push to `main` overwrites it.
 - `db-test.yml`: starts a local Supabase, applies every migration to an empty database and runs the pgTAP tests.
 
 ## Placeholders to replace
