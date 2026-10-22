@@ -34,7 +34,7 @@ const STORE_LOGOS: Record<StoreId, string> = {
 };
 
 const FIELD =
-  "flex h-12 items-center rounded-xl bg-muted font-display text-base text-foreground focus-within:outline-2 focus-within:outline-foreground";
+  "flex h-12 items-center rounded-xl bg-muted font-display text-base font-normal text-foreground focus-within:outline-2 focus-within:outline-foreground";
 const FIELD_BUTTON =
   "gap-2 px-3.5 transition-opacity enabled:hover:cursor-pointer enabled:hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground";
 export const FOCUS_RING =
@@ -183,7 +183,7 @@ export function ItemDetailsEditor({
             <p
               id="edit-item-name-error"
               role="alert"
-              className="mt-2 text-right font-display text-sm text-destructive"
+              className="mt-2 text-right font-display text-sm font-normal text-destructive"
             >
               {form.error}
             </p>
@@ -207,7 +207,7 @@ export function ItemDetailsEditor({
             onChange={(event) => form.setQuantity(event.target.value)}
             className={cn(
               FIELD,
-              "w-20 shrink-0 justify-center px-2 text-center outline-none placeholder:text-muted-foreground",
+              "w-20 shrink-0 justify-center text-center outline-none placeholder:text-muted-foreground",
             )}
           />
           <button
@@ -256,7 +256,9 @@ export function ItemDetailsEditor({
         </div>
 
         <div className="ml-auto flex w-fit max-w-full flex-col items-end gap-1">
-          <span className="font-display text-[11px] text-muted-foreground">Last edited by</span>
+          <span className="font-display text-[calc(11px*var(--font-scale,1))] font-normal text-muted-foreground">
+            Last edited by
+          </span>
           <span className="flex min-w-0 items-center gap-1.5">
             <Avatar
               name={editor?.displayName ?? editorName}

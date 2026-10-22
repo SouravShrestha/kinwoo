@@ -46,7 +46,7 @@ export function BoughtItemDetails({
 
   return (
     <div className="-mx-6 space-y-12 pb-4 pt-12">
-      <div className="space-y-5">
+      <div className="flex flex-col gap-5">
         <div className="mx-6 flex items-start gap-5">
           <span className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-muted text-foreground">
             <CategoryIcon name={item.categoryName ?? undefined} size={26} />
@@ -56,23 +56,27 @@ export function BoughtItemDetails({
               {item.name}
             </h2>
             {quantity ? (
-              <p className="font-display text-sm text-muted-foreground">{quantity}</p>
+              <p className="font-display text-sm font-normal text-muted-foreground">{quantity}</p>
             ) : null}
           </div>
           {pricePaise != null || store ? (
             <div className="max-w-[45%] space-y-1 text-right">
               {pricePaise != null ? (
-                <p className="font-display text-base text-foreground">{formatPaise(pricePaise)}</p>
+                <p className="font-display text-base font-normal text-foreground">
+                  {formatPaise(pricePaise)}
+                </p>
               ) : null}
               {store ? (
-                <p className="truncate font-display text-sm text-muted-foreground">{store}</p>
+                <p className="truncate font-display text-sm font-normal text-muted-foreground">
+                  {store}
+                </p>
               ) : null}
             </div>
           ) : null}
         </div>
 
         {item.note ? (
-          <p className="mx-6 flex min-h-12 items-center whitespace-pre-line break-words rounded-xl bg-muted px-5 py-3 font-display text-base text-foreground">
+          <p className="mx-6 -mb-3 mt-2 flex min-h-12 items-center whitespace-pre-line break-words rounded-xl bg-muted px-5 py-3 font-display text-base font-normal text-foreground">
             <span className="sr-only">Note: </span>
             {item.note}
           </p>

@@ -7,10 +7,11 @@ import { formatPaise } from "@kinwoo/core/grocery";
 import { memberDisplayName } from "@kinwoo/core/houses";
 import { ArrowRightIcon } from "@kinwoo/icons";
 import Link from "next/link";
-import { useEffect, useState, type AnimationEvent } from "react";
+import { useEffect, useRef, useState, type AnimationEvent } from "react";
 
 import { Avatar } from "@/components/houses/Avatar";
 import { recordPaymentPath, useHouseNavigation } from "@/lib/house-navigation";
+import { useSwipeToClose } from "@/lib/use-swipe-to-close";
 import { cn } from "@/lib/utils";
 
 function Balances({ houseId, simplifyDebts }: { houseId: string; simplifyDebts: boolean }) {
@@ -68,6 +69,8 @@ export function SettleUpScreen() {
   const { activeHouse, ready } = useActiveHouse();
   const { goBack, goHome } = useHouseNavigation();
   const [closing, setClosing] = useState(false);
+  const screenRef = useRef<HTMLElement>(null);
+  useSwipeToClose(screenRef, !closing, () => setClosing(true));
 
   useEffect(() => {
     if (ready && !activeHouse) goHome();
@@ -80,13 +83,14 @@ export function SettleUpScreen() {
 
   return (
     <main
+      ref={screenRef}
       onAnimationEnd={onAnimationEnd}
       className={cn(
         "flex h-dvh flex-col overflow-hidden bg-background",
         closing ? "sheet-panel-out" : "sheet-panel-in",
       )}
     >
-      <div className="mx-auto flex w-full max-w-md flex-1 flex-col overflow-y-auto pb-10">
+      <div className="mx-auto flex w-full max-w-md flex-1 flex-col overflow-y-auto pb-[calc(2.5rem+env(safe-area-inset-bottom))]">
         <header className="px-6 pt-[calc(1.25rem+env(safe-area-inset-top))]">
           <button
             type="button"

@@ -28,7 +28,7 @@ function ActivityIcon({
   actor: HouseMember | undefined;
 }) {
   return (
-    <span className="relative mr-5 shrink-0">
+    <span className="relative mr-5 mt-px shrink-0">
       <span className="flex size-9 items-center justify-center rounded-lg bg-muted pt-0.5 text-foreground">
         <ActivityKindIcon name={activityIconName(entry)} size={20} />
       </span>
@@ -58,7 +58,9 @@ function ActivityDetail({
   const color = detail.tone === "lent" ? "text-accent" : "text-destructive";
 
   return (
-    <p className={`mt-1 font-display text-sm leading-5 ${color}`}>
+    <p
+      className={`mt-1 font-display text-sm font-normal leading-[calc(1.25rem*var(--font-scale,1))] ${color}`}
+    >
       {detail.struck ? (
         <del className="relative no-underline">
           {detail.text}
@@ -132,7 +134,7 @@ export const ActivityList = memo(function ActivityList({
                 <>
                   <ActivityIcon entry={entry} actor={membersById.get(entry.actorId ?? "")} />
                   <div className="mr-3 min-w-0 flex-1">
-                    <p className="font-display text-base leading-6 text-foreground">
+                    <p className="font-display text-base font-normal leading-[calc(1.5rem*var(--font-scale,1))] text-foreground">
                       {formatActivityParts(entry, currentUserId).map((part, index) =>
                         part.emphasis ? (
                           <em key={index} className="font-medium italic">
@@ -144,7 +146,7 @@ export const ActivityList = memo(function ActivityList({
                       )}
                     </p>
                     <ActivityDetail entry={entry} currentUserId={currentUserId} />
-                    <p className="mt-3 font-display text-xs text-muted-foreground">
+                    <p className="mt-3 font-display text-xs font-normal text-muted-foreground">
                       {formatActivityTimestamp(entry.createdAt)}
                     </p>
                   </div>

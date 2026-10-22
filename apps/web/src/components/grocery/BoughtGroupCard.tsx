@@ -48,7 +48,7 @@ export function BoughtGroupCard({
           >
             {group.label}
           </span>
-          <span className="block min-h-4 truncate font-display text-xs text-muted-foreground">
+          <span className="block min-h-4 truncate font-display text-xs font-normal text-muted-foreground">
             {itemCountLabel(group.items.length)}
           </span>
         </span>

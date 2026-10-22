@@ -40,11 +40,13 @@ export function QuickAddBar({
       onClick={() => {
         if (targetList) onPress(targetList.id);
       }}
-      className="flex w-full items-center justify-between rounded-2xl border border-border/80 bg-muted/50 px-4 py-3.5 text-left transition-colors hover:bg-muted hover:cursor-pointer"
+      className="flex w-full items-center justify-between rounded-2xl border border-border bg-muted/60 px-4 py-3.5 text-left transition-colors hover:bg-muted hover:cursor-pointer"
     >
       <div className="flex items-center gap-2.5">
         <PlusCircleIcon size={24} className="shrink-0 text-primary" />
-        <span className="font-display text-base text-muted-foreground">Add an item...</span>
+        <span className="font-display text-base font-normal text-muted-foreground">
+          Add an item...
+        </span>
       </div>
       {targetList ? (
         <div className="flex items-center gap-1.5 rounded-full border border-border/60 bg-background px-2.5 py-1">

@@ -14,17 +14,18 @@ import {
   CheckIcon,
   RupeeIcon,
 } from "@kinwoo/icons";
-import { useEffect, useState, type AnimationEvent } from "react";
+import { useEffect, useRef, useState, type AnimationEvent } from "react";
 
 import { PayerSheet } from "@/components/expenses/PayerSheet";
 import { SplitSheet } from "@/components/expenses/SplitSheet";
 import { useHouseNavigation } from "@/lib/house-navigation";
+import { useSwipeToClose } from "@/lib/use-swipe-to-close";
 import { cn } from "@/lib/utils";
 
 type Picker = "payers" | "split";
 
 const FIELD =
-  "flex h-12 items-center rounded-xl bg-muted font-display text-base text-foreground focus-within:outline-2 focus-within:outline-foreground";
+  "flex h-12 items-center rounded-xl bg-muted font-display text-base font-normal text-foreground focus-within:outline-2 focus-within:outline-foreground";
 const FOCUS_RING =
   "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground";
 
@@ -45,6 +46,8 @@ export function BatchMarkBoughtScreen({
   const { activeHouse, ready } = useActiveHouse();
   const { goBack, goHome } = useHouseNavigation();
   const [closing, setClosing] = useState(false);
+  const screenRef = useRef<HTMLElement>(null);
+  useSwipeToClose(screenRef, !closing, () => setClosing(true));
   const [picker, setPicker] = useState<Picker | null>(null);
   const [split, setSplit] = useState(true);
   const houseId = activeHouse?.house.id ?? "";
@@ -84,6 +87,7 @@ export function BatchMarkBoughtScreen({
 
   return (
     <main
+      ref={screenRef}
       onAnimationEnd={onAnimationEnd}
       className={cn(
         "flex min-h-dvh flex-col bg-background",
@@ -157,7 +161,7 @@ export function BatchMarkBoughtScreen({
               <p
                 id="batch-name-hint"
                 role="alert"
-                className="mt-2 text-right font-display text-sm text-destructive"
+                className="mt-2 text-right font-display text-sm font-normal text-destructive"
               >
                 {form.nameError}
               </p>
@@ -183,14 +187,14 @@ export function BatchMarkBoughtScreen({
                 onChange={(event) => form.setTotal(event.target.value)}
                 aria-invalid={form.totalError ? true : undefined}
                 aria-describedby={form.totalError ? "batch-total-hint" : undefined}
-                className="h-11 min-w-0 flex-1 bg-transparent text-[34px] font-medium outline-none placeholder:text-muted-foreground"
+                className="h-11 min-w-0 flex-1 bg-transparent text-[calc(34px*var(--font-scale,1))] font-medium outline-none placeholder:text-muted-foreground"
               />
             </label>
             {form.totalError ? (
               <p
                 id="batch-total-hint"
                 role="alert"
-                className="mt-2 font-display text-sm text-destructive"
+                className="mt-2 font-display text-sm font-normal text-destructive"
               >
                 {form.totalError}
               </p>
@@ -212,7 +216,7 @@ export function BatchMarkBoughtScreen({
                 aria-checked={split}
                 onClick={() => setSplit((value) => !value)}
                 className={cn(
-                  "flex w-fit items-center gap-3 font-display text-base text-foreground hover:cursor-pointer",
+                  "flex w-fit items-center gap-3 font-display text-base font-normal text-foreground hover:cursor-pointer",
                   FOCUS_RING,
                 )}
               >
@@ -236,7 +240,7 @@ export function BatchMarkBoughtScreen({
                 )}
               >
                 <div className="min-h-0 overflow-hidden">
-                  <div className="flex flex-wrap items-center gap-x-2 gap-y-3 pt-4 font-display text-base">
+                  <div className="flex flex-wrap items-center gap-x-2 gap-y-3 pt-4 font-display text-base font-normal">
                     <span className="text-muted-foreground">Paid by</span>
                     <button
                       type="button"
@@ -271,10 +275,16 @@ export function BatchMarkBoughtScreen({
 
           {form.items.length > 0 ? (
             <div role="group" aria-labelledby="batch-items-label" className={"pt-6"}>
-              <p id="batch-items-label" className="pb-5 font-display text-sm text-muted-foreground">
+              <p
+                id="batch-items-label"
+                className="pb-5 font-display text-sm font-normal text-muted-foreground"
+              >
                 {form.items.length} items
               </p>
-              <p role="status" className="mb-5 font-display text-sm text-warning empty:hidden">
+              <p
+                role="status"
+                className="mb-5 font-display text-sm font-normal text-warning empty:hidden"
+              >
                 {form.amountMismatch}
               </p>
               <ul className="space-y-7">
@@ -291,7 +301,10 @@ export function BatchMarkBoughtScreen({
                         >
                           <CategoryIcon name={item.categoryName ?? undefined} size={24} />
                         </span>
-                        <label htmlFor={inputId} className="min-w-0 flex-1 font-display">
+                        <label
+                          htmlFor={inputId}
+                          className="min-w-0 flex-1 font-display font-normal"
+                        >
                           <span className="block truncate text-base text-foreground">
                             {item.name}
                           </span>
@@ -321,7 +334,7 @@ export function BatchMarkBoughtScreen({
                         <p
                           id={`${inputId}-hint`}
                           role="alert"
-                          className="mt-2 text-right font-display text-sm text-destructive"
+                          className="mt-2 text-right font-display text-sm font-normal text-destructive"
                         >
                           {error}
                         </p>

@@ -14,7 +14,7 @@ export function BackButton() {
       onClick={goBack}
       className="-mx-2 flex size-9 items-center justify-start hover:cursor-pointer hover:opacity-70 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
     >
-      <ArrowRightIcon size={26} className="rotate-180" />
+      <ArrowRightIcon size={24} className="rotate-180" />
     </button>
   );
 }

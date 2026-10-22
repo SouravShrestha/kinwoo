@@ -154,18 +154,15 @@ select throws_ok(
   'P0001', 'INVALID_INPUT', 'the new amount has to be positive');
 
 select tests.as_user(tests.id('c'));
-select throws_ok(
-  format('select public.update_settlement(%L, 100)', tests.id('s3')),
-  'P0001', 'FORBIDDEN', 'only the two people can edit a payment');
-select throws_ok(
-  format('select public.reverse_settlement(%L)', tests.id('s3')),
-  'P0001', 'FORBIDDEN', 'or delete it');
+select public.update_settlement(tests.id('s3'), 3500);
+select is(tests.net('b', 'a'), :before::bigint + 3500,
+  'any housemate can edit a payment they are not part of');
 select tests.as_user(tests.id('x'));
 select throws_ok(
   format('select public.reverse_settlement(%L)', tests.id('s3')),
   'P0001', 'NOT_FOUND', 'outsiders cannot see it');
 
-select tests.as_user(tests.id('a'));
+select tests.as_user(tests.id('c'));
 select public.reverse_settlement(tests.id('s3'));
 select is(tests.net('b', 'a'), :before::bigint, 'a deleted payment stops counting');
 select is((select count(*) from public.activity_log

@@ -77,8 +77,6 @@ export function PaymentDetailScreen({
     goBack();
   };
 
-  const involved = !!settlement && (settlement.payerId === userId || settlement.payeeId === userId);
-
   return (
     <PaymentForm
       data={data}
@@ -87,7 +85,6 @@ export function PaymentDetailScreen({
       submitting={update.isPending}
       onSubmit={(amountPaise) => void save(amountPaise)}
       requireChange
-      readOnly={!involved}
       onDelete={() => setConfirmDelete(true)}
     >
       <ConfirmDialog

@@ -178,7 +178,7 @@ export function GroceryTabView({
         role="tablist"
         aria-label="Item status"
         onKeyDown={onKeyDown}
-        className="relative -mx-6 flex justify-between border-b-[1.3px] border-border px-3"
+        className="relative -mx-6 flex justify-between border-b-[1.6px] border-border px-2"
       >
         {GROCERY_TABS.map((tab, i) => {
           const active = tab.key === value;
@@ -230,7 +230,7 @@ export function GroceryTabView({
         <span
           ref={indicatorRef}
           aria-hidden
-          className="pointer-events-none absolute -bottom-[1.3px] left-0 h-[1.3px] w-0 bg-foreground"
+          className="pointer-events-none absolute -bottom-[1.6px] left-0 h-[1.6px] w-0 bg-foreground"
         />
       </div>
 
@@ -255,7 +255,7 @@ export function GroceryTabView({
             id={panelId(tab.key)}
             aria-labelledby={tabId(tab.key)}
             inert={i !== index}
-            className="w-full shrink-0 snap-start snap-always px-4 pt-4"
+            className="w-full shrink-0 snap-start snap-always px-4 pt-2"
           >
             {renderPage(tab.key)}
           </div>

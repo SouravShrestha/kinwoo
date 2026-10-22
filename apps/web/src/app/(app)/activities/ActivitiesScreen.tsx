@@ -73,7 +73,7 @@ export function ActivitiesScreen() {
   }
 
   return (
-    <main className="flex min-h-[calc(100dvh-4rem)] flex-col px-4 pb-24 pt-6">
+    <main className="flex min-h-[calc(100dvh-4rem)] flex-col px-4 pb-24 pt-[calc(0.75rem+env(safe-area-inset-top))]">
       <h1 className="mb-4 flex min-h-10 items-center px-2 font-display text-xl font-normal text-foreground">
         Recent Activity
       </h1>
@@ -82,13 +82,13 @@ export function ActivitiesScreen() {
         groups={filterGroups}
         value={filters}
         onChange={setFilters}
-        className="-mx-4 mb-6 mt-2 px-6"
+        className="-mx-4 mb-6 mt-2 px-5"
       />
 
-      <div className="flex-1">
+      <div className="flex flex-1 flex-col">
         {!ready || isLoading ? null : filteredEntries.length === 0 && !moreToFetch ? (
-          <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-border py-16 text-center">
-            <p className="font-display font-medium text-foreground">
+          <div className="flex flex-1 flex-col items-center justify-center px-6 text-center">
+            <p className="font-display text-sm font-normal text-muted-foreground">
               {countSelected(deferredFilters) > 0
                 ? "No activity matches these filters"
                 : "No activity yet"}

@@ -19,7 +19,7 @@ export function InviteFriendsCard({ canInvite, onPress }: InviteFriendsCardProps
         className="-mb-2 -ml-3 w-[45%] shrink-0 self-end bg-foreground mask-contain mask-bottom-left mask-no-repeat"
       />
       <div className="flex flex-1 flex-col justify-between gap-6 py-5 pr-5 pl-3 text-right -ml-10">
-        <p className="font-display text-sm leading-5 font-normal">
+        <p className="font-display text-sm leading-[calc(1.25rem*var(--font-scale,1))] font-normal">
           Solo mode is fine, but it&apos;s better with friends
         </p>
         <div className="mt-5 flex items-center justify-end gap-2">

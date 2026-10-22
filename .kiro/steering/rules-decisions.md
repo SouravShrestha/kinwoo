@@ -56,7 +56,7 @@ Roles: `admin` and `member`. Joiners are always plain members. Money is integer 
 - Linked purchase or batch: editing the expense updates the purchase price or batch total (per-item prices stay). Deleting the expense soft-deletes the linked bought items too.
 - Simplify debts is a house setting any member can change, at most 2 changes per person per 30 minutes (`RATE_LIMITED`). Each change is logged.
 - Record payment (`record_settlement`, `20261203000000`): the caller must be the payer or the payee, so you can record paying someone or being paid. The other side only has to have belonged to the house, so a balance with a former member can be cleared. Amount 1 to 1,000,000,000 paise, not capped at the balance (an overpayment flips the balance). It is logged as `settlement.recorded`.
-- A settlement counts like the payee owing the payer, inside the same exact sum as expenses, so pair mirroring and zero-sum house nets still hold. Settlements are never hard-deleted; a reversed one (`reversed_at`) stops counting, but there is no reverse RPC or UI yet.
+- A settlement counts like the payee owing the payer, inside the same exact sum as expenses, so pair mirroring and zero-sum house nets still hold. Settlements are never hard-deleted; a reversed one (`reversed_at`) stops counting. Any house member edits (`update_settlement`) or deletes (`reverse_settlement`) any payment in their house, involved or not (`20261206000000`). Both are logged with the actor.
 
 ## Activity log
 
@@ -66,5 +66,5 @@ Roles: `admin` and `member`. Joiners are always plain members. Money is integer 
 ## Open items
 
 - Product name is Kinwoo in code and Jhola in some footers.
-- Recorded payments cannot be undone from the app yet, and two people can record the same payment.
+- Two people can record the same payment.
 - No `delete_house` RPC or UI.

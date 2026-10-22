@@ -38,7 +38,7 @@ export function LoginScreen() {
 
   return (
     <div className="flex min-h-dvh justify-center">
-      <main className="flex w-full max-w-md flex-col px-6 pt-10 lg:border-x lg:border-border">
+      <main className="flex w-full max-w-md flex-col px-7 pt-[calc(1rem+env(safe-area-inset-top))] lg:border-x lg:border-border">
         <div className="flex flex-1 items-center justify-center">
           {/* Toggled with CSS rather than useTheme so the right image renders on first paint. */}
           <Image
@@ -47,7 +47,7 @@ export function LoginScreen() {
             width={725}
             height={512}
             priority
-            className="h-auto w-full max-w-sm dark:hidden"
+            className="h-64 w-full object-contain dark:hidden"
           />
           <Image
             src="/images/landing-screen-image-dark-theme.webp"
@@ -55,7 +55,7 @@ export function LoginScreen() {
             width={770}
             height={512}
             priority
-            className="hidden h-auto w-full max-w-sm dark:block"
+            className="hidden h-64 w-full object-contain dark:block"
           />
         </div>
 
@@ -67,7 +67,7 @@ export function LoginScreen() {
               width={320}
               height={90}
               priority
-              className="h-auto w-40 dark:hidden"
+              className="h-[45px] w-[160px] object-contain dark:hidden"
             />
             <Image
               src="/images/logo-typed-white.webp"
@@ -75,10 +75,10 @@ export function LoginScreen() {
               width={320}
               height={90}
               priority
-              className="hidden h-auto w-40 dark:block"
+              className="hidden h-[45px] w-[160px] object-contain dark:block"
             />
           </h1>
-          <p className="mt-3 font-display text-base font-normal text-muted-foreground ml-2">
+          <p className="ml-2 mt-2 font-display text-base font-normal text-muted-foreground">
             Everything shared. Nothing forgotten.
           </p>
         </div>
@@ -103,7 +103,7 @@ export function LoginScreen() {
           ) : null}
         </div>
 
-        <p className="mt-8 pb-[calc(2rem+env(safe-area-inset-bottom))] text-center text-xs text-muted-foreground">
+        <p className="mt-8 pb-[calc(1.5rem+env(safe-area-inset-bottom))] text-center text-xs text-muted-foreground">
           By continuing to use {APP_NAME}, you agree to our{" "}
           <Link href="/legal/terms" className="underline hover:cursor-pointer">
             Terms &amp; Conditions

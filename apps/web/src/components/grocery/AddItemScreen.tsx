@@ -22,6 +22,7 @@ import {
 import { useEffect, useRef, useState, type AnimationEvent } from "react";
 
 import { useHouseNavigation } from "@/lib/house-navigation";
+import { useSwipeToClose } from "@/lib/use-swipe-to-close";
 import { cn } from "@/lib/utils";
 
 import { NewListSheet } from "./NewListSheet";
@@ -33,7 +34,7 @@ const NO_UNIT = "__none__";
 const NEW_LIST = "__new_list__";
 
 const FIELD =
-  "flex h-12 items-center rounded-xl bg-muted font-display text-base text-foreground focus-within:outline-2 focus-within:outline-foreground";
+  "flex h-12 items-center rounded-xl bg-muted font-display text-base font-normal text-foreground focus-within:outline-2 focus-within:outline-foreground";
 const FIELD_BUTTON =
   "gap-2 px-3.5 transition-opacity hover:cursor-pointer hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground";
 const FOCUS_RING =
@@ -43,6 +44,8 @@ export function AddItemScreen({ listId }: { listId: string | null }) {
   const { activeHouse, ready } = useActiveHouse();
   const { goBack, goHome } = useHouseNavigation();
   const [closing, setClosing] = useState(false);
+  const screenRef = useRef<HTMLElement>(null);
+  useSwipeToClose(screenRef, !closing, () => setClosing(true));
   const [addAnother, setAddAnother] = useState(true);
   const [picker, setPicker] = useState<Picker | null>(null);
   const [newListOpen, setNewListOpen] = useState(false);
@@ -88,6 +91,7 @@ export function AddItemScreen({ listId }: { listId: string | null }) {
 
   return (
     <main
+      ref={screenRef}
       onAnimationEnd={onAnimationEnd}
       className={cn(
         "flex h-dvh flex-col overflow-hidden bg-background",
@@ -143,7 +147,7 @@ export function AddItemScreen({ listId }: { listId: string | null }) {
           </button>
         </header>
 
-        <div className="space-y-8">
+        <div className="space-y-8 pb-8">
           <div>
             <div className="flex gap-3">
               <button
@@ -185,7 +189,7 @@ export function AddItemScreen({ listId }: { listId: string | null }) {
                 id="item-name-hint"
                 role={form.error ? "alert" : undefined}
                 className={cn(
-                  "mt-2 text-right font-display text-sm",
+                  "mt-2 text-right font-display text-sm font-normal",
                   form.error ? "text-destructive" : "text-muted-foreground",
                 )}
               >
@@ -237,7 +241,7 @@ export function AddItemScreen({ listId }: { listId: string | null }) {
               onChange={(event) => form.setQuantity(event.target.value)}
               className={cn(
                 FIELD,
-                "w-20 shrink-0 justify-center px-2 text-center outline-none placeholder:text-muted-foreground",
+                "w-20 shrink-0 justify-center text-center outline-none placeholder:text-muted-foreground",
               )}
             />
             <button
@@ -288,7 +292,7 @@ export function AddItemScreen({ listId }: { listId: string | null }) {
             aria-checked={addAnother}
             onClick={() => setAddAnother((value) => !value)}
             className={cn(
-              "ml-auto flex w-fit items-center gap-3 font-display text-base text-foreground hover:cursor-pointer",
+              "ml-auto flex w-fit items-center gap-3 font-display text-base font-normal text-foreground hover:cursor-pointer",
               FOCUS_RING,
             )}
           >

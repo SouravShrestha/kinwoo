@@ -34,7 +34,7 @@ function ActionCard({
       type="button"
       aria-label={label}
       onClick={onClick}
-      className={`relative flex min-w-0 flex-1 flex-col ${labelAtTop ? "justify-start" : "justify-end"} overflow-hidden rounded-lg border border-border bg-card p-3 hover:cursor-pointer hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground ${className ?? ""}`}
+      className={`relative flex min-w-0 flex-1 flex-col ${labelAtTop ? "justify-start" : "justify-end"} overflow-hidden rounded-lg border border-border bg-card p-4 hover:cursor-pointer hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground ${className ?? ""}`}
     >
       {background ? (
         <span aria-hidden="true" className={`pointer-events-none absolute ${backgroundClassName}`}>
@@ -43,7 +43,7 @@ function ActionCard({
       ) : null}
       <span
         aria-hidden="true"
-        className={`relative font-display text-xl leading-7 font-normal ${isRight ? "text-right" : "text-left"}`}
+        className={`relative font-display text-xl leading-[calc(1.75rem*var(--font-scale,1))] font-normal ${isRight ? "text-right" : "text-left"}`}
       >
         {lines[0]}
         <br />
@@ -62,7 +62,7 @@ export function SetupHousePrompt({ onCreate, onJoin }: SetupHousePromptProps) {
           label="Build a house"
           align="left"
           onClick={onCreate}
-          background={<BuildIcon size={96} />}
+          background={<BuildIcon size={84} />}
           backgroundClassName="right-3 -bottom-4"
           labelAtTop
           className="mt-14 aspect-square"
@@ -72,7 +72,7 @@ export function SetupHousePrompt({ onCreate, onJoin }: SetupHousePromptProps) {
           label="I have a code"
           align="right"
           onClick={onJoin}
-          background={<CodeIcon size={64} />}
+          background={<CodeIcon size={56} />}
           backgroundClassName="-top-2 left-4"
           className="aspect-square"
         />

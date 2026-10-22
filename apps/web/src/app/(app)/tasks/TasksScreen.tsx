@@ -63,6 +63,9 @@ import { houseStorage } from "@/lib/house-storage";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 
+// Opening a transaction leaves this page; remembering the tab lets going back land on it again.
+let lastTab: GroceryTabKey = DEFAULT_GROCERY_TAB;
+
 export function TasksScreen() {
   const router = useRouter();
   const { user } = useAuth();
@@ -80,7 +83,7 @@ export function TasksScreen() {
 
   const [filters, setFilters] = useState<FilterSelection>(EMPTY_FILTER_SELECTION);
   const [sortId, setSortId] = useState(DEFAULT_GROCERY_SORT);
-  const [tab, setTab] = useState<GroceryTabKey>(DEFAULT_GROCERY_TAB);
+  const [tab, setTab] = useState<GroceryTabKey>(lastTab);
   const [switcherOpen, setSwitcherOpen] = useState(false);
   const [manageOpen, setManageOpen] = useState(false);
   const [activeItemId, setActiveItemId] = useState<string | null>(null);
@@ -242,6 +245,7 @@ export function TasksScreen() {
 
   const handleTabChange = (key: GroceryTabKey) => {
     setTab(key);
+    lastTab = key;
     setFilters((current) =>
       pruneSelection(
         current,
@@ -277,11 +281,11 @@ export function TasksScreen() {
   return (
     <main
       className={cn(
-        "flex min-h-[calc(100dvh-4rem)] flex-col px-6 pt-6",
+        "flex min-h-[calc(100dvh-4rem)] flex-col px-6 pt-[calc(0.75rem+env(safe-area-inset-top))]",
         selecting ? (tab === "pending" ? "pb-60" : "pb-44") : "pb-24",
       )}
     >
-      <div className="flex items-center justify-between pb-4">
+      <div className="flex items-center justify-between pb-3">
         <button
           type="button"
           onClick={() => setSwitcherOpen(true)}
@@ -293,7 +297,7 @@ export function TasksScreen() {
               <CategoryIcon name={listIconOption(activeList.icon).label} size={18} />
             </span>
           ) : null}
-          <span className="truncate font-display font text-xl font-normal">
+          <span className="truncate font-display text-xl font-medium">
             {activeList?.name ?? "Groceries"}
           </span>
           <CaretDownIcon size={9} className="shrink-0" />
@@ -304,9 +308,9 @@ export function TasksScreen() {
             type="button"
             onClick={() => setManageOpen(true)}
             aria-label="Edit this list"
-            className="flex size-10 items-center justify-center text-foreground transition-opacity hover:opacity-70 hover:cursor-pointer -mr-4"
+            className="flex size-10 items-center justify-center text-foreground transition-opacity hover:opacity-70 hover:cursor-pointer -mr-3"
           >
-            <MoreVerticalIcon size={3} />
+            <MoreVerticalIcon size={3.5} />
           </button>
         ) : null}
       </div>
@@ -326,7 +330,7 @@ export function TasksScreen() {
               defaultValue: DEFAULT_GROCERY_SORT,
               onChange: setSortId,
             }}
-            className="-mx-6 px-6 mt-6 mb-2"
+            className="-mx-6 mb-5 mt-5 px-5"
           />
         }
         renderPage={(key) => {
@@ -346,7 +350,10 @@ export function TasksScreen() {
             return (
               <>
                 <div className="mb-3 flex min-h-8 items-center justify-between gap-3">
-                  <span aria-live="polite" className="font-display text-sm text-muted-foreground">
+                  <span
+                    aria-live="polite"
+                    className="font-display text-sm font-normal text-muted-foreground"
+                  >
                     {selection.count > 0
                       ? selectionLabel(selection.count)
                       : pendingCountLabel(pageItems.length)}
@@ -387,7 +394,10 @@ export function TasksScreen() {
             return (
               <>
                 <div className="mb-3 flex min-h-8 items-center justify-between gap-3">
-                  <span aria-live="polite" className="font-display text-sm text-muted-foreground">
+                  <span
+                    aria-live="polite"
+                    className="font-display text-sm font-normal text-muted-foreground"
+                  >
                     {assignedSelection.count > 0
                       ? selectionLabel(assignedSelection.count)
                       : assignedCountLabel(pageItems.length)}
@@ -477,7 +487,7 @@ export function TasksScreen() {
 
       <div
         hidden={selecting}
-        className="fixed bottom-22.5 left-1/2 -translate-x-1/2 w-full max-w-md px-4 pointer-events-none"
+        className="fixed bottom-[calc(5.625rem+env(safe-area-inset-bottom))] left-1/2 -translate-x-1/2 w-full max-w-md px-4 pointer-events-none"
       >
         <button
           type="button"

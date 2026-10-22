@@ -17,7 +17,6 @@ import { MemberConfirmDialog } from "./MemberConfirmDialog";
 import { MemberView } from "./MemberView";
 import { MembersView } from "./MembersView";
 import { SettingsView } from "./SettingsView";
-import { ROOMY_SHEET } from "./sheet-styles";
 
 export function HouseSheet({
   open,
@@ -37,7 +36,6 @@ export function HouseSheet({
       open={open && activeHouse !== null}
       onClose={onClose}
       label={HOUSE_MENU_TITLE}
-      className={ROOMY_SHEET}
       showClose
     >
       {activeHouse ? (
@@ -116,7 +114,7 @@ function HouseSheetContent({
 
   return (
     <>
-      <div ref={ref} style={{ minHeight }}>
+      <div ref={ref} className="pb-4" style={{ minHeight }}>
         {content}
       </div>
       <MemberConfirmDialog confirm={confirm} houseName={membership.house.name} leave={leave} />

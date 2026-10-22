@@ -85,7 +85,7 @@ function SheetBody({
 
   return (
     <div>
-      <h2 className="font-display text-xl font-medium">
+      <h2 className="font-display text-2xl font-medium">
         <span className="flex items-center gap-1.5">
           <HousePinIcon size={18} className="shrink-0" />
           <span className="truncate">{preview.name}</span>
@@ -145,7 +145,7 @@ function Notice({
 }) {
   return (
     <div>
-      <h2 className="font-display text-2xl font-medium">{title}</h2>
+      <h2 className="font-sans text-2xl font-medium">{title}</h2>
       <p className="mt-2 text-base text-muted-foreground">{message}</p>
       <div className="mt-6">{children}</div>
     </div>

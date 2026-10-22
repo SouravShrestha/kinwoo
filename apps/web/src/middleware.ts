@@ -1,4 +1,6 @@
+import { isPublicRoute } from "@kinwoo/core/auth";
 import { createServerClient } from "@supabase/ssr";
+import { isAuthRetryableFetchError } from "@supabase/supabase-js";
 import { NextResponse, type NextRequest } from "next/server";
 
 import { buildContentSecurityPolicy, createNonce } from "@/lib/csp";
@@ -37,7 +39,21 @@ export async function middleware(request: NextRequest) {
       },
     });
 
-    await supabase.auth.getUser();
+    // getClaims verifies the JWT locally against the cached JWKS, so page and RSC navigations
+    // skip the Supabase Auth round trip that getUser makes. It still refreshes expired sessions.
+    const { data, error } = await supabase.auth.getClaims();
+
+    // A network failure says nothing about the session, so let the client gate decide.
+    if (
+      !data?.claims.sub &&
+      !isAuthRetryableFetchError(error) &&
+      !isPublicRoute(request.nextUrl.pathname)
+    ) {
+      const redirect = NextResponse.redirect(new URL("/login", request.url));
+      for (const cookie of response.cookies.getAll()) redirect.cookies.set(cookie);
+      redirect.headers.set(CSP_HEADER, csp);
+      return redirect;
+    }
   }
 
   response.headers.set(CSP_HEADER, csp);

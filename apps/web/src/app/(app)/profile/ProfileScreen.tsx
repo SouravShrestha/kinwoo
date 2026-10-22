@@ -23,6 +23,7 @@ import { AvatarSheet } from "@/components/AvatarSheet";
 import { BackButton } from "@/components/BackButton";
 import { Button } from "@/components/Button";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
+import { InstallAppRow } from "@/components/InstallAppRow";
 import { SettingsButtonRow, SettingsGroup, SettingsLinkRow } from "@/components/Settings";
 
 const THEME_LABELS: Record<string, string> = {
@@ -53,12 +54,12 @@ export function ProfileScreen() {
   };
 
   return (
-    <main className="px-6 pb-[calc(2.5rem+env(safe-area-inset-bottom))] pt-[calc(1.25rem+env(safe-area-inset-top))]">
+    <main className="px-6 pb-[calc(2.5rem+env(safe-area-inset-bottom))] pt-[calc(0.75rem+env(safe-area-inset-top))]">
       <div className="mb-6">
         <BackButton />
       </div>
 
-      <div className="mb-12 flex items-center">
+      <div className="mb-6 flex items-center">
         <button
           type="button"
           aria-label="Change avatar"
@@ -109,6 +110,7 @@ export function ProfileScreen() {
           icon={<BellIcon size={20} />}
           label="Notifications"
         />
+        <InstallAppRow />
       </SettingsGroup>
 
       <SettingsGroup title={LEGAL_LABELS.group}>

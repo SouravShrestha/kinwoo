@@ -25,7 +25,7 @@ const PRESETS: Record<TextFieldKind, InputHTMLAttributes<HTMLInputElement>> = {
     maxLength: CODE_LENGTH,
     "aria-label": `${CODE_LENGTH}-digit code`,
     placeholder: "123456",
-    className: `${BASE} text-center text-base font-bold tracking-[8px]`,
+    className: `${BASE} text-center text-base tracking-[8px]`,
   },
   name: {
     autoComplete: "name",

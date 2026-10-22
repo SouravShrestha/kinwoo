@@ -42,7 +42,9 @@ export function ExpenseRow({
     >
       <span aria-hidden className="flex w-8 shrink-0 flex-col items-center font-display">
         <span className="text-xs text-muted-foreground">{month}</span>
-        <span className="text-lg leading-6 text-muted-foreground">{day}</span>
+        <span className="text-lg leading-[calc(1.5rem*var(--font-scale,1))] text-muted-foreground">
+          {day}
+        </span>
       </span>
       <span
         aria-hidden
@@ -56,7 +58,7 @@ export function ExpenseRow({
         <span className="truncate font-display text-xs text-muted-foreground">{payers}</span>
       </span>
       <span className={cn("flex shrink-0 flex-col items-end gap-0.5", TONE_CLASS[share.tone])}>
-        <span className="font-display text-[11px]">{share.label}</span>
+        <span className="font-display text-[calc(11px*var(--font-scale,1))]">{share.label}</span>
         {shareAmount ? (
           <span className="font-display text-base font-medium">{shareAmount}</span>
         ) : null}

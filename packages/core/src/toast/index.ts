@@ -22,6 +22,7 @@ export const TOAST_MESSAGES = {
   houseRequired: "This feature needs a house. \nJoin or create one to get started.",
   inviteAdminOnly: "Only admins can invite housemates.",
   houseLimitReached: "You can only be in one house for now.",
+  installLater: "You can install Kinwoo anytime from your Profile.",
   logoutFailed: "Couldn't log out. Try again.",
   loginCancelled: "Login was cancelled.",
   loginLinkIncomplete: "That login link was incomplete. Try again.",

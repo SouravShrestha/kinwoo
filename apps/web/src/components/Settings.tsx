@@ -6,9 +6,9 @@ import type { ReactNode } from "react";
 
 export function SettingsGroup({ title, children }: { title: string; children: ReactNode }) {
   return (
-    <section className="mt-10">
+    <section className="mt-6">
       <h2 className="text-sm text-muted-foreground">{title}</h2>
-      <ul className="mt-4">{children}</ul>
+      <ul className="mt-2">{children}</ul>
     </section>
   );
 }
@@ -25,7 +25,7 @@ function RowBody({ icon, label, value }: { icon: ReactNode; label: string; value
 }
 
 const ROW =
-  "flex min-h-14 w-full items-center text-left hover:cursor-pointer hover:opacity-70 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-foreground";
+  "flex h-14 w-full items-center text-left hover:cursor-pointer hover:opacity-70 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-foreground";
 
 export function SettingsLinkRow({
   href,
@@ -39,7 +39,7 @@ export function SettingsLinkRow({
   value?: string;
 }) {
   return (
-    <li className="mt-3">
+    <li className="mt-2">
       <Link href={href} className={ROW} aria-label={value ? `${label}, ${value}` : label}>
         <RowBody icon={icon} label={label} value={value} />
       </Link>

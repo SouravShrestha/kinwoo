@@ -64,6 +64,7 @@ function Bar({
           isLoading={isLoading}
           assigningId={assigningId}
           onPick={(memberId, name) => void assign(memberId, name)}
+          className="px-5 pt-4"
         />
       )}
 
@@ -85,7 +86,7 @@ function Bar({
               />
             }
             onClick={() => setExpanded((value) => !value)}
-            className="h-12"
+            className="h-12 flex-1"
           />
         )}
         <Button
@@ -96,7 +97,7 @@ function Bar({
               <Avatar name={self.displayName} url={self.avatarUrl} size={BUTTON_AVATAR_SIZE} />
             ) : undefined
           }
-          className="h-12"
+          className="h-12 flex-1"
         />
       </div>
     </div>

@@ -146,3 +146,4 @@ export const RecordPaymentIcon = /*#__PURE__*/ icon(geometry.recordPaymentIcon);
 export const GiveMoneyIcon = /*#__PURE__*/ icon(geometry.giveMoneyIcon);
 export const ResetIcon = /*#__PURE__*/ icon(geometry.resetIcon);
 export const PaymentIcon = /*#__PURE__*/ icon(geometry.paymentIcon);
+export const InstallIcon = /*#__PURE__*/ icon(geometry.installIcon);

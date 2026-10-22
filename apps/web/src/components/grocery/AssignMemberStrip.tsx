@@ -43,7 +43,7 @@ export function AssignMemberStrip({
           )}
         >
           {isLoading ? null : members.length === 0 ? (
-            <p className="text-center font-display text-sm text-muted-foreground">
+            <p className="text-center font-display text-sm font-normal text-muted-foreground">
               No other housemates yet
             </p>
           ) : (
@@ -66,7 +66,7 @@ export function AssignMemberStrip({
                       )}
                     >
                       <Avatar name={m.displayName} url={m.avatarUrl} size={48} />
-                      <span className="w-full text-center font-display text-xs font-medium leading-4 text-foreground">
+                      <span className="w-full text-center font-display text-xs font-medium leading-[calc(1rem*var(--font-scale,1))] text-foreground">
                         <span className="block h-4 truncate">{first}</span>
                         <span className="block h-4 truncate">{rest}</span>
                       </span>

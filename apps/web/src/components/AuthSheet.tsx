@@ -74,10 +74,10 @@ export function AuthSheet({ open, onClose }: { open: boolean; onClose: () => voi
           void (onCodeStep ? verify() : send());
         }}
       >
-        <h2 className="font-display text-2xl font-medium">
+        <h2 className={cn("text-2xl font-medium", onCodeStep ? "font-sans" : "font-display")}>
           {onCodeStep ? "Just a little verification" : "Home is just a login away"}
         </h2>
-        <p className="mt-2 text-muted-foreground text-sm">
+        <p className="mt-2 text-[calc(14px*var(--font-scale,1))] leading-[normal] text-muted-foreground">
           {onCodeStep
             ? `Your code has landed at ${state.email}`
             : `Your email, and we'll take it from here`}
@@ -90,7 +90,7 @@ export function AuthSheet({ open, onClose }: { open: boolean; onClose: () => voi
             onChange={(value) => dispatch({ type: "edit-code", value })}
             disabled={busy}
             errorId={state.error ? "auth-sheet-error" : undefined}
-            className="mt-8"
+            className="mt-6 font-bold"
           />
         ) : (
           <TextField
@@ -99,7 +99,7 @@ export function AuthSheet({ open, onClose }: { open: boolean; onClose: () => voi
             onChange={(value) => dispatch({ type: "edit-email", value })}
             disabled={busy}
             errorId={state.error ? "auth-sheet-error" : undefined}
-            className="mt-8"
+            className="mt-6"
           />
         )}
 
@@ -121,24 +121,26 @@ export function AuthSheet({ open, onClose }: { open: boolean; onClose: () => voi
         />
 
         {onCodeStep ? (
-          <div className="mt-5 flex items-center justify-between text-sm">
+          <div className="mt-4 flex items-center justify-between px-1 text-sm">
             <button
               type="button"
               onClick={() => dispatch({ type: "back-to-email" })}
-              className="text-foreground underline decoration-muted-foreground underline-offset-2 hover:cursor-pointer"
+              className="text-foreground hover:cursor-pointer"
             >
-              Use a different email
+              <span className="block border-b border-muted-foreground">Use a different email</span>
             </button>
 
             <button
               type="button"
               onClick={() => void send()}
               disabled={!canResend(state, now) || busy}
-              className="text-foreground underline underline-offset-2 hover:cursor-pointer disabled:cursor-not-allowed disabled:text-muted-foreground disabled:opacity-50"
+              className="text-foreground hover:cursor-pointer disabled:cursor-not-allowed disabled:text-muted-foreground"
             >
-              {canResend(state, now)
-                ? "Resend code"
-                : `Resend in ${resendSecondsRemaining(state, now)}s`}
+              <span className="block border-b border-foreground in-disabled:border-muted-foreground in-disabled:opacity-50">
+                {canResend(state, now)
+                  ? "Resend code"
+                  : `Resend in ${resendSecondsRemaining(state, now)}s`}
+              </span>
             </button>
           </div>
         ) : null}

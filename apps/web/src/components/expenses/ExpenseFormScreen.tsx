@@ -18,11 +18,12 @@ import {
   ExpenseCategoryIcon,
   RupeeIcon,
 } from "@kinwoo/icons";
-import { useState, type AnimationEvent } from "react";
+import { useRef, useState, type AnimationEvent } from "react";
 
 import { DatePickerSheet } from "@/components/grocery/DatePickerSheet";
 import { OptionSheet } from "@/components/grocery/OptionSheet";
 import { useHouseNavigation } from "@/lib/house-navigation";
+import { useSwipeToClose } from "@/lib/use-swipe-to-close";
 import { cn } from "@/lib/utils";
 
 import { PayerSheet } from "./PayerSheet";
@@ -47,6 +48,8 @@ export function ExpenseFormScreen({
   const { user } = useAuth();
   const { goBack } = useHouseNavigation();
   const [closing, setClosing] = useState(false);
+  const screenRef = useRef<HTMLElement>(null);
+  useSwipeToClose(screenRef, !closing, () => setClosing(true));
   const [picker, setPicker] = useState<Picker | null>(null);
   const form = useExpenseForm({
     houseId,
@@ -68,6 +71,7 @@ export function ExpenseFormScreen({
 
   return (
     <main
+      ref={screenRef}
       onAnimationEnd={onAnimationEnd}
       className={cn(
         "flex h-dvh flex-col overflow-hidden bg-background",
@@ -75,13 +79,13 @@ export function ExpenseFormScreen({
       )}
     >
       <form
-        className="mx-auto flex w-full max-w-md flex-1 flex-col overflow-y-auto px-6 pb-10"
+        className="mx-auto flex w-full max-w-md flex-1 flex-col overflow-y-auto px-6 pb-[calc(2rem+env(safe-area-inset-bottom))]"
         onSubmit={(event) => {
           event.preventDefault();
           void form.submit();
         }}
       >
-        <header className="flex items-center justify-between pb-6 pt-[calc(1.25rem+env(safe-area-inset-top))]">
+        <header className="flex items-center justify-between pb-8 pt-[calc(1.25rem+env(safe-area-inset-top))]">
           <button
             type="button"
             aria-label="Back"
@@ -175,7 +179,7 @@ export function ExpenseFormScreen({
                   onChange={(event) => form.setAmount(event.target.value)}
                   aria-invalid={form.amountError ? true : undefined}
                   aria-describedby={form.amountError ? "expense-amount-hint" : undefined}
-                  className="h-11 min-w-0 flex-1 bg-transparent text-[34px] font-medium outline-none placeholder:text-muted-foreground"
+                  className="h-11 min-w-0 flex-1 bg-transparent text-[calc(34px*var(--font-scale,1))] font-medium outline-none placeholder:text-muted-foreground"
                 />
               </label>
               {form.amountError ? (
@@ -234,7 +238,7 @@ export function ExpenseFormScreen({
               aria-controls="expense-note"
               onClick={() => setNoteOpen((open) => !open)}
               className={cn(
-                "flex items-center gap-2 py-1 font-display text-base text-muted-foreground transition-opacity hover:cursor-pointer hover:opacity-80",
+                "mt-1 flex w-fit items-center gap-2 py-1 font-display text-base text-muted-foreground transition-opacity hover:cursor-pointer hover:opacity-80",
                 FOCUS_RING,
               )}
             >

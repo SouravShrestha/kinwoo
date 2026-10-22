@@ -77,14 +77,14 @@ export function BillsScreen() {
       type="button"
       onClick={() => setMenuOpen(true)}
       aria-label="Expense options"
-      className="-mr-2 flex size-10 items-center justify-center text-foreground transition-opacity hover:cursor-pointer hover:opacity-70"
+      className="-mr-3 flex size-10 items-center justify-center text-foreground transition-opacity hover:cursor-pointer hover:opacity-70"
     >
-      <MoreVerticalIcon size={3} />
+      <MoreVerticalIcon size={3.5} />
     </button>
   );
 
   return (
-    <main className="flex min-h-[calc(100dvh-4rem)] flex-col overflow-x-clip px-4 pb-24 pt-6">
+    <main className="flex min-h-[calc(100dvh-4rem)] flex-col overflow-x-clip px-4 pb-24 pt-[calc(0.75rem+env(safe-area-inset-top))]">
       <div className="flex justify-end px-2">{menuButton}</div>
       {balances ? (
         <div className="mt-2 px-2">
@@ -92,15 +92,15 @@ export function BillsScreen() {
         </div>
       ) : null}
       {balances ? (
-        <div className="mt-9">
+        <div className="mb-1 mt-8">
           <ExpenseActions />
         </div>
       ) : null}
 
       <div className="mt-4">
         {!ready || isLoading ? null : empty ? (
-          <div className="flex flex-col items-center justify-center gap-4 rounded-2xl border border-dashed border-border px-6 py-16 text-center">
-            <p className="font-display font-medium text-foreground">No expenses yet</p>
+          <div className="flex flex-col items-center justify-center mt-4 gap-4 rounded-2xl border border-dashed border-border px-6 py-16 text-center">
+            <p className="font-display text-base font-medium text-foreground">No expenses yet</p>
             <p className="font-display text-sm text-muted-foreground">
               Add rent, bills or anything you share. Split grocery purchases show up here too.
             </p>
@@ -112,7 +112,6 @@ export function BillsScreen() {
           </div>
         ) : (
           <div className="-mx-4">
-            <div className="mb-2" />
             <ul>
               {feed.map((item) => (
                 <li key={item.id}>
@@ -138,7 +137,7 @@ export function BillsScreen() {
       </div>
 
       {empty ? null : (
-        <div className="pointer-events-none fixed bottom-22.5 left-1/2 w-full max-w-md -translate-x-1/2 px-4">
+        <div className="pointer-events-none fixed bottom-[calc(5.625rem+env(safe-area-inset-bottom))] left-1/2 w-full max-w-md -translate-x-1/2 px-4">
           <button
             type="button"
             onClick={() => router.push(NEW_EXPENSE_PATH)}

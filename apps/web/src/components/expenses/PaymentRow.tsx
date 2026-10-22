@@ -30,7 +30,9 @@ export function PaymentRow({
     >
       <span aria-hidden className="flex w-8 shrink-0 flex-col items-center font-display">
         <span className="text-xs text-muted-foreground">{month}</span>
-        <span className="text-lg leading-6 text-muted-foreground">{day}</span>
+        <span className="text-lg leading-[calc(1.5rem*var(--font-scale,1))] text-muted-foreground">
+          {day}
+        </span>
       </span>
       <span
         aria-hidden

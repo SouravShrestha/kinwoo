@@ -18,7 +18,7 @@ const inter = Inter({
 
 const poppins = Poppins({
   subsets: ["latin"],
-  weight: ["400", "500", "600"],
+  weight: ["400", "500", "600", "700"],
   style: ["normal", "italic"],
   variable: "--font-poppins",
   display: "swap",
@@ -60,6 +60,11 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html lang="en" suppressHydrationWarning className={`${inter.variable} ${poppins.variable}`}>
       <body suppressHydrationWarning>
+        {/* iOS 27 adds a progressive blur to the status bar unless a fixed element sits at the top; bg-clip-text keeps it invisible (opacity/visibility would defeat the check). */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none fixed inset-x-0 top-0 z-[2147483647] h-[11px] bg-background bg-clip-text"
+        />
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem nonce={nonce}>
           <AppProviders>
             {children}

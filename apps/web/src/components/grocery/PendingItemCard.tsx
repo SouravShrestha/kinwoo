@@ -88,7 +88,7 @@ export function PendingItemCard({
               </span>
             ) : null}
           </span>
-          <span className="block min-h-4 truncate font-display text-xs text-muted-foreground">
+          <span className="block min-h-4 truncate font-display text-xs font-normal text-muted-foreground">
             {quantityUnit}
           </span>
         </span>

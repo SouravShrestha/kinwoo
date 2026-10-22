@@ -17,6 +17,9 @@ const nextConfig: NextConfig = {
   // without it every /_next/image request runs the Worker to return the original. Images ship
   // pre-sized instead and load straight from static assets.
   images: { unoptimized: true },
+  // Pages are thin wrappers around client screens that load their data through React Query, so
+  // reusing a visited page's RSC payload is safe and saves a Worker round trip per tab switch.
+  experimental: { staleTimes: { dynamic: 300 } },
   eslint: {
     ignoreDuringBuilds: true,
   },

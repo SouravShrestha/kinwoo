@@ -327,7 +327,7 @@ function FilterSheet({
             disabled={nothingToClear}
             onClick={clearAll}
             className={cn(
-              "rounded-md py-2 pr-2 font-display text-base font-medium text-foreground underline underline-offset-4",
+              "rounded-md py-2 pr-2 font-display text-base font-medium text-foreground underline",
               nothingToClear
                 ? "cursor-not-allowed opacity-50"
                 : "hover:cursor-pointer hover:opacity-70",
@@ -397,7 +397,7 @@ function OptionRow({
       aria-checked={checked}
       onClick={onClick}
       className={cn(
-        "flex w-full items-center justify-between gap-3 px-4 py-3.5 text-left font-display text-sm text-foreground hover:cursor-pointer hover:bg-muted/60",
+        "flex w-full items-center justify-between gap-3 px-4 py-3.5 text-left font-display text-sm font-normal text-foreground hover:cursor-pointer hover:bg-muted/60",
         FOCUS_RING,
       )}
     >

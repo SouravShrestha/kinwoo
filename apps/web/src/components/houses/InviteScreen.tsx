@@ -77,12 +77,12 @@ function InviteManager({ membership }: { membership: HouseMembership }) {
 
   return (
     <div>
-      <p className="font-display text-sm font-normal text-muted-foreground">
+      <p className="pb-2 font-display text-sm font-normal text-muted-foreground">
         {INVITE_SCREEN_SUBTITLE}
       </p>
 
       {manager.code ? (
-        <div className="mt-8 flex items-center gap-6">
+        <div className="mt-6 flex items-center gap-6">
           {manager.shareUrl ? (
             <ExpandableQrCode
               value={manager.shareUrl}
@@ -345,7 +345,7 @@ function JoinModeMenu({
           role="menu"
           aria-label="General access"
           onKeyDown={onMenuKeyDown}
-          className="absolute left-14 top-8 z-10 min-w-60 rounded-md border border-border bg-muted py-1 shadow-lg"
+          className="absolute left-14 top-7 z-10 min-w-60 rounded-md border border-border bg-muted py-1"
         >
           {JOIN_MODE_OPTIONS.map((option, index) => (
             <button

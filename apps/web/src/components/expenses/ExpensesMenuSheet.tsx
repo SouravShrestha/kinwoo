@@ -22,9 +22,9 @@ export function ExpensesMenuSheet({
   return (
     <BottomSheet open={open} onClose={onClose} label="Expense options" showClose>
       <SheetHeader />
-      <div className="mt-16 flex items-center gap-3">
+      <div className="mt-14 flex items-start gap-3">
         <SimplifyIcon size={20} className="shrink-0 text-foreground" />
-        <div className="flex-1">
+        <div className="-mt-1.5 flex-1">
           <p className="font-display text-base text-foreground">Simplify debts</p>
           <p className="mt-1 font-display text-sm text-muted-foreground">
             Combine debts across the house so everyone settles up in fewer payments

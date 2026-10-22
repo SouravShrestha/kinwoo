@@ -28,7 +28,7 @@ export function TodayItemsSection({
       <SectionHeader title="Needs buying today" count={items.length} tone="destructive" />
       {items.length === 0 ? (
         <div className="flex items-center justify-center rounded-2xl border border-dashed border-border p-4 text-center">
-          <p className="font-display text-sm text-muted-foreground">
+          <p className="font-display text-sm font-normal text-muted-foreground">
             Nothing urgently needed today
           </p>
         </div>

@@ -23,7 +23,7 @@ export function CreateScreen() {
   const form = useCreateHouseForm(() => router.replace("/house/invite"));
 
   return (
-    <HouseScreen title={HOUSE_SCREEN_TITLES.create}>
+    <HouseScreen title={HOUSE_SCREEN_TITLES.create} hiddenTitle={!form.blocked}>
       {form.blocked ? (
         <div>
           <p className="text-base text-muted-foreground">{form.blockedMessage}</p>
@@ -43,8 +43,11 @@ export function CreateScreen() {
             width={512}
             height={311}
             priority
-            className="mx-auto mb-6 h-auto w-3/5 max-w-xs invert dark:invert-0"
+            className="mx-auto h-36 w-auto invert dark:invert-0"
           />
+          <h2 className="mb-3 mt-10 font-display text-3xl font-medium">
+            {HOUSE_SCREEN_TITLES.create}
+          </h2>
 
           <p className="mb-8 font-display text-sm font-normal text-muted-foreground">
             {CREATE_HOUSE_SUBTITLE}
@@ -73,7 +76,7 @@ export function CreateScreen() {
             disabled={form.submitting}
           />
 
-          <Button className="mt-8" label="Create house" type="submit" loading={form.submitting} />
+          <Button className="mt-10" label="Create house" type="submit" loading={form.submitting} />
         </form>
       )}
     </HouseScreen>

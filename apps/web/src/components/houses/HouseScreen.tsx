@@ -1,9 +1,10 @@
 "use client";
 
 import { ArrowRightIcon } from "@kinwoo/icons";
-import { useState, type AnimationEvent, type ReactNode } from "react";
+import { useRef, useState, type AnimationEvent, type ReactNode } from "react";
 
 import { useHouseNavigation } from "@/lib/house-navigation";
+import { useSwipeToClose } from "@/lib/use-swipe-to-close";
 import { cn } from "@/lib/utils";
 
 const ICON_BUTTON =
@@ -12,15 +13,19 @@ const ICON_BUTTON =
 export function HouseScreen({
   title,
   dismissible = false,
+  hiddenTitle = false,
   children,
 }: {
   title: string;
   // Presents the screen as a sheet that slides up on open and down on close.
   dismissible?: boolean;
+  hiddenTitle?: boolean;
   children: ReactNode;
 }) {
   const { goBack } = useHouseNavigation();
   const [closing, setClosing] = useState(false);
+  const screenRef = useRef<HTMLElement>(null);
+  useSwipeToClose(screenRef, dismissible && !closing, () => setClosing(true), true);
 
   // Children fire their own animationend events, which bubble up here.
   const onAnimationEnd = (event: AnimationEvent<HTMLElement>) => {
@@ -29,6 +34,7 @@ export function HouseScreen({
 
   return (
     <main
+      ref={screenRef}
       onAnimationEnd={dismissible ? onAnimationEnd : undefined}
       className={cn(
         "flex min-h-dvh flex-col bg-background",
@@ -58,9 +64,18 @@ export function HouseScreen({
             <ArrowRightIcon size={26} className="rotate-180" />
           </button>
         )}
-        <h1 className="min-w-0 flex-1 truncate font-display font-normal text-2xl">{title}</h1>
+        <h1
+          className={cn(
+            "min-w-0 flex-1 truncate font-display text-2xl font-medium",
+            hiddenTitle && "invisible",
+          )}
+        >
+          {title}
+        </h1>
       </header>
-      <div className="flex-1 px-6 pb-[calc(2rem+env(safe-area-inset-bottom))] pt-6">{children}</div>
+      <div className="flex-1 px-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-2">
+        {children}
+      </div>
     </main>
   );
 }

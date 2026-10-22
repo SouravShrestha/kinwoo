@@ -47,8 +47,8 @@ export function HomeScreen() {
   useBusyWhile(!ready);
 
   return (
-    <main className="flex min-h-[calc(100dvh-4rem)] flex-col pb-24">
-      <header className="flex items-center justify-between px-6 pb-4 pt-6">
+    <main className="flex min-h-[calc(100dvh-4rem-env(safe-area-inset-bottom))] flex-col pb-6">
+      <header className="flex items-center justify-between px-6 pb-4 pt-[calc(0.75rem+env(safe-area-inset-top))]">
         {!ready ? null : showWelcome ? (
           <WelcomeHeader salutation={greeting.salutation} message={greeting.message} />
         ) : (
@@ -74,7 +74,7 @@ export function HomeScreen() {
             />
           </div>
         ) : (
-          <div className="space-y-6">
+          <div className="space-y-5">
             <QuickAddBar
               houseId={house.id}
               onPress={(listId) => router.push(`/item/new?listId=${encodeURIComponent(listId)}`)}

@@ -7,11 +7,7 @@ export function LeaveAction({ state, onClick }: { state: LeaveState; onClick: ()
 
   return (
     <div>
-      {note ? (
-        <p className="mb-5 text-sm text-muted-foreground">{note}</p>
-      ) : (
-        <p className="mb-5"> </p>
-      )}
+      {note ? <p className="mb-5 text-sm text-muted-foreground">{note}</p> : null}
       <Button
         variant="destructive"
         label={leaveActionLabel(state)}

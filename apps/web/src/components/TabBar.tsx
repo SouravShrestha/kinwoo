@@ -59,6 +59,7 @@ export function TabBar() {
             <li key={tab.key} className="flex-1">
               <Link
                 href={tab.href}
+                prefetch
                 onClick={(event) => {
                   if (!hasNoHouse || !tab.requiresHouse) return;
                   event.preventDefault();

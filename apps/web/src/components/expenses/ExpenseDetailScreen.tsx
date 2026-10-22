@@ -10,11 +10,12 @@ import { formatFullDate, formatPaise } from "@kinwoo/core/grocery";
 import { memberDisplayName } from "@kinwoo/core/houses";
 import { ArrowRightIcon, EditIcon, ExpenseCategoryIcon, NoteIcon, TrashIcon } from "@kinwoo/icons";
 import { useRouter } from "next/navigation";
-import { useEffect, useState, type AnimationEvent } from "react";
+import { useEffect, useRef, useState, type AnimationEvent } from "react";
 
 import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { Avatar } from "@/components/houses/Avatar";
 import { editExpensePath, useHouseNavigation } from "@/lib/house-navigation";
+import { useSwipeToClose } from "@/lib/use-swipe-to-close";
 import { cn } from "@/lib/utils";
 
 const FOCUS_RING =
@@ -148,7 +149,7 @@ function ExpenseDetails({
         </span>
         <div className="min-w-0 flex-1 space-y-1.5">
           <h1 className="font-display text-lg font-medium text-foreground">{expense.title}</h1>
-          <p className="font-display text-[28px] font-medium leading-tight text-foreground">
+          <p className="font-display text-[calc(28px*var(--font-scale,1))] font-medium leading-[normal] text-foreground">
             {formatPaise(expense.amountPaise)}
           </p>
         </div>
@@ -226,6 +227,8 @@ export function ExpenseDetailScreen({ expenseId }: { expenseId: string | null })
   const { goBack, goHome } = useHouseNavigation();
   const houseId = activeHouse?.house.id ?? null;
   const [closing, setClosing] = useState(false);
+  const screenRef = useRef<HTMLElement>(null);
+  useSwipeToClose(screenRef, !closing, () => setClosing(true));
   const [confirmDelete, setConfirmDelete] = useState(false);
 
   const { data: expense, isError } = useExpense(houseId, expenseId);
@@ -257,13 +260,14 @@ export function ExpenseDetailScreen({ expenseId }: { expenseId: string | null })
 
   return (
     <main
+      ref={screenRef}
       onAnimationEnd={onAnimationEnd}
       className={cn(
         "flex h-dvh flex-col overflow-hidden bg-background",
         closing ? "sheet-panel-out" : "sheet-panel-in",
       )}
     >
-      <div className="mx-auto flex w-full max-w-md flex-1 flex-col overflow-y-auto px-6 pb-10">
+      <div className="mx-auto flex w-full max-w-md flex-1 flex-col overflow-y-auto px-6 pb-[calc(2.5rem+env(safe-area-inset-bottom))]">
         <header className="flex items-center justify-between pb-8 pt-[calc(1.25rem+env(safe-area-inset-top))]">
           <button
             type="button"

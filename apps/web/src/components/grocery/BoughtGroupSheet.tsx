@@ -57,16 +57,18 @@ export function BoughtGroupSheet({
               <h2 className="line-clamp-2 font-display text-base font-medium text-foreground">
                 {group.label}
               </h2>
-              <p className="font-display text-sm text-muted-foreground">
+              <p className="font-display text-sm font-normal text-muted-foreground">
                 {itemCountLabel(group.items.length)}
               </p>
             </div>
             <div className="max-w-[45%] space-y-1 text-right">
-              <p className="font-display text-base text-foreground">
+              <p className="font-display text-base font-normal text-foreground">
                 {formatPaise(group.totalPaise)}
               </p>
               {group.store ? (
-                <p className="truncate font-display text-sm text-muted-foreground">{group.store}</p>
+                <p className="truncate font-display text-sm font-normal text-muted-foreground">
+                  {group.store}
+                </p>
               ) : null}
             </div>
           </div>
@@ -88,7 +90,7 @@ export function BoughtGroupSheet({
                       <span className="block truncate font-display text-sm font-medium text-foreground">
                         {item.name}
                       </span>
-                      <span className="block font-display text-xs text-muted-foreground">
+                      <span className="block font-display text-xs font-normal text-muted-foreground">
                         {formatPaise(item.purchase?.pricePaise ?? 0)}
                       </span>
                     </span>

@@ -41,7 +41,7 @@ export function PrivateSpending({ houseId }: { houseId: string }) {
 
   return (
     <>
-      <section aria-labelledby="private-spending-headline" className="px-2">
+      <section aria-labelledby="private-spending-headline" className="px-6 pb-4 pt-2">
         <h2
           id="private-spending-headline"
           className="font-display text-xl font-normal text-foreground"
@@ -52,16 +52,18 @@ export function PrivateSpending({ houseId }: { houseId: string }) {
         <p className="mt-2 font-display text-sm text-muted-foreground">{PRIVATE_SPENDING_NOTE}</p>
       </section>
 
-      <div className="mt-6">
+      <div>
         {entries.length === 0 ? (
-          <div className="flex flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-border px-6 py-16 text-center">
-            <p className="font-display font-medium text-foreground">No private purchases yet</p>
+          <div className="flex flex-col items-center justify-center gap-2 mx-4 mt-4 rounded-2xl border border-dashed border-border px-6 py-16 text-center">
+            <p className="font-display text-base font-medium text-foreground">
+              No private purchases yet
+            </p>
             <p className="font-display text-sm text-muted-foreground">
               Things you buy from your private lists show up here.
             </p>
           </div>
         ) : (
-          <ul className="-mx-4">
+          <ul>
             {entries.map((spend) => (
               <li key={spend.key}>
                 <PrivatePurchaseRow entry={spend} onOpen={() => open(spend)} />

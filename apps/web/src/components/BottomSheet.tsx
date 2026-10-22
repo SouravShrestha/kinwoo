@@ -5,6 +5,7 @@ import { CloseIcon } from "@kinwoo/icons";
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 
+import { useSwipeToClose } from "@/lib/use-swipe-to-close";
 import { cn } from "@/lib/utils";
 
 const FOCUSABLE =
@@ -111,7 +112,9 @@ export function BottomSheet({
     }
 
     previousFocus.current = document.activeElement as HTMLElement | null;
-    const first = panelRef.current?.querySelector<HTMLElement>(FOCUSABLE);
+    const first =
+      panelRef.current?.querySelector<HTMLElement>("[data-autofocus]") ??
+      panelRef.current?.querySelector<HTMLElement>(FOCUSABLE);
     (first ?? panelRef.current)?.focus();
   }, [open]);
 
@@ -151,6 +154,8 @@ export function BottomSheet({
     return () => window.removeEventListener("keydown", onKey);
   }, [open]);
 
+  useSwipeToClose(panelRef, mounted && rendered && dismissable && !closing, guardedClose);
+
   if (!mounted || !rendered) return null;
 
   return createPortal(
@@ -159,7 +164,7 @@ export function BottomSheet({
         aria-hidden
         onClick={dismissable ? guardedClose : undefined}
         className={cn(
-          "fixed inset-0 bg-black/50",
+          "fixed inset-0 touch-none bg-black/50",
           !dismissable && "pointer-events-none",
           zClassName,
           closing ? "sheet-backdrop-out" : "sheet-backdrop-in",
@@ -185,25 +190,25 @@ export function BottomSheet({
             setClosing(false);
           }}
           className={cn(
-            "pointer-events-auto relative w-full max-w-md rounded-t-2xl bg-sheet p-6",
-            "pb-[calc(1.5rem+env(safe-area-inset-bottom))]",
-            "max-h-[calc(100dvh-1.5rem)] overflow-x-hidden overflow-y-auto",
+            "pointer-events-auto relative w-full max-w-md rounded-t-2xl bg-sheet px-6",
+            "pb-[max(2rem,env(safe-area-inset-bottom))]",
+            "max-h-[calc(100dvh-1.5rem)] overflow-x-hidden overflow-y-auto overscroll-contain",
             closing ? "sheet-panel-out" : "sheet-panel-in",
             className,
           )}
         >
-          {showHandle && (
-            <div
-              aria-hidden
-              className="mx-auto mb-5 h-1.5 w-10 rounded-full bg-muted-foreground/30"
-            />
-          )}
+          <div
+            aria-hidden
+            className={cn("flex h-6 items-center justify-center", showHandle ? "mb-3.5" : "mb-3")}
+          >
+            {showHandle && <div className="h-1 w-10 rounded-full bg-muted-foreground/30" />}
+          </div>
           {showClose && (
             <button
               type="button"
               aria-label="Close"
               onClick={guardedClose}
-              className="absolute right-4 top-11 flex size-9 items-center justify-center rounded-full hover:cursor-pointer hover:opacity-70 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
+              className="absolute right-3 top-8 flex size-9 items-center justify-center rounded-full hover:cursor-pointer hover:opacity-70 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
             >
               <CloseIcon size={22} />
             </button>

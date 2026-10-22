@@ -19,11 +19,12 @@ import {
   CheckIcon,
   RupeeIcon,
 } from "@kinwoo/icons";
-import { useEffect, useState, type AnimationEvent } from "react";
+import { useEffect, useRef, useState, type AnimationEvent } from "react";
 
 import { PayerSheet } from "@/components/expenses/PayerSheet";
 import { SplitSheet } from "@/components/expenses/SplitSheet";
 import { useHouseNavigation } from "@/lib/house-navigation";
+import { useSwipeToClose } from "@/lib/use-swipe-to-close";
 import { cn } from "@/lib/utils";
 
 import { DatePickerSheet } from "./DatePickerSheet";
@@ -34,7 +35,7 @@ type Picker = "category" | "unit" | "date" | "payers" | "split";
 const NO_UNIT = "__none__";
 
 const FIELD =
-  "flex h-12 items-center rounded-xl bg-muted font-display text-base text-foreground focus-within:outline-2 focus-within:outline-foreground";
+  "flex h-12 items-center rounded-xl bg-muted font-display text-base font-normal text-foreground focus-within:outline-2 focus-within:outline-foreground";
 const FIELD_BUTTON =
   "gap-2 px-3.5 transition-opacity hover:cursor-pointer hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground";
 const FOCUS_RING =
@@ -51,6 +52,8 @@ export function MarkBoughtScreen({
   const { activeHouse, ready } = useActiveHouse();
   const { goBack, goHome } = useHouseNavigation();
   const [closing, setClosing] = useState(false);
+  const screenRef = useRef<HTMLElement>(null);
+  useSwipeToClose(screenRef, !closing, () => setClosing(true));
   const [picker, setPicker] = useState<Picker | null>(null);
   const [split, setSplit] = useState(true);
   const houseId = activeHouse?.house.id ?? "";
@@ -97,6 +100,7 @@ export function MarkBoughtScreen({
 
   return (
     <main
+      ref={screenRef}
       onAnimationEnd={onAnimationEnd}
       className={cn(
         "flex h-dvh flex-col overflow-hidden bg-background",
@@ -136,7 +140,7 @@ export function MarkBoughtScreen({
           </button>
         </header>
 
-        <div className="space-y-5">
+        <div className="space-y-5 pb-8">
           <div>
             <div className="flex gap-3">
               <button
@@ -177,7 +181,7 @@ export function MarkBoughtScreen({
               <p
                 id="bought-name-hint"
                 role="alert"
-                className="mt-2 text-right font-display text-sm text-destructive"
+                className="mt-2 text-right font-display text-sm font-normal text-destructive"
               >
                 {form.nameError}
               </p>
@@ -245,14 +249,14 @@ export function MarkBoughtScreen({
                 onChange={(event) => form.setPrice(event.target.value)}
                 aria-invalid={form.priceError ? true : undefined}
                 aria-describedby={form.priceError ? "bought-price-hint" : undefined}
-                className="h-11 min-w-0 flex-1 bg-transparent text-[34px] font-medium outline-none placeholder:text-muted-foreground"
+                className="h-11 min-w-0 flex-1 bg-transparent text-[calc(34px*var(--font-scale,1))] font-medium outline-none placeholder:text-muted-foreground"
               />
             </label>
             {form.priceError ? (
               <p
                 id="bought-price-hint"
                 role="alert"
-                className="mt-2 font-display text-sm text-destructive"
+                className="mt-2 font-display text-sm font-normal text-destructive"
               >
                 {form.priceError}
               </p>
@@ -274,7 +278,7 @@ export function MarkBoughtScreen({
                 aria-checked={split}
                 onClick={() => setSplit((value) => !value)}
                 className={cn(
-                  "flex w-fit items-center gap-3 font-display text-base text-foreground hover:cursor-pointer",
+                  "flex w-fit items-center gap-3 font-display text-base font-normal text-foreground hover:cursor-pointer",
                   FOCUS_RING,
                 )}
               >
@@ -298,7 +302,7 @@ export function MarkBoughtScreen({
                 )}
               >
                 <div className="min-h-0 overflow-hidden">
-                  <div className="flex flex-wrap items-center gap-x-2 gap-y-3 pt-4 font-display text-base">
+                  <div className="flex flex-wrap items-center gap-x-2 gap-y-3 pt-4 font-display text-base font-normal">
                     <span className="text-muted-foreground">Paid by</span>
                     <button
                       type="button"

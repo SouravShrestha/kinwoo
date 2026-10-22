@@ -10,11 +10,14 @@ import type { ReactNode } from "react";
 
 import { AuthGate } from "./AuthGate";
 import { DoubleClickGuard } from "./DoubleClickGuard";
+import { FontScale } from "./FontScale";
 import { HouseGate } from "./HouseGate";
+import { InstallPromoSheet } from "./InstallPromoSheet";
 import { Toaster } from "./Toaster";
 import { TopLoader } from "./TopLoader";
 import { webAuthAdapter } from "@/lib/auth-adapter";
 import { houseStorage } from "@/lib/house-storage";
+import "@/lib/install-prompt";
 import { supabase } from "@/integrations/supabase/client";
 
 // Same-origin, so requests carry the session cookie. Configured at module scope to
@@ -44,9 +47,11 @@ export function AppProviders({ children }: { children: ReactNode }) {
           <TopLoader />
           <Toaster />
           <DoubleClickGuard />
+          <FontScale />
           {children}
           <AuthGate />
           <HouseGate />
+          <InstallPromoSheet />
         </HousesProvider>
       </ProfileProvider>
     </AuthProvider>

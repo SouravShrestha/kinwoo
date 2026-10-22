@@ -33,20 +33,22 @@ export function BoughtTimeline({
             key={step.label}
             className={isLast ? "max-w-[175px] shrink-0 pr-2" : "w-[175px] shrink-0"}
           >
-            <div className="mt-5 flex items-center">
+            <div className="mt-2 flex items-center">
               <Avatar name={name} url={member?.avatarUrl ?? null} size={STEP_AVATAR_SIZE} />
               {isLast ? null : (
                 <span aria-hidden className="mx-2 h-0.5 flex-1 rounded-full bg-border" />
               )}
             </div>
-            <p className="mt-4 font-display text-sm text-muted-foreground">{step.label}</p>
+            <p className="mt-4 font-display text-sm font-normal text-muted-foreground">
+              {step.label}
+            </p>
             <p className="mt-2 line-clamp-2 pr-3 font-display text-base font-medium text-foreground">
               {name}
             </p>
             {step.at ? (
               <time
                 dateTime={step.at}
-                className="mt-2 block font-display text-xs text-muted-foreground"
+                className="mt-2 block font-display text-xs font-normal text-muted-foreground"
               >
                 {formatTimelineTime(step.at)}
               </time>
