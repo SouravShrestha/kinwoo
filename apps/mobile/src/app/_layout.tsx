@@ -16,14 +16,18 @@ import {
   Poppins_600SemiBold,
   Poppins_700Bold,
 } from "@expo-google-fonts/poppins";
+import { Asset } from "expo-asset";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import { AppProviders } from "@/components/AppProviders";
+import { noItems } from "@/lib/images";
 import "@/lib/splash";
 import { ThemeProvider } from "@/theme/ThemeProvider";
+
+void Asset.loadAsync(noItems).catch(() => undefined);
 
 // Transparent so the screen below shows through while the sheet is dragged down; the screen
 // handles its own swipe because the native one loses to its ScrollView.

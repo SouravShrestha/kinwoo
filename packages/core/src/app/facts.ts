@@ -9,6 +9,9 @@ export const REPO_URL = "https://github.com/SouravShrestha/kinwoo";
 export const CHANGELOG_URL = `${REPO_URL}/blob/main/CHANGELOG.md`;
 export const LICENSE_URL = `${REPO_URL}/blob/main/LICENSE`;
 
+// Placeholder until the app is published.
+export const PLAY_STORE_URL = "https://play.google.com/store/apps/details?id=in.kinwoo.app";
+
 export const FOOTER_COPY = {
   tagline: ["Truly", "Indian", "App"],
   madeWith: "Made with",

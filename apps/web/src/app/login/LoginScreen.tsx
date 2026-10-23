@@ -8,6 +8,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
+import { AndroidInstallBanner } from "@/components/AndroidInstallBanner";
 import { AuthSheet } from "@/components/AuthSheet";
 import { Button } from "@/components/Button";
 
@@ -39,6 +40,7 @@ export function LoginScreen() {
   return (
     <div className="flex min-h-dvh justify-center">
       <main className="flex w-full max-w-md flex-col px-7 pt-[calc(1rem+env(safe-area-inset-top))] lg:border-x lg:border-border">
+        <AndroidInstallBanner className="-mx-7 -mt-4" />
         <div className="flex flex-1 items-center justify-center">
           {/* Toggled with CSS rather than useTheme so the right image renders on first paint. */}
           <Image

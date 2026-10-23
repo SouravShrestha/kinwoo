@@ -1,5 +1,6 @@
 import type { GroceryEmptyCopy } from "@kinwoo/core/grocery";
 import { colors } from "@kinwoo/tokens/native";
+import type { ReactNode } from "react";
 import { Image, Text, useWindowDimensions, View } from "react-native";
 
 import { noItems } from "@/lib/images";
@@ -9,7 +10,7 @@ const IMAGE_ASPECT_RATIO = 512 / 288;
 const IMAGE_WIDTH_RATIO = 0.6;
 const IMAGE_MAX_WIDTH = 224;
 
-export function EmptyItems({ title, hint }: GroceryEmptyCopy) {
+export function EmptyItems({ title, hint, children }: GroceryEmptyCopy & { children?: ReactNode }) {
   const { resolvedTheme } = useTheme();
   const { width: windowWidth } = useWindowDimensions();
   const imageWidth = Math.min(windowWidth * IMAGE_WIDTH_RATIO, IMAGE_MAX_WIDTH);
@@ -30,6 +31,7 @@ export function EmptyItems({ title, hint }: GroceryEmptyCopy) {
           {hint}
         </Text>
       ) : null}
+      {children ? <View className="mt-6">{children}</View> : null}
     </View>
   );
 }

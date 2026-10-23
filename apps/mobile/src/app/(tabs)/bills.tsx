@@ -23,6 +23,7 @@ import { ExpenseRow } from "@/components/expenses/ExpenseRow";
 import { ExpensesMenuSheet } from "@/components/expenses/ExpensesMenuSheet";
 import { PaymentRow } from "@/components/expenses/PaymentRow";
 import { Fab } from "@/components/Fab";
+import { EmptyItems } from "@/components/grocery/EmptyItems";
 import { Pressable } from "@/components/Pressable";
 import {
   openExpense,
@@ -151,12 +152,13 @@ export default function BillsScreen() {
         }
         ListEmptyComponent={
           empty ? (
-            <View className="mx-4 mt-4 items-center gap-4 rounded-2xl border border-dashed border-border px-6 py-16">
-              <Text className="font-display-medium text-base text-foreground">No expenses yet</Text>
-              <Text className="text-center font-display-normal text-sm text-muted-foreground">
-                Add rent, bills or anything you share. Split grocery purchases show up here too.
-              </Text>
-              <Button label="Add expense" onPress={openNewExpense} className="mt-2 px-8" />
+            <View className="py-12">
+              <EmptyItems
+                title="Nothing to see here"
+                hint="Add rent, bills or anything you share. Split grocery purchases show up here too."
+              >
+                <Button label="Add expense" onPress={openNewExpense} className="px-8" />
+              </EmptyItems>
             </View>
           ) : null
         }

@@ -23,6 +23,7 @@ import { ExpenseActions } from "@/components/expenses/ExpenseActions";
 import { ExpenseRow } from "@/components/expenses/ExpenseRow";
 import { ExpensesMenuSheet } from "@/components/expenses/ExpensesMenuSheet";
 import { PaymentRow } from "@/components/expenses/PaymentRow";
+import { EmptyItems } from "@/components/grocery/EmptyItems";
 import { SetupHousePrompt } from "@/components/houses/SetupHousePrompt";
 import {
   expensePath,
@@ -99,16 +100,17 @@ export function BillsScreen() {
 
       <div className="mt-4">
         {!ready || isLoading ? null : empty ? (
-          <div className="flex flex-col items-center justify-center mt-4 gap-4 rounded-2xl border border-dashed border-border px-6 py-16 text-center">
-            <p className="font-display text-base font-medium text-foreground">No expenses yet</p>
-            <p className="font-display text-sm text-muted-foreground">
-              Add rent, bills or anything you share. Split grocery purchases show up here too.
-            </p>
-            <Button
-              label="Add expense"
-              className="mt-2 w-auto"
-              onClick={() => router.push(NEW_EXPENSE_PATH)}
-            />
+          <div className="py-12">
+            <EmptyItems
+              title="Nothing to see here"
+              hint="Add rent, bills or anything you share. Split grocery purchases show up here too."
+            >
+              <Button
+                label="Add expense"
+                className="w-auto"
+                onClick={() => router.push(NEW_EXPENSE_PATH)}
+              />
+            </EmptyItems>
           </div>
         ) : (
           <div className="-mx-4">

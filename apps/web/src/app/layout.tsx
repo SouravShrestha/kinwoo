@@ -3,6 +3,7 @@ import { Inter, Poppins } from "next/font/google";
 import { headers } from "next/headers";
 import { ThemeProvider } from "next-themes";
 import { APP_NAME } from "@kinwoo/core/app";
+import { preload } from "react-dom";
 import { Suspense } from "react";
 
 import { AppProviders } from "@/components/AppProviders";
@@ -71,6 +72,7 @@ export const metadata: Metadata = {
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   // Reading the request makes every page render per request, which a nonce-based CSP requires.
   const nonce = (await headers()).get("x-nonce") ?? undefined;
+  preload("/images/no-item.webp", { as: "image" });
 
   return (
     <html lang="en" suppressHydrationWarning className={`${inter.variable} ${poppins.variable}`}>

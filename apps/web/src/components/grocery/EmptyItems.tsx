@@ -1,6 +1,7 @@
 import type { GroceryEmptyCopy } from "@kinwoo/core/grocery";
+import type { ReactNode } from "react";
 
-export function EmptyItems({ title, hint }: GroceryEmptyCopy) {
+export function EmptyItems({ title, hint, children }: GroceryEmptyCopy & { children?: ReactNode }) {
   return (
     <div className="flex h-full flex-col items-center justify-center px-6 text-center font-display font-normal">
       <div
@@ -10,6 +11,7 @@ export function EmptyItems({ title, hint }: GroceryEmptyCopy) {
       />
       <p className="text-base text-foreground">{title}</p>
       {hint ? <p className="mt-2 text-base text-muted-foreground">{hint}</p> : null}
+      {children ? <div className="mt-6">{children}</div> : null}
     </div>
   );
 }

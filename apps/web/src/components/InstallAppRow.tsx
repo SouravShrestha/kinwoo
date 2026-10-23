@@ -1,12 +1,12 @@
 "use client";
 
-import { APP_NAME } from "@kinwoo/core/app";
+import { APP_NAME, PLAY_STORE_URL } from "@kinwoo/core/app";
 import { InstallIcon } from "@kinwoo/icons";
 import { useState } from "react";
 
 import { BottomSheet } from "./BottomSheet";
 import { InstallSteps } from "./InstallSteps";
-import { SettingsButtonRow } from "./Settings";
+import { SettingsButtonRow, SettingsLinkRow } from "./Settings";
 import { promptInstall, useInstallKind } from "@/lib/install-prompt";
 
 export function InstallAppRow() {
@@ -14,6 +14,12 @@ export function InstallAppRow() {
   const [stepsOpen, setStepsOpen] = useState(false);
 
   if (kind === "none") return null;
+
+  if (kind === "android") {
+    return (
+      <SettingsLinkRow href={PLAY_STORE_URL} icon={<InstallIcon size={20} />} label="Install app" />
+    );
+  }
 
   return (
     <>

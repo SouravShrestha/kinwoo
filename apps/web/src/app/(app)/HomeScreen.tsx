@@ -11,6 +11,7 @@ import { homeGreeting } from "@kinwoo/core/houses";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
+import { AndroidInstallBanner } from "@/components/AndroidInstallBanner";
 import { ItemDetailSheet } from "@/components/grocery/ItemDetailSheet";
 import { BalanceCard } from "@/components/home/BalanceCard";
 import { HomeHeaderActions } from "@/components/home/HomeHeaderActions";
@@ -48,6 +49,7 @@ export function HomeScreen() {
 
   return (
     <main className="flex min-h-[calc(100dvh-4rem-env(safe-area-inset-bottom))] flex-col pb-6">
+      <AndroidInstallBanner dismissable />
       <header className="flex items-center justify-between px-6 pb-4 pt-[calc(0.75rem+env(safe-area-inset-top))]">
         {!ready ? null : showWelcome ? (
           <WelcomeHeader salutation={greeting.salutation} message={greeting.message} />

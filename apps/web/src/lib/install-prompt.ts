@@ -1,6 +1,6 @@
 import { useSyncExternalStore } from "react";
 
-export type InstallKind = "native" | "ios" | "none";
+export type InstallKind = "native" | "ios" | "android" | "none";
 
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>;
@@ -10,8 +10,10 @@ export function installKind(env: {
   standalone: boolean;
   hasPrompt: boolean;
   ios: boolean;
+  android: boolean;
 }): InstallKind {
   if (env.standalone) return "none";
+  if (env.android) return "android";
   if (env.hasPrompt) return "native";
   return env.ios ? "ios" : "none";
 }
@@ -49,6 +51,7 @@ function currentKind(): InstallKind {
     // iPadOS reports a Mac user agent, so touch support is the tell.
     ios:
       /iphone|ipad|ipod/i.test(userAgent) || (/macintosh/i.test(userAgent) && maxTouchPoints > 1),
+    android: /android/i.test(userAgent),
   });
 }
 

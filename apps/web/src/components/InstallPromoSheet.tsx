@@ -3,7 +3,7 @@
 import { useAuth } from "@kinwoo/client/auth";
 import { useProfile } from "@kinwoo/client/profile";
 import { toast } from "@kinwoo/client/toast";
-import { APP_NAME } from "@kinwoo/core/app";
+import { APP_NAME, PLAY_STORE_URL } from "@kinwoo/core/app";
 import { isPublicRoute } from "@kinwoo/core/auth";
 import { TOAST_MESSAGES } from "@kinwoo/core/toast";
 import { InstallIcon } from "@kinwoo/icons";
@@ -67,7 +67,10 @@ export function InstallPromoSheet() {
   }, [eligible, pathname]);
 
   const install = () => {
-    if (kind === "native") {
+    if (kind === "android") {
+      setOpenPath(null);
+      window.location.assign(PLAY_STORE_URL);
+    } else if (kind === "native") {
       setOpenPath(null);
       void promptInstall();
     } else {
