@@ -30,6 +30,8 @@ export const TOAST_MESSAGES = {
   loginLinkUnknown: "That login link is not one we recognise.",
   loginUnavailable: "We could not reach the login service. Try again in a moment.",
   loginFailed: "Login failed. Try again.",
+  offline: "You're offline. Showing your last saved data.",
+  backOnline: "You're back online.",
 } as const;
 
 export type ToastMessageKey = keyof typeof TOAST_MESSAGES;

@@ -25,7 +25,8 @@
     "dev:down": "supabase stop && colima stop",
     "db:reset": "supabase db reset",
     "db:test": "supabase test db",
-    "db:types": "node scripts/gen-db-types.mjs"
+    "db:types": "node scripts/gen-db-types.mjs",
+    "splash:generate": "node scripts/gen-splash.mjs"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.6",

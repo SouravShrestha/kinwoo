@@ -82,7 +82,7 @@ function ShareTree({
         const last = index === expense.shares.length - 1;
         return (
           <li key={share.userId} className="flex items-center" style={{ height: SHARE_ROW_HEIGHT }}>
-            <div className="relative h-full w-5" aria-hidden>
+            <div className="relative h-full w-5 shrink-0" aria-hidden>
               <div
                 className="absolute left-0 top-0 w-px bg-border"
                 style={{ bottom: last ? "50%" : 0 }}
@@ -142,7 +142,7 @@ function ExpenseDetails({
   avatars: Avatars;
 }) {
   return (
-    <div className="space-y-7">
+    <div className="flex flex-col gap-7">
       <div className="flex gap-4">
         <span className="flex size-16 shrink-0 items-center justify-center rounded-xl bg-muted text-foreground">
           <ExpenseCategoryIcon category={expense.category} size={32} />
@@ -193,7 +193,7 @@ function ExpenseDetails({
           <div key={payer.userId}>
             {index > 0 ? (
               <div
-                className="flex py-2"
+                className="flex flex-col py-2"
                 style={{ height: PAYER_LINK_HEIGHT, marginLeft: ROOT_AVATAR / 2 }}
                 aria-hidden
               >

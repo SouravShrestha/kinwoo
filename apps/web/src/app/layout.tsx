@@ -7,6 +7,7 @@ import { Suspense } from "react";
 
 import { AppProviders } from "@/components/AppProviders";
 import { AuthErrorNotice } from "@/components/AuthErrorNotice";
+import devices from "@/lib/splash-devices.json";
 
 import "./globals.css";
 
@@ -27,6 +28,8 @@ const poppins = Poppins({
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
   // Required for env(safe-area-inset-*) to resolve in iOS Safari; without it
   // the fixed tab bar sits under the home bar.
   viewportFit: "cover",
@@ -44,7 +47,19 @@ export const metadata: Metadata = {
   applicationName: APP_NAME,
   title: APP_NAME,
   description: DESCRIPTION,
-  appleWebApp: { capable: true, statusBarStyle: "default", title: APP_NAME },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: APP_NAME,
+    startupImage: devices.flatMap(([w, h, ratio]) =>
+      (["light", "dark"] as const).map((scheme) => ({
+        url: `/splash/${w * ratio}x${h * ratio}-${scheme}.png`,
+        media: `(device-width: ${w}px) and (device-height: ${h}px) and (-webkit-device-pixel-ratio: ${ratio}) and (orientation: portrait) and (prefers-color-scheme: ${scheme})`,
+      })),
+    ),
+  },
+  // Next 15 only emits mobile-web-app-capable, but iOS ignores startup images without this one.
+  other: { "apple-mobile-web-app-capable": "yes" },
   openGraph: {
     title: APP_NAME,
     description: DESCRIPTION,

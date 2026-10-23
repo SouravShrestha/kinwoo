@@ -1,6 +1,7 @@
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { configureApiClient } from "@kinwoo/client/api";
 import { AuthProvider } from "@kinwoo/client/auth";
+import { useOfflineToast } from "@kinwoo/client/activity";
 import { HousesProvider } from "@kinwoo/client/houses";
 import { ProfileProvider } from "@kinwoo/client/profile";
 import { router } from "expo-router";
@@ -16,7 +17,10 @@ import { TopLoader } from "./TopLoader";
 import { nativeAuthAdapter } from "@/lib/auth-adapter";
 import { installFocusManager } from "@/lib/focus";
 import { houseStorage } from "@/lib/house-storage";
+import { installOnlineManager } from "@/lib/online";
 import { supabase } from "@/lib/supabase";
+
+installOnlineManager();
 
 function GroceryRealtimeGate() {
   const { activeHouse } = useActiveHouse();
@@ -46,6 +50,7 @@ const resumeInvite = (code: string) =>
 
 export function AppProviders({ children }: { children: ReactNode }) {
   useEffect(() => installFocusManager(), []);
+  useOfflineToast();
 
   return (
     <AuthProvider adapter={nativeAuthAdapter}>

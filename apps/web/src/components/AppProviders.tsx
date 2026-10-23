@@ -1,10 +1,12 @@
 "use client";
 
 import { configureApiClient } from "@kinwoo/client/api";
+import { useOfflineToast } from "@kinwoo/client/activity";
 import { AuthProvider } from "@kinwoo/client/auth";
 import { GroceryRealtime } from "@kinwoo/client/grocery";
 import { HousesProvider, useActiveHouse } from "@kinwoo/client/houses";
 import { ProfileProvider } from "@kinwoo/client/profile";
+import { onlineManager } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import type { ReactNode } from "react";
 
@@ -24,6 +26,16 @@ import { supabase } from "@/integrations/supabase/client";
 // avoid racing the first render.
 configureApiClient({ baseUrl: "" });
 
+// React Query assumes online until the first online/offline event, which never comes when the
+// page itself loads offline.
+if (typeof navigator !== "undefined") {
+  onlineManager.setOnline(navigator.onLine);
+  // Production only: a dev service worker would serve stale chunks over HMR.
+  if (process.env.NODE_ENV === "production" && "serviceWorker" in navigator) {
+    void navigator.serviceWorker.register("/sw.js").catch(() => {});
+  }
+}
+
 function GroceryRealtimeGate() {
   const { activeHouse } = useActiveHouse();
   if (!activeHouse) return null;
@@ -32,6 +44,7 @@ function GroceryRealtimeGate() {
 
 export function AppProviders({ children }: { children: ReactNode }) {
   const router = useRouter();
+  useOfflineToast();
 
   return (
     <AuthProvider adapter={webAuthAdapter}>
