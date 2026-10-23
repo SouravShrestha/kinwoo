@@ -8,6 +8,9 @@ const pkg = JSON.parse(readFileSync(path.join(__dirname, "../../package.json"), 
 
 const nextConfig: NextConfig = {
   devIndicators: false,
+  // iOS reads apple-touch-startup-image from <head> when the app is added to the home screen;
+  // streamed metadata lands in <body>, so every user agent gets blocking metadata instead.
+  htmlLimitedBots: /.*/,
   transpilePackages: ["@kinwoo/core", "@kinwoo/client", "@kinwoo/icons"],
   outputFileTracingRoot: path.join(__dirname, "../../"),
   env: {
