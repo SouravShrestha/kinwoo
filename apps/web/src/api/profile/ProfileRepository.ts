@@ -76,6 +76,10 @@ export class ProfileRepository implements IProfileRepository {
     return data ? this.toProfile(data as ProfileRow) : null;
   }
 
+  isOwnUpload(userId: string, avatarUrl: string): boolean {
+    return toStoredAvatar(this.client, avatarUrl).startsWith(`${userId}/`);
+  }
+
   async listAvatarUrls(): Promise<string[]> {
     const bucket = this.client.storage.from(AVATAR_BUCKET);
     const { data, error } = await bucket.list("", {

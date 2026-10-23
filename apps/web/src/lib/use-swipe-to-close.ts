@@ -1,6 +1,9 @@
 import { useEffect, useRef, type RefObject } from "react";
 
 const CLOSE_DRAG_PX = 100;
+// A tap drifts a few pixels. Dragging from the first pixel moves the sheet under the finger and
+// preventDefault then swallows the tap.
+const DRAG_START_PX = 10;
 
 // Native listeners: React's touchmove is passive, so it could not preventDefault, which is what
 // stops the browser's pull-to-refresh from claiming the downward drag.
@@ -36,23 +39,27 @@ export function useSwipeToClose(
     };
 
     const onStart = (event: TouchEvent) => {
-      tracking = !scrolledAncestor(event.target);
+      const blocked = (event.target as HTMLElement).closest("[data-no-swipe]");
+      tracking = !blocked && !scrolledAncestor(event.target);
       dragging = false;
       startX = event.touches[0].clientX;
       startY = event.touches[0].clientY;
-      el.style.transition = "none";
     };
 
     const onMove = (event: TouchEvent) => {
       if (!tracking) return;
       const dx = event.touches[0].clientX - startX;
       const dy = event.touches[0].clientY - startY;
-      if (!dragging && (dy <= 0 || dy < Math.abs(dx))) {
+      if (!dragging && (dy <= DRAG_START_PX || dy < Math.abs(dx))) {
         // Upward or sideways first: leave it to native scrolling.
         if (Math.abs(dx) > 4 || dy < -4) tracking = false;
         return;
       }
-      dragging = true;
+      if (!dragging) {
+        dragging = true;
+        // Not on touchstart: touching the style there makes iOS Safari drop plain taps.
+        el.style.transition = "none";
+      }
       offset = Math.max(0, dy);
       if (event.cancelable) event.preventDefault();
       // `translate`, not `transform`, so the enter animation's fill does not override it.

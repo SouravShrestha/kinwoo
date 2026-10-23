@@ -3,14 +3,25 @@
 import { useAuth } from "@kinwoo/client/auth";
 import { useProfile } from "@kinwoo/client/profile";
 import { toast } from "@kinwoo/client/toast";
-import { LEGAL_LABELS, LEGAL_PATHS } from "@kinwoo/core/app";
+import {
+  APP_NAME,
+  HELP_LABELS,
+  LEGAL_LABELS,
+  LEGAL_PATHS,
+  SUPPORT_EMAIL,
+  SUPPORT_MAILTO,
+  supportMailtoFor,
+} from "@kinwoo/core/app";
 import { CONFIRM_COPY } from "@kinwoo/core/confirm";
 import { TOAST_MESSAGES } from "@kinwoo/core/toast";
 import {
   AppearanceIcon,
   BellIcon,
+  BugIcon,
   DocumentIcon,
+  EditIcon,
   GlobeIcon,
+  MailIcon,
   ProfileIcon,
   ShieldCheckOutlineIcon,
 } from "@kinwoo/icons";
@@ -60,27 +71,41 @@ export function ProfileScreen() {
     }
   };
 
+  const reportIssue = () => {
+    window.location.href = supportMailtoFor({
+      version: process.env.NEXT_PUBLIC_APP_VERSION ?? "0.0.0",
+      device: navigator.userAgent,
+      subject: `${APP_NAME} issue report`,
+    });
+  };
+
   return (
     <main className="px-6 pb-[calc(2.5rem+env(safe-area-inset-bottom))] pt-[calc(0.75rem+env(safe-area-inset-top))]">
       <div className="mb-6">
         <BackButton />
       </div>
 
-      <div className="mb-6 flex items-center">
+      <div className="mb-10 flex items-center">
         <button
           type="button"
           aria-label="Change avatar"
           onClick={() => setAvatarOpen(true)}
-          className="size-16 shrink-0 overflow-hidden rounded-full bg-accent hover:cursor-pointer hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
+          className="relative size-16 shrink-0 overflow-hidden rounded-full bg-accent hover:cursor-pointer hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src={profile?.avatarUrl ?? "/images/profile-image.webp"}
+            src={profile?.avatarUrl ?? "/images/profile-image.png"}
             alt=""
             width={64}
             height={64}
-            className="size-16 object-cover"
+            className="size-16 rounded-full object-cover"
           />
+          <span
+            aria-hidden
+            className="pointer-events-none absolute inset-x-0 bottom-0 flex h-[30%] items-center justify-center bg-black/55"
+          >
+            <EditIcon size={12} color="#fff" />
+          </span>
         </button>
 
         <div className="ml-4 min-w-0">
@@ -125,6 +150,20 @@ export function ProfileScreen() {
           href={LEGAL_PATHS.privacy}
           icon={<ShieldCheckOutlineIcon size={20} />}
           label={LEGAL_LABELS.privacy}
+        />
+      </SettingsGroup>
+
+      <SettingsGroup title={HELP_LABELS.group}>
+        <SettingsLinkRow
+          href={SUPPORT_MAILTO}
+          icon={<MailIcon size={20} />}
+          label={HELP_LABELS.email}
+          value={SUPPORT_EMAIL}
+        />
+        <SettingsButtonRow
+          onClick={reportIssue}
+          icon={<BugIcon size={20} />}
+          label={HELP_LABELS.report}
         />
       </SettingsGroup>
 

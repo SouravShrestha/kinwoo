@@ -33,7 +33,10 @@ select is((select avatar_url from public.profiles
             where id = '00000000-0000-4000-8000-0000000000e2'),
   'https://lh3.googleusercontent.com/a/photo', 'sign-up keeps a Google avatar');
 
-insert into storage.objects (bucket_id, name) values ('avatars', 'avatar-01.png');
+insert into storage.objects (bucket_id, name) values
+  ('avatars', 'avatar-01.png'),
+  ('uploaded_avatars', '00000000-0000-4000-8000-0000000000e1/3f2b8c1e-0000-4000-8000-000000000001.jpg'),
+  ('uploaded_avatars', '00000000-0000-4000-8000-0000000000e2/3f2b8c1e-0000-4000-8000-000000000002.jpg');
 
 -- Direct writes with the user's own token
 select tests.as_user('00000000-0000-4000-8000-0000000000e1');
@@ -50,6 +53,27 @@ select lives_ok(
   $$update public.profiles set avatar_url = 'avatar-01.png'
      where id = '00000000-0000-4000-8000-0000000000e1'$$,
   'a preset avatar is accepted');
+select lives_ok(
+  $$update public.profiles
+       set avatar_url = '00000000-0000-4000-8000-0000000000e1/3f2b8c1e-0000-4000-8000-000000000001.jpg'
+     where id = '00000000-0000-4000-8000-0000000000e1'$$,
+  'an avatar the user uploaded is accepted');
+select throws_ok(
+  $$update public.profiles
+       set avatar_url = '00000000-0000-4000-8000-0000000000e2/3f2b8c1e-0000-4000-8000-000000000002.jpg'
+     where id = '00000000-0000-4000-8000-0000000000e1'$$,
+  '23514', 'INVALID_AVATAR', 'an upload that belongs to someone else is rejected');
+select lives_ok(
+  $$insert into storage.objects (bucket_id, name)
+    values ('uploaded_avatars', '00000000-0000-4000-8000-0000000000e1/3f2b8c1e-0000-4000-8000-000000000003.jpg')$$,
+  'a user can upload into their own folder');
+select throws_ok(
+  $$insert into storage.objects (bucket_id, name)
+    values ('uploaded_avatars', '00000000-0000-4000-8000-0000000000e2/3f2b8c1e-0000-4000-8000-000000000004.jpg')$$,
+  '42501', null, 'a user cannot upload into another folder');
+select throws_ok(
+  $$insert into storage.objects (bucket_id, name) values ('avatars', 'avatar-99.png')$$,
+  '42501', null, 'a user cannot add a preset-style file');
 select lives_ok(
   $$update public.profiles set avatar_url = null
      where id = '00000000-0000-4000-8000-0000000000e1'$$,

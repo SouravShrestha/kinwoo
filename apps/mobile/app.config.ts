@@ -46,6 +46,9 @@ export default (): ExpoConfig => ({
     ],
     "expo-status-bar",
     "expo-web-browser",
+    ["expo-image-picker", { photosPermission: "Kinwoo uses your photos to set your avatar." }],
+    // Mods run last-registered first, so this must stay before expo-notifications.
+    "./plugins/no-aps-entitlement.js",
     [
       "expo-notifications",
       { icon: "./assets/notification-icon.png", color: "#4e8e60", defaultChannel: "default" },

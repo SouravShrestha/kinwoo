@@ -31,6 +31,15 @@ export const webAuthAdapter: AuthAdapter = {
     if (error) throw new Error(error.message);
   },
 
+  // Needs manual linking enabled in Supabase (enable_manual_linking). Redirects the page.
+  linkGoogle: async () => {
+    const { error } = await supabase.auth.linkIdentity({
+      provider: "google",
+      options: { redirectTo: callbackUrl() },
+    });
+    if (error) throw new Error(error.message);
+  },
+
   signInWithEmail: async (email): Promise<EmailSignInOutcome> => {
     const { error } = await supabase.auth.signInWithOtp({
       email,

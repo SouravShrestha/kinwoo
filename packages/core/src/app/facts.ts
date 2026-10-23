@@ -2,6 +2,14 @@ export const APP_NAME = "Kinwoo";
 
 export const SUPPORT_EMAIL = "hello@kinwoo.in";
 
+export const SUPPORT_MAILTO = `mailto:${SUPPORT_EMAIL}`;
+
+export const HELP_LABELS = {
+  group: "Help & Support",
+  email: "Email",
+  report: "Report an issue",
+} as const;
+
 export const AUTHOR_NAME = "Sourav Shrestha";
 export const AUTHOR_URL = "https://www.cbsdev.me/";
 
@@ -27,7 +35,7 @@ export function supportMailtoFor(options: {
   const { version, device, subject = `${APP_NAME} support` } = options;
   const lines = ["", "", "---", `Version: ${version}`, `Device: ${device}`];
   const query = `subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(lines.join("\n"))}`;
-  return `mailto:${SUPPORT_EMAIL}?${query}`;
+  return `${SUPPORT_MAILTO}?${query}`;
 }
 
 export const NOT_FOUND_COPY = {

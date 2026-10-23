@@ -37,6 +37,7 @@ const PRESETS: Record<TextFieldKind, InputHTMLAttributes<HTMLInputElement>> = {
 };
 
 type TextFieldProps = {
+  id?: string;
   kind: TextFieldKind;
   value: string;
   onChange: (value: string) => void;
@@ -46,6 +47,7 @@ type TextFieldProps = {
 };
 
 export function TextField({
+  id,
   kind,
   value,
   onChange,
@@ -58,6 +60,7 @@ export function TextField({
   return (
     <input
       {...preset}
+      id={id}
       value={value}
       onChange={(event) => onChange(event.target.value)}
       disabled={disabled}

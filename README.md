@@ -44,7 +44,7 @@ How it fits together:
 
 1. Create a project at supabase.com. Two projects (test + production) matches what `eas.json` and CI already assume.
 2. From **Settings → API** copy the Project URL, the `anon` key and the `service_role` key.
-3. Migrations are applied by CI (test on every `main` merge, production on release). Locally: `supabase link --project-ref <ref>` then `supabase db push`. The `avatars` storage bucket is not part of the migrations: create it by hand (public) in each project.
+3. Migrations are applied by CI (test on every `main` merge, production on release). Locally: `supabase link --project-ref <ref>` then `supabase db push`. The `avatars` storage bucket is not part of the migrations: create it by hand in each project: public, 1 MiB limit, allowed types `image/png`, `image/jpeg`, `image/webp`. Create a second bucket, `uploaded_avatars`, for user-uploaded photos: public, 1 MiB limit, allowed type `image/jpeg`.
 4. **Authentication → Providers → Email**: enabled, with "Confirm email" on.
 5. **Authentication → Emails → Magic Link**: the template body must contain `{{ .Token }}`. This is the step people miss — with only `{{ .ConfirmationURL }}` Supabase sends a link instead of a code, and the OTP screen can never succeed.
 6. **Authentication → Providers → Google**: paste the Client ID and Secret from Google Cloud (below).

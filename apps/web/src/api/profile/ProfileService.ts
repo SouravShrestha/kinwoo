@@ -87,12 +87,14 @@ export class ProfileService implements IProfileService {
     avatarUrl: string,
     socialAvatarUrl?: string,
   ): Promise<ProfileResult> {
-    // Only a URL we list ourselves is stored, so a client cannot point a profile at an
-    // arbitrary image.
-    const avatars = await run(() => this.selectableAvatars(socialAvatarUrl));
-    if (!avatars.ok) return avatars;
-    if (!avatars.data.includes(avatarUrl)) {
-      return invalidInput("Choose one of the available avatars.");
+    // Only a URL we list ourselves, or a file in the user's own upload folder, is stored, so a
+    // client cannot point a profile at an arbitrary image. The database checks the file exists.
+    if (!this.repository.isOwnUpload(userId, avatarUrl)) {
+      const avatars = await run(() => this.selectableAvatars(socialAvatarUrl));
+      if (!avatars.ok) return avatars;
+      if (!avatars.data.includes(avatarUrl)) {
+        return invalidInput("Choose one of the available avatars.");
+      }
     }
 
     const result = await run(() => this.repository.updateAvatarUrl(userId, avatarUrl));

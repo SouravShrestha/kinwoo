@@ -34,9 +34,9 @@ export const lightColors = {
 export const darkColors = {
   "background": "#0e0e0e",
   "sheet": "#161616",
-  "dialog": "#1c1c1c",
-  "dialogHeader": "#262626",
-  "dialogBorder": "#3a3a3a",
+  "dialog": "#0e0e0e",
+  "dialogHeader": "#141414",
+  "dialogBorder": "#262626",
   "backdrop": "#000000cc",
   "foreground": "#fefefe",
   "card": "#1a1a1a",

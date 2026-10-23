@@ -1,24 +1,34 @@
 import { useAuth } from "@kinwoo/client/auth";
 import { useProfile } from "@kinwoo/client/profile";
 import { toast } from "@kinwoo/client/toast";
-import { LEGAL_LABELS } from "@kinwoo/core/app";
+import {
+  APP_NAME,
+  HELP_LABELS,
+  LEGAL_LABELS,
+  SUPPORT_EMAIL,
+  SUPPORT_MAILTO,
+  supportMailtoFor,
+} from "@kinwoo/core/app";
 import { CONFIRM_COPY } from "@kinwoo/core/confirm";
 import { TOAST_MESSAGES } from "@kinwoo/core/toast";
 import {
   AppearanceIcon,
   ArrowRightIcon,
   BellIcon,
+  BugIcon,
   DocumentIcon,
   EditIcon,
   GlobeIcon,
+  MailIcon,
   ProfileIcon,
   ShieldCheckOutlineIcon,
 } from "@kinwoo/icons/native";
 import { colors } from "@kinwoo/tokens/native";
+import Constants from "expo-constants";
 import { router } from "expo-router";
 import * as WebBrowser from "expo-web-browser";
 import { useState } from "react";
-import { Image, ScrollView, Text, View } from "react-native";
+import { Image, Linking, Platform, ScrollView, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { AppFooter } from "@/components/AppFooter";
@@ -52,6 +62,20 @@ export default function ProfileScreen() {
   const openTerms = usePressGuard(() => void WebBrowser.openBrowserAsync(TERMS_URL));
   const openPrivacy = usePressGuard(() => void WebBrowser.openBrowserAsync(PRIVACY_URL));
 
+  // mailto: needs the system mail app, so Linking is used here instead of the in-app browser.
+  const openMail = (url: string) =>
+    void Linking.openURL(url).catch(() => toast.error(TOAST_MESSAGES.mailUnavailable));
+  const emailSupport = usePressGuard(() => openMail(SUPPORT_MAILTO));
+  const reportIssue = usePressGuard(() =>
+    openMail(
+      supportMailtoFor({
+        version: Constants.expoConfig?.version ?? "0.0.0",
+        device: `${Platform.OS} ${Platform.Version}`,
+        subject: `${APP_NAME} issue report`,
+      }),
+    ),
+  );
+
   const confirmLogout = async () => {
     setLoggingOut(true);
     try {
@@ -83,7 +107,7 @@ export default function ProfileScreen() {
         </View>
       </Pressable>
 
-      <View className="flex-row items-center mb-6">
+      <View className="flex-row items-center mb-10">
         <Pressable
           accessibilityRole="button"
           accessibilityLabel="Change avatar"
@@ -149,6 +173,20 @@ export default function ProfileScreen() {
           icon={<ShieldCheckOutlineIcon size={20} color={palette.foreground} />}
           label={LEGAL_LABELS.privacy}
           onPress={openPrivacy}
+        />
+      </SettingsGroup>
+
+      <SettingsGroup title={HELP_LABELS.group}>
+        <SettingsRow
+          icon={<MailIcon size={20} color={palette.foreground} />}
+          label={HELP_LABELS.email}
+          value={SUPPORT_EMAIL}
+          onPress={emailSupport}
+        />
+        <SettingsRow
+          icon={<BugIcon size={20} color={palette.foreground} />}
+          label={HELP_LABELS.report}
+          onPress={reportIssue}
         />
       </SettingsGroup>
 

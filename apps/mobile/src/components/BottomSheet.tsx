@@ -14,7 +14,9 @@ import { CloseIcon } from "@kinwoo/icons/native";
 import { colors, radius } from "@kinwoo/tokens/native";
 import { cssInterop } from "nativewind";
 import {
+  createContext,
   useCallback,
+  useContext,
   useEffect,
   useMemo,
   useRef,
@@ -33,6 +35,11 @@ import { createSheetFooterSlot, SheetFooterContext, type SheetFooterSlot } from 
 import { useSheetStack } from "./sheet-stack";
 import { useKeyboardVisible } from "@/lib/use-keyboard-visible";
 import { useTheme } from "@/theme/ThemeProvider";
+
+const SheetScrollContext = createContext<(target: View | null) => void>(() => {});
+
+// Returns a function that scrolls the sheet's content so the given view is vertically centred.
+export const useSheetScrollTo = () => useContext(SheetScrollContext);
 
 const STUCK_DISMISS_MS = 1200;
 // The keyboard covers the home indicator, so only a small gap is kept above it.
@@ -171,6 +178,20 @@ export function BottomSheet({
   const footerHeight = useSyncExternalStore(footerSlot.subscribe, footerSlot.getHeight);
   const keyboardShown = useKeyboardVisible();
 
+  const scrollRef = useRef<ComponentRef<typeof BottomSheetScrollView>>(null);
+  const contentRef = useRef<View>(null);
+  const viewportHeight = useRef(0);
+
+  const scrollTo = useCallback((target: View | null) => {
+    if (!target || !contentRef.current) return;
+    target.measureLayout(contentRef.current, (_x, y, _width, height) => {
+      scrollRef.current?.scrollTo({
+        y: Math.max(0, y - (viewportHeight.current - height) / 2),
+        animated: true,
+      });
+    });
+  }, []);
+
   const renderFooter = useCallback(
     (props: BottomSheetFooterProps) => (
       <FooterHost {...props} slot={footerSlot} bottomPadding={bottomPadding} />
@@ -239,15 +260,23 @@ export function BottomSheet({
       <CloseWatcher onClosed={handleDismissed} />
       {scrollable ? (
         <BottomSheetScrollView
+          ref={scrollRef}
+          onLayout={(event) => {
+            viewportHeight.current = event.nativeEvent.layout.height;
+          }}
           showsVerticalScrollIndicator={false}
           bounces={false}
           overScrollMode="never"
           keyboardShouldPersistTaps="handled"
           {...a11y}
         >
-          <View style={padding}>
+          <View ref={contentRef} style={padding}>
             {closeButton}
-            <SheetFooterContext.Provider value={footerSlot}>{children}</SheetFooterContext.Provider>
+            <SheetScrollContext.Provider value={scrollTo}>
+              <SheetFooterContext.Provider value={footerSlot}>
+                {children}
+              </SheetFooterContext.Provider>
+            </SheetScrollContext.Provider>
           </View>
         </BottomSheetScrollView>
       ) : (

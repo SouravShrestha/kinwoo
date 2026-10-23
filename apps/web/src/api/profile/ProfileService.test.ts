@@ -21,6 +21,7 @@ function fakeRepository(overrides: Partial<IProfileRepository> = {}): IProfileRe
     updateAvatarUrl: async () => profile,
     setAvatarUrlIfMissing: async () => profile,
     listAvatarUrls: async () => [],
+    isOwnUpload: () => false,
     ...overrides,
   };
 }
@@ -127,6 +128,29 @@ describe("ProfileService social avatar", () => {
     );
 
     const result = await service.setAvatar("user-1", GOOGLE_AVATAR);
+
+    expect(result).toMatchObject({ ok: false, code: "INVALID_INPUT" });
+    expect(updateAvatarUrl).not.toHaveBeenCalled();
+  });
+});
+
+describe("ProfileService.setAvatar upload", () => {
+  it("accepts a file from the user's own upload folder", async () => {
+    const updateAvatarUrl = vi.fn(async () => profile);
+    const service = new ProfileService(
+      fakeRepository({ updateAvatarUrl, isOwnUpload: (id, url) => url === `${id}/x.jpg` }),
+    );
+
+    await service.setAvatar("user-1", "user-1/x.jpg");
+
+    expect(updateAvatarUrl).toHaveBeenCalledWith("user-1", "user-1/x.jpg");
+  });
+
+  it("rejects a file outside the user's folder", async () => {
+    const updateAvatarUrl = vi.fn(async () => profile);
+    const service = new ProfileService(fakeRepository({ updateAvatarUrl }));
+
+    const result = await service.setAvatar("user-1", "user-2/x.jpg");
 
     expect(result).toMatchObject({ ok: false, code: "INVALID_INPUT" });
     expect(updateAvatarUrl).not.toHaveBeenCalled();

@@ -6,6 +6,7 @@ import {
   LogoutIcon,
   TrashIcon,
   UserCheckIcon,
+  UnlinkIcon,
   UserCrossIcon,
   WorldIcon,
   type IconProps,
@@ -30,6 +31,7 @@ const ICONS: Record<ConfirmIconName, ComponentType<IconProps>> = {
   leaveHouse: LeaveHouseIcon,
   userCheck: UserCheckIcon,
   userCross: UserCrossIcon,
+  unlink: UnlinkIcon,
 };
 
 // A centred card over a dimmed backdrop. It interrupts the current flow rather than being part of

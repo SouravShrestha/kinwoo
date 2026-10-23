@@ -24,12 +24,18 @@ export const TOAST_MESSAGES = {
   houseLimitReached: "You can only be in one house for now.",
   installLater: "You can install Kinwoo anytime from your Profile.",
   logoutFailed: "Couldn't log out. Try again.",
+  profileSaved: "Profile updated.",
+  googleLinkFailed: "Couldn't link Google. Try again.",
+  googleUnlinked: "Google account unlinked.",
+  googleUnlinkFailed: "Couldn't unlink Google. Try again.",
+  mailUnavailable: "No email app found. Write to hello@kinwoo.in instead.",
   notificationsBlocked: "Notifications are blocked. Allow them in system settings.",
   notificationsBlockedInBrowser:
     "Notifications are blocked for this site. Allow them in your browser settings.",
   notificationsFailed: "Couldn't update notifications. Try again.",
   notificationsReadFailed: "Couldn't mark notifications as read. Try again.",
   loginCancelled: "Login was cancelled.",
+  googleAlreadyLinked: "That Google account is already linked to another Kinwoo account.",
   loginLinkIncomplete: "That login link was incomplete. Try again.",
   loginLinkExpired: "That login link has expired or was already used.",
   loginLinkUnknown: "That login link is not one we recognise.",
@@ -43,6 +49,7 @@ export type ToastMessageKey = keyof typeof TOAST_MESSAGES;
 
 const AUTH_ERROR_MESSAGE_KEYS: Record<string, ToastMessageKey> = {
   provider_denied: "loginCancelled",
+  identity_already_linked: "googleAlreadyLinked",
   missing_code: "loginLinkIncomplete",
   exchange_failed: "loginLinkExpired",
   verify_failed: "loginLinkExpired",
