@@ -28,7 +28,7 @@ describe("PushService", () => {
     const repository = fakeRepository();
     const subscription = JSON.stringify({
       endpoint: "https://fcm.googleapis.com/fcm/send/abc",
-      keys: { p256dh: "BCVxsr7N_eNgVRqvHtD0zTZsEc6", auth: "BTBZMqHH6r4Tts7J_aSIgg" },
+      keys: { p256dh: "test-p256dh", auth: "test-auth" },
     });
     await expect(new PushService(repository).registerToken(subscription)).resolves.toMatchObject({
       ok: true,

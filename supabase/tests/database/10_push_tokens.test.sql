@@ -84,23 +84,23 @@ select is(tests.token_count('ExponentPushToken[000000000012]'), 1::bigint,
 -- Browser subscriptions are stored as JSON and only for browser push services.
 select tests.as_user('00000000-0000-4000-8000-0000000000d1');
 select lives_ok(
-  $$select public.register_push_token('{"endpoint":"https://fcm.googleapis.com/fcm/send/abc","keys":{"p256dh":"BCVxsr7N","auth":"BTBZMqHH"}}')$$,
+  $$select public.register_push_token('{"endpoint":"https://fcm.googleapis.com/fcm/send/abc","keys":{"p256dh":"test-p256dh","auth":"test-auth"}}')$$,
   'a browser subscription registers');
 select is(
-  tests.token_platform('{"endpoint":"https://fcm.googleapis.com/fcm/send/abc","keys":{"p256dh":"BCVxsr7N","auth":"BTBZMqHH"}}'),
+  tests.token_platform('{"endpoint":"https://fcm.googleapis.com/fcm/send/abc","keys":{"p256dh":"test-p256dh","auth":"test-auth"}}'),
   'web', 'a browser subscription is stored as web');
 select throws_ok(
-  $$select public.register_push_token('{"endpoint":"https://evil.test/fcm/send/abc","keys":{"p256dh":"BCVxsr7N","auth":"BTBZMqHH"}}')$$,
+  $$select public.register_push_token('{"endpoint":"https://evil.test/fcm/send/abc","keys":{"p256dh":"test-p256dh","auth":"test-auth"}}')$$,
   'P0001', 'INVALID_INPUT', 'an endpoint outside the browser push services is rejected');
 select throws_ok(
-  $$select public.register_push_token('{"endpoint":"http://fcm.googleapis.com/fcm/send/abc","keys":{"p256dh":"BCVxsr7N","auth":"BTBZMqHH"}}')$$,
+  $$select public.register_push_token('{"endpoint":"http://fcm.googleapis.com/fcm/send/abc","keys":{"p256dh":"test-p256dh","auth":"test-auth"}}')$$,
   'P0001', 'INVALID_INPUT', 'a plain http endpoint is rejected');
 select throws_ok(
   $$select public.register_push_token('{"endpoint":"https://fcm.googleapis.com/fcm/send/abc"}')$$,
   'P0001', 'INVALID_INPUT', 'a subscription without keys is rejected');
-select public.unregister_push_token('{"endpoint":"https://fcm.googleapis.com/fcm/send/abc","keys":{"p256dh":"BCVxsr7N","auth":"BTBZMqHH"}}');
+select public.unregister_push_token('{"endpoint":"https://fcm.googleapis.com/fcm/send/abc","keys":{"p256dh":"test-p256dh","auth":"test-auth"}}');
 select is(
-  tests.token_platform('{"endpoint":"https://fcm.googleapis.com/fcm/send/abc","keys":{"p256dh":"BCVxsr7N","auth":"BTBZMqHH"}}'),
+  tests.token_platform('{"endpoint":"https://fcm.googleapis.com/fcm/send/abc","keys":{"p256dh":"test-p256dh","auth":"test-auth"}}'),
   null, 'the owner removes their browser subscription');
 select set_config('role', 'anon', true);
 select throws_ok($$select public.register_push_token('ExponentPushToken[cccccccccccccccccccccc]')$$,

@@ -67,7 +67,7 @@ describe("isExpoPushToken", () => {
 });
 
 describe("web push tokens", () => {
-  const keys = { p256dh: "BCVxsr7N_eNgVRqvHtD0zTZsEc6", auth: "BTBZMqHH6r4Tts7J_aSIgg" };
+  const keys = { p256dh: "test-p256dh", auth: "test-auth" };
   const fcm = "https://fcm.googleapis.com/fcm/send/abc:APA91b-_x";
 
   it("builds one canonical token from a browser subscription", () => {
