@@ -61,6 +61,8 @@ export default function RootLayout() {
             <Stack screenOptions={{ headerShown: false }}>
               <Stack.Screen name="house/invite" options={SWIPE_DOWN_SHEET} />
               <Stack.Screen name="profile" options={{ animation: "slide_from_right" }} />
+              <Stack.Screen name="notifications" options={{ animation: "slide_from_right" }} />
+              <Stack.Screen name="settings" options={{ animation: "slide_from_right" }} />
               <Stack.Screen name="item/new" options={SWIPE_DOWN_SHEET} />
               <Stack.Screen
                 name="item/bought"

@@ -8,6 +8,7 @@ import { useLayoutEffect, useRef, useState, type ReactNode } from "react";
 
 import { useAuth } from "../auth/use-auth";
 import { ActiveHouseProvider } from "./active-house-provider";
+import { NotificationsRealtime } from "../notifications/NotificationsRealtime";
 import { HousesRealtime } from "./HousesRealtime";
 import { PendingInviteResume } from "./PendingInviteResume";
 import { CACHE_MAX_AGE_MS, createAppQueryClient } from "./query-client";
@@ -66,6 +67,7 @@ export function HousesProvider({
       <ClearCacheOnUserChange persister={persistOptions.persister} />
       <ActiveHouseProvider storage={storage}>
         {realtimeClient ? <HousesRealtime client={realtimeClient} /> : null}
+        {realtimeClient ? <NotificationsRealtime client={realtimeClient} /> : null}
         <PendingInviteResume storage={storage} onResume={onPendingInvite} />
         {children}
       </ActiveHouseProvider>

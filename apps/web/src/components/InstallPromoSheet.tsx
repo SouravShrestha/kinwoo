@@ -42,6 +42,11 @@ export function InstallPromoSheet() {
     if (openPath !== null && openPath !== pathname) dismiss();
   }, [openPath, pathname, dismiss]);
 
+  // The "seen" flag lasts one login, so reloads don't re-prompt but the next login does.
+  useEffect(() => {
+    if (ready && !isLoggedIn) void houseStorage.removeItem(SEEN_KEY);
+  }, [ready, isLoggedIn]);
+
   const eligible =
     ready &&
     isLoggedIn &&

@@ -20,7 +20,6 @@ export function AssignedItemDetails({
   canEdit,
   canDelete,
   canUnassign,
-  canMarkBought,
   onDelete,
   onMarkBought,
   onClose,
@@ -34,7 +33,6 @@ export function AssignedItemDetails({
   canEdit: boolean;
   canDelete: boolean;
   canUnassign: boolean;
-  canMarkBought: boolean;
   onDelete: () => void;
   onMarkBought: () => void;
   onClose: () => void;
@@ -88,15 +86,13 @@ export function AssignedItemDetails({
               className="h-12 min-w-0 flex-1 px-3"
             />
           ) : null}
-          {canMarkBought ? (
-            <Button
-              label="Bought"
-              aria-haspopup="dialog"
-              icon={<VerifiedIcon size={18} />}
-              onClick={() => void handleMarkBought()}
-              className="h-12 min-w-0 flex-1 px-3"
-            />
-          ) : null}
+          <Button
+            label="Bought"
+            aria-haspopup="dialog"
+            icon={<VerifiedIcon size={18} />}
+            onClick={() => void handleMarkBought()}
+            className="h-12 min-w-0 flex-1 px-3"
+          />
         </div>
       }
     />

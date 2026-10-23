@@ -34,6 +34,7 @@ const profile: Profile = {
   locale: "en",
   theme: "system",
   notificationsEnabled: true,
+  mutedPushTypes: [],
 };
 
 beforeEach(() => {

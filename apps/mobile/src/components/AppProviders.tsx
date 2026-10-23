@@ -12,6 +12,7 @@ import { useActiveHouse } from "@kinwoo/client/houses";
 import { AuthGate } from "./AuthGate";
 import { HouseGate } from "./HouseGate";
 import { SplashGate } from "./SplashGate";
+import { PushRegistration } from "./PushRegistration";
 import { ToastHost } from "./Toast";
 import { TopLoader } from "./TopLoader";
 import { nativeAuthAdapter } from "@/lib/auth-adapter";
@@ -70,6 +71,7 @@ export function AppProviders({ children }: { children: ReactNode }) {
             <TopLoader />
             <ToastHost />
             <GroceryRealtimeGate />
+            <PushRegistration />
           </BottomSheetModalProvider>
         </HousesProvider>
       </ProfileProvider>

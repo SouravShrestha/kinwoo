@@ -231,16 +231,26 @@ export type SettlementSummary = {
   tone: ExpenseShareTone;
 };
 
+type PaymentParty = { id: string; name: string | null };
+
+export function paymentHeading(payer: PaymentParty, payee: PaymentParty, userId: string | null) {
+  const from = payer.id === userId ? "You" : memberDisplayName(payer.name);
+  const to = payee.id === userId ? "you" : memberDisplayName(payee.name);
+  return `${from} paid ${to}`;
+}
+
 export function settlementSummary(
   settlement: Settlement,
   userId: string | null,
 ): SettlementSummary {
   const youPaid = settlement.payerId === userId;
   const youReceived = settlement.payeeId === userId;
-  const payer = youPaid ? "You" : memberDisplayName(settlement.payerName);
-  const payee = youReceived ? "you" : memberDisplayName(settlement.payeeName);
   return {
-    title: `${payer} paid ${payee}`,
+    title: paymentHeading(
+      { id: settlement.payerId, name: settlement.payerName },
+      { id: settlement.payeeId, name: settlement.payeeName },
+      userId,
+    ),
     amountPaise: settlement.amountPaise,
     tone: youPaid || youReceived ? "lent" : "neutral",
   };

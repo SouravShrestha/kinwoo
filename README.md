@@ -98,11 +98,20 @@ Free-tier projects pause after 7 days of inactivity; logins fail with network er
 
 1. Environments named exactly `test` and `production` — the workflows reference both by name.
 2. Repository secrets: `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`, `SUPABASE_ACCESS_TOKEN` (supabase.com → Account → Access Tokens), and `EXPO_TOKEN` if you keep Android builds.
-3. In each environment, as secrets or variables: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `NEXT_PUBLIC_SITE_URL`. The `production` environment needs its own copies; it does not inherit from `test`.
+3. In each environment, as secrets or variables: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `NEXT_PUBLIC_SITE_URL`, and `NEXT_PUBLIC_VAPID_PUBLIC_KEY` (the public half of the web push key pair, see Web push below). The `production` environment needs its own copies; it does not inherit from `test`.
 4. In each environment, a secret `SUPABASE_DB_PASSWORD` holding that project's database password. Migrations cannot be applied without it. Add required reviewers to `production` to gate the release.
 5. **Settings → Actions → General → Workflow permissions**: read and write, and allow Actions to create pull requests. release-please cannot open the release PR otherwise.
 
 `NEXT_PUBLIC_SITE_URL` is not cosmetic: unset, it falls back to `localhost:3000` and inlines that into `metadataBase`, `robots.txt`, `sitemap.xml` and the PWA `start_url`.
+
+### Web push (optional)
+
+Browser notifications use a VAPID key pair per Supabase project. Without it the web app shows "This browser doesn't support push notifications" and `send-push` skips browsers; Android push is unaffected.
+
+1. `npx web-push generate-vapid-keys`.
+2. Put the public key in `NEXT_PUBLIC_VAPID_PUBLIC_KEY` (GitHub environment, and `apps/web/.env.local`). It is inlined at build time.
+3. Set the function secrets: `supabase secrets set VAPID_PUBLIC_KEY=… VAPID_PRIVATE_KEY=… VAPID_SUBJECT=mailto:you@example.com` (locally, add the same three to `supabase/functions/.env`).
+4. The service worker is registered in production builds only, so test push with `npm run build` and `npm start`, or on a deployed Worker. iPhone and iPad need the app added to the Home Screen first.
 
 ### Expo / EAS (optional)
 

@@ -80,7 +80,11 @@ enabled = false
 enabled = true
 
 [edge_runtime]
-enabled = false
+enabled = true
+
+# The database trigger calls this with a shared secret instead of a user JWT.
+[functions.send-push]
+verify_jwt = false
 
 [storage]
 enabled = true

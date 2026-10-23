@@ -10,8 +10,8 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "lint": "eslint .",
-    "build:dev:android": "eas build --platform android --profile development --local",
-    "build:local:android": "eas build --platform android --local --profile local --output ./builds/app-local-$(date +%s).apk"
+    "build:dev:android": "GOOGLE_SERVICES_JSON=$PWD/google-services.json eas build --platform android --profile development --local",
+    "build:local:android": "GOOGLE_SERVICES_JSON=$PWD/google-services.json eas build --platform android --local --profile local --output ./builds/app-local-$(date +%s).apk"
   },
   "dependencies": {
     "@expo-google-fonts/inter": "0.4.2",
@@ -33,10 +33,12 @@
     "expo-clipboard": "57.0.2",
     "expo-constants": "~57.0.19",
     "expo-dev-client": "~57.0.19",
+    "expo-device": "~57.0.2",
     "expo-font": "~57.0.4",
     "expo-image": "57.0.5",
     "expo-linking": "~57.0.11",
     "expo-network": "~57.0.3",
+    "expo-notifications": "~57.0.24",
     "expo-router": "~57.0.23",
     "expo-secure-store": "57.0.4",
     "expo-splash-screen": "~57.0.9",

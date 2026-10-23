@@ -98,7 +98,6 @@ export function ItemDetailSheet({
             canEdit={canManage || isClaimer}
             canDelete={canManage}
             canUnassign={canManage || isClaimer || isAssignee || item.assignedBy === currentUserId}
-            canMarkBought={isAdmin || isClaimer || isAssignee}
             onDelete={() => setConfirmDelete(true)}
             onMarkBought={() => {
               onClose();

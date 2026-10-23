@@ -24,6 +24,11 @@ export const TOAST_MESSAGES = {
   houseLimitReached: "You can only be in one house for now.",
   installLater: "You can install Kinwoo anytime from your Profile.",
   logoutFailed: "Couldn't log out. Try again.",
+  notificationsBlocked: "Notifications are blocked. Allow them in system settings.",
+  notificationsBlockedInBrowser:
+    "Notifications are blocked for this site. Allow them in your browser settings.",
+  notificationsFailed: "Couldn't update notifications. Try again.",
+  notificationsReadFailed: "Couldn't mark notifications as read. Try again.",
   loginCancelled: "Login was cancelled.",
   loginLinkIncomplete: "That login link was incomplete. Try again.",
   loginLinkExpired: "That login link has expired or was already used.",

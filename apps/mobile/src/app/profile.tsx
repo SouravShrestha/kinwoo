@@ -9,6 +9,7 @@ import {
   ArrowRightIcon,
   BellIcon,
   DocumentIcon,
+  EditIcon,
   GlobeIcon,
   ProfileIcon,
   ShieldCheckOutlineIcon,
@@ -26,9 +27,10 @@ import { AvatarSheet } from "@/components/AvatarSheet";
 import { Button } from "@/components/Button";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { Pressable } from "@/components/Pressable";
-import { SettingsGroup, SettingsRow } from "@/components/Settings";
+import { SettingsGroup, SettingsInfoRow, SettingsRow } from "@/components/Settings";
 import { goBack } from "@/lib/house-navigation";
 import { profileImage } from "@/lib/images";
+import { unregisterDevice } from "@/lib/push";
 import { PRIVACY_URL, TERMS_URL } from "@/lib/legal";
 import { usePressGuard } from "@/lib/press-guard";
 import { useTheme } from "@/theme/ThemeProvider";
@@ -53,6 +55,7 @@ export default function ProfileScreen() {
   const confirmLogout = async () => {
     setLoggingOut(true);
     try {
+      await unregisterDevice();
       await signOut();
     } catch {
       toast.error(TOAST_MESSAGES.logoutFailed);
@@ -93,6 +96,12 @@ export default function ProfileScreen() {
             resizeMode="cover"
             className="size-16"
           />
+          <View
+            pointerEvents="none"
+            className="absolute inset-x-0 bottom-0 h-[30%] items-center justify-center bg-black/55"
+          >
+            <EditIcon size={12} color="#fff" />
+          </View>
         </Pressable>
 
         <View className="ml-4 flex-1">
@@ -109,11 +118,10 @@ export default function ProfileScreen() {
           label="Personal Information"
           onPress={() => router.push("/settings/personal")}
         />
-        <SettingsRow
+        <SettingsInfoRow
           icon={<GlobeIcon size={20} color={palette.foreground} />}
           label="Language"
           value="English"
-          onPress={() => router.push("/settings/language")}
         />
       </SettingsGroup>
 

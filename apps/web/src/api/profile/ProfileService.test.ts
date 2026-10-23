@@ -10,6 +10,7 @@ const profile: Profile = {
   locale: "en",
   theme: "system",
   notificationsEnabled: true,
+  mutedPushTypes: [],
 };
 
 function fakeRepository(overrides: Partial<IProfileRepository> = {}): IProfileRepository {
@@ -195,6 +196,17 @@ describe("ProfileService.setPreferences", () => {
     // A one-element array stringifies to a valid code, so the type is checked too.
     const array = ["en"] as unknown as string;
     expect((await service.setPreferences("user-1", { locale: array })).ok).toBe(false);
+  });
+
+  it("accepts known muted push types and rejects anything else", async () => {
+    const service = new ProfileService(fakeRepository());
+    expect((await service.setPreferences("user-1", { mutedPushTypes: [] })).ok).toBe(true);
+    expect(
+      (await service.setPreferences("user-1", { mutedPushTypes: ["join_requested"] })).ok,
+    ).toBe(true);
+    expect((await service.setPreferences("user-1", { mutedPushTypes: ["spam"] })).ok).toBe(false);
+    const notList = "join_requested" as unknown as string[];
+    expect((await service.setPreferences("user-1", { mutedPushTypes: notList })).ok).toBe(false);
   });
 
   it("reports an error state when the write throws", async () => {

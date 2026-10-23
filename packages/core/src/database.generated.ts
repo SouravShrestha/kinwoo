@@ -419,19 +419,65 @@ isOneToOne: false
                   Relationships: [
                     
                   ]
-                },"profiles": {
+                },"notifications": {
                   Row: {
-                    "avatar_url": string | null,"created_at": string,"display_name": string | null,"id": string,"locale": string,"notifications_enabled": boolean,"theme": string,"updated_at": string
+                    "activity_id": string,"created_at": string,"id": string,"read_at": string | null,"user_id": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "avatar_url"?: string | null,"created_at"?: string,"display_name"?: string | null,"id": string,"locale"?: string,"notifications_enabled"?: boolean,"theme"?: string,"updated_at"?: string
+                    "activity_id": string,"created_at"?: string,"id"?: string,"read_at"?: string | null,"user_id": string
                   }
                   Update: {
-                    "avatar_url"?: string | null,"created_at"?: string,"display_name"?: string | null,"id"?: string,"locale"?: string,"notifications_enabled"?: boolean,"theme"?: string,"updated_at"?: string
+                    "activity_id"?: string,"created_at"?: string,"id"?: string,"read_at"?: string | null,"user_id"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "notifications_activity_id_fkey"
+      columns: ["activity_id"]
+isOneToOne: false
+      referencedRelation: "activity_log"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "notifications_user_id_fkey"
+      columns: ["user_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"profiles": {
+                  Row: {
+                    "avatar_url": string | null,"created_at": string,"display_name": string | null,"id": string,"locale": string,"muted_push_types": (string)[],"notifications_enabled": boolean,"theme": string,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "avatar_url"?: string | null,"created_at"?: string,"display_name"?: string | null,"id": string,"locale"?: string,"muted_push_types"?: (string)[],"notifications_enabled"?: boolean,"theme"?: string,"updated_at"?: string
+                  }
+                  Update: {
+                    "avatar_url"?: string | null,"created_at"?: string,"display_name"?: string | null,"id"?: string,"locale"?: string,"muted_push_types"?: (string)[],"notifications_enabled"?: boolean,"theme"?: string,"updated_at"?: string
                   }
                   Relationships: [
                     
+                  ]
+                },"push_tokens": {
+                  Row: {
+                    "created_at": string,"id": string,"platform": string,"token": string,"user_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"id"?: string,"platform"?: string,"token": string,"user_id": string
+                  }
+                  Update: {
+                    "created_at"?: string,"id"?: string,"platform"?: string,"token"?: string,"user_id"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "push_tokens_user_id_fkey"
+      columns: ["user_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
                   ]
                 },"settlements": {
                   Row: {
@@ -702,6 +748,12 @@ isOneToOne: false
 "mark_items_bought":
 { Args: { "p_expense"?: Json,"p_item_ids": (string)[],"p_item_prices"?: (number)[],"p_list_id": string,"p_name"?: string,"p_store"?: string,"p_total_paise": number }; Returns: string
                            },
+"mark_notification_read":
+{ Args: { "p_id": string }; Returns: undefined
+                           },
+"mark_notifications_read":
+{ Args: Record<PropertyKey, never>; Returns: undefined
+                           },
 "max_houses_per_user":
 { Args: Record<PropertyKey, never>; Returns: number
                            },
@@ -722,6 +774,9 @@ isOneToOne: false
                            },
 "record_settlement":
 { Args: { "p_amount_paise": number,"p_house_id": string,"p_payee_id": string,"p_payer_id": string }; Returns: string
+                           },
+"register_push_token":
+{ Args: { "p_token": string }; Returns: undefined
                            },
 "remove_invited_email":
 { Args: { "p_id": string }; Returns: undefined
@@ -755,6 +810,9 @@ isOneToOne: false
                            },
 "unclaim_grocery_item":
 { Args: { "p_item_id": string }; Returns: undefined
+                           },
+"unregister_push_token":
+{ Args: { "p_token": string }; Returns: undefined
                            },
 "update_expense":
 { Args: { "p_amount_paise": number,"p_category": string,"p_expense_id": string,"p_note": string,"p_payers": Json,"p_shares": Json,"p_spent_on": string,"p_split_method": string,"p_title": string }; Returns: undefined

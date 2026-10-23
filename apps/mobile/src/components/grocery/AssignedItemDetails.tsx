@@ -30,7 +30,6 @@ export function AssignedItemDetails({
   canEdit,
   canDelete,
   canUnassign,
-  canMarkBought,
   onDelete,
   onMarkBought,
   onClose,
@@ -44,7 +43,6 @@ export function AssignedItemDetails({
   canEdit: boolean;
   canDelete: boolean;
   canUnassign: boolean;
-  canMarkBought: boolean;
   onDelete: () => void;
   onMarkBought: () => void;
   onClose: () => void;
@@ -101,14 +99,12 @@ export function AssignedItemDetails({
                   className="h-12 flex-1 px-3"
                 />
               ) : null}
-              {canMarkBought ? (
-                <Button
-                  label="Bought"
-                  icon={<VerifiedIcon size={18} color={palette.primaryForeground} />}
-                  onPress={() => void handleMarkBought()}
-                  className="h-12 flex-1 px-3"
-                />
-              ) : null}
+              <Button
+                label="Bought"
+                icon={<VerifiedIcon size={18} color={palette.primaryForeground} />}
+                onPress={() => void handleMarkBought()}
+                className="h-12 flex-1 px-3"
+              />
             </View>
           </View>
         </SheetFooter>

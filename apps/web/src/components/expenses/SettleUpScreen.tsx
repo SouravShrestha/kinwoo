@@ -1,5 +1,6 @@
 "use client";
 
+import { useAuth } from "@kinwoo/client/auth";
 import { useHouseBalances } from "@kinwoo/client/expenses";
 import { useActiveHouse, useHouseMembers } from "@kinwoo/client/houses";
 import { unsettledPairs } from "@kinwoo/core/expenses";
@@ -15,9 +16,10 @@ import { useSwipeToClose } from "@/lib/use-swipe-to-close";
 import { cn } from "@/lib/utils";
 
 function Balances({ houseId, simplifyDebts }: { houseId: string; simplifyDebts: boolean }) {
+  const { user } = useAuth();
   const { data: balances } = useHouseBalances(houseId, simplifyDebts);
   const { data: members } = useHouseMembers(houseId);
-  if (!balances) return null;
+  if (!balances || !user) return null;
   const pairs = unsettledPairs(balances);
 
   return (
@@ -36,7 +38,11 @@ function Balances({ houseId, simplifyDebts }: { houseId: string; simplifyDebts: 
               className={cn(index < pairs.length - 1 && "border-b border-border")}
             >
               <Link
-                href={recordPaymentPath(pair.userId)}
+                href={recordPaymentPath(
+                  owes ? user.id : pair.userId,
+                  owes ? pair.userId : user.id,
+                  Math.abs(pair.netPaise),
+                )}
                 className="flex w-full items-center gap-4 px-6 py-5 text-left transition-opacity hover:cursor-pointer hover:opacity-80 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-foreground"
               >
                 <Avatar name={pair.name} url={pair.avatarUrl} size={48} />

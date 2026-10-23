@@ -17,6 +17,7 @@
     "./filters": "./src/filters/index.ts",
     "./houses": "./src/houses/index.ts",
     "./grocery": "./src/grocery/index.ts",
+    "./push": "./src/push/index.ts",
     "./toast": "./src/toast/index.ts"
   },
   "scripts": {

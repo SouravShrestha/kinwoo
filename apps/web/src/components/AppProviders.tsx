@@ -15,6 +15,8 @@ import { DoubleClickGuard } from "./DoubleClickGuard";
 import { FontScale } from "./FontScale";
 import { HouseGate } from "./HouseGate";
 import { InstallPromoSheet } from "./InstallPromoSheet";
+import { PushPromoSheet } from "./PushPromoSheet";
+import { PushRegistration } from "./PushRegistration";
 import { Toaster } from "./Toaster";
 import { TopLoader } from "./TopLoader";
 import { webAuthAdapter } from "@/lib/auth-adapter";
@@ -65,6 +67,8 @@ export function AppProviders({ children }: { children: ReactNode }) {
           <AuthGate />
           <HouseGate />
           <InstallPromoSheet />
+          <PushPromoSheet />
+          <PushRegistration />
         </HousesProvider>
       </ProfileProvider>
     </AuthProvider>

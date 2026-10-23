@@ -236,8 +236,8 @@ export default function MarkBoughtScreen() {
                   placeholderTextColor={palette.mutedForeground}
                   value={form.price}
                   onChangeText={form.setPrice}
-                  className="h-11 min-w-0 flex-1 font-display-medium text-foreground"
-                  style={{ fontSize: 34, paddingVertical: 0 }}
+                  className="h-14 min-w-0 flex-1 font-display-medium text-foreground"
+                  style={{ fontSize: 34, lineHeight: 44, paddingVertical: 0 }}
                 />
               </View>
               {form.priceError ? (

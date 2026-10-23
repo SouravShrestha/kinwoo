@@ -16,6 +16,24 @@ export function SettingsGroup({ title, children }: { title: string; children: Re
   );
 }
 
+export function SettingsInfoRow({
+  icon,
+  label,
+  value,
+}: {
+  icon: ReactNode;
+  label: string;
+  value: string;
+}) {
+  return (
+    <View className="mt-2 h-14 flex-row items-center">
+      <View className="w-9">{icon}</View>
+      <Text className="flex-1 text-base text-foreground">{label}</Text>
+      <Text className="text-sm text-muted-foreground">{value}</Text>
+    </View>
+  );
+}
+
 export function SettingsRow({
   icon,
   label,

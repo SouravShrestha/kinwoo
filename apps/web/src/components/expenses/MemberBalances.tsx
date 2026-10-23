@@ -34,19 +34,31 @@ function MemberRow({ row, houseName }: { row: MemberBalanceRow; houseName: strin
         disabled={settlements.length === 0}
         aria-expanded={settlements.length > 0 ? open : undefined}
         aria-label={
-          settlements.length > 0 ? `${open ? "Hide" : "Show"} who ${name} settles with` : undefined
+          settlements.length > 0
+            ? `${open ? "Hide" : "Show"} who ${member.isSelf ? "you settle" : `${name} settles`} with`
+            : undefined
         }
         onClick={() => setOpen((value) => !value)}
         className="flex w-full items-center gap-3 text-left enabled:hover:cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
       >
         <Avatar name={member.name} url={member.avatarUrl} size={MEMBER_AVATAR} />
         <span className="block min-w-0 flex-1 font-display text-base text-foreground">
-          <span className="font-medium">{name}</span>
+          <span className="font-medium">{member.isSelf ? "You" : name}</span>
           {member.netPaise === 0 ? (
-            " is settled up"
+            member.isSelf ? (
+              " are settled up"
+            ) : (
+              " is settled up"
+            )
           ) : (
             <>
-              {owes ? " owes " : " gets back "}
+              {owes
+                ? member.isSelf
+                  ? " owe "
+                  : " owes "
+                : member.isSelf
+                  ? " get back "
+                  : " gets back "}
               <span className={cn("font-medium", owes ? "text-destructive" : "text-accent")}>
                 {formatPaise(Math.abs(member.netPaise))}
               </span>
@@ -100,11 +112,13 @@ function MemberRow({ row, houseName }: { row: MemberBalanceRow; houseName: strin
                       <div className="flex items-center gap-3" style={{ height: BRANCH_ROW }}>
                         <Avatar name={other.name} url={other.avatarUrl} size={26} />
                         <p className="min-w-0 flex-1 font-display text-sm text-muted-foreground">
-                          {shortMemberName(settlement.from.name)} owes{" "}
+                          {settlement.from.isSelf
+                            ? "You owe"
+                            : `${shortMemberName(settlement.from.name)} owes`}{" "}
                           <span className="font-medium text-destructive">
                             {formatPaise(settlement.amountPaise)}
                           </span>{" "}
-                          to {shortMemberName(settlement.to.name)}
+                          to {settlement.to.isSelf ? "you" : shortMemberName(settlement.to.name)}
                         </p>
                       </div>
                       <div className="flex gap-2" style={{ paddingLeft: 38 }}>
@@ -127,16 +141,16 @@ function MemberRow({ row, houseName }: { row: MemberBalanceRow; houseName: strin
                             Remind
                           </button>
                         )}
-                        {settlement.from.isSelf || settlement.to.isSelf ? (
-                          <Link
-                            href={recordPaymentPath(
-                              (settlement.from.isSelf ? settlement.to : settlement.from).userId,
-                            )}
-                            className={PILL}
-                          >
-                            Settle up
-                          </Link>
-                        ) : null}
+                        <Link
+                          href={recordPaymentPath(
+                            settlement.from.userId,
+                            settlement.to.userId,
+                            settlement.amountPaise,
+                          )}
+                          className={PILL}
+                        >
+                          Settle up
+                        </Link>
                       </div>
                     </div>
                   </li>

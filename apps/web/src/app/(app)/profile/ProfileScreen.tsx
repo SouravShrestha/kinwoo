@@ -24,7 +24,13 @@ import { BackButton } from "@/components/BackButton";
 import { Button } from "@/components/Button";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { InstallAppRow } from "@/components/InstallAppRow";
-import { SettingsButtonRow, SettingsGroup, SettingsLinkRow } from "@/components/Settings";
+import {
+  SettingsButtonRow,
+  SettingsGroup,
+  SettingsInfoRow,
+  SettingsLinkRow,
+} from "@/components/Settings";
+import { unregisterBrowser } from "@/lib/push";
 
 const THEME_LABELS: Record<string, string> = {
   light: "Light",
@@ -44,6 +50,7 @@ export function ProfileScreen() {
   const confirmLogout = async () => {
     setLoggingOut(true);
     try {
+      await unregisterBrowser();
       await signOut();
     } catch {
       toast.error(TOAST_MESSAGES.logoutFailed);
@@ -90,12 +97,7 @@ export function ProfileScreen() {
           icon={<ProfileIcon size={20} />}
           label="Personal Information"
         />
-        <SettingsLinkRow
-          href="/profile/language"
-          icon={<GlobeIcon size={20} />}
-          label="Language"
-          value="English"
-        />
+        <SettingsInfoRow icon={<GlobeIcon size={20} />} label="Language" value="English" />
       </SettingsGroup>
 
       <SettingsGroup title="Preferences">

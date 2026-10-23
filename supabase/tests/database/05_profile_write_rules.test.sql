@@ -67,5 +67,14 @@ select lives_ok(
      where id = '00000000-0000-4000-8000-0000000000e1'$$,
   'valid preferences still save');
 
+select lives_ok(
+  $$update public.profiles set muted_push_types = array['join_requested', 'expense.created', 'news', 'tips']
+     where id = '00000000-0000-4000-8000-0000000000e1'$$,
+  'known push types can be muted');
+select throws_ok(
+  $$update public.profiles set muted_push_types = array['expense.deleted']
+     where id = '00000000-0000-4000-8000-0000000000e1'$$,
+  '23514', null, 'an unknown push type is rejected');
+
 select * from finish();
 rollback;

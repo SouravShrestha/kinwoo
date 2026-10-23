@@ -1,4 +1,5 @@
 import { displayNameErrorMessage, validateDisplayName } from "@kinwoo/core/auth";
+import { isPushType } from "@kinwoo/core/push";
 
 import { serviceResults } from "../_shared/result";
 import type { IProfileRepository, Profile, ProfilePreferences } from "./IProfileRepository";
@@ -116,6 +117,13 @@ function validatePreferences(preferences: ProfilePreferences): string | null {
     typeof preferences.notificationsEnabled !== "boolean"
   ) {
     return "Notifications must be on or off.";
+  }
+
+  if (
+    preferences.mutedPushTypes !== undefined &&
+    !(Array.isArray(preferences.mutedPushTypes) && preferences.mutedPushTypes.every(isPushType))
+  ) {
+    return "Choose from the notification types listed.";
   }
 
   return null;

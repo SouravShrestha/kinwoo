@@ -27,6 +27,24 @@ function RowBody({ icon, label, value }: { icon: ReactNode; label: string; value
 const ROW =
   "flex h-14 w-full items-center text-left hover:cursor-pointer hover:opacity-70 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-foreground";
 
+export function SettingsInfoRow({
+  icon,
+  label,
+  value,
+}: {
+  icon: ReactNode;
+  label: string;
+  value: string;
+}) {
+  return (
+    <li className="mt-2 flex h-14 items-center">
+      <span className="w-9 shrink-0">{icon}</span>
+      <span className="flex-1 text-base">{label}</span>
+      <span className="text-sm text-muted-foreground">{value}</span>
+    </li>
+  );
+}
+
 export function SettingsLinkRow({
   href,
   icon,

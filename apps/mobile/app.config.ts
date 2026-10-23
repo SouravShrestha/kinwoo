@@ -15,12 +15,13 @@ export default (): ExpoConfig => ({
   userInterfaceStyle: "automatic",
   icon: "./assets/icon.png",
   ios: {
-    bundleIdentifier: "me.cbsdev.kinwoo",
+    bundleIdentifier: "in.kinwoo.app",
     supportsTablet: false,
     icon: "./assets/kinwoo.icon",
   },
   android: {
-    package: "me.cbsdev.kinwoo",
+    package: "in.kinwoo.app",
+    googleServicesFile: process.env.GOOGLE_SERVICES_JSON ?? "./google-services.json",
     adaptiveIcon: {
       foregroundImage: "./assets/adaptive-icon.png",
       backgroundColor: "#0e0e0e",
@@ -45,6 +46,10 @@ export default (): ExpoConfig => ({
     ],
     "expo-status-bar",
     "expo-web-browser",
+    [
+      "expo-notifications",
+      { icon: "./assets/notification-icon.png", color: "#4e8e60", defaultChannel: "default" },
+    ],
     [
       "expo-camera",
       {

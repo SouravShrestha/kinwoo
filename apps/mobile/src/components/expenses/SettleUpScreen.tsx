@@ -1,3 +1,4 @@
+import { useAuth } from "@kinwoo/client/auth";
 import { useHouseBalances } from "@kinwoo/client/expenses";
 import { useHouseMembers } from "@kinwoo/client/houses";
 import { unsettledPairs } from "@kinwoo/core/expenses";
@@ -27,6 +28,7 @@ export function SettleUpScreen({
   const insets = useSafeAreaInsets();
   const { resolvedTheme } = useTheme();
   const palette = colors[resolvedTheme];
+  const { user } = useAuth();
   const { data: balances } = useHouseBalances(houseId, simplifyDebts);
   const { data: members } = useHouseMembers(houseId);
   const { pan, scrollGesture, onScroll, sheetStyle } = useSwipeDownToDismiss(goBack);
@@ -58,7 +60,7 @@ export function SettleUpScreen({
             </Pressable>
           </View>
 
-          {balances ? (
+          {balances && user ? (
             <>
               <Text
                 accessibilityRole="header"
@@ -74,7 +76,13 @@ export function SettleUpScreen({
                     <Pressable
                       key={pair.userId}
                       accessibilityRole="button"
-                      onPress={() => openRecordPayment(pair.userId)}
+                      onPress={() =>
+                        openRecordPayment(
+                          owes ? user.id : pair.userId,
+                          owes ? pair.userId : user.id,
+                          Math.abs(pair.netPaise),
+                        )
+                      }
                       className={`flex-row items-center gap-4 px-6 py-5 active:opacity-80 ${
                         index < pairs.length - 1 ? "border-b border-border" : ""
                       }`}

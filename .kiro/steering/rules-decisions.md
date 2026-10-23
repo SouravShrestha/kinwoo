@@ -43,7 +43,7 @@ Roles: `admin` and `member`. Joiners are always plain members. Money is integer 
 
 - Admin or the item's creator edits and deletes a pending item. The claimer can also edit a claimed item.
 - Any member who can see a list may add items, claim ("I'll buy"), and assign pending items to a housemate, one or many. Reassigning claimed or assigned items stays with admins and the creator.
-- Mark bought: admin, claimer or assignee.
+- Mark bought: any member who can see the list, whoever claimed or was assigned the item (`20261216000000`).
 - Bought items are financial records. "Deleting" one archives it (leaves the Bought tab); its purchase, batch and expense stay. A batch is archived whole.
 - Purchases and batches outlive their items.
 
@@ -55,13 +55,35 @@ Roles: `admin` and `member`. Joiners are always plain members. Money is integer 
 - Balance maths: within an expense each sharer owes each payer `share * paid / amount`; pairs are summed exactly and rounded once so both sides mirror to the paisa. A member's net is the sum of their rounded pairs and house nets add to zero.
 - Linked purchase or batch: editing the expense updates the purchase price or batch total (per-item prices stay). Deleting the expense soft-deletes the linked bought items too.
 - Simplify debts is a house setting any member can change, at most 2 changes per person per 30 minutes (`RATE_LIMITED`). Each change is logged.
-- Record payment (`record_settlement`, `20261203000000`): the caller must be the payer or the payee, so you can record paying someone or being paid. The other side only has to have belonged to the house, so a balance with a former member can be cleared. Amount 1 to 1,000,000,000 paise, not capped at the balance (an overpayment flips the balance). It is logged as `settlement.recorded`.
+- Record payment (`record_settlement`, `20261215000001`): any house member records a payment between any two people, involved or not. Both sides only have to have belonged to the house, so a balance with a former member can be cleared. The Balance Summary offers "Settle up" on every transfer. Amount 1 to 1,000,000,000 paise, not capped at the balance (an overpayment flips the balance). It is logged as `settlement.recorded`.
 - A settlement counts like the payee owing the payer, inside the same exact sum as expenses, so pair mirroring and zero-sum house nets still hold. Settlements are never hard-deleted; a reversed one (`reversed_at`) stops counting. Any house member edits (`update_settlement`) or deletes (`reverse_settlement`) any payment in their house, involved or not (`20261206000000`). Both are logged with the actor.
 
 ## Activity log
 
 - Append-only, read-only for clients. Entries that reference someone else's private list are hidden.
 - Expense and member events write entries with actor and payload; House setting edits are not logged yet.
+
+## Push notifications (Android and web)
+
+- A trigger on `activity_log` queues a call to the `send-push` Edge Function for five types only. It never fails the write that caused it. The function decides who is told:
+  - `expense.created` and `expense.updated`: the people who share it (for an edit, those on it after the edit).
+  - `settlement.recorded`: the other party.
+  - `grocery_item.assigned`: the assignee.
+  - `join_requested`: active admins.
+- The person who acted is never notified. Recipients must still be active members of the house and have `profiles.notifications_enabled`. Entries about a non-shared list are never sent.
+- Text includes names, titles and amounts, and passes through Expo and Google (Android) or the browser's push service (web). A tap opens `data.url`, and the app follows only in-app paths (`notificationTarget` in core).
+- Tokens live in `push_tokens`, written only by `register_push_token` and `unregister_push_token`. A token moves to whoever registers it next on that phone. Each user keeps their 10 newest. Expo's `DeviceNotRegistered` ticket error, or a 404/410 from a browser push service, deletes a token.
+- A browser subscription is stored in `push_tokens` as JSON (`platform = 'web'`) and is accepted only for the browser push services' hosts (`push_token_platform`, mirrored by `isWebPushToken` in core), so `send-push` can never be pointed at another URL. `send-push` encrypts and signs (VAPID) itself in `webpush.ts`; without `VAPID_*` secrets it skips browsers.
+- On web the browser permission prompt appears only after a tap: the switch, or "Turn on" in a bottom sheet shown once per login in the installed app (not in a browser tab) while permission is undetermined and `notifications_enabled` is true. The app never asks on page load. The switch shows on only while the browser permission is granted and `notifications_enabled` is true. iPhone and iPad need the app on the Home Screen. A tap on a web push focuses the open app (which marks the row read and navigates) or opens the target and marks the row read from the service worker.
+- The switch on the Notifications screen sets `notifications_enabled`. It stops sending but keeps the token. Logging out unregisters the phone's token.
+- `notifications_enabled` and `muted_push_types` belong to the account, not a device: turning push off on web also stops it on the phone.
+- Not done: push receipts are not polled, and iOS (native) does not receive push.
+
+## Notifications inbox
+
+- The bell on Home opens the Notifications page on web and mobile. It lists what `send-push` told the person about, using the Activity row design grouped by day, newest first, 100 at most.
+- `send-push` writes a `notifications` row for every recipient it picks, whether or not they have push on or a registered phone. Clients only read their own rows (RLS) and mark them read through `mark_notification_read` and `mark_notifications_read`. Rows are never deleted by clients.
+- A notification is marked read (`read_at`) once opened: tapping a row marks it read, then goes to the expense, payment, tasks or home. "Mark all as read" marks every one of the caller's. Read rows stay in the list with muted text. Tapping a push on Android or web also marks its inbox row read (the push carries `notificationId`). The bell shows the count of unread rows. New rows arrive live over Realtime (inserts only; a read mark on another device shows on the next visit).
 
 ## Open items
 
