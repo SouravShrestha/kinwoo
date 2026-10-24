@@ -10,7 +10,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { AuthSheet } from "@/components/AuthSheet";
 import { Button } from "@/components/Button";
-import { landingImage, landingImageDark, logoTypedBlack, logoTypedWhite } from "@/lib/images";
+import { landingImage, logoTypedBlack, logoTypedWhite } from "@/lib/images";
 import { PRIVACY_URL, TERMS_URL } from "@/lib/legal";
 import { usePressGuard } from "@/lib/press-guard";
 import { useTheme } from "@/theme/ThemeProvider";
@@ -50,7 +50,7 @@ export default function LoginScreen() {
     <View className="flex-1 bg-background px-7" style={{ paddingTop: insets.top + 16 }}>
       <View className="flex-1 items-center justify-center">
         <Image
-          source={resolvedTheme === "dark" ? landingImageDark : landingImage}
+          source={landingImage}
           accessibilityIgnoresInvertColors
           accessible
           accessibilityLabel="Three people filling a shared shopping list together"

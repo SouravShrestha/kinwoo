@@ -1,7 +1,8 @@
 "use client";
 
 import { itemUrgencyLabel, itemUrgencyTone, type GroceryItem } from "@kinwoo/core/grocery";
-import { ArrowRightIcon, CategoryIcon, TickIcon } from "@kinwoo/icons";
+import { ArrowRightIcon, TickIcon } from "@kinwoo/icons";
+import { ItemCategoryImage } from "@/components/CategoryImages";
 
 import { Avatar } from "@/components/houses/Avatar";
 import { cn } from "@/lib/utils";
@@ -55,8 +56,8 @@ export function PendingItemCard({
         )}
       >
         <span className="flex items-center justify-between">
-          <span className="relative flex size-6 shrink-0 items-center justify-center text-foreground">
-            <CategoryIcon name={item.categoryName ?? undefined} size={20} />
+          <span className="relative flex size-8 shrink-0 items-center justify-center text-foreground">
+            <ItemCategoryImage name={item.categoryName ?? undefined} size={32} />
             {selected ? (
               <span
                 aria-hidden

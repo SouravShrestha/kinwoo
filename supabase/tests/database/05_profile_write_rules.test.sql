@@ -31,7 +31,7 @@ select is((select avatar_url from public.profiles
   null, 'sign-up drops a non-Google avatar');
 select is((select avatar_url from public.profiles
             where id = '00000000-0000-4000-8000-0000000000e2'),
-  'https://lh3.googleusercontent.com/a/photo', 'sign-up keeps a Google avatar');
+  null, 'sign-up leaves a Google avatar out so the API can assign a random preset');
 
 insert into storage.objects (bucket_id, name) values
   ('avatars', 'avatar-01.png'),

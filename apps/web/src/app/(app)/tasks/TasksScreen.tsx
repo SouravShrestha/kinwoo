@@ -41,7 +41,8 @@ import {
   sortGroceryItems,
   type GroceryTabKey,
 } from "@kinwoo/core/grocery";
-import { CaretDownIcon, CategoryIcon, MoreVerticalIcon, PlusCircleIcon } from "@kinwoo/icons";
+import { CaretDownIcon, MoreVerticalIcon, PlusCircleIcon } from "@kinwoo/icons";
+import { ListIconImage } from "@/components/CategoryImages";
 import { useEffect, useMemo, useState } from "react";
 
 import { ConfirmDialog } from "@/components/ConfirmDialog";
@@ -294,7 +295,7 @@ export function TasksScreen() {
         >
           {activeList ? (
             <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-muted">
-              <CategoryIcon name={listIconOption(activeList.icon).label} size={18} />
+              <ListIconImage label={listIconOption(activeList.icon).label} size={28} />
             </span>
           ) : null}
           <span className="truncate font-display text-xl font-medium">
@@ -337,7 +338,9 @@ export function TasksScreen() {
           if (!itemsLoaded) return null;
           const pageItems = visibleByTab[key];
           if (pageItems.length === 0) {
-            const empty = <EmptyItems {...groceryEmptyCopy(key, { filtering, listEmpty })} />;
+            const empty = (
+              <EmptyItems image="list" {...groceryEmptyCopy(key, { filtering, listEmpty })} />
+            );
             if (key !== "bought") return empty;
             return (
               <div className="flex h-full flex-col">

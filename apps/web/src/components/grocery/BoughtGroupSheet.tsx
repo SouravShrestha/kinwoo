@@ -7,7 +7,8 @@ import {
   TRANSACTION_UNAVAILABLE,
   type BoughtGroup,
 } from "@kinwoo/core/grocery";
-import { ArchiveIcon, CategoryIcon, TransactionIcon } from "@kinwoo/icons";
+import { ArchiveIcon, TransactionIcon } from "@kinwoo/icons";
+import { ItemCategoryImage } from "@/components/CategoryImages";
 import { useRouter } from "next/navigation";
 
 import { BottomSheet } from "@/components/BottomSheet";
@@ -51,7 +52,7 @@ export function BoughtGroupSheet({
         <div className="-mx-6 space-y-12 pb-4 pt-12">
           <div className="mx-6 flex items-start gap-5">
             <span className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-muted text-foreground">
-              <CategoryIcon name={lead?.categoryName ?? undefined} size={26} />
+              <ItemCategoryImage name={lead?.categoryName ?? undefined} size={40} />
             </span>
             <div className="min-w-0 flex-1 space-y-1">
               <h2 className="line-clamp-2 font-display text-base font-medium text-foreground">
@@ -84,7 +85,7 @@ export function BoughtGroupSheet({
                     className="flex w-full flex-col items-center gap-2 rounded-xl p-1 text-center hover:cursor-pointer hover:bg-muted/60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
                   >
                     <span className="flex size-10 items-center justify-center rounded-xl bg-muted text-foreground">
-                      <CategoryIcon name={item.categoryName ?? undefined} size={20} />
+                      <ItemCategoryImage name={item.categoryName ?? undefined} size={32} />
                     </span>
                     <span className="w-full space-y-0.5">
                       <span className="block truncate font-display text-sm font-medium text-foreground">

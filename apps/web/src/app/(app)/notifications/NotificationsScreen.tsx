@@ -15,12 +15,12 @@ import {
   type GroceryActivityEntry,
 } from "@kinwoo/core/grocery";
 import { TOAST_MESSAGES } from "@kinwoo/core/toast";
-import { NotificationIcon } from "@kinwoo/icons";
 import { useRouter } from "next/navigation";
 import { useCallback } from "react";
 
 import { ActivityList } from "@/components/activity/ActivityList";
 import { BackButton } from "@/components/BackButton";
+import { EmptyItems } from "@/components/grocery/EmptyItems";
 import { expensePath, paymentPath } from "@/lib/house-navigation";
 
 export function NotificationsScreen() {
@@ -76,17 +76,11 @@ export function NotificationsScreen() {
 
       <div className="flex flex-1 flex-col">
         {isLoading ? null : !entries?.length ? (
-          <div className="flex flex-1 flex-col items-center justify-center px-6 text-center">
-            <span className="text-muted-foreground">
-              <NotificationIcon size={48} />
-            </span>
-            <p className="mt-4 font-display text-base font-medium text-foreground">
-              No notification yet
-            </p>
-            <p className="mt-1 max-w-xs font-display text-sm font-normal text-muted-foreground">
-              You&apos;ve got a blank slate (for now). We&apos;ll let you know when updates arrive.
-            </p>
-          </div>
+          <EmptyItems
+            image="notifications"
+            title="No notification yet"
+            hint="You've got a blank slate (for now). We'll let you know when updates arrive."
+          />
         ) : (
           <ActivityList
             entries={entries}

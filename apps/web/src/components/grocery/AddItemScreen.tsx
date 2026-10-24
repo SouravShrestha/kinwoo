@@ -13,12 +13,12 @@ import {
 import {
   ArrowRightIcon,
   CaretDownIcon,
-  CategoryIcon,
   CheckCircleIcon,
   CheckIcon,
   ClockIcon,
   PlusCircleIcon,
 } from "@kinwoo/icons";
+import { ItemCategoryImage, ListIconImage } from "@/components/CategoryImages";
 import { useEffect, useRef, useState, type AnimationEvent } from "react";
 
 import { useHouseNavigation } from "@/lib/house-navigation";
@@ -160,7 +160,7 @@ export function AddItemScreen({ listId }: { listId: string | null }) {
                   FOCUS_RING,
                 )}
               >
-                <CategoryIcon name={category?.name} size={26} />
+                <ItemCategoryImage name={category?.name} size={40} />
               </button>
               <label htmlFor="item-name" className="sr-only">
                 Item name
@@ -319,7 +319,7 @@ export function AddItemScreen({ listId }: { listId: string | null }) {
           ...form.lists.map((list) => ({
             id: list.id,
             label: list.name,
-            icon: <CategoryIcon name={listIconOption(list.icon).label} size={24} />,
+            icon: <ListIconImage label={listIconOption(list.icon).label} size={36} />,
           })),
           { id: NEW_LIST, label: "New list", icon: <PlusCircleIcon size={24} />, dashed: true },
         ]}
@@ -349,7 +349,7 @@ export function AddItemScreen({ listId }: { listId: string | null }) {
         options={form.categories.map((c) => ({
           id: c.id,
           label: c.name,
-          icon: <CategoryIcon name={c.name} size={32} />,
+          icon: <ItemCategoryImage name={c.name} size={48} />,
         }))}
         selectedId={form.categoryId}
         onSelect={(id) => {

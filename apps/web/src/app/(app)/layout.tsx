@@ -1,7 +1,7 @@
 import { HouseRequired } from "@/components/HouseRequired";
+import { PreloadCategoryImages } from "@/components/PreloadCategoryImages";
 import { PullToRefresh } from "@/components/PullToRefresh";
 import { TabBar } from "@/components/TabBar";
-
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex min-h-dvh justify-center">
@@ -11,6 +11,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         </PullToRefresh>
       </div>
       <TabBar />
+      <PreloadCategoryImages />
     </div>
   );
 }

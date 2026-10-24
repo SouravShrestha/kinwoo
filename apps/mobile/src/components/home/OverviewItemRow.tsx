@@ -1,10 +1,8 @@
 import { listIconOption, type GroceryOverviewItem } from "@kinwoo/core/grocery";
-import { CategoryIcon } from "@kinwoo/icons/native";
-import { colors } from "@kinwoo/tokens/native";
 import { Text, View } from "react-native";
 
+import { ListIconImage } from "@/components/grocery/ListIconImage";
 import { Pressable } from "@/components/Pressable";
-import { useTheme } from "@/theme/ThemeProvider";
 
 const BADGE = {
   primary: { box: "bg-primary/10", text: "text-primary" },
@@ -20,7 +18,6 @@ type OverviewItemRowProps = {
 };
 
 export function OverviewItemRow({ item, badge, onPress }: OverviewItemRowProps) {
-  const { resolvedTheme } = useTheme();
   const quantity = item.quantity ? `${item.quantity}${item.unit ? ` ${item.unit}` : ""}` : null;
 
   return (
@@ -31,11 +28,7 @@ export function OverviewItemRow({ item, badge, onPress }: OverviewItemRowProps) 
       className="flex-row items-center gap-3 rounded-2xl border border-border bg-card p-3 active:opacity-70"
     >
       <View className="size-10 items-center justify-center rounded-xl bg-muted">
-        <CategoryIcon
-          name={listIconOption(item.listIcon).label}
-          size={20}
-          color={colors[resolvedTheme].foreground}
-        />
+        <ListIconImage label={listIconOption(item.listIcon).label} size={32} />
       </View>
       <View className="flex-1">
         <Text numberOfLines={1} className="font-display-medium text-base text-foreground">

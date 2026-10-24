@@ -135,6 +135,8 @@ export function filterActivity(
   );
 }
 
+export const ACTIVITY_EMPTY_HINT = "Grocery and expense updates from your house show up here";
+
 export function activityFilterGroups(
   entries: readonly GroceryActivityEntry[],
   currentUserId?: string | null,

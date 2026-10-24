@@ -14,14 +14,13 @@ import { useState } from "react";
 import { Text, View } from "react-native";
 import Animated, { Easing, FadeInLeft, FadeInRight } from "react-native-reanimated";
 
-import { CategoryIcon } from "@kinwoo/icons/native";
-
 import { BottomSheet, SheetTextInput } from "@/components/BottomSheet";
 import { Button } from "@/components/Button";
 import { SheetHeader } from "@/components/houses/SheetHeader";
 import { Pressable } from "@/components/Pressable";
 import { useTheme } from "@/theme/ThemeProvider";
 
+import { ListIconImage } from "./ListIconImage";
 import { ListIconPicker } from "./ListIconPicker";
 import { ListVisibilityToggle } from "./ListVisibilityToggle";
 
@@ -116,7 +115,7 @@ export function NewListSheet({
                 allowDoublePress
                 className="size-12 items-center justify-center rounded-xl bg-muted active:opacity-80"
               >
-                <CategoryIcon name={selectedIcon.label} size={26} color={palette.foreground} />
+                <ListIconImage label={selectedIcon.label} size={40} />
               </Pressable>
               <SheetTextInput
                 accessibilityLabel="List name"

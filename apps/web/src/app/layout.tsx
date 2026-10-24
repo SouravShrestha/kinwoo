@@ -72,7 +72,8 @@ export const metadata: Metadata = {
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   // Reading the request makes every page render per request, which a nonce-based CSP requires.
   const nonce = (await headers()).get("x-nonce") ?? undefined;
-  preload("/images/no-item.webp", { as: "image" });
+  preload("/images/empty-list.webp", { as: "image" });
+  preload("/images/no-expense.webp", { as: "image" });
 
   return (
     <html lang="en" suppressHydrationWarning className={`${inter.variable} ${poppins.variable}`}>

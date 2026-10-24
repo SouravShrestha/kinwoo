@@ -7,7 +7,7 @@ import {
   privateSpendDetail,
   type PrivateSpendEntry,
 } from "@kinwoo/core/grocery";
-import { CategoryIcon } from "@kinwoo/icons";
+import { ItemCategoryImage } from "@/components/CategoryImages";
 
 export function PrivatePurchaseRow({
   entry,
@@ -36,7 +36,7 @@ export function PrivatePurchaseRow({
         aria-hidden
         className="ml-3 mr-4 flex size-10 shrink-0 items-center justify-center rounded-lg bg-muted text-foreground"
       >
-        <CategoryIcon name={entry.categoryName ?? undefined} size={22} />
+        <ItemCategoryImage name={entry.categoryName ?? undefined} size={34} />
       </span>
       <span className="mr-3 flex min-w-0 flex-1 flex-col gap-0.5">
         <span className="truncate font-display text-base text-foreground">{entry.label}</span>

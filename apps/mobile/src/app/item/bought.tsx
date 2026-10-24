@@ -12,7 +12,6 @@ import {
   ArrowRightIcon,
   CalendarIcon,
   CaretDownIcon,
-  CategoryIcon,
   CheckCircleIcon,
   CheckIcon,
   RupeeIcon,
@@ -33,6 +32,7 @@ import Animated, { Easing, FadeInUp, FadeOutUp, ReduceMotion } from "react-nativ
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { DatePickerSheet } from "@/components/grocery/DatePickerSheet";
+import { ItemCategoryImage } from "@/components/grocery/ItemCategoryImage";
 import { PayerSheet } from "@/components/expenses/PayerSheet";
 import { SplitSheet } from "@/components/expenses/SplitSheet";
 import { OptionSheet, type SheetOption } from "@/components/OptionSheet";
@@ -155,7 +155,7 @@ export default function MarkBoughtScreen() {
                   allowDoublePress
                   className="size-12 items-center justify-center rounded-xl bg-muted active:opacity-80"
                 >
-                  <CategoryIcon name={category?.name} size={26} color={palette.foreground} />
+                  <ItemCategoryImage name={category?.name} size={40} />
                 </Pressable>
                 <TextInput
                   accessibilityLabel="Item name"
@@ -324,7 +324,7 @@ export default function MarkBoughtScreen() {
         options={form.categories.map((c) => ({
           id: c.id,
           label: c.name,
-          icon: (color) => <CategoryIcon name={c.name} size={32} color={color} />,
+          icon: () => <ItemCategoryImage name={c.name} size={48} />,
         }))}
         selectedId={form.categoryId}
         onSelect={(id) => {

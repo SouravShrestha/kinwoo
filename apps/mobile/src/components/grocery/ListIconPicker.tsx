@@ -1,12 +1,10 @@
 import { LIST_ICON_OPTIONS } from "@kinwoo/core/grocery";
-import { colors } from "@kinwoo/tokens/native";
 import { View } from "react-native";
-
-import { CategoryIcon } from "@kinwoo/icons/native";
 
 import { SheetHeader } from "@/components/houses/SheetHeader";
 import { Pressable } from "@/components/Pressable";
-import { useTheme } from "@/theme/ThemeProvider";
+
+import { ListIconImage } from "./ListIconImage";
 
 export function ListIconPicker({
   selected,
@@ -17,9 +15,6 @@ export function ListIconPicker({
   onSelect: (icon: string) => void;
   onBack: () => void;
 }) {
-  const { resolvedTheme } = useTheme();
-  const palette = colors[resolvedTheme];
-
   return (
     <View>
       <SheetHeader onBack={onBack} />
@@ -37,15 +32,11 @@ export function ListIconPicker({
                 className="items-center rounded-xl px-1 py-3 active:opacity-70"
               >
                 <View
-                  className={`size-14 items-center justify-center rounded-xl ${
-                    isSelected ? "bg-foreground" : "bg-muted"
+                  className={`size-16 items-center justify-center rounded-xl border-2 bg-muted ${
+                    isSelected ? "border-foreground" : "border-transparent"
                   }`}
                 >
-                  <CategoryIcon
-                    name={option.label}
-                    size={32}
-                    color={isSelected ? palette.background : palette.foreground}
-                  />
+                  <ListIconImage label={option.label} size={48} />
                 </View>
               </Pressable>
             </View>

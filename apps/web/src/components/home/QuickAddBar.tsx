@@ -4,7 +4,8 @@ import { createListStorage, useGroceryLists } from "@kinwoo/client/grocery";
 import { listIconOption } from "@kinwoo/core/grocery";
 import { useEffect, useState } from "react";
 
-import { CategoryIcon, PlusCircleIcon } from "@kinwoo/icons";
+import { PlusCircleIcon } from "@kinwoo/icons";
+import { ListIconImage } from "@/components/CategoryImages";
 
 import { houseStorage } from "@/lib/house-storage";
 
@@ -50,7 +51,7 @@ export function QuickAddBar({
       </div>
       {targetList ? (
         <div className="flex items-center gap-1.5 rounded-full border border-border/60 bg-background px-2.5 py-1">
-          <CategoryIcon name={listIconOption(targetList.icon).label} size={14} />
+          <ListIconImage label={listIconOption(targetList.icon).label} size={22} />
           <span className="max-w-[120px] truncate text-xs font-display font-medium text-foreground">
             {targetList.name}
           </span>

@@ -6,12 +6,13 @@ import { useOpenExpense, useOpenSettlement } from "@kinwoo/client/expenses";
 import { useRecentActivity } from "@kinwoo/client/grocery";
 import { useActiveHouse, useHouseMembers } from "@kinwoo/client/houses";
 import { countSelected, EMPTY_FILTER_SELECTION, type FilterSelection } from "@kinwoo/core/filters";
-import { activityFilterGroups, filterActivity } from "@kinwoo/core/grocery";
+import { ACTIVITY_EMPTY_HINT, activityFilterGroups, filterActivity } from "@kinwoo/core/grocery";
 import { useRouter } from "next/navigation";
 import { useCallback, useDeferredValue, useMemo, useState } from "react";
 
 import { ActivityList } from "@/components/activity/ActivityList";
 import { Filters } from "@/components/Filters";
+import { EmptyItems } from "@/components/grocery/EmptyItems";
 import { SetupHousePrompt } from "@/components/houses/SetupHousePrompt";
 import { expensePath, paymentPath } from "@/lib/house-navigation";
 
@@ -87,13 +88,15 @@ export function ActivitiesScreen() {
 
       <div className="flex flex-1 flex-col">
         {!ready || isLoading ? null : filteredEntries.length === 0 && !moreToFetch ? (
-          <div className="flex flex-1 flex-col items-center justify-center px-6 text-center">
-            <p className="font-display text-sm font-normal text-muted-foreground">
-              {countSelected(deferredFilters) > 0
+          <EmptyItems
+            image="activity"
+            title={
+              countSelected(deferredFilters) > 0
                 ? "No activity matches these filters"
-                : "No activity yet"}
-            </p>
-          </div>
+                : "No activity yet"
+            }
+            hint={countSelected(deferredFilters) > 0 ? null : ACTIVITY_EMPTY_HINT}
+          />
         ) : (
           <ActivityList
             entries={filteredEntries}

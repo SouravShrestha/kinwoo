@@ -23,11 +23,13 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import { AppProviders } from "@/components/AppProviders";
-import { noItems } from "@/lib/images";
+import { categoryIconModules, emptyList, noExpense, paymentImage } from "@/lib/images";
 import "@/lib/splash";
 import { ThemeProvider } from "@/theme/ThemeProvider";
 
-void Asset.loadAsync(noItems).catch(() => undefined);
+void Asset.loadAsync([emptyList, noExpense, paymentImage, ...categoryIconModules]).catch(
+  () => undefined,
+);
 
 // Transparent so the screen below shows through while the sheet is dragged down; the screen
 // handles its own swipe because the native one loses to its ScrollView.

@@ -12,7 +12,7 @@ import {
 } from "@kinwoo/core/grocery";
 import { useRef, useState } from "react";
 
-import { CategoryIcon } from "@kinwoo/icons";
+import { ListIconImage } from "@/components/CategoryImages";
 
 import { BottomSheet } from "@/components/BottomSheet";
 import { Button } from "@/components/Button";
@@ -110,7 +110,7 @@ export function NewListSheet({
                 onClick={showPicker}
                 className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-muted text-foreground transition-opacity hover:cursor-pointer hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
               >
-                <CategoryIcon name={selectedIcon.label} size={26} />
+                <ListIconImage label={selectedIcon.label} size={40} />
               </button>
               <label htmlFor="list-name" className="sr-only">
                 List name

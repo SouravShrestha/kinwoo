@@ -6,14 +6,8 @@ import { useBatchMarkBoughtForm, useGroceryList } from "@kinwoo/client/grocery";
 import { useActiveHouse } from "@kinwoo/client/houses";
 import { toast } from "@kinwoo/client/toast";
 import { BATCH_NAME_MAX_LENGTH, MIN_BATCH_ITEMS, type GroceryItem } from "@kinwoo/core/grocery";
-import {
-  ArrowRightIcon,
-  BasketIcon,
-  CategoryIcon,
-  CheckCircleIcon,
-  CheckIcon,
-  RupeeIcon,
-} from "@kinwoo/icons";
+import { ArrowRightIcon, BasketIcon, CheckCircleIcon, CheckIcon, RupeeIcon } from "@kinwoo/icons";
+import { ItemCategoryImage } from "@/components/CategoryImages";
 import { useEffect, useRef, useState, type AnimationEvent } from "react";
 
 import { PayerSheet } from "@/components/expenses/PayerSheet";
@@ -299,7 +293,7 @@ export function BatchMarkBoughtScreen({
                           aria-hidden
                           className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-muted text-foreground"
                         >
-                          <CategoryIcon name={item.categoryName ?? undefined} size={24} />
+                          <ItemCategoryImage name={item.categoryName ?? undefined} size={40} />
                         </span>
                         <label
                           htmlFor={inputId}

@@ -4,14 +4,16 @@ import { useOpenExpense, useOpenSettlement } from "@kinwoo/client/expenses";
 import { useRecentActivity } from "@kinwoo/client/grocery";
 import { useActiveHouse, useHouseMembers } from "@kinwoo/client/houses";
 import { countSelected, EMPTY_FILTER_SELECTION, type FilterSelection } from "@kinwoo/core/filters";
-import { activityFilterGroups, filterActivity } from "@kinwoo/core/grocery";
+import { ACTIVITY_EMPTY_HINT, activityFilterGroups, filterActivity } from "@kinwoo/core/grocery";
 import { useCallback, useDeferredValue, useMemo, useState } from "react";
 import { Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { ActivityList } from "@/components/activity/ActivityList";
 import { Filters } from "@/components/Filters";
+import { EmptyItems } from "@/components/grocery/EmptyItems";
 import { openExpense as openExpenseScreen, openPayment } from "@/lib/house-navigation";
+import { noActivity } from "@/lib/images";
 import { usePullToRefresh } from "@/lib/use-pull-to-refresh";
 
 export default function ActivitiesScreen() {
@@ -82,11 +84,11 @@ export default function ActivitiesScreen() {
   const empty = useMemo(
     () =>
       showEmpty ? (
-        <View className="flex-1 items-center justify-center px-6">
-          <Text className="text-center text-sm text-muted-foreground font-display-normal">
-            {hasActiveFilters ? "No activity matches these filters" : "No activity yet"}
-          </Text>
-        </View>
+        <EmptyItems
+          image={noActivity}
+          title={hasActiveFilters ? "No activity matches these filters" : "No activity yet"}
+          hint={hasActiveFilters ? null : ACTIVITY_EMPTY_HINT}
+        />
       ) : null,
     [showEmpty, hasActiveFilters],
   );

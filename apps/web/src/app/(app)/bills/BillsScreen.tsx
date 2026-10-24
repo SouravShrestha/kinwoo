@@ -102,6 +102,7 @@ export function BillsScreen() {
         {!ready || isLoading ? null : empty ? (
           <div className="py-12">
             <EmptyItems
+              image="expense"
               title="Nothing to see here"
               hint="Add rent, bills or anything you share. Split grocery purchases show up here too."
             >

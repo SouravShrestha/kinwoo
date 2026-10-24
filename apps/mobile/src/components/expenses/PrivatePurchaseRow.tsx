@@ -5,13 +5,10 @@ import {
   privateSpendDetail,
   type PrivateSpendEntry,
 } from "@kinwoo/core/grocery";
-import { colors } from "@kinwoo/tokens/native";
 import { Text, View } from "react-native";
 
-import { CategoryIcon } from "@kinwoo/icons/native";
-
+import { ItemCategoryImage } from "@/components/grocery/ItemCategoryImage";
 import { Pressable } from "@/components/Pressable";
-import { useTheme } from "@/theme/ThemeProvider";
 
 export function PrivatePurchaseRow({
   entry,
@@ -20,8 +17,6 @@ export function PrivatePurchaseRow({
   entry: PrivateSpendEntry;
   onOpen: () => void;
 }) {
-  const { resolvedTheme } = useTheme();
-  const palette = colors[resolvedTheme];
   const { month, day } = privateSpendDateParts(entry);
   const detail = privateSpendDetail(entry);
 
@@ -37,7 +32,7 @@ export function PrivatePurchaseRow({
         <Text className="font-display-normal text-lg leading-6 text-muted-foreground">{day}</Text>
       </View>
       <View className="ml-3 mr-4 size-10 items-center justify-center rounded-lg bg-muted">
-        <CategoryIcon name={entry.categoryName ?? undefined} size={22} color={palette.foreground} />
+        <ItemCategoryImage name={entry.categoryName} size={34} />
       </View>
       <View className="mr-3 min-w-0 flex-1 gap-0.5">
         <Text numberOfLines={1} className="font-display-normal text-base text-foreground">

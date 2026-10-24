@@ -5,13 +5,11 @@ import {
   type Settlement,
 } from "@kinwoo/core/expenses";
 import { formatPaise } from "@kinwoo/core/grocery";
-import { PaymentIcon } from "@kinwoo/icons/native";
-import { colors } from "@kinwoo/tokens/native";
+import { Image } from "expo-image";
 import { Text, View } from "react-native";
 
 import { Pressable } from "@/components/Pressable";
-
-import { useTheme } from "@/theme/ThemeProvider";
+import { paymentImage } from "@/lib/images";
 
 export function PaymentRow({
   settlement,
@@ -22,8 +20,6 @@ export function PaymentRow({
   currentUserId: string | null;
   onOpen: () => void;
 }) {
-  const { resolvedTheme } = useTheme();
-  const palette = colors[resolvedTheme];
   const summary = settlementSummary(settlement, currentUserId);
   const amount = formatPaise(summary.amountPaise);
   const { month, day } = spentOnParts(spentOnFor(new Date(settlement.createdAt)));
@@ -39,7 +35,12 @@ export function PaymentRow({
         <Text className="font-display-normal text-lg leading-6 text-muted-foreground">{day}</Text>
       </View>
       <View className="ml-3 mr-4 size-10 items-center justify-center">
-        <PaymentIcon size={26} color={palette.accent} />
+        <Image
+          source={paymentImage}
+          accessibilityIgnoresInvertColors
+          contentFit="contain"
+          style={{ width: 36, height: 36 }}
+        />
       </View>
       <Text className="min-w-0 flex-1 font-display-normal text-sm text-foreground">
         {summary.title} <Text className="font-display-medium">{amount}</Text>

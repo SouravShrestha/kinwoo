@@ -1,8 +1,9 @@
 import { listIconOption, type GroceryList } from "@kinwoo/core/grocery";
-import { CategoryIcon, PlusCircleIcon } from "@kinwoo/icons/native";
+import { PlusCircleIcon } from "@kinwoo/icons/native";
 import { useState } from "react";
 
 import { OptionSheet } from "@/components/OptionSheet";
+import { ListIconImage } from "./ListIconImage";
 import { NewListSheet } from "./NewListSheet";
 
 const NEW_LIST = "__new_list__";
@@ -35,9 +36,7 @@ export function ListSwitcherSheet({
           ...lists.map((list) => ({
             id: list.id,
             label: list.name,
-            icon: (color: string) => (
-              <CategoryIcon name={listIconOption(list.icon).label} size={24} color={color} />
-            ),
+            icon: () => <ListIconImage label={listIconOption(list.icon).label} size={36} />,
           })),
           {
             id: NEW_LIST,

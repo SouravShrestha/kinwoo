@@ -7,7 +7,6 @@ import { BATCH_NAME_MAX_LENGTH, MIN_BATCH_ITEMS, type GroceryItem } from "@kinwo
 import {
   ArrowRightIcon,
   BasketIcon,
-  CategoryIcon,
   CheckCircleIcon,
   CheckIcon,
   RupeeIcon,
@@ -21,6 +20,7 @@ import Animated, { Easing, FadeInUp, FadeOutUp, ReduceMotion } from "react-nativ
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { PayerSheet } from "@/components/expenses/PayerSheet";
+import { ItemCategoryImage } from "@/components/grocery/ItemCategoryImage";
 import { SplitSheet } from "@/components/expenses/SplitSheet";
 import { Pressable } from "@/components/Pressable";
 import { SwipeDownScreen } from "@/components/SwipeDownScreen";
@@ -297,11 +297,7 @@ export default function BatchMarkBoughtScreen() {
                           importantForAccessibility="no-hide-descendants"
                           className="size-12 items-center justify-center rounded-xl bg-muted"
                         >
-                          <CategoryIcon
-                            name={item.categoryName ?? undefined}
-                            size={24}
-                            color={palette.foreground}
-                          />
+                          <ItemCategoryImage name={item.categoryName} size={40} />
                         </View>
                         <View className="min-w-0 flex-1">
                           <Text

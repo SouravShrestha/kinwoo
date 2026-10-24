@@ -13,7 +13,7 @@ import {
   type GroceryActivityEntry,
 } from "@kinwoo/core/grocery";
 import { TOAST_MESSAGES } from "@kinwoo/core/toast";
-import { ArrowRightIcon, NotificationIcon } from "@kinwoo/icons/native";
+import { ArrowRightIcon } from "@kinwoo/icons/native";
 import { colors } from "@kinwoo/tokens/native";
 import { router } from "expo-router";
 import { useCallback, useMemo } from "react";
@@ -21,6 +21,7 @@ import { Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { ActivityList } from "@/components/activity/ActivityList";
+import { EmptyItems } from "@/components/grocery/EmptyItems";
 import { Pressable } from "@/components/Pressable";
 import {
   goBack,
@@ -28,6 +29,7 @@ import {
   openExpense as openExpenseScreen,
   openPayment,
 } from "@/lib/house-navigation";
+import { noNotifications } from "@/lib/images";
 import { usePullToRefresh } from "@/lib/use-pull-to-refresh";
 import { useTheme } from "@/theme/ThemeProvider";
 
@@ -107,17 +109,13 @@ export default function NotificationsScreen() {
   const empty = useMemo(
     () =>
       isLoading ? null : (
-        <View className="flex-1 items-center justify-center px-6">
-          <NotificationIcon size={48} color={colors[resolvedTheme].mutedForeground} />
-          <Text className="mt-4 text-center font-display-medium text-base text-foreground">
-            No notification yet
-          </Text>
-          <Text className="mt-1 max-w-xs text-center font-display-normal text-sm text-muted-foreground">
-            You&apos;ve got a blank slate (for now). We&apos;ll let you know when updates arrive.
-          </Text>
-        </View>
+        <EmptyItems
+          image={noNotifications}
+          title="No notification yet"
+          hint="You've got a blank slate (for now). We'll let you know when updates arrive."
+        />
       ),
-    [isLoading, resolvedTheme],
+    [isLoading],
   );
 
   return (

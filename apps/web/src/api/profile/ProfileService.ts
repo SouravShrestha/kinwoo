@@ -29,20 +29,20 @@ const found = (profile: Profile | null): ProfileResult =>
 export class ProfileService implements IProfileService {
   constructor(private readonly repository: IProfileRepository) {}
 
-  async getProfile(userId: string, socialAvatarUrl?: string): Promise<ProfileResult> {
+  async getProfile(userId: string): Promise<ProfileResult> {
     const result = await run(async () => {
       const profile = await this.repository.findById(userId);
       if (!profile || profile.avatarUrl) return profile;
-      return this.withAvatar(profile, normaliseSocialAvatar(socialAvatarUrl));
+      return this.withAvatar(profile);
     });
     return result.ok ? found(result.data) : result;
   }
 
   // Never fails the profile load: without a default avatar the clients fall back to a placeholder.
-  private async withAvatar(profile: Profile, social: string | null): Promise<Profile> {
+  private async withAvatar(profile: Profile): Promise<Profile> {
     try {
-      const presets = social ? [] : await this.repository.listAvatarUrls();
-      const pick = social ?? presets[Math.floor(Math.random() * presets.length)];
+      const presets = await this.repository.listAvatarUrls();
+      const pick = presets[Math.floor(Math.random() * presets.length)];
       if (!pick) return profile;
 
       // Conditional on the column still being empty, so two concurrent loads settle on one avatar.

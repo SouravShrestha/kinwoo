@@ -1,5 +1,5 @@
 import { listIconOption, type GroceryOverviewItem } from "@kinwoo/core/grocery";
-import { CategoryIcon } from "@kinwoo/icons";
+import { ListIconImage } from "@/components/CategoryImages";
 
 import { cn } from "@/lib/utils";
 
@@ -29,7 +29,7 @@ export function OverviewItemRow({
       className="flex w-full items-center gap-3 rounded-2xl border border-border bg-card p-3 text-left transition-colors hover:border-foreground/30 hover:cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
     >
       <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-muted">
-        <CategoryIcon name={listIconOption(item.listIcon).label} size={20} />
+        <ListIconImage label={listIconOption(item.listIcon).label} size={32} />
       </span>
       <span className="min-w-0 flex-1">
         <span className="block truncate font-display text-base font-medium text-foreground">

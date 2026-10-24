@@ -14,11 +14,11 @@ import {
   ArrowRightIcon,
   CalendarIcon,
   CaretDownIcon,
-  CategoryIcon,
   CheckCircleIcon,
   CheckIcon,
   RupeeIcon,
 } from "@kinwoo/icons";
+import { ItemCategoryImage } from "@/components/CategoryImages";
 import { useEffect, useRef, useState, type AnimationEvent } from "react";
 
 import { PayerSheet } from "@/components/expenses/PayerSheet";
@@ -154,7 +154,7 @@ export function MarkBoughtScreen({
                   FOCUS_RING,
                 )}
               >
-                <CategoryIcon name={category?.name} size={26} />
+                <ItemCategoryImage name={category?.name} size={40} />
               </button>
               <label htmlFor="bought-name" className="sr-only">
                 Item name
@@ -347,7 +347,7 @@ export function MarkBoughtScreen({
         options={form.categories.map((c) => ({
           id: c.id,
           label: c.name,
-          icon: <CategoryIcon name={c.name} size={32} />,
+          icon: <ItemCategoryImage name={c.name} size={48} />,
         }))}
         selectedId={form.categoryId}
         onSelect={(id) => {

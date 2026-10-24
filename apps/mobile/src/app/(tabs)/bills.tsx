@@ -31,6 +31,7 @@ import {
   openPayment,
   openPrivateSpending,
 } from "@/lib/house-navigation";
+import { noExpense } from "@/lib/images";
 import { usePullToRefresh } from "@/lib/use-pull-to-refresh";
 import { useTheme } from "@/theme/ThemeProvider";
 
@@ -154,6 +155,7 @@ export default function BillsScreen() {
           empty ? (
             <View className="py-12">
               <EmptyItems
+                image={noExpense}
                 title="Nothing to see here"
                 hint="Add rent, bills or anything you share. Split grocery purchases show up here too."
               >

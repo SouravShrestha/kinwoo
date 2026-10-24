@@ -4,8 +4,9 @@ import { colors } from "@kinwoo/tokens/native";
 import { useEffect, useState } from "react";
 import { Text, View } from "react-native";
 
-import { CategoryIcon, PlusCircleIcon } from "@kinwoo/icons/native";
+import { PlusCircleIcon } from "@kinwoo/icons/native";
 
+import { ListIconImage } from "@/components/grocery/ListIconImage";
 import { Pressable } from "@/components/Pressable";
 import { houseStorage } from "@/lib/house-storage";
 import { useTheme } from "@/theme/ThemeProvider";
@@ -52,11 +53,7 @@ export function QuickAddBar({ houseId, onPress }: QuickAddBarProps) {
       </View>
       {targetList ? (
         <View className="flex-row items-center gap-1.5 rounded-full border border-border/60 bg-background px-2.5 py-1">
-          <CategoryIcon
-            name={listIconOption(targetList.icon).label}
-            size={14}
-            color={palette.foreground}
-          />
+          <ListIconImage label={listIconOption(targetList.icon).label} size={22} />
           <Text
             numberOfLines={1}
             className="max-w-[120px] font-display-medium text-xs text-foreground"

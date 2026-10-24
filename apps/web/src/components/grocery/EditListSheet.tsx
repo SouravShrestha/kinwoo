@@ -19,7 +19,8 @@ import {
   type UpdateListInput,
 } from "@kinwoo/core/grocery";
 import { memberDisplayName } from "@kinwoo/core/houses";
-import { CategoryIcon, TrashIcon } from "@kinwoo/icons";
+import { TrashIcon } from "@kinwoo/icons";
+import { ListIconImage } from "@/components/CategoryImages";
 import { useRef, useState } from "react";
 
 import { BottomSheet } from "@/components/BottomSheet";
@@ -203,7 +204,7 @@ export function EditListSheet({
                   disabled={!canEditMeta}
                   className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-muted text-foreground transition-opacity hover:cursor-pointer hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground disabled:cursor-not-allowed disabled:opacity-50"
                 >
-                  <CategoryIcon name={selectedIcon.label} size={26} />
+                  <ListIconImage label={selectedIcon.label} size={40} />
                 </button>
                 <label htmlFor="edit-list-name" className="sr-only">
                   List name

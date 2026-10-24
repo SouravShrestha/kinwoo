@@ -42,22 +42,13 @@ export function LoginScreen() {
       <main className="flex w-full max-w-md flex-col px-7 pt-[calc(1rem+env(safe-area-inset-top))] lg:border-x lg:border-border">
         <AndroidInstallBanner className="-mx-7 -mt-4" />
         <div className="flex flex-1 items-center justify-center">
-          {/* Toggled with CSS rather than useTheme so the right image renders on first paint. */}
           <Image
             src="/images/landing-screen-image.webp"
             alt="Three people filling a shared shopping list together"
-            width={725}
-            height={512}
+            width={1536}
+            height={1024}
             priority
-            className="h-64 w-full object-contain dark:hidden"
-          />
-          <Image
-            src="/images/landing-screen-image-dark-theme.webp"
-            alt="Three people filling a shared shopping list together"
-            width={770}
-            height={512}
-            priority
-            className="hidden h-64 w-full object-contain dark:block"
+            className="h-64 w-full object-contain"
           />
         </div>
 

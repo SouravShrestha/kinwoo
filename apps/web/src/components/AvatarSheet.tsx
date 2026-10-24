@@ -123,7 +123,7 @@ export function AvatarSheet({ open, onClose }: { open: boolean; onClose: () => v
                       selected ? "border-3 border-accent" : "border border-border",
                     )}
                   >
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    {}
                     {/* Absolute so the image's own proportions cannot stretch the square button. */}
                     <img
                       src={url}

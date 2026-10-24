@@ -17,7 +17,7 @@ import {
   type UpdateListInput,
 } from "@kinwoo/core/grocery";
 import { memberDisplayName } from "@kinwoo/core/houses";
-import { CategoryIcon, TrashIcon } from "@kinwoo/icons/native";
+import { TrashIcon } from "@kinwoo/icons/native";
 import { colors } from "@kinwoo/tokens/native";
 import { useState } from "react";
 import { Text, View } from "react-native";
@@ -32,6 +32,7 @@ import { Pressable } from "@/components/Pressable";
 import { Switch } from "@/components/Switch";
 import { useTheme } from "@/theme/ThemeProvider";
 
+import { ListIconImage } from "./ListIconImage";
 import { ListIconPicker } from "./ListIconPicker";
 import { ListVisibilityToggle } from "./ListVisibilityToggle";
 
@@ -197,7 +198,7 @@ export function EditListSheet({
                   allowDoublePress
                   className="size-12 items-center justify-center rounded-xl bg-muted active:opacity-80"
                 >
-                  <CategoryIcon name={selectedIcon.label} size={26} color={palette.foreground} />
+                  <ListIconImage label={selectedIcon.label} size={40} />
                 </Pressable>
                 <SheetTextInput
                   accessibilityLabel="List name"

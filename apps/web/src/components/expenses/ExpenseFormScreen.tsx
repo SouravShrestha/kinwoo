@@ -11,13 +11,8 @@ import {
   type ExpenseCategory,
 } from "@kinwoo/core/expenses";
 import { formatPickedDate } from "@kinwoo/core/grocery";
-import {
-  ArrowRightIcon,
-  CalendarIcon,
-  CheckCircleIcon,
-  ExpenseCategoryIcon,
-  RupeeIcon,
-} from "@kinwoo/icons";
+import { ArrowRightIcon, CalendarIcon, CheckCircleIcon, RupeeIcon } from "@kinwoo/icons";
+import { ExpenseCategoryImage } from "@/components/CategoryImages";
 import { useRef, useState, type AnimationEvent } from "react";
 
 import { DatePickerSheet } from "@/components/grocery/DatePickerSheet";
@@ -126,7 +121,7 @@ export function ExpenseFormScreen({
                   FOCUS_RING,
                 )}
               >
-                <ExpenseCategoryIcon category={form.category} size={24} />
+                <ExpenseCategoryImage category={form.category} size={40} />
               </button>
               <label htmlFor="expense-title" className="sr-only">
                 Title
@@ -293,7 +288,7 @@ export function ExpenseFormScreen({
         options={EXPENSE_CATEGORIES.map((category) => ({
           id: category,
           label: EXPENSE_CATEGORY_LABELS[category],
-          icon: <ExpenseCategoryIcon category={category} size={32} />,
+          icon: <ExpenseCategoryImage category={category} size={48} />,
         }))}
         selectedId={form.category}
         onSelect={(id) => {

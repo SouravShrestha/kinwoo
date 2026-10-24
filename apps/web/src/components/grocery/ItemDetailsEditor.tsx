@@ -14,7 +14,8 @@ import {
   type GroceryItem,
   type StoreId,
 } from "@kinwoo/core/grocery";
-import { CaretDownIcon, CategoryIcon, CheckCircleIcon, ClockIcon, CloseIcon } from "@kinwoo/icons";
+import { CaretDownIcon, CheckCircleIcon, ClockIcon, CloseIcon } from "@kinwoo/icons";
+import { ItemCategoryImage } from "@/components/CategoryImages";
 import Image from "next/image";
 import { useState, type ReactNode } from "react";
 
@@ -156,7 +157,7 @@ export function ItemDetailsEditor({
                 FOCUS_RING,
               )}
             >
-              <CategoryIcon name={category?.name} size={26} />
+              <ItemCategoryImage name={category?.name} size={40} />
             </button>
             <label htmlFor="edit-item-name" className="sr-only">
               Item name
@@ -309,7 +310,7 @@ export function ItemDetailsEditor({
         options={form.categories.map((c) => ({
           id: c.id,
           label: c.name,
-          icon: <CategoryIcon name={c.name} size={32} />,
+          icon: <ItemCategoryImage name={c.name} size={48} />,
         }))}
         selectedId={draft.categoryId}
         onSelect={(id) => {

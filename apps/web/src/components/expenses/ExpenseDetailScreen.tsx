@@ -8,7 +8,8 @@ import { CONFIRM_COPY } from "@kinwoo/core/confirm";
 import { canManageExpense, type Expense } from "@kinwoo/core/expenses";
 import { formatFullDate, formatPaise } from "@kinwoo/core/grocery";
 import { memberDisplayName } from "@kinwoo/core/houses";
-import { ArrowRightIcon, EditIcon, ExpenseCategoryIcon, NoteIcon, TrashIcon } from "@kinwoo/icons";
+import { ArrowRightIcon, EditIcon, NoteIcon, TrashIcon } from "@kinwoo/icons";
+import { ExpenseCategoryImage } from "@/components/CategoryImages";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState, type AnimationEvent } from "react";
 
@@ -145,7 +146,7 @@ function ExpenseDetails({
     <div className="flex flex-col gap-7">
       <div className="flex gap-4">
         <span className="flex size-16 shrink-0 items-center justify-center rounded-xl bg-muted text-foreground">
-          <ExpenseCategoryIcon category={expense.category} size={32} />
+          <ExpenseCategoryImage category={expense.category} size={56} />
         </span>
         <div className="min-w-0 flex-1 space-y-1.5">
           <h1 className="font-display text-lg font-medium text-foreground">{expense.title}</h1>

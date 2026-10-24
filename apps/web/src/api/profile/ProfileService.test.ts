@@ -63,25 +63,13 @@ const GOOGLE_AVATAR = "https://lh3.googleusercontent.com/a/photo=s96-c";
 const PRESET = "https://cdn.example.com/avatars/one.png";
 
 describe("ProfileService social avatar", () => {
-  it("defaults an empty avatar to the social one instead of a preset", async () => {
-    const setAvatarUrlIfMissing = vi.fn(async () => ({ ...profile, avatarUrl: GOOGLE_AVATAR }));
-    const service = new ProfileService(
-      fakeRepository({ setAvatarUrlIfMissing, listAvatarUrls: async () => [PRESET] }),
-    );
-
-    const result = await service.getProfile("user-1", GOOGLE_AVATAR);
-
-    expect(setAvatarUrlIfMissing).toHaveBeenCalledWith("user-1", GOOGLE_AVATAR);
-    expect(result).toMatchObject({ ok: true, data: { avatarUrl: GOOGLE_AVATAR } });
-  });
-
-  it("falls back to a preset when the social URL is not from Google", async () => {
+  it("assigns a preset to an empty avatar", async () => {
     const setAvatarUrlIfMissing = vi.fn(async () => profile);
     const service = new ProfileService(
       fakeRepository({ setAvatarUrlIfMissing, listAvatarUrls: async () => [PRESET] }),
     );
 
-    await service.getProfile("user-1", "https://evil.example.com/track.png");
+    await service.getProfile("user-1");
 
     expect(setAvatarUrlIfMissing).toHaveBeenCalledWith("user-1", PRESET);
   });
@@ -93,7 +81,7 @@ describe("ProfileService social avatar", () => {
       fakeRepository({ findById: async () => owned, setAvatarUrlIfMissing }),
     );
 
-    await expect(service.getProfile("user-1", GOOGLE_AVATAR)).resolves.toEqual({
+    await expect(service.getProfile("user-1")).resolves.toEqual({
       ok: true,
       data: owned,
     });
