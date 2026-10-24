@@ -30,7 +30,7 @@
         "buildType": "app-bundle"
       },
       "env": {
-        "EXPO_PUBLIC_API_URL": "https://kinwoo.in"
+        "EXPO_PUBLIC_API_URL": "https://app.kinwoo.in"
       }
     }
   },

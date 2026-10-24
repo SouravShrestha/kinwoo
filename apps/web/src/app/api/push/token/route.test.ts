@@ -30,7 +30,7 @@ beforeEach(() => {
 
 const call = async (method: "POST" | "DELETE", body: unknown) => {
   const route = await import("./route");
-  const request = new Request("https://kinwoo.in/api/push/token", {
+  const request = new Request("https://app.kinwoo.in/api/push/token", {
     method,
     body: typeof body === "string" ? body : JSON.stringify(body),
   });

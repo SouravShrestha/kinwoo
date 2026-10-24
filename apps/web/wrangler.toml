@@ -43,10 +43,10 @@ simple = { limit = 1, period = 60 }
 name = "kinwoo-prod"
 
 [env.production.vars]
-APP_HOSTNAME = "kinwoo.in"
+APP_HOSTNAME = "app.kinwoo.in"
 
 [[env.production.routes]]
-pattern = "kinwoo.in"
+pattern = "app.kinwoo.in"
 custom_domain = true
 
 [[env.production.kv_namespaces]]

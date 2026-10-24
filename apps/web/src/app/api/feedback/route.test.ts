@@ -28,13 +28,13 @@ beforeEach(() => {
 async function call(body: unknown = BODY, headers: Record<string, string> = {}) {
   const { POST } = await import("./route");
   return POST(
-    new Request("https://kinwoo.in/api/feedback", {
+    new Request("https://app.kinwoo.in/api/feedback", {
       method: "POST",
       body: JSON.stringify(body),
       headers: {
         "content-type": "application/json",
-        origin: "https://kinwoo.in",
-        host: "kinwoo.in",
+        origin: "https://app.kinwoo.in",
+        host: "app.kinwoo.in",
         ...headers,
       },
     }),

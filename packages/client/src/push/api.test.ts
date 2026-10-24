@@ -10,7 +10,7 @@ let fetchMock: ReturnType<typeof vi.fn>;
 beforeEach(() => {
   fetchMock = vi.fn(async () => new Response(JSON.stringify({ ok: true }), { status: 200 }));
   configureApiClient({
-    baseUrl: "https://kinwoo.in",
+    baseUrl: "https://app.kinwoo.in",
     fetch: fetchMock as unknown as typeof fetch,
     getAuthHeaders: async () => ({ Authorization: "Bearer jwt-1" }),
   });
@@ -21,7 +21,7 @@ describe("push api", () => {
     await registerPushToken(TOKEN);
 
     const [url, init] = fetchMock.mock.calls[0] as [string, RequestInit];
-    expect(url).toBe("https://kinwoo.in/api/push/token");
+    expect(url).toBe("https://app.kinwoo.in/api/push/token");
     expect(init.method).toBe("POST");
     expect(init.body).toBe(JSON.stringify({ token: TOKEN }));
     expect((init.headers as Record<string, string>).Authorization).toBe("Bearer jwt-1");
@@ -31,7 +31,7 @@ describe("push api", () => {
     await unregisterPushToken(TOKEN);
 
     const [url, init] = fetchMock.mock.calls[0] as [string, RequestInit];
-    expect(url).toBe("https://kinwoo.in/api/push/token");
+    expect(url).toBe("https://app.kinwoo.in/api/push/token");
     expect(init.method).toBe("DELETE");
     expect(init.body).toBe(JSON.stringify({ token: TOKEN }));
   });

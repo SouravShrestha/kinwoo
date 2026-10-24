@@ -53,7 +53,7 @@ How it fits together:
    ```
    http://localhost:3000/auth/callback
    https://test.kinwoo.in/auth/callback
-   https://kinwoo.in/auth/callback
+   https://app.kinwoo.in/auth/callback
    kinwoo://auth/callback
    ```
    The custom-scheme entry is what makes the Android deep-link return work.
@@ -101,7 +101,7 @@ Free-tier projects pause after 7 days of inactivity; logins fail with network er
    The `/feedback` form posts to `POST /api/feedback`, which forwards the message to Telegram and stores nothing. `TELEGRAM_BOT_TOKEN` comes from BotFather; `TELEGRAM_CHAT_ID` is the chat to notify (comma-separated for several). For local dev, put both in `apps/web/.env.local`. The route checks the request origin, allows 1 request per IP per 60s (the `RATE_LIMITER` binding in `wrangler.toml`, in-memory locally), and silently drops honeypot hits.
 
 4. **KV namespaces** `kinwoo-cache-test` and `kinwoo-cache-prod` back the incremental cache (`open-next.config.ts`). Their ids are already in `apps/web/wrangler.toml`; to recreate them, run `wrangler kv namespace create <name>` and paste the new ids.
-5. **Custom domains.** `workers_dev` and `preview_urls` are both off, so the routes in `wrangler.toml` are the only way to reach a deployed Worker. `kinwoo.in` has to be on Cloudflare DNS.
+5. **Custom domains.** `workers_dev` and `preview_urls` are both off, so the routes in `wrangler.toml` are the only way to reach a deployed Worker. `kinwoo.in` has to be on Cloudflare DNS. Test is served at `test.kinwoo.in` and production at `app.kinwoo.in`; the apex and `www` are left for the landing page.
 
 ### GitHub
 
