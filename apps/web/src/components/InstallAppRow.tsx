@@ -17,7 +17,7 @@ export function InstallAppRow() {
 
   if (kind === "android") {
     return (
-      <SettingsLinkRow href={PLAY_STORE_URL} icon={<InstallIcon size={20} />} label="Install app" />
+      <SettingsLinkRow href={PLAY_STORE_URL} icon={<InstallIcon size={24} />} label="Install app" />
     );
   }
 
@@ -25,7 +25,7 @@ export function InstallAppRow() {
     <>
       <SettingsButtonRow
         onClick={() => (kind === "native" ? void promptInstall() : setStepsOpen(true))}
-        icon={<InstallIcon size={20} />}
+        icon={<InstallIcon size={24} />}
         label="Install app"
       />
       <BottomSheet

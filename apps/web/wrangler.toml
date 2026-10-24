@@ -32,6 +32,13 @@ custom_domain = true
 binding = "NEXT_INC_CACHE_KV"
 id = "a8f3764463f54bdc80760dc18a2aca5d"
 
+# Feedback form rate limit (src/lib/rate-limit.ts): 1 submission per IP per 60s, per Cloudflare
+# location. Bindings are not inherited by [env.*]. namespace_id must be unique per account.
+[[env.test.ratelimits]]
+name = "RATE_LIMITER"
+namespace_id = "2001"
+simple = { limit = 1, period = 60 }
+
 [env.production]
 name = "kinwoo-prod"
 
@@ -45,3 +52,8 @@ custom_domain = true
 [[env.production.kv_namespaces]]
 binding = "NEXT_INC_CACHE_KV"
 id = "42470d06915244ea8c1e3f7d5f27f35c"
+
+[[env.production.ratelimits]]
+name = "RATE_LIMITER"
+namespace_id = "2002"
+simple = { limit = 1, period = 60 }

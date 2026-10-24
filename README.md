@@ -84,13 +84,22 @@ Free-tier projects pause after 7 days of inactivity; logins fail with network er
 
 1. **API token** with `Workers Scripts: Edit`, `Workers KV Storage: Edit`, `Account Settings: Read`, plus `Zone: Read` and `Workers Routes: Edit` for the custom domains.
 2. Copy the **Account ID** from the Workers dashboard.
-3. Runtime secret, per environment — CI deliberately does not pass this:
+3. Runtime secrets, per environment — CI deliberately does not pass these:
+
    ```bash
    cd apps/web
    wrangler secret put SUPABASE_SERVICE_ROLE_KEY --env test
    wrangler secret put SUPABASE_SERVICE_ROLE_KEY --env production
+   wrangler secret put TELEGRAM_BOT_TOKEN --env test
+   wrangler secret put TELEGRAM_BOT_TOKEN --env production
+   wrangler secret put TELEGRAM_CHAT_ID --env test
+   wrangler secret put TELEGRAM_CHAT_ID --env production
    ```
+
    The `NEXT_PUBLIC_*` values are build-time and inlined by CI, so they do not go here.
+
+   The `/feedback` form posts to `POST /api/feedback`, which forwards the message to Telegram and stores nothing. `TELEGRAM_BOT_TOKEN` comes from BotFather; `TELEGRAM_CHAT_ID` is the chat to notify (comma-separated for several). For local dev, put both in `apps/web/.env.local`. The route checks the request origin, allows 1 request per IP per 60s (the `RATE_LIMITER` binding in `wrangler.toml`, in-memory locally), and silently drops honeypot hits.
+
 4. **KV namespaces** `kinwoo-cache-test` and `kinwoo-cache-prod` back the incremental cache (`open-next.config.ts`). Their ids are already in `apps/web/wrangler.toml`; to recreate them, run `wrangler kv namespace create <name>` and paste the new ids.
 5. **Custom domains.** `workers_dev` and `preview_urls` are both off, so the routes in `wrangler.toml` are the only way to reach a deployed Worker. `kinwoo.in` has to be on Cloudflare DNS.
 

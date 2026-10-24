@@ -4,22 +4,21 @@ import { useAuth } from "@kinwoo/client/auth";
 import { useProfile } from "@kinwoo/client/profile";
 import { toast } from "@kinwoo/client/toast";
 import {
-  APP_NAME,
+  FEEDBACK_PATH,
   HELP_LABELS,
   LEGAL_LABELS,
   LEGAL_PATHS,
   SUPPORT_EMAIL,
   SUPPORT_MAILTO,
-  supportMailtoFor,
 } from "@kinwoo/core/app";
 import { CONFIRM_COPY } from "@kinwoo/core/confirm";
 import { TOAST_MESSAGES } from "@kinwoo/core/toast";
 import {
   AppearanceIcon,
   BellIcon,
-  BugIcon,
   DocumentIcon,
   EditIcon,
+  FeedbackIcon,
   GlobeIcon,
   MailIcon,
   ProfileIcon,
@@ -69,14 +68,6 @@ export function ProfileScreen() {
       setLoggingOut(false);
       setLogoutOpen(false);
     }
-  };
-
-  const reportIssue = () => {
-    window.location.href = supportMailtoFor({
-      version: process.env.NEXT_PUBLIC_APP_VERSION ?? "0.0.0",
-      device: navigator.userAgent,
-      subject: `${APP_NAME} issue report`,
-    });
   };
 
   return (
@@ -134,7 +125,7 @@ export function ProfileScreen() {
         />
         <SettingsLinkRow
           href="/profile/notifications"
-          icon={<BellIcon size={20} />}
+          icon={<BellIcon size={24} />}
           label="Notifications"
         />
         <InstallAppRow />
@@ -143,12 +134,12 @@ export function ProfileScreen() {
       <SettingsGroup title={LEGAL_LABELS.group}>
         <SettingsLinkRow
           href={LEGAL_PATHS.terms}
-          icon={<DocumentIcon size={20} />}
+          icon={<DocumentIcon size={24} />}
           label={LEGAL_LABELS.terms}
         />
         <SettingsLinkRow
           href={LEGAL_PATHS.privacy}
-          icon={<ShieldCheckOutlineIcon size={20} />}
+          icon={<ShieldCheckOutlineIcon size={24} />}
           label={LEGAL_LABELS.privacy}
         />
       </SettingsGroup>
@@ -156,14 +147,14 @@ export function ProfileScreen() {
       <SettingsGroup title={HELP_LABELS.group}>
         <SettingsLinkRow
           href={SUPPORT_MAILTO}
-          icon={<MailIcon size={20} />}
+          icon={<MailIcon size={24} />}
           label={HELP_LABELS.email}
           value={SUPPORT_EMAIL}
         />
-        <SettingsButtonRow
-          onClick={reportIssue}
-          icon={<BugIcon size={20} />}
-          label={HELP_LABELS.report}
+        <SettingsLinkRow
+          href={FEEDBACK_PATH}
+          icon={<FeedbackIcon size={24} />}
+          label={HELP_LABELS.feedback}
         />
       </SettingsGroup>
 

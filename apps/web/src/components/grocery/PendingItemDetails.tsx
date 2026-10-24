@@ -129,7 +129,7 @@ export function PendingItemDetails({
                   />
                 }
                 onClick={() => setExpanded((value) => !value)}
-                className="h-12 min-w-0 flex-1 px-3"
+                className="min-h-12 min-w-0 flex-1 px-3"
               />
             )}
             <Button
@@ -141,7 +141,7 @@ export function PendingItemDetails({
                   <Avatar name={self.displayName} url={self.avatarUrl} size={BUTTON_AVATAR_SIZE} />
                 ) : undefined
               }
-              className="h-12 min-w-0 flex-1 px-3"
+              className="min-h-12 min-w-0 flex-1 px-3"
             />
           </div>
         </div>

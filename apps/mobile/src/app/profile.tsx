@@ -1,34 +1,26 @@
 import { useAuth } from "@kinwoo/client/auth";
 import { useProfile } from "@kinwoo/client/profile";
 import { toast } from "@kinwoo/client/toast";
-import {
-  APP_NAME,
-  HELP_LABELS,
-  LEGAL_LABELS,
-  SUPPORT_EMAIL,
-  SUPPORT_MAILTO,
-  supportMailtoFor,
-} from "@kinwoo/core/app";
+import { HELP_LABELS, LEGAL_LABELS, SUPPORT_EMAIL, SUPPORT_MAILTO } from "@kinwoo/core/app";
 import { CONFIRM_COPY } from "@kinwoo/core/confirm";
 import { TOAST_MESSAGES } from "@kinwoo/core/toast";
 import {
   AppearanceIcon,
   ArrowRightIcon,
   BellIcon,
-  BugIcon,
   DocumentIcon,
   EditIcon,
+  FeedbackIcon,
   GlobeIcon,
   MailIcon,
   ProfileIcon,
   ShieldCheckOutlineIcon,
 } from "@kinwoo/icons/native";
 import { colors } from "@kinwoo/tokens/native";
-import Constants from "expo-constants";
 import { router } from "expo-router";
 import * as WebBrowser from "expo-web-browser";
 import { useState } from "react";
-import { Image, Linking, Platform, ScrollView, Text, View } from "react-native";
+import { Image, Linking, ScrollView, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { AppFooter } from "@/components/AppFooter";
@@ -41,7 +33,7 @@ import { SettingsGroup, SettingsInfoRow, SettingsRow } from "@/components/Settin
 import { goBack } from "@/lib/house-navigation";
 import { profileImage } from "@/lib/images";
 import { unregisterDevice } from "@/lib/push";
-import { PRIVACY_URL, TERMS_URL } from "@/lib/legal";
+import { FEEDBACK_URL, PRIVACY_URL, TERMS_URL } from "@/lib/legal";
 import { usePressGuard } from "@/lib/press-guard";
 import { useTheme } from "@/theme/ThemeProvider";
 
@@ -61,20 +53,12 @@ export default function ProfileScreen() {
 
   const openTerms = usePressGuard(() => void WebBrowser.openBrowserAsync(TERMS_URL));
   const openPrivacy = usePressGuard(() => void WebBrowser.openBrowserAsync(PRIVACY_URL));
+  const openFeedback = usePressGuard(() => void WebBrowser.openBrowserAsync(FEEDBACK_URL));
 
   // mailto: needs the system mail app, so Linking is used here instead of the in-app browser.
   const openMail = (url: string) =>
     void Linking.openURL(url).catch(() => toast.error(TOAST_MESSAGES.mailUnavailable));
   const emailSupport = usePressGuard(() => openMail(SUPPORT_MAILTO));
-  const reportIssue = usePressGuard(() =>
-    openMail(
-      supportMailtoFor({
-        version: Constants.expoConfig?.version ?? "0.0.0",
-        device: `${Platform.OS} ${Platform.Version}`,
-        subject: `${APP_NAME} issue report`,
-      }),
-    ),
-  );
 
   const confirmLogout = async () => {
     setLoggingOut(true);
@@ -157,7 +141,7 @@ export default function ProfileScreen() {
           onPress={() => setAppearanceOpen(true)}
         />
         <SettingsRow
-          icon={<BellIcon size={20} color={palette.foreground} />}
+          icon={<BellIcon size={24} color={palette.foreground} />}
           label="Notifications"
           onPress={() => router.push("/settings/notifications")}
         />
@@ -165,12 +149,12 @@ export default function ProfileScreen() {
 
       <SettingsGroup title={LEGAL_LABELS.group}>
         <SettingsRow
-          icon={<DocumentIcon size={20} color={palette.foreground} />}
+          icon={<DocumentIcon size={24} color={palette.foreground} />}
           label={LEGAL_LABELS.terms}
           onPress={openTerms}
         />
         <SettingsRow
-          icon={<ShieldCheckOutlineIcon size={20} color={palette.foreground} />}
+          icon={<ShieldCheckOutlineIcon size={24} color={palette.foreground} />}
           label={LEGAL_LABELS.privacy}
           onPress={openPrivacy}
         />
@@ -178,15 +162,15 @@ export default function ProfileScreen() {
 
       <SettingsGroup title={HELP_LABELS.group}>
         <SettingsRow
-          icon={<MailIcon size={20} color={palette.foreground} />}
+          icon={<MailIcon size={24} color={palette.foreground} />}
           label={HELP_LABELS.email}
           value={SUPPORT_EMAIL}
           onPress={emailSupport}
         />
         <SettingsRow
-          icon={<BugIcon size={20} color={palette.foreground} />}
-          label={HELP_LABELS.report}
-          onPress={reportIssue}
+          icon={<FeedbackIcon size={24} color={palette.foreground} />}
+          label={HELP_LABELS.feedback}
+          onPress={openFeedback}
         />
       </SettingsGroup>
 

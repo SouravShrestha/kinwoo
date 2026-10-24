@@ -6,8 +6,8 @@ export const SUPPORT_MAILTO = `mailto:${SUPPORT_EMAIL}`;
 
 export const HELP_LABELS = {
   group: "Help & Support",
+  feedback: "Send feedback",
   email: "Email",
-  report: "Report an issue",
 } as const;
 
 export const AUTHOR_NAME = "Sourav Shrestha";
@@ -26,17 +26,6 @@ export const FOOTER_COPY = {
   madeIn: "in India",
   version: (version: string) => `App version ${version}`,
 } as const;
-
-export function supportMailtoFor(options: {
-  version: string;
-  device: string;
-  subject?: string;
-}): string {
-  const { version, device, subject = `${APP_NAME} support` } = options;
-  const lines = ["", "", "---", `Version: ${version}`, `Device: ${device}`];
-  const query = `subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(lines.join("\n"))}`;
-  return `${SUPPORT_MAILTO}?${query}`;
-}
 
 export const NOT_FOUND_COPY = {
   code: "404",

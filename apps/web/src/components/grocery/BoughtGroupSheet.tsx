@@ -120,7 +120,7 @@ export function BoughtGroupSheet({
               label="View transaction"
               icon={<TransactionIcon size={22} />}
               onClick={viewTransaction}
-              className="h-12 min-w-0 flex-1 px-3"
+              className="min-h-12 min-w-0 flex-1 px-3"
             />
           </div>
         </div>

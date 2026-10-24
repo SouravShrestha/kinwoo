@@ -4,6 +4,14 @@ import { useId, type InputHTMLAttributes, type ReactNode } from "react";
 
 import { cn } from "@/lib/utils";
 
+export function RequiredMark() {
+  return (
+    <span aria-hidden="true" className="ml-1 text-destructive">
+      *
+    </span>
+  );
+}
+
 export function Field({
   label,
   error,
@@ -28,6 +36,7 @@ export function Field({
     <div className={className}>
       <label htmlFor={id} className="mb-3 block font-display text-sm font-normal text-foreground">
         {label}
+        {input.required ? <RequiredMark /> : null}
       </label>
       <div className="relative">
         {icon ? (

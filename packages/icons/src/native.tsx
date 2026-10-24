@@ -119,3 +119,4 @@ export const BugIcon = /*#__PURE__*/ icon(geometry.bugIcon);
 export const UploadPhotoIcon = /*#__PURE__*/ icon(geometry.uploadPhotoIcon);
 export const LinkIcon = /*#__PURE__*/ icon(geometry.linkIcon);
 export const UnlinkIcon = /*#__PURE__*/ icon(geometry.unlinkIcon);
+export const FeedbackIcon = /*#__PURE__*/ icon(geometry.feedbackIcon);

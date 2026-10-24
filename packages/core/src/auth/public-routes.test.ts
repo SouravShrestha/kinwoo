@@ -8,6 +8,7 @@ describe("isPublicRoute", () => {
     expect(isPublicRoute("/login/email")).toBe(true);
     expect(isPublicRoute("/legal")).toBe(true);
     expect(isPublicRoute("/legal/privacy")).toBe(true);
+    expect(isPublicRoute("/feedback")).toBe(true);
     expect(isPublicRoute("/auth/callback")).toBe(true);
     expect(isPublicRoute("/join/ABC234")).toBe(true);
   });

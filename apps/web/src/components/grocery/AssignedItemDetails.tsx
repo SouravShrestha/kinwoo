@@ -83,7 +83,7 @@ export function AssignedItemDetails({
               variant="outline"
               loading={unassignItem.isPending}
               onClick={() => void handleUnassign()}
-              className="h-12 min-w-0 flex-1 px-3"
+              className="min-h-12 min-w-0 flex-1 px-3"
             />
           ) : null}
           <Button
@@ -91,7 +91,7 @@ export function AssignedItemDetails({
             aria-haspopup="dialog"
             icon={<VerifiedIcon size={18} />}
             onClick={() => void handleMarkBought()}
-            className="h-12 min-w-0 flex-1 px-3"
+            className="min-h-12 min-w-0 flex-1 px-3"
           />
         </div>
       }
