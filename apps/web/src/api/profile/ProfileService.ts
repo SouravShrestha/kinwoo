@@ -4,7 +4,6 @@ import { isPushType } from "@kinwoo/core/push";
 import { serviceResults } from "../_shared/result";
 import type { IProfileRepository, Profile, ProfilePreferences } from "./IProfileRepository";
 import type { IProfileService, ProfileResult, ProfileServiceErrorCode } from "./IProfileService";
-import { normaliseSocialAvatar } from "./socialAvatar";
 
 const VALID_THEMES = new Set(["light", "dark", "system"]);
 const LOCALE_PATTERN = /^[a-z]{2}(-[A-Za-z0-9]{2,8})?$/;
@@ -53,13 +52,6 @@ export class ProfileService implements IProfileService {
     }
   }
 
-  // The social avatar leads the presets: it is the default, so it is the first choice shown.
-  private async selectableAvatars(socialAvatarUrl: string | undefined): Promise<string[]> {
-    const social = normaliseSocialAvatar(socialAvatarUrl);
-    const presets = await this.repository.listAvatarUrls();
-    return social ? [social, ...presets.filter((url) => url !== social)] : presets;
-  }
-
   async setDisplayName(userId: string, input: string): Promise<ProfileResult> {
     // Validated before the write so a name the client accepts can never be
     // rejected by the matching database constraint.
@@ -78,19 +70,15 @@ export class ProfileService implements IProfileService {
     return result.ok ? found(result.data) : result;
   }
 
-  async listAvatars(socialAvatarUrl?: string): Promise<ProfileResult<string[]>> {
-    return run(() => this.selectableAvatars(socialAvatarUrl));
+  async listAvatars(): Promise<ProfileResult<string[]>> {
+    return run(() => this.repository.listAvatarUrls());
   }
 
-  async setAvatar(
-    userId: string,
-    avatarUrl: string,
-    socialAvatarUrl?: string,
-  ): Promise<ProfileResult> {
+  async setAvatar(userId: string, avatarUrl: string): Promise<ProfileResult> {
     // Only a URL we list ourselves, or a file in the user's own upload folder, is stored, so a
     // client cannot point a profile at an arbitrary image. The database checks the file exists.
     if (!this.repository.isOwnUpload(userId, avatarUrl)) {
-      const avatars = await run(() => this.selectableAvatars(socialAvatarUrl));
+      const avatars = await run(() => this.repository.listAvatarUrls());
       if (!avatars.ok) return avatars;
       if (!avatars.data.includes(avatarUrl)) {
         return invalidInput("Choose one of the available avatars.");

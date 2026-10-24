@@ -27,13 +27,7 @@ describe("toPublicAvatarUrl", () => {
     );
   });
 
-  it("keeps a Google avatar", () => {
-    expect(toPublicAvatarUrl(client, "https://lh3.googleusercontent.com/a/x")).toBe(
-      "https://lh3.googleusercontent.com/a/x",
-    );
-  });
-
-  it("drops any other absolute URL", () => {
+  it("drops an absolute URL", () => {
     expect(toPublicAvatarUrl(client, "https://evil.test/pixel.png")).toBeNull();
   });
 });

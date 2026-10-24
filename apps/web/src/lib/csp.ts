@@ -11,7 +11,7 @@ export function buildContentSecurityPolicy(nonce: string): string {
     `script-src 'self' 'nonce-${nonce}' 'strict-dynamic'${isDev ? " 'unsafe-eval'" : ""}`,
     "style-src 'self' 'unsafe-inline'",
     // blob: lets the avatar cropper preview the photo the user just picked.
-    `img-src 'self' data: blob: https://lh3.googleusercontent.com ${supabaseHost}`.trim(),
+    `img-src 'self' data: blob: ${supabaseHost}`.trim(),
     // Safari does not let 'self' cover ws:// on the same host, which breaks HMR on a LAN IP.
     `connect-src 'self' ${supabaseHost} ${supabaseWss}${isDev ? " ws:" : ""}`.trim(),
     "font-src 'self' data:",

@@ -45,7 +45,7 @@ export function resultResponse<T, Code extends string>(
   return NextResponse.json(body, { status: options.status ?? 200, headers: NO_STORE });
 }
 
-export type RouteContext<Service> = { service: Service; userId: string; socialAvatarUrl?: string };
+export type RouteContext<Service> = { service: Service; userId: string };
 
 export type RouteOptions = ResponseOptions & {
   // Path parameters that must be UUIDs. Anything else is a 404 rather than a Postgres cast error.
@@ -77,11 +77,7 @@ export function createRouteHandler<Service, Code extends string>(
       );
     }
 
-    const result = await run({
-      service: makeService(supabase),
-      userId: user.id,
-      socialAvatarUrl: user.socialAvatarUrl,
-    });
+    const result = await run({ service: makeService(supabase), userId: user.id });
 
     if (result instanceof NextResponse) return applyCookies(result);
     return applyCookies(resultResponse(result, statusByCode, options));

@@ -46,6 +46,10 @@ select throws_ok(
      where id = '00000000-0000-4000-8000-0000000000e1'$$,
   '23514', 'INVALID_AVATAR', 'an arbitrary avatar URL is rejected');
 select throws_ok(
+  $$update public.profiles set avatar_url = 'https://lh3.googleusercontent.com/a/photo'
+     where id = '00000000-0000-4000-8000-0000000000e1'$$,
+  '23514', 'INVALID_AVATAR', 'a Google photo URL is rejected');
+select throws_ok(
   $$update public.profiles set avatar_url = 'avatar-99.png'
      where id = '00000000-0000-4000-8000-0000000000e1'$$,
   '23514', 'INVALID_AVATAR', 'a path that is not a preset is rejected');

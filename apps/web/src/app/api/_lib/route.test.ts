@@ -25,11 +25,11 @@ const ID = "6d5f45b6-3a75-4e63-b2da-adad6fccb88d";
 
 beforeEach(() => {
   vi.clearAllMocks();
-  getVerifiedUser.mockResolvedValue({ id: "user-1", socialAvatarUrl: "https://a" });
+  getVerifiedUser.mockResolvedValue({ id: "user-1" });
 });
 
 describe("createRouteHandler", () => {
-  it("runs with the service, user and avatar, and wraps data under the key", async () => {
+  it("runs with the service and user, and wraps data under the key", async () => {
     const run = vi.fn(async () => ({ ok: true as const, data: [1, 2] }));
 
     const response = await handle(request(), run, { key: "items", uuids: [ID] });
@@ -40,7 +40,6 @@ describe("createRouteHandler", () => {
     expect(run).toHaveBeenCalledWith({
       service: { client: { tag: "client" } },
       userId: "user-1",
-      socialAvatarUrl: "https://a",
     });
   });
 

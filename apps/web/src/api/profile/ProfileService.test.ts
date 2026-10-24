@@ -59,10 +59,9 @@ describe("ProfileService.getProfile", () => {
   });
 });
 
-const GOOGLE_AVATAR = "https://lh3.googleusercontent.com/a/photo=s96-c";
 const PRESET = "https://cdn.example.com/avatars/one.png";
 
-describe("ProfileService social avatar", () => {
+describe("ProfileService default avatar", () => {
   it("assigns a preset to an empty avatar", async () => {
     const setAvatarUrlIfMissing = vi.fn(async () => profile);
     const service = new ProfileService(
@@ -88,34 +87,19 @@ describe("ProfileService social avatar", () => {
     expect(setAvatarUrlIfMissing).not.toHaveBeenCalled();
   });
 
-  it("lists the social avatar first, ahead of the presets", async () => {
+  it("lists only the presets", async () => {
     const service = new ProfileService(fakeRepository({ listAvatarUrls: async () => [PRESET] }));
 
-    await expect(service.listAvatars(GOOGLE_AVATAR)).resolves.toEqual({
-      ok: true,
-      data: [GOOGLE_AVATAR, PRESET],
-    });
     await expect(service.listAvatars()).resolves.toEqual({ ok: true, data: [PRESET] });
   });
 
-  it("lets the user switch back to the social avatar", async () => {
+  it("rejects an external URL", async () => {
     const updateAvatarUrl = vi.fn(async () => profile);
     const service = new ProfileService(
       fakeRepository({ updateAvatarUrl, listAvatarUrls: async () => [PRESET] }),
     );
 
-    await service.setAvatar("user-1", GOOGLE_AVATAR, GOOGLE_AVATAR);
-
-    expect(updateAvatarUrl).toHaveBeenCalledWith("user-1", GOOGLE_AVATAR);
-  });
-
-  it("rejects a social-looking URL the account does not own", async () => {
-    const updateAvatarUrl = vi.fn(async () => profile);
-    const service = new ProfileService(
-      fakeRepository({ updateAvatarUrl, listAvatarUrls: async () => [PRESET] }),
-    );
-
-    const result = await service.setAvatar("user-1", GOOGLE_AVATAR);
+    const result = await service.setAvatar("user-1", "https://lh3.googleusercontent.com/a/x");
 
     expect(result).toMatchObject({ ok: false, code: "INVALID_INPUT" });
     expect(updateAvatarUrl).not.toHaveBeenCalled();
