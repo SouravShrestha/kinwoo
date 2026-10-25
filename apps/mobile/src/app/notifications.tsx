@@ -23,6 +23,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ActivityList } from "@/components/activity/ActivityList";
 import { EmptyItems } from "@/components/grocery/EmptyItems";
 import { Pressable } from "@/components/Pressable";
+import { ActivityRowsSkeleton } from "@/components/skeleton/skeletons";
 import {
   goBack,
   goHome,
@@ -108,7 +109,11 @@ export default function NotificationsScreen() {
 
   const empty = useMemo(
     () =>
-      isLoading ? null : (
+      isLoading ? (
+        <View className="px-4">
+          <ActivityRowsSkeleton />
+        </View>
+      ) : (
         <EmptyItems
           image={noNotifications}
           title="No notification yet"

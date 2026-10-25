@@ -32,6 +32,7 @@ import { CONFIRM_COPY } from "@kinwoo/core/confirm";
 import { TOAST_MESSAGES } from "@kinwoo/core/toast";
 import { useEffect, useId, useRef, useState, type KeyboardEvent } from "react";
 
+import { InviteSkeleton } from "@/components/skeleton/skeletons";
 import { useHouseNavigation } from "@/lib/house-navigation";
 import { copyText, shareOrCopy } from "@/lib/share-text";
 import { siteOrigin } from "@/lib/site";
@@ -65,7 +66,7 @@ function InviteManager({ membership }: { membership: HouseMembership }) {
   const manager = useInviteManager({ house, origin: siteOrigin() });
   const [confirmRotate, setConfirmRotate] = useState(false);
 
-  if (manager.loading) return null;
+  if (manager.loading) return <InviteSkeleton />;
 
   const copyCode = async () => {
     if (manager.code) await copyText(manager.code, TOAST_MESSAGES.codeCopied);

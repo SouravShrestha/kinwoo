@@ -12,6 +12,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ActivityList } from "@/components/activity/ActivityList";
 import { Filters } from "@/components/Filters";
 import { EmptyItems } from "@/components/grocery/EmptyItems";
+import { ActivityRowsSkeleton } from "@/components/skeleton/skeletons";
 import { openExpense as openExpenseScreen, openPayment } from "@/lib/house-navigation";
 import { noActivity } from "@/lib/images";
 import { usePullToRefresh } from "@/lib/use-pull-to-refresh";
@@ -64,7 +65,8 @@ export default function ActivitiesScreen() {
     [openExpense],
   );
 
-  const showEmpty = !isLoading && filteredEntries.length === 0 && !moreToFetch;
+  const loading = !ready || isLoading;
+  const showEmpty = !loading && filteredEntries.length === 0 && !moreToFetch;
   const hasActiveFilters = countSelected(deferredFilters) > 0;
 
   const header = useMemo(
@@ -83,21 +85,21 @@ export default function ActivitiesScreen() {
 
   const empty = useMemo(
     () =>
-      showEmpty ? (
+      loading ? (
+        <View className="px-4">
+          <ActivityRowsSkeleton />
+        </View>
+      ) : showEmpty ? (
         <EmptyItems
           image={noActivity}
           title={hasActiveFilters ? "No activity matches these filters" : "No activity yet"}
           hint={hasActiveFilters ? null : ACTIVITY_EMPTY_HINT}
         />
       ) : null,
-    [showEmpty, hasActiveFilters],
+    [loading, showEmpty, hasActiveFilters],
   );
 
-  if (!ready) {
-    return <View className="flex-1 bg-background" />;
-  }
-
-  if (!activeHouse) {
+  if (ready && !activeHouse) {
     return (
       <View
         className="flex-1 items-center justify-center bg-background px-6"
@@ -122,6 +124,13 @@ export default function ActivitiesScreen() {
         onOpenPayment={handleOpenPayment}
         header={header}
         empty={empty}
+        footer={
+          isFetchingNextPage ? (
+            <View className="px-4">
+              <ActivityRowsSkeleton count={2} withHeading={false} />
+            </View>
+          ) : null
+        }
       />
     </View>
   );

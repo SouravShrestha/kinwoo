@@ -3,6 +3,7 @@ import { Text, View } from "react-native";
 import { BottomSheet } from "@/components/BottomSheet";
 import { SheetHeader } from "@/components/houses/SheetHeader";
 import { Pressable } from "@/components/Pressable";
+import { AssignRowsSkeleton } from "@/components/skeleton/skeletons";
 
 import { useAssignToMember } from "./useAssignToMember";
 
@@ -46,7 +47,9 @@ export function AssignSheet({
       />
 
       <View className="mt-4 gap-2">
-        {isLoading ? null : members.length === 0 ? (
+        {isLoading ? (
+          <AssignRowsSkeleton />
+        ) : members.length === 0 ? (
           <View className="py-6 items-center">
             <Text className="text-sm text-muted-foreground font-display-normal">
               No other house members found

@@ -14,6 +14,7 @@ import { ActivityList } from "@/components/activity/ActivityList";
 import { Filters } from "@/components/Filters";
 import { EmptyItems } from "@/components/grocery/EmptyItems";
 import { SetupHousePrompt } from "@/components/houses/SetupHousePrompt";
+import { ActivityRowsSkeleton } from "@/components/skeleton/skeletons";
 import { expensePath, paymentPath } from "@/lib/house-navigation";
 
 export function ActivitiesScreen() {
@@ -87,7 +88,9 @@ export function ActivitiesScreen() {
       />
 
       <div className="flex flex-1 flex-col">
-        {!ready || isLoading ? null : filteredEntries.length === 0 && !moreToFetch ? (
+        {!ready || isLoading ? (
+          <ActivityRowsSkeleton />
+        ) : filteredEntries.length === 0 && !moreToFetch ? (
           <EmptyItems
             image="activity"
             title={
@@ -108,6 +111,7 @@ export function ActivitiesScreen() {
             onOpenPayment={handleOpenPayment}
           />
         )}
+        {isFetchingNextPage ? <ActivityRowsSkeleton count={2} withHeading={false} /> : null}
       </div>
     </main>
   );

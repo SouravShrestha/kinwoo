@@ -25,6 +25,7 @@ import { PayerSheet } from "@/components/expenses/PayerSheet";
 import { SplitSheet } from "@/components/expenses/SplitSheet";
 import { useHouseNavigation } from "@/lib/house-navigation";
 import { useSwipeToClose } from "@/lib/use-swipe-to-close";
+import { ItemFormSkeleton } from "@/components/skeleton/skeletons";
 import { cn } from "@/lib/utils";
 
 import { DatePickerSheet } from "./DatePickerSheet";
@@ -139,202 +140,205 @@ export function MarkBoughtScreen({
             <CheckCircleIcon size={26} />
           </button>
         </header>
+        {!item ? (
+          <ItemFormSkeleton variant="single" />
+        ) : (
+          <div className="space-y-5 pb-8">
+            <div>
+              <div className="flex gap-3">
+                <button
+                  type="button"
+                  aria-haspopup="dialog"
+                  aria-label={`Category: ${category?.name ?? "none"}. Change category`}
+                  disabled={!canEdit}
+                  onClick={() => setPicker("category")}
+                  className={cn(
+                    "flex size-12 shrink-0 items-center justify-center rounded-xl bg-muted text-foreground transition-opacity hover:cursor-pointer hover:opacity-80 disabled:cursor-default disabled:opacity-100",
+                    FOCUS_RING,
+                  )}
+                >
+                  <ItemCategoryImage name={category?.name} size={40} />
+                </button>
+                <label htmlFor="bought-name" className="sr-only">
+                  Item name
+                </label>
+                <input
+                  id="bought-name"
+                  type="text"
+                  autoComplete="off"
+                  enterKeyHint="done"
+                  readOnly={!canEdit}
+                  maxLength={ITEM_NAME_MAX_LENGTH}
+                  placeholder="Item name"
+                  value={form.name}
+                  onChange={(event) => form.setName(event.target.value)}
+                  aria-invalid={form.nameError ? true : undefined}
+                  aria-describedby={form.nameError ? "bought-name-hint" : undefined}
+                  className={cn(
+                    FIELD,
+                    "min-w-0 flex-1 px-5 outline-none placeholder:text-muted-foreground",
+                  )}
+                />
+              </div>
+              {form.nameError ? (
+                <p
+                  id="bought-name-hint"
+                  role="alert"
+                  className="mt-2 text-right font-display text-sm font-normal text-destructive"
+                >
+                  {form.nameError}
+                </p>
+              ) : null}
+            </div>
 
-        <div className="space-y-5 pb-8">
-          <div>
-            <div className="flex gap-3">
+            <div className="flex items-center gap-3">
+              <label htmlFor="bought-qty" className="sr-only">
+                Quantity
+              </label>
+              <input
+                id="bought-qty"
+                type="text"
+                inputMode="decimal"
+                maxLength={ITEM_QUANTITY_MAX_LENGTH}
+                autoComplete="off"
+                placeholder="Qty"
+                value={form.quantity}
+                onChange={(event) => form.setQuantity(event.target.value)}
+                className={cn(
+                  FIELD,
+                  "w-20 shrink-0 justify-center px-2 text-center outline-none placeholder:text-muted-foreground",
+                )}
+              />
               <button
                 type="button"
                 aria-haspopup="dialog"
-                aria-label={`Category: ${category?.name ?? "none"}. Change category`}
-                disabled={!canEdit}
-                onClick={() => setPicker("category")}
-                className={cn(
-                  "flex size-12 shrink-0 items-center justify-center rounded-xl bg-muted text-foreground transition-opacity hover:cursor-pointer hover:opacity-80 disabled:cursor-default disabled:opacity-100",
-                  FOCUS_RING,
-                )}
+                aria-label={`Unit: ${form.unit ?? "none"}. Change unit`}
+                onClick={() => setPicker("unit")}
+                className={cn(FIELD, FIELD_BUTTON, "w-20 shrink-0 justify-between pl-5")}
               >
-                <ItemCategoryImage name={category?.name} size={40} />
+                <span className={form.unit ? undefined : "text-muted-foreground"}>
+                  {form.unit ?? "Unit"}
+                </span>
+                <CaretDownIcon size={9} />
               </button>
-              <label htmlFor="bought-name" className="sr-only">
-                Item name
-              </label>
-              <input
-                id="bought-name"
-                type="text"
-                autoComplete="off"
-                enterKeyHint="done"
-                readOnly={!canEdit}
-                maxLength={ITEM_NAME_MAX_LENGTH}
-                placeholder="Item name"
-                value={form.name}
-                onChange={(event) => form.setName(event.target.value)}
-                aria-invalid={form.nameError ? true : undefined}
-                aria-describedby={form.nameError ? "bought-name-hint" : undefined}
-                className={cn(
-                  FIELD,
-                  "min-w-0 flex-1 px-5 outline-none placeholder:text-muted-foreground",
-                )}
-              />
-            </div>
-            {form.nameError ? (
-              <p
-                id="bought-name-hint"
-                role="alert"
-                className="mt-2 text-right font-display text-sm font-normal text-destructive"
-              >
-                {form.nameError}
-              </p>
-            ) : null}
-          </div>
-
-          <div className="flex items-center gap-3">
-            <label htmlFor="bought-qty" className="sr-only">
-              Quantity
-            </label>
-            <input
-              id="bought-qty"
-              type="text"
-              inputMode="decimal"
-              maxLength={ITEM_QUANTITY_MAX_LENGTH}
-              autoComplete="off"
-              placeholder="Qty"
-              value={form.quantity}
-              onChange={(event) => form.setQuantity(event.target.value)}
-              className={cn(
-                FIELD,
-                "w-20 shrink-0 justify-center px-2 text-center outline-none placeholder:text-muted-foreground",
-              )}
-            />
-            <button
-              type="button"
-              aria-haspopup="dialog"
-              aria-label={`Unit: ${form.unit ?? "none"}. Change unit`}
-              onClick={() => setPicker("unit")}
-              className={cn(FIELD, FIELD_BUTTON, "w-20 shrink-0 justify-between pl-5")}
-            >
-              <span className={form.unit ? undefined : "text-muted-foreground"}>
-                {form.unit ?? "Unit"}
-              </span>
-              <CaretDownIcon size={9} />
-            </button>
-            <button
-              type="button"
-              aria-haspopup="dialog"
-              aria-label={`Date bought: ${dateLabel}. Change date`}
-              onClick={() => setPicker("date")}
-              className={cn(FIELD, FIELD_BUTTON, "min-w-0 flex-1")}
-            >
-              <CalendarIcon size={16} />
-              <span>{dateLabel}</span>
-            </button>
-          </div>
-
-          <div className="py-3">
-            <label
-              htmlFor="bought-price"
-              className="flex items-center gap-3 border-b border-border pb-1 font-display text-foreground"
-            >
-              <span className="sr-only">Amount paid</span>
-              <RupeeIcon size={28} />
-              <input
-                id="bought-price"
-                type="text"
-                inputMode="decimal"
-                autoFocus
-                autoComplete="off"
-                enterKeyHint="done"
-                placeholder="0.00"
-                value={form.price}
-                onChange={(event) => form.setPrice(event.target.value)}
-                aria-invalid={form.priceError ? true : undefined}
-                aria-describedby={form.priceError ? "bought-price-hint" : undefined}
-                className="h-11 min-w-0 flex-1 bg-transparent text-[calc(34px*var(--font-scale,1))] font-medium outline-none placeholder:text-muted-foreground"
-              />
-            </label>
-            {form.priceError ? (
-              <p
-                id="bought-price-hint"
-                role="alert"
-                className="mt-2 font-display text-sm font-normal text-destructive"
-              >
-                {form.priceError}
-              </p>
-            ) : null}
-          </div>
-
-          <div
-            inert={!showSplit}
-            className={cn(
-              "grid transition-[grid-template-rows,opacity] duration-200 ease-out motion-reduce:transition-none",
-              showSplit ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0",
-            )}
-          >
-            {/* Padding keeps focus outlines from being clipped by the collapse. */}
-            <div className="-m-1 min-h-0 overflow-hidden p-1">
               <button
                 type="button"
-                role="checkbox"
-                aria-checked={split}
-                onClick={() => setSplit((value) => !value)}
-                className={cn(
-                  "flex w-fit items-center gap-3 font-display text-base font-normal text-foreground hover:cursor-pointer",
-                  FOCUS_RING,
-                )}
+                aria-haspopup="dialog"
+                aria-label={`Date bought: ${dateLabel}. Change date`}
+                onClick={() => setPicker("date")}
+                className={cn(FIELD, FIELD_BUTTON, "min-w-0 flex-1")}
               >
-                <span
-                  aria-hidden
+                <CalendarIcon size={16} />
+                <span>{dateLabel}</span>
+              </button>
+            </div>
+
+            <div className="py-3">
+              <label
+                htmlFor="bought-price"
+                className="flex items-center gap-3 border-b border-border pb-1 font-display text-foreground"
+              >
+                <span className="sr-only">Amount paid</span>
+                <RupeeIcon size={28} />
+                <input
+                  id="bought-price"
+                  type="text"
+                  inputMode="decimal"
+                  autoFocus
+                  autoComplete="off"
+                  enterKeyHint="done"
+                  placeholder="0.00"
+                  value={form.price}
+                  onChange={(event) => form.setPrice(event.target.value)}
+                  aria-invalid={form.priceError ? true : undefined}
+                  aria-describedby={form.priceError ? "bought-price-hint" : undefined}
+                  className="h-11 min-w-0 flex-1 bg-transparent text-[calc(34px*var(--font-scale,1))] font-medium outline-none placeholder:text-muted-foreground"
+                />
+              </label>
+              {form.priceError ? (
+                <p
+                  id="bought-price-hint"
+                  role="alert"
+                  className="mt-2 font-display text-sm font-normal text-destructive"
+                >
+                  {form.priceError}
+                </p>
+              ) : null}
+            </div>
+
+            <div
+              inert={!showSplit}
+              className={cn(
+                "grid transition-[grid-template-rows,opacity] duration-200 ease-out motion-reduce:transition-none",
+                showSplit ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0",
+              )}
+            >
+              {/* Padding keeps focus outlines from being clipped by the collapse. */}
+              <div className="-m-1 min-h-0 overflow-hidden p-1">
+                <button
+                  type="button"
+                  role="checkbox"
+                  aria-checked={split}
+                  onClick={() => setSplit((value) => !value)}
                   className={cn(
-                    "flex size-5 items-center justify-center rounded-[6px]",
-                    split ? "bg-foreground text-background" : "border border-border",
+                    "flex w-fit items-center gap-3 font-display text-base font-normal text-foreground hover:cursor-pointer",
+                    FOCUS_RING,
                   )}
                 >
-                  {split ? <CheckIcon size={10} /> : null}
-                </span>
-                I want to split expenses
-              </button>
+                  <span
+                    aria-hidden
+                    className={cn(
+                      "flex size-5 items-center justify-center rounded-[6px]",
+                      split ? "bg-foreground text-background" : "border border-border",
+                    )}
+                  >
+                    {split ? <CheckIcon size={10} /> : null}
+                  </span>
+                  I want to split expenses
+                </button>
 
-              <div
-                inert={!split}
-                className={cn(
-                  "grid transition-[grid-template-rows,opacity] duration-200 ease-out motion-reduce:transition-none",
-                  split ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0",
-                )}
-              >
-                <div className="min-h-0 overflow-hidden">
-                  <div className="flex flex-wrap items-center gap-x-2 gap-y-3 pt-4 font-display text-base font-normal">
-                    <span className="text-muted-foreground">Paid by</span>
-                    <button
-                      type="button"
-                      aria-haspopup="dialog"
-                      aria-label={`Paid by ${payers.label}. Change who paid`}
-                      onClick={() => setPicker("payers")}
-                      className={cn(
-                        "rounded-lg bg-muted px-3.5 py-1.5 font-medium text-foreground transition-opacity hover:cursor-pointer hover:opacity-80",
-                        FOCUS_RING,
-                      )}
-                    >
-                      {payers.label}
-                    </button>
-                    <span className="text-muted-foreground">and split</span>
-                    <button
-                      type="button"
-                      aria-haspopup="dialog"
-                      aria-label={`Split ${expenseSplit.label.toLowerCase()}. Change how it is split`}
-                      onClick={() => setPicker("split")}
-                      className={cn(
-                        "rounded-lg bg-muted px-3.5 py-1.5 font-medium text-foreground transition-opacity hover:cursor-pointer hover:opacity-80",
-                        FOCUS_RING,
-                      )}
-                    >
-                      {expenseSplit.label}
-                    </button>
+                <div
+                  inert={!split}
+                  className={cn(
+                    "grid transition-[grid-template-rows,opacity] duration-200 ease-out motion-reduce:transition-none",
+                    split ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0",
+                  )}
+                >
+                  <div className="min-h-0 overflow-hidden">
+                    <div className="flex flex-wrap items-center gap-x-2 gap-y-3 pt-4 font-display text-base font-normal">
+                      <span className="text-muted-foreground">Paid by</span>
+                      <button
+                        type="button"
+                        aria-haspopup="dialog"
+                        aria-label={`Paid by ${payers.label}. Change who paid`}
+                        onClick={() => setPicker("payers")}
+                        className={cn(
+                          "rounded-lg bg-muted px-3.5 py-1.5 font-medium text-foreground transition-opacity hover:cursor-pointer hover:opacity-80",
+                          FOCUS_RING,
+                        )}
+                      >
+                        {payers.label}
+                      </button>
+                      <span className="text-muted-foreground">and split</span>
+                      <button
+                        type="button"
+                        aria-haspopup="dialog"
+                        aria-label={`Split ${expenseSplit.label.toLowerCase()}. Change how it is split`}
+                        onClick={() => setPicker("split")}
+                        className={cn(
+                          "rounded-lg bg-muted px-3.5 py-1.5 font-medium text-foreground transition-opacity hover:cursor-pointer hover:opacity-80",
+                          FOCUS_RING,
+                        )}
+                      >
+                        {expenseSplit.label}
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
+        )}
       </form>
 
       <OptionSheet

@@ -5,6 +5,7 @@ import { inviteFailureCopy, memberCountLabel, memberDisplayName } from "@kinwoo/
 import { HousePinIcon } from "@kinwoo/icons";
 import { useEffect, type ReactNode } from "react";
 
+import { JoinPreviewSkeleton } from "@/components/skeleton/skeletons";
 import { useHouseNavigation } from "@/lib/house-navigation";
 import { BottomSheet } from "../BottomSheet";
 import { Button } from "../Button";
@@ -33,7 +34,7 @@ export function JoinPreviewSheet({
     goHome();
   }, [alreadyMemberOf, setActiveHouse, goHome]);
 
-  const visible = open && !flow.loading && !alreadyMemberOf;
+  const visible = open && !alreadyMemberOf;
 
   return (
     <BottomSheet open={visible} onClose={onClose} label="Join a house">
@@ -51,6 +52,7 @@ function SheetBody({
   onClose: () => void;
   onDone: () => void;
 }) {
+  if (flow.loading) return <JoinPreviewSkeleton />;
   if (flow.loadError) {
     return (
       <Notice title="Couldn't check that code" message={flow.loadError}>

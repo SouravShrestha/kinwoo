@@ -18,6 +18,7 @@ import { AvatarSheet } from "@/components/AvatarSheet";
 import { BackButton } from "@/components/BackButton";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { Field } from "@/components/houses/Field";
+import { FieldSkeleton } from "@/components/skeleton/skeletons";
 import { cn } from "@/lib/utils";
 
 function IconButton({
@@ -151,49 +152,53 @@ export function PersonalInformationScreen() {
         </button>
       </div>
 
-      <form
-        className="mt-8 flex items-start gap-3"
-        onSubmit={(event) => {
-          event.preventDefault();
-          if (editing) void save();
-        }}
-      >
-        <Field
-          key={editing ? "editing" : "viewing"}
-          label="Name"
-          className="min-w-0 flex-1"
-          value={editing ? draft : (profile?.displayName ?? "")}
-          onValueChange={(next) => {
-            setDraft(next);
-            setError(null);
+      {!profile ? (
+        <FieldSkeleton className="mt-8" />
+      ) : (
+        <form
+          className="mt-8 flex items-start gap-3"
+          onSubmit={(event) => {
+            event.preventDefault();
+            if (editing) void save();
           }}
-          error={error}
-          readOnly={!editing}
-          disabled={saving}
-          autoFocus={editing}
-          maxLength={DISPLAY_NAME_MAX_LENGTH}
-          autoComplete="name"
-          placeholder="Daisy"
-        />
-        {/* Offset by the Field label (20px line + 12px margin) so the button sits beside the input. */}
-        <div className="mt-8">
-          {editing ? (
-            <IconButton
-              boxed
-              filled
-              label="Save name"
-              disabled={saving}
-              onClick={() => void save()}
-            >
-              <CheckIcon size={18} />
-            </IconButton>
-          ) : (
-            <IconButton boxed label="Edit name" disabled={!profile} onClick={startEditing}>
-              <EditIcon size={18} />
-            </IconButton>
-          )}
-        </div>
-      </form>
+        >
+          <Field
+            key={editing ? "editing" : "viewing"}
+            label="Name"
+            className="min-w-0 flex-1"
+            value={editing ? draft : (profile?.displayName ?? "")}
+            onValueChange={(next) => {
+              setDraft(next);
+              setError(null);
+            }}
+            error={error}
+            readOnly={!editing}
+            disabled={saving}
+            autoFocus={editing}
+            maxLength={DISPLAY_NAME_MAX_LENGTH}
+            autoComplete="name"
+            placeholder="Daisy"
+          />
+          {/* Offset by the Field label (20px line + 12px margin) so the button sits beside the input. */}
+          <div className="mt-8">
+            {editing ? (
+              <IconButton
+                boxed
+                filled
+                label="Save name"
+                disabled={saving}
+                onClick={() => void save()}
+              >
+                <CheckIcon size={18} />
+              </IconButton>
+            ) : (
+              <IconButton boxed label="Edit name" onClick={startEditing}>
+                <EditIcon size={18} />
+              </IconButton>
+            )}
+          </div>
+        </form>
+      )}
 
       <Field
         className="mt-6"

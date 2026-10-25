@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils";
 import { randomUuid } from "@/lib/uuid";
 
 import { AvatarCropper } from "./AvatarCropper";
+import { AvatarGridSkeleton } from "@/components/skeleton/skeletons";
 import { BottomSheet } from "./BottomSheet";
 import { Button } from "./Button";
 
@@ -100,8 +101,14 @@ export function AvatarSheet({ open, onClose }: { open: boolean; onClose: () => v
             <p className="mt-6 text-sm text-muted-foreground">No avatars are available yet.</p>
           ) : null}
 
+          {!avatars && !isError ? (
+            <div className="mt-6">
+              <AvatarGridSkeleton />
+            </div>
+          ) : null}
           <div
             ref={grid}
+            hidden={!avatars && !isError}
             className="-mx-3 mt-6 flex flex-wrap"
             role="radiogroup"
             aria-label="Avatars"

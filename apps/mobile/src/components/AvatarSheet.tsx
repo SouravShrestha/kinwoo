@@ -9,6 +9,7 @@ import { Image, Text, View } from "react-native";
 
 import { Button } from "@/components/Button";
 import { Pressable } from "@/components/Pressable";
+import { AvatarGridSkeleton } from "@/components/skeleton/skeletons";
 import { pickAvatarPhoto } from "@/lib/avatar-photo";
 import { useTheme } from "@/theme/ThemeProvider";
 
@@ -90,7 +91,15 @@ function AvatarSheetContent({ open, onClose }: { open: boolean; onClose: () => v
         <Text className="mt-6 text-sm text-muted-foreground">No avatars are available yet.</Text>
       ) : null}
 
-      <View accessibilityRole="radiogroup" className="-mx-3 mt-6 flex-row flex-wrap">
+      {!avatars && !isError ? (
+        <View className="mt-6">
+          <AvatarGridSkeleton />
+        </View>
+      ) : null}
+      <View
+        accessibilityRole="radiogroup"
+        className={`-mx-3 mt-6 flex-row flex-wrap ${!avatars && !isError ? "hidden" : ""}`}
+      >
         {avatarChoices(profile, avatars ?? []).map((url, index) => {
           const selected = url === profile?.avatarUrl;
 

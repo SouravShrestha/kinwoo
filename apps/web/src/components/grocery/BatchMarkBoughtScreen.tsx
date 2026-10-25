@@ -14,6 +14,7 @@ import { PayerSheet } from "@/components/expenses/PayerSheet";
 import { SplitSheet } from "@/components/expenses/SplitSheet";
 import { useHouseNavigation } from "@/lib/house-navigation";
 import { useSwipeToClose } from "@/lib/use-swipe-to-close";
+import { ItemFormSkeleton } from "@/components/skeleton/skeletons";
 import { cn } from "@/lib/utils";
 
 type Picker = "payers" | "split";
@@ -121,225 +122,228 @@ export function BatchMarkBoughtScreen({
             <CheckCircleIcon size={26} />
           </button>
         </header>
-
-        <div className="space-y-5">
-          <div>
-            <div className="flex gap-3">
-              <span
-                aria-hidden
-                className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-muted text-foreground"
-              >
-                <BasketIcon size={24} />
-              </span>
-              <label htmlFor="batch-name" className="sr-only">
-                Group name (optional)
-              </label>
-              <input
-                id="batch-name"
-                type="text"
-                autoComplete="off"
-                enterKeyHint="next"
-                maxLength={BATCH_NAME_MAX_LENGTH}
-                placeholder="Group name"
-                value={form.name}
-                onChange={(event) => form.setName(event.target.value)}
-                aria-invalid={form.nameError ? true : undefined}
-                aria-describedby={form.nameError ? "batch-name-hint" : undefined}
-                className={cn(
-                  FIELD,
-                  "min-w-0 flex-1 px-5 outline-none placeholder:text-muted-foreground",
-                )}
-              />
-            </div>
-            {form.nameError ? (
-              <p
-                id="batch-name-hint"
-                role="alert"
-                className="mt-2 text-right font-display text-sm font-normal text-destructive"
-              >
-                {form.nameError}
-              </p>
-            ) : null}
-          </div>
-
-          <div className="py-3">
-            <label
-              htmlFor="batch-total"
-              className="flex items-center gap-3 border-b border-border pb-1 font-display text-foreground"
-            >
-              <span className="sr-only">Total paid</span>
-              <RupeeIcon size={28} />
-              <input
-                id="batch-total"
-                type="text"
-                inputMode="decimal"
-                autoFocus
-                autoComplete="off"
-                enterKeyHint="done"
-                placeholder="0.00"
-                value={form.total}
-                onChange={(event) => form.setTotal(event.target.value)}
-                aria-invalid={form.totalError ? true : undefined}
-                aria-describedby={form.totalError ? "batch-total-hint" : undefined}
-                className="h-11 min-w-0 flex-1 bg-transparent text-[calc(34px*var(--font-scale,1))] font-medium outline-none placeholder:text-muted-foreground"
-              />
-            </label>
-            {form.totalError ? (
-              <p
-                id="batch-total-hint"
-                role="alert"
-                className="mt-2 font-display text-sm font-normal text-destructive"
-              >
-                {form.totalError}
-              </p>
-            ) : null}
-          </div>
-
-          <div
-            inert={!showSplit}
-            className={cn(
-              "grid transition-[grid-template-rows,opacity] duration-200 ease-out motion-reduce:transition-none",
-              showSplit ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0",
-            )}
-          >
-            {/* Padding keeps focus outlines from being clipped by the collapse. */}
-            <div className="-m-1 min-h-0 overflow-hidden p-1">
-              <button
-                type="button"
-                role="checkbox"
-                aria-checked={split}
-                onClick={() => setSplit((value) => !value)}
-                className={cn(
-                  "flex w-fit items-center gap-3 font-display text-base font-normal text-foreground hover:cursor-pointer",
-                  FOCUS_RING,
-                )}
-              >
+        {!form.ready ? (
+          <ItemFormSkeleton variant="batch" />
+        ) : (
+          <div className="space-y-5">
+            <div>
+              <div className="flex gap-3">
                 <span
                   aria-hidden
+                  className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-muted text-foreground"
+                >
+                  <BasketIcon size={24} />
+                </span>
+                <label htmlFor="batch-name" className="sr-only">
+                  Group name (optional)
+                </label>
+                <input
+                  id="batch-name"
+                  type="text"
+                  autoComplete="off"
+                  enterKeyHint="next"
+                  maxLength={BATCH_NAME_MAX_LENGTH}
+                  placeholder="Group name"
+                  value={form.name}
+                  onChange={(event) => form.setName(event.target.value)}
+                  aria-invalid={form.nameError ? true : undefined}
+                  aria-describedby={form.nameError ? "batch-name-hint" : undefined}
                   className={cn(
-                    "flex size-5 items-center justify-center rounded-[6px]",
-                    split ? "bg-foreground text-background" : "border border-border",
+                    FIELD,
+                    "min-w-0 flex-1 px-5 outline-none placeholder:text-muted-foreground",
+                  )}
+                />
+              </div>
+              {form.nameError ? (
+                <p
+                  id="batch-name-hint"
+                  role="alert"
+                  className="mt-2 text-right font-display text-sm font-normal text-destructive"
+                >
+                  {form.nameError}
+                </p>
+              ) : null}
+            </div>
+
+            <div className="py-3">
+              <label
+                htmlFor="batch-total"
+                className="flex items-center gap-3 border-b border-border pb-1 font-display text-foreground"
+              >
+                <span className="sr-only">Total paid</span>
+                <RupeeIcon size={28} />
+                <input
+                  id="batch-total"
+                  type="text"
+                  inputMode="decimal"
+                  autoFocus
+                  autoComplete="off"
+                  enterKeyHint="done"
+                  placeholder="0.00"
+                  value={form.total}
+                  onChange={(event) => form.setTotal(event.target.value)}
+                  aria-invalid={form.totalError ? true : undefined}
+                  aria-describedby={form.totalError ? "batch-total-hint" : undefined}
+                  className="h-11 min-w-0 flex-1 bg-transparent text-[calc(34px*var(--font-scale,1))] font-medium outline-none placeholder:text-muted-foreground"
+                />
+              </label>
+              {form.totalError ? (
+                <p
+                  id="batch-total-hint"
+                  role="alert"
+                  className="mt-2 font-display text-sm font-normal text-destructive"
+                >
+                  {form.totalError}
+                </p>
+              ) : null}
+            </div>
+
+            <div
+              inert={!showSplit}
+              className={cn(
+                "grid transition-[grid-template-rows,opacity] duration-200 ease-out motion-reduce:transition-none",
+                showSplit ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0",
+              )}
+            >
+              {/* Padding keeps focus outlines from being clipped by the collapse. */}
+              <div className="-m-1 min-h-0 overflow-hidden p-1">
+                <button
+                  type="button"
+                  role="checkbox"
+                  aria-checked={split}
+                  onClick={() => setSplit((value) => !value)}
+                  className={cn(
+                    "flex w-fit items-center gap-3 font-display text-base font-normal text-foreground hover:cursor-pointer",
+                    FOCUS_RING,
                   )}
                 >
-                  {split ? <CheckIcon size={10} /> : null}
-                </span>
-                I want to split expenses
-              </button>
+                  <span
+                    aria-hidden
+                    className={cn(
+                      "flex size-5 items-center justify-center rounded-[6px]",
+                      split ? "bg-foreground text-background" : "border border-border",
+                    )}
+                  >
+                    {split ? <CheckIcon size={10} /> : null}
+                  </span>
+                  I want to split expenses
+                </button>
 
-              <div
-                inert={!split}
-                className={cn(
-                  "grid transition-[grid-template-rows,opacity] duration-200 ease-out motion-reduce:transition-none",
-                  split ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0",
-                )}
-              >
-                <div className="min-h-0 overflow-hidden">
-                  <div className="flex flex-wrap items-center gap-x-2 gap-y-3 pt-4 font-display text-base font-normal">
-                    <span className="text-muted-foreground">Paid by</span>
-                    <button
-                      type="button"
-                      aria-haspopup="dialog"
-                      aria-label={`Paid by ${payers.label}. Change who paid`}
-                      onClick={() => setPicker("payers")}
-                      className={cn(
-                        "rounded-lg bg-muted px-3.5 py-1.5 font-medium text-foreground transition-opacity hover:cursor-pointer hover:opacity-80",
-                        FOCUS_RING,
-                      )}
-                    >
-                      {payers.label}
-                    </button>
-                    <span className="text-muted-foreground">and split</span>
-                    <button
-                      type="button"
-                      aria-haspopup="dialog"
-                      aria-label={`Split ${expenseSplit.label.toLowerCase()}. Change how it is split`}
-                      onClick={() => setPicker("split")}
-                      className={cn(
-                        "rounded-lg bg-muted px-3.5 py-1.5 font-medium text-foreground transition-opacity hover:cursor-pointer hover:opacity-80",
-                        FOCUS_RING,
-                      )}
-                    >
-                      {expenseSplit.label}
-                    </button>
+                <div
+                  inert={!split}
+                  className={cn(
+                    "grid transition-[grid-template-rows,opacity] duration-200 ease-out motion-reduce:transition-none",
+                    split ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0",
+                  )}
+                >
+                  <div className="min-h-0 overflow-hidden">
+                    <div className="flex flex-wrap items-center gap-x-2 gap-y-3 pt-4 font-display text-base font-normal">
+                      <span className="text-muted-foreground">Paid by</span>
+                      <button
+                        type="button"
+                        aria-haspopup="dialog"
+                        aria-label={`Paid by ${payers.label}. Change who paid`}
+                        onClick={() => setPicker("payers")}
+                        className={cn(
+                          "rounded-lg bg-muted px-3.5 py-1.5 font-medium text-foreground transition-opacity hover:cursor-pointer hover:opacity-80",
+                          FOCUS_RING,
+                        )}
+                      >
+                        {payers.label}
+                      </button>
+                      <span className="text-muted-foreground">and split</span>
+                      <button
+                        type="button"
+                        aria-haspopup="dialog"
+                        aria-label={`Split ${expenseSplit.label.toLowerCase()}. Change how it is split`}
+                        onClick={() => setPicker("split")}
+                        className={cn(
+                          "rounded-lg bg-muted px-3.5 py-1.5 font-medium text-foreground transition-opacity hover:cursor-pointer hover:opacity-80",
+                          FOCUS_RING,
+                        )}
+                      >
+                        {expenseSplit.label}
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          {form.items.length > 0 ? (
-            <div role="group" aria-labelledby="batch-items-label" className={"pt-6"}>
-              <p
-                id="batch-items-label"
-                className="pb-5 font-display text-sm font-normal text-muted-foreground"
-              >
-                {form.items.length} items
-              </p>
-              <p
-                role="status"
-                className="mb-5 font-display text-sm font-normal text-warning empty:hidden"
-              >
-                {form.amountMismatch}
-              </p>
-              <ul className="space-y-7">
-                {form.items.map((item) => {
-                  const inputId = `batch-item-${item.id}`;
-                  const error = form.itemErrorOf(item.id);
-                  const detail = quantityUnit(item);
-                  return (
-                    <li key={item.id}>
-                      <div className="flex items-center gap-3">
-                        <span
-                          aria-hidden
-                          className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-muted text-foreground"
-                        >
-                          <ItemCategoryImage name={item.categoryName ?? undefined} size={40} />
-                        </span>
-                        <label
-                          htmlFor={inputId}
-                          className="min-w-0 flex-1 font-display font-normal"
-                        >
-                          <span className="block truncate text-base text-foreground">
-                            {item.name}
+            {form.items.length > 0 ? (
+              <div role="group" aria-labelledby="batch-items-label" className={"pt-6"}>
+                <p
+                  id="batch-items-label"
+                  className="pb-5 font-display text-sm font-normal text-muted-foreground"
+                >
+                  {form.items.length} items
+                </p>
+                <p
+                  role="status"
+                  className="mb-5 font-display text-sm font-normal text-warning empty:hidden"
+                >
+                  {form.amountMismatch}
+                </p>
+                <ul className="space-y-7">
+                  {form.items.map((item) => {
+                    const inputId = `batch-item-${item.id}`;
+                    const error = form.itemErrorOf(item.id);
+                    const detail = quantityUnit(item);
+                    return (
+                      <li key={item.id}>
+                        <div className="flex items-center gap-3">
+                          <span
+                            aria-hidden
+                            className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-muted text-foreground"
+                          >
+                            <ItemCategoryImage name={item.categoryName ?? undefined} size={40} />
                           </span>
-                          {detail ? (
-                            <span className="block truncate text-sm text-muted-foreground">
-                              {detail}
+                          <label
+                            htmlFor={inputId}
+                            className="min-w-0 flex-1 font-display font-normal"
+                          >
+                            <span className="block truncate text-base text-foreground">
+                              {item.name}
                             </span>
-                          ) : null}
-                        </label>
-                        <div className={cn(FIELD, "w-28 shrink-0 gap-1.5 px-3")}>
-                          <RupeeIcon size={14} className="shrink-0 text-muted-foreground" />
-                          <input
-                            id={inputId}
-                            type="text"
-                            inputMode="decimal"
-                            autoComplete="off"
-                            placeholder="0.00"
-                            value={form.amountOf(item.id)}
-                            onChange={(event) => form.setAmount(item.id, event.target.value)}
-                            aria-invalid={error ? true : undefined}
-                            aria-describedby={error ? `${inputId}-hint` : undefined}
-                            className="h-full min-w-0 flex-1 bg-transparent text-right outline-none placeholder:text-muted-foreground"
-                          />
+                            {detail ? (
+                              <span className="block truncate text-sm text-muted-foreground">
+                                {detail}
+                              </span>
+                            ) : null}
+                          </label>
+                          <div className={cn(FIELD, "w-28 shrink-0 gap-1.5 px-3")}>
+                            <RupeeIcon size={14} className="shrink-0 text-muted-foreground" />
+                            <input
+                              id={inputId}
+                              type="text"
+                              inputMode="decimal"
+                              autoComplete="off"
+                              placeholder="0.00"
+                              value={form.amountOf(item.id)}
+                              onChange={(event) => form.setAmount(item.id, event.target.value)}
+                              aria-invalid={error ? true : undefined}
+                              aria-describedby={error ? `${inputId}-hint` : undefined}
+                              className="h-full min-w-0 flex-1 bg-transparent text-right outline-none placeholder:text-muted-foreground"
+                            />
+                          </div>
                         </div>
-                      </div>
-                      {error ? (
-                        <p
-                          id={`${inputId}-hint`}
-                          role="alert"
-                          className="mt-2 text-right font-display text-sm font-normal text-destructive"
-                        >
-                          {error}
-                        </p>
-                      ) : null}
-                    </li>
-                  );
-                })}
-              </ul>
-            </div>
-          ) : null}
-        </div>
+                        {error ? (
+                          <p
+                            id={`${inputId}-hint`}
+                            role="alert"
+                            className="mt-2 text-right font-display text-sm font-normal text-destructive"
+                          >
+                            {error}
+                          </p>
+                        ) : null}
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            ) : null}
+          </div>
+        )}
       </form>
 
       <PayerSheet open={picker === "payers"} onClose={closePicker} payers={payers} />

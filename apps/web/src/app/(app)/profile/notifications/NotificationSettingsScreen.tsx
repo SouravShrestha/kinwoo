@@ -8,11 +8,14 @@ import { TOAST_MESSAGES } from "@kinwoo/core/toast";
 import { CheckIcon } from "@kinwoo/icons";
 import { useRef, useState } from "react";
 import { BackButton } from "@/components/BackButton";
+import { NotificationSettingsSkeleton } from "@/components/skeleton/skeletons";
 import { Switch } from "@/components/Switch";
 import { useInstallKind } from "@/lib/install-prompt";
 import { registerBrowser, useBrowserPushState, type BrowserPushState } from "@/lib/push";
 import { cn } from "@/lib/utils";
 
+const PUSH_NOTE =
+  "These settings only control push notifications. Everything still appears in your in-app notifications.";
 function hintFor(state: BrowserPushState, iosNeedsInstall: boolean): string | null {
   if (state === "unsupported") {
     return iosNeedsInstall
@@ -31,7 +34,16 @@ export function NotificationSettingsScreen() {
   // Saves run one after another so the last tap is the last write.
   const saves = useRef(Promise.resolve());
 
-  if (!profile) return null;
+  if (!profile) {
+    return (
+      <main className="px-6 pb-[calc(2.5rem+env(safe-area-inset-bottom))] pt-[calc(0.75rem+env(safe-area-inset-top))]">
+        <BackButton />
+        <h1 className="mt-6 font-display text-2xl font-medium">Notification settings</h1>
+        <p className="mt-6 text-sm text-muted-foreground">{PUSH_NOTE}</p>
+        <NotificationSettingsSkeleton />
+      </main>
+    );
+  }
 
   const unsupported = pushState === "unsupported";
   const enabled = shown.enabled ?? (profile.notificationsEnabled && pushState === "granted");
@@ -84,10 +96,7 @@ export function NotificationSettingsScreen() {
       <BackButton />
       <h1 className="mt-6 font-display text-2xl font-medium">Notification settings</h1>
 
-      <p className="mt-6 text-sm text-muted-foreground">
-        These settings only control push notifications. Everything still appears in your in-app
-        notifications.
-      </p>
+      <p className="mt-6 text-sm text-muted-foreground">{PUSH_NOTE}</p>
 
       <div className="mt-6 flex h-14 items-center">
         <span className="flex-1 text-base">Push notifications</span>

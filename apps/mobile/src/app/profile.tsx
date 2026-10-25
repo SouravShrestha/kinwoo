@@ -30,6 +30,7 @@ import { Button } from "@/components/Button";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { Pressable } from "@/components/Pressable";
 import { SettingsGroup, SettingsInfoRow, SettingsRow } from "@/components/Settings";
+import { SkeletonRegion, SkeletonText } from "@/components/skeleton/Skeleton";
 import { goBack } from "@/lib/house-navigation";
 import { profileImage } from "@/lib/images";
 import { unregisterDevice } from "@/lib/push";
@@ -113,10 +114,21 @@ export default function ProfileScreen() {
         </Pressable>
 
         <View className="ml-4 flex-1">
-          <Text className="font-display text-xl text-foreground font-medium tracking-tight">
-            {profile?.displayName ?? ""}
-          </Text>
-          <Text className="mt-0.5 text-sm text-muted-foreground">{user?.email ?? ""}</Text>
+          {profile ? (
+            <>
+              <Text className="font-display text-xl text-foreground font-medium tracking-tight">
+                {profile.displayName}
+              </Text>
+              <Text className="mt-0.5 text-sm text-muted-foreground">{user?.email ?? ""}</Text>
+            </>
+          ) : (
+            <SkeletonRegion>
+              <SkeletonText size="xl" className="w-40" />
+              <View className="mt-0.5">
+                <SkeletonText size="sm" className="w-52" />
+              </View>
+            </SkeletonRegion>
+          )}
         </View>
       </View>
 

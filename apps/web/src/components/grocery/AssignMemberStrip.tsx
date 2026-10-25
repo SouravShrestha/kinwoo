@@ -3,6 +3,7 @@
 import { splitMemberName, type HouseMember } from "@kinwoo/core/houses";
 
 import { Avatar } from "@/components/houses/Avatar";
+import { MemberStripSkeleton } from "@/components/skeleton/skeletons";
 import { cn } from "@/lib/utils";
 
 export function AssignMemberStrip({
@@ -42,7 +43,9 @@ export function AssignMemberStrip({
             className,
           )}
         >
-          {isLoading ? null : members.length === 0 ? (
+          {isLoading ? (
+            <MemberStripSkeleton />
+          ) : members.length === 0 ? (
             <p className="text-center font-display text-sm font-normal text-muted-foreground">
               No other housemates yet
             </p>

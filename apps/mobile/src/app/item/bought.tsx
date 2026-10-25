@@ -37,6 +37,7 @@ import { PayerSheet } from "@/components/expenses/PayerSheet";
 import { SplitSheet } from "@/components/expenses/SplitSheet";
 import { OptionSheet, type SheetOption } from "@/components/OptionSheet";
 import { Pressable } from "@/components/Pressable";
+import { ItemFormSkeleton } from "@/components/skeleton/skeletons";
 import { goBack, goHome } from "@/lib/house-navigation";
 import { useTheme } from "@/theme/ThemeProvider";
 
@@ -143,174 +144,180 @@ export default function MarkBoughtScreen() {
             </Pressable>
           </View>
 
-          <View className="flex-1 gap-5 px-6 pb-8">
-            <View>
-              <View className="flex-row gap-3">
-                <Pressable
-                  accessibilityRole="button"
-                  accessibilityLabel={`Category: ${category?.name ?? "none"}. Change category`}
-                  accessibilityState={{ disabled: !canEdit }}
-                  disabled={!canEdit}
-                  onPress={() => openPicker("category")}
-                  allowDoublePress
-                  className="size-12 items-center justify-center rounded-xl bg-muted active:opacity-80"
-                >
-                  <ItemCategoryImage name={category?.name} size={40} />
-                </Pressable>
+          {!item ? (
+            <View className="px-6">
+              <ItemFormSkeleton variant="single" />
+            </View>
+          ) : (
+            <View className="flex-1 gap-5 px-6 pb-8">
+              <View>
+                <View className="flex-row gap-3">
+                  <Pressable
+                    accessibilityRole="button"
+                    accessibilityLabel={`Category: ${category?.name ?? "none"}. Change category`}
+                    accessibilityState={{ disabled: !canEdit }}
+                    disabled={!canEdit}
+                    onPress={() => openPicker("category")}
+                    allowDoublePress
+                    className="size-12 items-center justify-center rounded-xl bg-muted active:opacity-80"
+                  >
+                    <ItemCategoryImage name={category?.name} size={40} />
+                  </Pressable>
+                  <TextInput
+                    accessibilityLabel="Item name"
+                    accessibilityHint={form.nameError ?? undefined}
+                    editable={canEdit}
+                    autoCapitalize="sentences"
+                    autoCorrect={false}
+                    returnKeyType="done"
+                    maxLength={ITEM_NAME_MAX_LENGTH}
+                    placeholder="Item name"
+                    placeholderTextColor={palette.mutedForeground}
+                    value={form.name}
+                    onChangeText={form.setName}
+                    // No `text-*` size class: its lineHeight misaligns iOS text and caret.
+                    className="h-12 flex-1 rounded-xl bg-muted px-5 font-display-normal text-foreground"
+                    style={{ fontSize: 16, paddingVertical: 0 }}
+                  />
+                </View>
+                {form.nameError ? (
+                  <Text
+                    accessibilityLiveRegion="polite"
+                    className="mt-2 text-right font-display-normal text-sm text-destructive"
+                  >
+                    {form.nameError}
+                  </Text>
+                ) : null}
+              </View>
+
+              <View className="flex-row items-center gap-3">
                 <TextInput
-                  accessibilityLabel="Item name"
-                  accessibilityHint={form.nameError ?? undefined}
-                  editable={canEdit}
-                  autoCapitalize="sentences"
-                  autoCorrect={false}
-                  returnKeyType="done"
-                  maxLength={ITEM_NAME_MAX_LENGTH}
-                  placeholder="Item name"
+                  accessibilityLabel="Quantity"
+                  keyboardType="decimal-pad"
+                  maxLength={ITEM_QUANTITY_MAX_LENGTH}
+                  placeholder="Qty"
                   placeholderTextColor={palette.mutedForeground}
-                  value={form.name}
-                  onChangeText={form.setName}
-                  // No `text-*` size class: its lineHeight misaligns iOS text and caret.
-                  className="h-12 flex-1 rounded-xl bg-muted px-5 font-display-normal text-foreground"
+                  value={form.quantity}
+                  onChangeText={form.setQuantity}
+                  className="h-12 w-20 rounded-xl bg-muted text-center font-display-normal text-foreground"
                   style={{ fontSize: 16, paddingVertical: 0 }}
                 />
-              </View>
-              {form.nameError ? (
-                <Text
-                  accessibilityLiveRegion="polite"
-                  className="mt-2 text-right font-display-normal text-sm text-destructive"
-                >
-                  {form.nameError}
-                </Text>
-              ) : null}
-            </View>
-
-            <View className="flex-row items-center gap-3">
-              <TextInput
-                accessibilityLabel="Quantity"
-                keyboardType="decimal-pad"
-                maxLength={ITEM_QUANTITY_MAX_LENGTH}
-                placeholder="Qty"
-                placeholderTextColor={palette.mutedForeground}
-                value={form.quantity}
-                onChangeText={form.setQuantity}
-                className="h-12 w-20 rounded-xl bg-muted text-center font-display-normal text-foreground"
-                style={{ fontSize: 16, paddingVertical: 0 }}
-              />
-              <Pressable
-                accessibilityRole="button"
-                accessibilityLabel={`Unit: ${form.unit ?? "none"}. Change unit`}
-                onPress={() => openPicker("unit")}
-                allowDoublePress
-                className={`${FIELD} w-20 justify-between pl-5 pr-3.5 active:opacity-80`}
-              >
-                <Text
-                  className={`font-display-normal text-base ${
-                    form.unit ? "text-foreground" : "text-muted-foreground"
-                  }`}
-                >
-                  {form.unit ?? "Unit"}
-                </Text>
-                <CaretDownIcon size={9} color={palette.foreground} />
-              </Pressable>
-              <Pressable
-                accessibilityRole="button"
-                accessibilityLabel={`Date bought: ${dateLabel}. Change date`}
-                onPress={() => openPicker("date")}
-                allowDoublePress
-                className={`${FIELD} min-w-0 flex-1 gap-2 px-3.5 active:opacity-80`}
-              >
-                <CalendarIcon size={16} color={palette.foreground} />
-                <Text className="font-display-normal text-base text-foreground">{dateLabel}</Text>
-              </Pressable>
-            </View>
-
-            <View className="my-3">
-              <View className="flex-row items-center gap-3 border-b border-border pb-1">
-                <RupeeIcon size={28} color={palette.foreground} />
-                <TextInput
-                  autoFocus
-                  accessibilityLabel="Amount paid"
-                  accessibilityHint={form.priceError ?? undefined}
-                  keyboardType="decimal-pad"
-                  placeholder="0.00"
-                  placeholderTextColor={palette.mutedForeground}
-                  value={form.price}
-                  onChangeText={form.setPrice}
-                  className="h-14 min-w-0 flex-1 font-display-medium text-foreground"
-                  style={{ fontSize: 34, lineHeight: 44, paddingVertical: 0 }}
-                />
-              </View>
-              {form.priceError ? (
-                <Text
-                  accessibilityLiveRegion="polite"
-                  className="mt-2 font-display-normal text-sm text-destructive"
-                >
-                  {form.priceError}
-                </Text>
-              ) : null}
-            </View>
-
-            {showSplit ? (
-              <Animated.View entering={SPLIT_ENTERING} exiting={SPLIT_EXITING} className="gap-4">
                 <Pressable
-                  accessibilityRole="checkbox"
-                  accessibilityState={{ checked: split }}
-                  accessibilityLabel="I want to split expenses"
-                  onPress={() => setSplit((value) => !value)}
+                  accessibilityRole="button"
+                  accessibilityLabel={`Unit: ${form.unit ?? "none"}. Change unit`}
+                  onPress={() => openPicker("unit")}
                   allowDoublePress
-                  className="flex-row items-center gap-3 self-start"
+                  className={`${FIELD} w-20 justify-between pl-5 pr-3.5 active:opacity-80`}
                 >
-                  <View
-                    className={`size-5 items-center justify-center rounded-md ${
-                      split ? "bg-foreground" : "border border-border"
+                  <Text
+                    className={`font-display-normal text-base ${
+                      form.unit ? "text-foreground" : "text-muted-foreground"
                     }`}
                   >
-                    {split ? <CheckIcon size={10} color={palette.background} /> : null}
-                  </View>
-                  <Text className="font-display-normal text-base text-foreground">
-                    I want to split expenses
+                    {form.unit ?? "Unit"}
                   </Text>
+                  <CaretDownIcon size={9} color={palette.foreground} />
                 </Pressable>
+                <Pressable
+                  accessibilityRole="button"
+                  accessibilityLabel={`Date bought: ${dateLabel}. Change date`}
+                  onPress={() => openPicker("date")}
+                  allowDoublePress
+                  className={`${FIELD} min-w-0 flex-1 gap-2 px-3.5 active:opacity-80`}
+                >
+                  <CalendarIcon size={16} color={palette.foreground} />
+                  <Text className="font-display-normal text-base text-foreground">{dateLabel}</Text>
+                </Pressable>
+              </View>
 
-                {split ? (
-                  <Animated.View
-                    entering={SPLIT_ENTERING}
-                    exiting={SPLIT_EXITING}
-                    className="flex-row flex-wrap items-center gap-x-2 gap-y-3"
+              <View className="my-3">
+                <View className="flex-row items-center gap-3 border-b border-border pb-1">
+                  <RupeeIcon size={28} color={palette.foreground} />
+                  <TextInput
+                    autoFocus
+                    accessibilityLabel="Amount paid"
+                    accessibilityHint={form.priceError ?? undefined}
+                    keyboardType="decimal-pad"
+                    placeholder="0.00"
+                    placeholderTextColor={palette.mutedForeground}
+                    value={form.price}
+                    onChangeText={form.setPrice}
+                    className="h-14 min-w-0 flex-1 font-display-medium text-foreground"
+                    style={{ fontSize: 34, lineHeight: 44, paddingVertical: 0 }}
+                  />
+                </View>
+                {form.priceError ? (
+                  <Text
+                    accessibilityLiveRegion="polite"
+                    className="mt-2 font-display-normal text-sm text-destructive"
                   >
-                    <Text className="font-display-normal text-base text-muted-foreground">
-                      Paid by
-                    </Text>
-                    <Pressable
-                      accessibilityRole="button"
-                      accessibilityLabel={`Paid by ${payers.label}. Change who paid`}
-                      onPress={() => openPicker("payers")}
-                      allowDoublePress
-                      className="rounded-lg bg-muted px-3.5 py-1.5 active:opacity-80"
-                    >
-                      <Text className="font-display-medium text-base text-foreground">
-                        {payers.label}
-                      </Text>
-                    </Pressable>
-                    <Text className="font-display-normal text-base text-muted-foreground">
-                      and split
-                    </Text>
-                    <Pressable
-                      accessibilityRole="button"
-                      accessibilityLabel={`Split ${expenseSplit.label.toLowerCase()}. Change how it is split`}
-                      onPress={() => openPicker("split")}
-                      allowDoublePress
-                      className="rounded-lg bg-muted px-3.5 py-1.5 active:opacity-80"
-                    >
-                      <Text className="font-display-medium text-base text-foreground">
-                        {expenseSplit.label}
-                      </Text>
-                    </Pressable>
-                  </Animated.View>
+                    {form.priceError}
+                  </Text>
                 ) : null}
-              </Animated.View>
-            ) : null}
-          </View>
+              </View>
+
+              {showSplit ? (
+                <Animated.View entering={SPLIT_ENTERING} exiting={SPLIT_EXITING} className="gap-4">
+                  <Pressable
+                    accessibilityRole="checkbox"
+                    accessibilityState={{ checked: split }}
+                    accessibilityLabel="I want to split expenses"
+                    onPress={() => setSplit((value) => !value)}
+                    allowDoublePress
+                    className="flex-row items-center gap-3 self-start"
+                  >
+                    <View
+                      className={`size-5 items-center justify-center rounded-md ${
+                        split ? "bg-foreground" : "border border-border"
+                      }`}
+                    >
+                      {split ? <CheckIcon size={10} color={palette.background} /> : null}
+                    </View>
+                    <Text className="font-display-normal text-base text-foreground">
+                      I want to split expenses
+                    </Text>
+                  </Pressable>
+
+                  {split ? (
+                    <Animated.View
+                      entering={SPLIT_ENTERING}
+                      exiting={SPLIT_EXITING}
+                      className="flex-row flex-wrap items-center gap-x-2 gap-y-3"
+                    >
+                      <Text className="font-display-normal text-base text-muted-foreground">
+                        Paid by
+                      </Text>
+                      <Pressable
+                        accessibilityRole="button"
+                        accessibilityLabel={`Paid by ${payers.label}. Change who paid`}
+                        onPress={() => openPicker("payers")}
+                        allowDoublePress
+                        className="rounded-lg bg-muted px-3.5 py-1.5 active:opacity-80"
+                      >
+                        <Text className="font-display-medium text-base text-foreground">
+                          {payers.label}
+                        </Text>
+                      </Pressable>
+                      <Text className="font-display-normal text-base text-muted-foreground">
+                        and split
+                      </Text>
+                      <Pressable
+                        accessibilityRole="button"
+                        accessibilityLabel={`Split ${expenseSplit.label.toLowerCase()}. Change how it is split`}
+                        onPress={() => openPicker("split")}
+                        allowDoublePress
+                        className="rounded-lg bg-muted px-3.5 py-1.5 active:opacity-80"
+                      >
+                        <Text className="font-display-medium text-base text-foreground">
+                          {expenseSplit.label}
+                        </Text>
+                      </Pressable>
+                    </Animated.View>
+                  ) : null}
+                </Animated.View>
+              ) : null}
+            </View>
+          )}
         </View>
       </TouchableWithoutFeedback>
 

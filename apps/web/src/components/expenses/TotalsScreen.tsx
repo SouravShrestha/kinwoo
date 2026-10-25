@@ -16,6 +16,7 @@ import { formatPaise } from "@kinwoo/core/grocery";
 import { ArrowRightIcon } from "@kinwoo/icons";
 import { useEffect, useId, useRef, useState, type AnimationEvent } from "react";
 
+import { TotalsSkeleton } from "@/components/skeleton/skeletons";
 import { useHouseNavigation } from "@/lib/house-navigation";
 import { useSwipeToClose } from "@/lib/use-swipe-to-close";
 import { cn } from "@/lib/utils";
@@ -196,7 +197,9 @@ function TotalsBody({ houseId }: { houseId: string }) {
             </div>
           </div>
         </>
-      ) : null}
+      ) : (
+        <TotalsSkeleton />
+      )}
     </>
   );
 }

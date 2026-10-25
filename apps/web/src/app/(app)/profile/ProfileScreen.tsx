@@ -40,6 +40,7 @@ import {
   SettingsInfoRow,
   SettingsLinkRow,
 } from "@/components/Settings";
+import { SkeletonRegion, SkeletonText } from "@/components/skeleton/Skeleton";
 import { unregisterBrowser } from "@/lib/push";
 
 const THEME_LABELS: Record<string, string> = {
@@ -100,10 +101,19 @@ export function ProfileScreen() {
         </button>
 
         <div className="ml-4 min-w-0">
-          <p className="font-medium truncate text-xl tracking-tight">
-            {profile?.displayName ?? ""}
-          </p>
-          <p className="mt-0.5 truncate text-sm text-muted-foreground">{user?.email ?? ""}</p>
+          {profile ? (
+            <>
+              <p className="font-medium truncate text-xl tracking-tight">{profile.displayName}</p>
+              <p className="mt-0.5 truncate text-sm text-muted-foreground">{user?.email ?? ""}</p>
+            </>
+          ) : (
+            <SkeletonRegion className="w-56">
+              <SkeletonText size="xl" className="w-40" />
+              <div className="mt-0.5">
+                <SkeletonText size="sm" className="w-52" />
+              </div>
+            </SkeletonRegion>
+          )}
         </div>
       </div>
 

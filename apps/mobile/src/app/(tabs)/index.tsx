@@ -23,6 +23,12 @@ import { WelcomeHeader } from "@/components/home/WelcomeHeader";
 import { HouseSheet } from "@/components/houses/HouseSheet";
 import { InviteFriendsCard } from "@/components/houses/InviteFriendsCard";
 import { SetupHousePrompt } from "@/components/houses/SetupHousePrompt";
+import {
+  BalanceCardSkeleton,
+  HouseHeaderSkeleton,
+  ItemCarouselSkeleton,
+  QuickAddBarSkeleton,
+} from "@/components/skeleton/skeletons";
 
 export default function HomeScreen() {
   const insets = useSafeAreaInsets();
@@ -40,7 +46,7 @@ export default function HomeScreen() {
   const showWelcome = ready && !house && !hasLoadError;
   const greeting = homeGreeting(profile?.displayName);
 
-  const { data: overview } = useGroceryOverview(house?.id ?? null);
+  const { data: overview, isPending: overviewPending } = useGroceryOverview(house?.id ?? null);
   const todayItems = overview?.todayItems ?? [];
   const mineItems = overview?.myToBuy ?? [];
   const mineFirst = mineItems.length > 0 && todayItems.length === 0;
@@ -60,7 +66,11 @@ export default function HomeScreen() {
       onItemPress={setSelectedItem}
     />
   );
-  const { data: balances } = useHouseBalances(house?.id ?? null, house?.simplifyDebts ?? false);
+  const { data: balances, isPending: balancesPending } = useHouseBalances(
+    house?.id ?? null,
+    house?.simplifyDebts ?? false,
+  );
+  const balanceLoading = members.isPending || (!isOnlyMember && balancesPending);
 
   useBusyWhile(!ready);
 
@@ -74,7 +84,9 @@ export default function HomeScreen() {
           className="flex-row items-center justify-between px-6 pb-6"
           style={{ paddingTop: insets.top + 12 }}
         >
-          {!ready ? null : showWelcome ? (
+          {!ready ? (
+            <HouseHeaderSkeleton />
+          ) : showWelcome ? (
             <WelcomeHeader salutation={greeting.salutation} message={greeting.message} />
           ) : (
             <HouseHeader
@@ -87,7 +99,17 @@ export default function HomeScreen() {
         </View>
 
         <View className="flex-1">
-          {!ready ? null : hasLoadError ? (
+          {!ready ? (
+            <View className="gap-5 px-6 pt-4">
+              <BalanceCardSkeleton />
+              <ShortcutCards />
+              <QuickAddBarSkeleton />
+              <View className="mb-8 mt-3 gap-10">
+                <ItemCarouselSkeleton />
+                <ItemCarouselSkeleton />
+              </View>
+            </View>
+          ) : hasLoadError ? (
             <View className="flex-1 items-center px-6 pt-5">
               <HomeLoadError onRetry={() => void refetchHouses()} />
             </View>
@@ -107,7 +129,11 @@ export default function HomeScreen() {
                 />
               ) : null}
 
-              {!isOnlyMember && balances ? <BalanceCard balances={balances} /> : null}
+              {balanceLoading ? (
+                <BalanceCardSkeleton />
+              ) : !isOnlyMember && balances ? (
+                <BalanceCard balances={balances} />
+              ) : null}
 
               <ShortcutCards />
 
@@ -117,7 +143,16 @@ export default function HomeScreen() {
               />
 
               <View className="mb-8 mt-3 gap-10">
-                {mineFirst ? [mineRow, todayRow] : [todayRow, mineRow]}
+                {overviewPending ? (
+                  <>
+                    <ItemCarouselSkeleton />
+                    <ItemCarouselSkeleton />
+                  </>
+                ) : mineFirst ? (
+                  [mineRow, todayRow]
+                ) : (
+                  [todayRow, mineRow]
+                )}
               </View>
             </View>
           )}

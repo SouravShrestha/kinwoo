@@ -18,6 +18,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ExpandCaret, useExpandProgress } from "@/components/grocery/AssignMemberStrip";
 import { Avatar } from "@/components/houses/Avatar";
 import { Pressable } from "@/components/Pressable";
+import { MemberBalanceRowsSkeleton } from "@/components/skeleton/skeletons";
 import { SwipeDownScreen } from "@/components/SwipeDownScreen";
 import { goBack, openRecordPayment } from "@/lib/house-navigation";
 import { useSwipeDownToDismiss } from "@/lib/use-swipe-down-to-dismiss";
@@ -227,7 +228,9 @@ export function MemberBalances({ houseId }: { houseId: string }) {
                 <MemberRow key={row.member.userId} row={row} houseName={activeHouse.house.name} />
               ))}
             </View>
-          ) : null}
+          ) : (
+            <MemberBalanceRowsSkeleton />
+          )}
         </Animated.ScrollView>
       </GestureDetector>
     </SwipeDownScreen>

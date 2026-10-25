@@ -13,6 +13,11 @@ import { useMemo, useState } from "react";
 import { BoughtGroupSheet } from "@/components/grocery/BoughtGroupSheet";
 import { ItemDetailSheet } from "@/components/grocery/ItemDetailSheet";
 
+import {
+  ExpenseRowsSkeleton,
+  PrivateSpendingHeaderSkeleton,
+} from "@/components/skeleton/skeletons";
+
 import { PrivatePurchaseRow } from "./PrivatePurchaseRow";
 
 export function PrivateSpending({ houseId }: { houseId: string }) {
@@ -37,7 +42,14 @@ export function PrivateSpending({ houseId }: { houseId: string }) {
     }
   };
 
-  if (items === undefined) return null;
+  if (items === undefined) {
+    return (
+      <>
+        <PrivateSpendingHeaderSkeleton />
+        <ExpenseRowsSkeleton count={4} />
+      </>
+    );
+  }
 
   return (
     <>

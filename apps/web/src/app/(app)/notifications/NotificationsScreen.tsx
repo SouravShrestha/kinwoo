@@ -21,6 +21,7 @@ import { useCallback } from "react";
 import { ActivityList } from "@/components/activity/ActivityList";
 import { BackButton } from "@/components/BackButton";
 import { EmptyItems } from "@/components/grocery/EmptyItems";
+import { ActivityRowsSkeleton } from "@/components/skeleton/skeletons";
 import { expensePath, paymentPath } from "@/lib/house-navigation";
 
 export function NotificationsScreen() {
@@ -75,7 +76,9 @@ export function NotificationsScreen() {
       </div>
 
       <div className="flex flex-1 flex-col">
-        {isLoading ? null : !entries?.length ? (
+        {isLoading ? (
+          <ActivityRowsSkeleton />
+        ) : !entries?.length ? (
           <EmptyItems
             image="notifications"
             title="No notification yet"

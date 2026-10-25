@@ -61,6 +61,8 @@ import { ListSwitcherSheet } from "@/components/grocery/ListSwitcherSheet";
 import { PendingItemCard } from "@/components/grocery/PendingItemCard";
 import { PendingSelectionBar } from "@/components/grocery/PendingSelectionBar";
 import { SetupHousePrompt } from "@/components/houses/SetupHousePrompt";
+import { SkeletonText } from "@/components/skeleton/Skeleton";
+import { ItemGridSkeleton } from "@/components/skeleton/skeletons";
 import { batchMarkBoughtPath, markBoughtPath } from "@/lib/house-navigation";
 import { houseStorage } from "@/lib/house-storage";
 import { cn } from "@/lib/utils";
@@ -304,7 +306,8 @@ export function TasksScreen({ view }: { view: TasksView | null }) {
             </span>
           ) : null}
           <span className="truncate font-display text-xl font-medium">
-            {activeList?.name ?? "Groceries"}
+            {activeList?.name ??
+              (lists ? "Groceries" : <SkeletonText size="xl" className="w-32" />)}
           </span>
           <CaretDownIcon size={9} className="shrink-0" />
         </button>
@@ -340,7 +343,7 @@ export function TasksScreen({ view }: { view: TasksView | null }) {
           />
         }
         renderPage={(key) => {
-          if (!itemsLoaded) return null;
+          if (!itemsLoaded) return <ItemGridSkeleton />;
           const pageItems = visibleByTab[key];
           if (pageItems.length === 0) {
             const empty = (
@@ -487,6 +490,11 @@ export function TasksScreen({ view }: { view: TasksView | null }) {
                   );
                 })}
               </ul>
+              {history.loadingOlder ? (
+                <div className="mt-3">
+                  <ItemGridSkeleton count={2} withHeader={false} />
+                </div>
+              ) : null}
               {olderSentinel}
             </>
           );

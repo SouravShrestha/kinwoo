@@ -14,6 +14,7 @@ import { TOAST_MESSAGES } from "@kinwoo/core/toast";
 import { HousePinIcon, HouseSettingsIcon, InviteIcon, MemberIcon } from "@kinwoo/icons";
 import { useRouter } from "next/navigation";
 
+import { Skeleton } from "@/components/skeleton/Skeleton";
 import { Button } from "../Button";
 import { AvatarStack } from "./AvatarStack";
 import { MenuCard } from "./MenuCard";
@@ -90,7 +91,9 @@ export function HouseMenuView({
                   avatarUrl: member.avatarUrl,
                 }))}
               />
-            ) : undefined
+            ) : (
+              <Skeleton className="h-8 w-20 rounded-full" />
+            )
           }
           caption={members.data ? memberCountLabel(members.data.length) : undefined}
           title={MEMBERS_SHEET_TITLE}

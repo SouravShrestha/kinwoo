@@ -178,6 +178,32 @@
   animation: kinwoo-full-turn 1s infinite steps(12);
 }
 
+@keyframes kinwoo-shimmer {
+  to {
+    transform: translateX(100%);
+  }
+}
+
+@utility skeleton {
+  position: relative;
+  overflow: hidden;
+  background-color: var(--border);
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background-image: linear-gradient(
+      90deg,
+      transparent,
+      color-mix(in srgb, var(--foreground) 6%, transparent),
+      transparent
+    );
+    animation: kinwoo-shimmer 1.4s ease-in-out infinite;
+  }
+}
+
 @utility sheet-backdrop-in {
   animation: kinwoo-fade-in 200ms ease-out both;
 }
@@ -310,5 +336,9 @@
   .tab-icon-deactivate,
   .pop-in {
     animation-duration: 1ms;
+  }
+
+  .skeleton::after {
+    animation: none;
   }
 }

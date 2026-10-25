@@ -12,6 +12,7 @@ import { useState } from "react";
 
 import { Avatar } from "@/components/houses/Avatar";
 import { recordPaymentPath } from "@/lib/house-navigation";
+import { MemberBalanceRowsSkeleton } from "@/components/skeleton/skeletons";
 import { shareOrCopy } from "@/lib/share-text";
 import { cn } from "@/lib/utils";
 
@@ -167,7 +168,7 @@ function MemberRow({ row, houseName }: { row: MemberBalanceRow; houseName: strin
 export function MemberBalances({ houseId }: { houseId: string }) {
   const { data: rows } = useMemberBalances(houseId);
   const { activeHouse } = useActiveHouse();
-  if (!rows || !activeHouse) return null;
+  if (!rows || !activeHouse) return <MemberBalanceRowsSkeleton />;
   return (
     <ul className="mt-10">
       {rows.map((row) => (

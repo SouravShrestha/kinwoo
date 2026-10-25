@@ -10,6 +10,8 @@ import { Linking, ScrollView, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Pressable } from "@/components/Pressable";
+import { Skeleton } from "@/components/skeleton/Skeleton";
+import { NotificationSettingsSkeleton } from "@/components/skeleton/skeletons";
 import { Switch } from "@/components/Switch";
 import { goBack } from "@/lib/house-navigation";
 import { registerDevice } from "@/lib/push";
@@ -17,6 +19,8 @@ import { useTheme } from "@/theme/ThemeProvider";
 
 export const unstable_settings = { title: "Notifications" };
 
+const PUSH_NOTE =
+  "These settings only control push notifications. Everything still appears in your in-app notifications.";
 export default function NotificationsScreen() {
   const { profile, setPreferences } = useProfile();
   const { activeHouse } = useActiveHouse();
@@ -27,8 +31,18 @@ export default function NotificationsScreen() {
   // Saves run one after another so the last tap is the last write.
   const saves = useRef(Promise.resolve());
 
-  if (!profile) return null;
-
+  if (!profile) {
+    return (
+      <View className="flex-1 bg-background px-6" style={{ paddingTop: insets.top + 20 }}>
+        <Skeleton className="size-10 rounded-lg" />
+        <Text className="mt-6 font-display-medium text-2xl text-foreground">
+          Notification settings
+        </Text>
+        <Text className="mt-6 text-sm text-muted-foreground">{PUSH_NOTE}</Text>
+        <NotificationSettingsSkeleton />
+      </View>
+    );
+  }
   const enabled = shown.enabled ?? profile.notificationsEnabled;
   const muted = shown.muted ?? profile.mutedPushTypes;
 
@@ -96,10 +110,7 @@ export default function NotificationsScreen() {
         Notification settings
       </Text>
 
-      <Text className="mt-6 text-sm text-muted-foreground">
-        These settings only control push notifications. Everything still appears in your in-app
-        notifications.
-      </Text>
+      <Text className="mt-6 text-sm text-muted-foreground">{PUSH_NOTE}</Text>
 
       <View className="mt-6 h-14 flex-row items-center">
         <Text className="flex-1 text-base text-foreground">Push notifications</Text>

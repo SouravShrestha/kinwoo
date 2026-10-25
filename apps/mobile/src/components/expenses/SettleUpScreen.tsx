@@ -13,6 +13,8 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Avatar } from "@/components/houses/Avatar";
 import { Pressable } from "@/components/Pressable";
+
+import { SettleUpSkeleton } from "@/components/skeleton/skeletons";
 import { SwipeDownScreen } from "@/components/SwipeDownScreen";
 import { goBack, openRecordPayment } from "@/lib/house-navigation";
 import { useSwipeDownToDismiss } from "@/lib/use-swipe-down-to-dismiss";
@@ -122,7 +124,9 @@ export function SettleUpScreen({
                 })}
               </View>
             </>
-          ) : null}
+          ) : (
+            <SettleUpSkeleton />
+          )}
         </Animated.ScrollView>
       </GestureDetector>
     </SwipeDownScreen>

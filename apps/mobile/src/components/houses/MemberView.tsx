@@ -10,6 +10,7 @@ import {
 import { Text, View } from "react-native";
 
 import { Button } from "../Button";
+import { Skeleton, SkeletonRegion, SkeletonText } from "@/components/skeleton/Skeleton";
 import { Avatar } from "./Avatar";
 import { LeaveAction } from "./LeaveAction";
 import { ErrorText } from "./Rows";
@@ -33,7 +34,22 @@ export function MemberView({
   const list = members.data ?? [];
   const member = list.find((entry) => entry.userId === userId);
 
-  if (members.isPending) return <SheetHeader onBack={onBack} />;
+  if (members.isPending) {
+    return (
+      <View>
+        <SheetHeader onBack={onBack} />
+        <SkeletonRegion className={`flex-row items-start gap-4 ${onBack ? "mt-6" : "mt-16"}`}>
+          <Skeleton className="size-16 rounded-full" />
+          <View className="flex-1">
+            <SkeletonText size="xl" className="w-2/5" />
+            <View className="mt-0.5">
+              <SkeletonText size="sm" className="w-3/5" />
+            </View>
+          </View>
+        </SkeletonRegion>
+      </View>
+    );
+  }
 
   if (!member) {
     return (

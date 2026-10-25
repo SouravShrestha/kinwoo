@@ -23,6 +23,7 @@ import { PayerSheet } from "@/components/expenses/PayerSheet";
 import { ItemCategoryImage } from "@/components/grocery/ItemCategoryImage";
 import { SplitSheet } from "@/components/expenses/SplitSheet";
 import { Pressable } from "@/components/Pressable";
+import { ItemFormSkeleton } from "@/components/skeleton/skeletons";
 import { SwipeDownScreen } from "@/components/SwipeDownScreen";
 import { goBack, goHome } from "@/lib/house-navigation";
 import { useFocusedInputAboveKeyboard } from "@/lib/use-focused-input-above-keyboard";
@@ -148,202 +149,211 @@ export default function BatchMarkBoughtScreen() {
                 <CheckCircleIcon size={26} color={palette.foreground} />
               </Pressable>
             </View>
-
-            <View>
-              <View className="flex-row gap-3">
-                <View
-                  accessibilityElementsHidden
-                  importantForAccessibility="no-hide-descendants"
-                  className="size-12 items-center justify-center rounded-xl bg-muted"
-                >
-                  <BasketIcon size={24} color={palette.foreground} />
-                </View>
-                <TextInput
-                  accessibilityLabel="Group name (optional)"
-                  accessibilityHint={form.nameError ?? undefined}
-                  autoCapitalize="sentences"
-                  autoCorrect={false}
-                  returnKeyType="done"
-                  maxLength={BATCH_NAME_MAX_LENGTH}
-                  placeholder="Group name"
-                  placeholderTextColor={palette.mutedForeground}
-                  onFocus={revealFocusedInput}
-                  value={form.name}
-                  onChangeText={form.setName}
-                  // No `text-*` size class: its lineHeight misaligns iOS text and caret.
-                  className="h-12 flex-1 rounded-xl bg-muted px-5 font-display-normal text-foreground"
-                  style={{ fontSize: 16, paddingVertical: 0 }}
-                />
-              </View>
-              {form.nameError ? (
-                <Text
-                  accessibilityLiveRegion="polite"
-                  className="mt-2 text-right font-display-normal text-sm text-destructive"
-                >
-                  {form.nameError}
-                </Text>
-              ) : null}
-            </View>
-
-            <View className="my-3">
-              <View className="flex-row items-center gap-3 border-b border-border pb-1">
-                <RupeeIcon size={28} color={palette.foreground} />
-                <TextInput
-                  autoFocus
-                  accessibilityLabel="Total paid"
-                  accessibilityHint={form.totalError ?? undefined}
-                  keyboardType="decimal-pad"
-                  placeholder="0.00"
-                  placeholderTextColor={palette.mutedForeground}
-                  onFocus={revealFocusedInput}
-                  value={form.total}
-                  onChangeText={form.setTotal}
-                  className="h-14 min-w-0 flex-1 font-display-medium text-foreground"
-                  style={{ fontSize: 34, lineHeight: 44, paddingVertical: 0 }}
-                />
-              </View>
-              {form.totalError ? (
-                <Text
-                  accessibilityLiveRegion="polite"
-                  className="mt-2 font-display-normal text-sm text-destructive"
-                >
-                  {form.totalError}
-                </Text>
-              ) : null}
-            </View>
-
-            {showSplit ? (
-              <Animated.View entering={SPLIT_ENTERING} exiting={SPLIT_EXITING} className="gap-4">
-                <Pressable
-                  accessibilityRole="checkbox"
-                  accessibilityState={{ checked: split }}
-                  accessibilityLabel="I want to split expenses"
-                  onPress={() => setSplit((value) => !value)}
-                  allowDoublePress
-                  className="flex-row items-center gap-3 self-start"
-                >
-                  <View
-                    className={`size-5 items-center justify-center rounded-md ${
-                      split ? "bg-foreground" : "border border-border"
-                    }`}
-                  >
-                    {split ? <CheckIcon size={10} color={palette.background} /> : null}
+            {!form.ready ? (
+              <ItemFormSkeleton variant="batch" />
+            ) : (
+              <>
+                <View>
+                  <View className="flex-row gap-3">
+                    <View
+                      accessibilityElementsHidden
+                      importantForAccessibility="no-hide-descendants"
+                      className="size-12 items-center justify-center rounded-xl bg-muted"
+                    >
+                      <BasketIcon size={24} color={palette.foreground} />
+                    </View>
+                    <TextInput
+                      accessibilityLabel="Group name (optional)"
+                      accessibilityHint={form.nameError ?? undefined}
+                      autoCapitalize="sentences"
+                      autoCorrect={false}
+                      returnKeyType="done"
+                      maxLength={BATCH_NAME_MAX_LENGTH}
+                      placeholder="Group name"
+                      placeholderTextColor={palette.mutedForeground}
+                      onFocus={revealFocusedInput}
+                      value={form.name}
+                      onChangeText={form.setName}
+                      // No `text-*` size class: its lineHeight misaligns iOS text and caret.
+                      className="h-12 flex-1 rounded-xl bg-muted px-5 font-display-normal text-foreground"
+                      style={{ fontSize: 16, paddingVertical: 0 }}
+                    />
                   </View>
-                  <Text className="font-display-normal text-base text-foreground">
-                    I want to split expenses
-                  </Text>
-                </Pressable>
+                  {form.nameError ? (
+                    <Text
+                      accessibilityLiveRegion="polite"
+                      className="mt-2 text-right font-display-normal text-sm text-destructive"
+                    >
+                      {form.nameError}
+                    </Text>
+                  ) : null}
+                </View>
 
-                {split ? (
+                <View className="my-3">
+                  <View className="flex-row items-center gap-3 border-b border-border pb-1">
+                    <RupeeIcon size={28} color={palette.foreground} />
+                    <TextInput
+                      autoFocus
+                      accessibilityLabel="Total paid"
+                      accessibilityHint={form.totalError ?? undefined}
+                      keyboardType="decimal-pad"
+                      placeholder="0.00"
+                      placeholderTextColor={palette.mutedForeground}
+                      onFocus={revealFocusedInput}
+                      value={form.total}
+                      onChangeText={form.setTotal}
+                      className="h-14 min-w-0 flex-1 font-display-medium text-foreground"
+                      style={{ fontSize: 34, lineHeight: 44, paddingVertical: 0 }}
+                    />
+                  </View>
+                  {form.totalError ? (
+                    <Text
+                      accessibilityLiveRegion="polite"
+                      className="mt-2 font-display-normal text-sm text-destructive"
+                    >
+                      {form.totalError}
+                    </Text>
+                  ) : null}
+                </View>
+
+                {showSplit ? (
                   <Animated.View
                     entering={SPLIT_ENTERING}
                     exiting={SPLIT_EXITING}
-                    className="flex-row flex-wrap items-center gap-x-2 gap-y-3"
+                    className="gap-4"
                   >
-                    <Text className="font-display-normal text-base text-muted-foreground">
-                      Paid by
-                    </Text>
                     <Pressable
-                      accessibilityRole="button"
-                      accessibilityLabel={`Paid by ${payers.label}. Change who paid`}
-                      onPress={() => openPicker("payers")}
+                      accessibilityRole="checkbox"
+                      accessibilityState={{ checked: split }}
+                      accessibilityLabel="I want to split expenses"
+                      onPress={() => setSplit((value) => !value)}
                       allowDoublePress
-                      className="rounded-lg bg-muted px-3.5 py-1.5 active:opacity-80"
+                      className="flex-row items-center gap-3 self-start"
                     >
-                      <Text className="font-display-medium text-base text-foreground">
-                        {payers.label}
+                      <View
+                        className={`size-5 items-center justify-center rounded-md ${
+                          split ? "bg-foreground" : "border border-border"
+                        }`}
+                      >
+                        {split ? <CheckIcon size={10} color={palette.background} /> : null}
+                      </View>
+                      <Text className="font-display-normal text-base text-foreground">
+                        I want to split expenses
                       </Text>
                     </Pressable>
-                    <Text className="font-display-normal text-base text-muted-foreground">
-                      and split
-                    </Text>
-                    <Pressable
-                      accessibilityRole="button"
-                      accessibilityLabel={`Split ${expenseSplit.label.toLowerCase()}. Change how it is split`}
-                      onPress={() => openPicker("split")}
-                      allowDoublePress
-                      className="rounded-lg bg-muted px-3.5 py-1.5 active:opacity-80"
-                    >
-                      <Text className="font-display-medium text-base text-foreground">
-                        {expenseSplit.label}
-                      </Text>
-                    </Pressable>
+
+                    {split ? (
+                      <Animated.View
+                        entering={SPLIT_ENTERING}
+                        exiting={SPLIT_EXITING}
+                        className="flex-row flex-wrap items-center gap-x-2 gap-y-3"
+                      >
+                        <Text className="font-display-normal text-base text-muted-foreground">
+                          Paid by
+                        </Text>
+                        <Pressable
+                          accessibilityRole="button"
+                          accessibilityLabel={`Paid by ${payers.label}. Change who paid`}
+                          onPress={() => openPicker("payers")}
+                          allowDoublePress
+                          className="rounded-lg bg-muted px-3.5 py-1.5 active:opacity-80"
+                        >
+                          <Text className="font-display-medium text-base text-foreground">
+                            {payers.label}
+                          </Text>
+                        </Pressable>
+                        <Text className="font-display-normal text-base text-muted-foreground">
+                          and split
+                        </Text>
+                        <Pressable
+                          accessibilityRole="button"
+                          accessibilityLabel={`Split ${expenseSplit.label.toLowerCase()}. Change how it is split`}
+                          onPress={() => openPicker("split")}
+                          allowDoublePress
+                          className="rounded-lg bg-muted px-3.5 py-1.5 active:opacity-80"
+                        >
+                          <Text className="font-display-medium text-base text-foreground">
+                            {expenseSplit.label}
+                          </Text>
+                        </Pressable>
+                      </Animated.View>
+                    ) : null}
                   </Animated.View>
                 ) : null}
-              </Animated.View>
-            ) : null}
 
-            {form.items.length > 0 ? (
-              <View className={"gap-7 pt-6"}>
-                <Text className="-mb-2 font-display-normal text-sm text-muted-foreground">
-                  {form.items.length} items
-                </Text>
-                {form.amountMismatch ? (
-                  <Text
-                    accessibilityLiveRegion="polite"
-                    className="-mb-2 font-display-normal text-sm text-warning"
-                  >
-                    {form.amountMismatch}
-                  </Text>
-                ) : null}
-                {form.items.map((item) => {
-                  const error = form.itemErrorOf(item.id);
-                  const detail = quantityUnit(item);
-                  return (
-                    <View key={item.id}>
-                      <View className="flex-row items-center gap-3">
-                        <View
-                          accessibilityElementsHidden
-                          importantForAccessibility="no-hide-descendants"
-                          className="size-12 items-center justify-center rounded-xl bg-muted"
-                        >
-                          <ItemCategoryImage name={item.categoryName} size={40} />
-                        </View>
-                        <View className="min-w-0 flex-1">
-                          <Text
-                            numberOfLines={1}
-                            className="font-display-normal text-base text-foreground"
-                          >
-                            {item.name}
-                          </Text>
-                          {detail ? (
-                            <Text
-                              numberOfLines={1}
-                              className="font-display-normal text-sm text-muted-foreground"
+                {form.items.length > 0 ? (
+                  <View className={"gap-7 pt-6"}>
+                    <Text className="-mb-2 font-display-normal text-sm text-muted-foreground">
+                      {form.items.length} items
+                    </Text>
+                    {form.amountMismatch ? (
+                      <Text
+                        accessibilityLiveRegion="polite"
+                        className="-mb-2 font-display-normal text-sm text-warning"
+                      >
+                        {form.amountMismatch}
+                      </Text>
+                    ) : null}
+                    {form.items.map((item) => {
+                      const error = form.itemErrorOf(item.id);
+                      const detail = quantityUnit(item);
+                      return (
+                        <View key={item.id}>
+                          <View className="flex-row items-center gap-3">
+                            <View
+                              accessibilityElementsHidden
+                              importantForAccessibility="no-hide-descendants"
+                              className="size-12 items-center justify-center rounded-xl bg-muted"
                             >
-                              {detail}
+                              <ItemCategoryImage name={item.categoryName} size={40} />
+                            </View>
+                            <View className="min-w-0 flex-1">
+                              <Text
+                                numberOfLines={1}
+                                className="font-display-normal text-base text-foreground"
+                              >
+                                {item.name}
+                              </Text>
+                              {detail ? (
+                                <Text
+                                  numberOfLines={1}
+                                  className="font-display-normal text-sm text-muted-foreground"
+                                >
+                                  {detail}
+                                </Text>
+                              ) : null}
+                            </View>
+                            <View className={`${FIELD} w-28 gap-1.5 px-3`}>
+                              <RupeeIcon size={14} color={palette.mutedForeground} />
+                              <TextInput
+                                accessibilityLabel={`Amount for ${item.name}`}
+                                accessibilityHint={error ?? undefined}
+                                keyboardType="decimal-pad"
+                                placeholder="0.00"
+                                placeholderTextColor={palette.mutedForeground}
+                                onFocus={revealFocusedInput}
+                                value={form.amountOf(item.id)}
+                                onChangeText={(value) => form.setAmount(item.id, value)}
+                                className="h-12 min-w-0 flex-1 text-right font-display-normal text-foreground"
+                                style={{ fontSize: 16, paddingVertical: 0 }}
+                              />
+                            </View>
+                          </View>
+                          {error ? (
+                            <Text
+                              accessibilityLiveRegion="polite"
+                              className="mt-2 text-right font-display-normal text-sm text-destructive"
+                            >
+                              {error}
                             </Text>
                           ) : null}
                         </View>
-                        <View className={`${FIELD} w-28 gap-1.5 px-3`}>
-                          <RupeeIcon size={14} color={palette.mutedForeground} />
-                          <TextInput
-                            accessibilityLabel={`Amount for ${item.name}`}
-                            accessibilityHint={error ?? undefined}
-                            keyboardType="decimal-pad"
-                            placeholder="0.00"
-                            placeholderTextColor={palette.mutedForeground}
-                            onFocus={revealFocusedInput}
-                            value={form.amountOf(item.id)}
-                            onChangeText={(value) => form.setAmount(item.id, value)}
-                            className="h-12 min-w-0 flex-1 text-right font-display-normal text-foreground"
-                            style={{ fontSize: 16, paddingVertical: 0 }}
-                          />
-                        </View>
-                      </View>
-                      {error ? (
-                        <Text
-                          accessibilityLiveRegion="polite"
-                          className="mt-2 text-right font-display-normal text-sm text-destructive"
-                        >
-                          {error}
-                        </Text>
-                      ) : null}
-                    </View>
-                  );
-                })}
-              </View>
-            ) : null}
+                      );
+                    })}
+                  </View>
+                ) : null}
+              </>
+            )}
           </Animated.ScrollView>
         </GestureDetector>
       </KeyboardAvoidingView>

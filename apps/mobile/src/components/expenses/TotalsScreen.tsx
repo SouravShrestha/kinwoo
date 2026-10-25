@@ -21,6 +21,7 @@ import Svg, { Circle, Defs, G, Line, LinearGradient, Path, Stop } from "react-na
 
 import { PeriodFilter } from "@/components/expenses/PeriodFilter";
 import { Pressable } from "@/components/Pressable";
+import { TotalsSkeleton } from "@/components/skeleton/skeletons";
 import { SwipeDownScreen } from "@/components/SwipeDownScreen";
 import { goBack } from "@/lib/house-navigation";
 import { useSwipeDownToDismiss } from "@/lib/use-swipe-down-to-dismiss";
@@ -233,7 +234,9 @@ export function TotalsScreen({ houseId }: { houseId: string }) {
                 </View>
               </View>
             </>
-          ) : null}
+          ) : (
+            <TotalsSkeleton />
+          )}
         </Animated.ScrollView>
       </GestureDetector>
     </SwipeDownScreen>

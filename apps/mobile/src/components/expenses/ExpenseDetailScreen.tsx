@@ -17,6 +17,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { Avatar } from "@/components/houses/Avatar";
 import { Pressable } from "@/components/Pressable";
+import { ExpenseDetailSkeleton } from "@/components/skeleton/skeletons";
 import { SwipeDownScreen } from "@/components/SwipeDownScreen";
 import { goBack, goHome, openEditExpense } from "@/lib/house-navigation";
 import { useSwipeDownToDismiss } from "@/lib/use-swipe-down-to-dismiss";
@@ -328,7 +329,9 @@ export function ExpenseDetailScreen({ expenseId }: { expenseId: string | null })
             <Text className="pt-16 text-center font-display-normal text-base text-muted-foreground">
               We couldn&apos;t find that expense. It may have been deleted.
             </Text>
-          ) : null}
+          ) : (
+            <ExpenseDetailSkeleton />
+          )}
         </Animated.ScrollView>
       </GestureDetector>
 

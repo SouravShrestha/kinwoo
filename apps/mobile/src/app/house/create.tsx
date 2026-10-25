@@ -14,6 +14,7 @@ import { Button } from "@/components/Button";
 import { Field } from "@/components/houses/Field";
 import { HouseLimitNotice } from "@/components/houses/HouseLimitNotice";
 import { HouseScreen } from "@/components/houses/HouseScreen";
+import { CreateHouseSkeleton } from "@/components/skeleton/skeletons";
 import { useTheme } from "@/theme/ThemeProvider";
 
 export default function CreateHouseScreen() {
@@ -27,7 +28,9 @@ export default function CreateHouseScreen() {
       noBack={form.blocked}
       hero={form.blocked ? undefined : { heading: HOUSE_SCREEN_TITLES.create }}
     >
-      {form.checking ? null : form.blocked ? (
+      {form.checking ? (
+        <CreateHouseSkeleton />
+      ) : form.blocked ? (
         <HouseLimitNotice message={form.blockedMessage} />
       ) : (
         <View>

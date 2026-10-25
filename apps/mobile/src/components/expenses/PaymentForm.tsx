@@ -22,6 +22,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Button } from "@/components/Button";
 import { Avatar } from "@/components/houses/Avatar";
 import { Pressable } from "@/components/Pressable";
+import { PaymentDetailSkeleton } from "@/components/skeleton/skeletons";
 import { SwipeDownScreen } from "@/components/SwipeDownScreen";
 import { goBack } from "@/lib/house-navigation";
 import { useKeyboardVisible } from "@/lib/use-keyboard-visible";
@@ -203,7 +204,9 @@ export function PaymentForm({
                 </Pressable>
               </View>
             </View>
-          ) : null}
+          ) : (
+            <PaymentDetailSkeleton />
+          )}
         </Animated.ScrollView>
       </GestureDetector>
       {data ? (

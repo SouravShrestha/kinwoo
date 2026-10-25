@@ -11,6 +11,8 @@ import Link from "next/link";
 import { useEffect, useRef, useState, type AnimationEvent } from "react";
 
 import { Avatar } from "@/components/houses/Avatar";
+
+import { SettleUpSkeleton } from "@/components/skeleton/skeletons";
 import { recordPaymentPath, useHouseNavigation } from "@/lib/house-navigation";
 import { useSwipeToClose } from "@/lib/use-swipe-to-close";
 import { cn } from "@/lib/utils";
@@ -19,7 +21,9 @@ function Balances({ houseId, simplifyDebts }: { houseId: string; simplifyDebts: 
   const { user } = useAuth();
   const { data: balances } = useHouseBalances(houseId, simplifyDebts);
   const { data: members } = useHouseMembers(houseId);
-  if (!balances || !user) return null;
+  if (!balances || !user) {
+    return <SettleUpSkeleton />;
+  }
   const pairs = unsettledPairs(balances);
 
   return (

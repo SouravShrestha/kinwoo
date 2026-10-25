@@ -17,6 +17,7 @@ import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { Avatar } from "@/components/houses/Avatar";
 import { editExpensePath, useHouseNavigation } from "@/lib/house-navigation";
 import { useSwipeToClose } from "@/lib/use-swipe-to-close";
+import { ExpenseDetailSkeleton } from "@/components/skeleton/skeletons";
 import { cn } from "@/lib/utils";
 
 const FOCUS_RING =
@@ -312,9 +313,10 @@ export function ExpenseDetailScreen({ expenseId }: { expenseId: string | null })
           <p className="pt-16 text-center font-display text-base text-muted-foreground">
             We couldn&apos;t find that expense. It may have been deleted.
           </p>
-        ) : null}
+        ) : (
+          <ExpenseDetailSkeleton />
+        )}
       </div>
-
       <ConfirmDialog
         open={confirmDelete}
         copy={CONFIRM_COPY.deleteExpense}

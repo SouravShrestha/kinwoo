@@ -27,6 +27,7 @@ import { AvatarSheet } from "@/components/AvatarSheet";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { Field } from "@/components/houses/Field";
 import { Pressable } from "@/components/Pressable";
+import { FieldSkeleton } from "@/components/skeleton/skeletons";
 import { profileImage } from "@/lib/images";
 import { useTheme } from "@/theme/ThemeProvider";
 
@@ -184,46 +185,49 @@ export default function PersonalInformationScreen() {
         </Pressable>
       </View>
 
-      <View className="mt-8 flex-row items-start gap-3">
-        <Field
-          key={editing ? "editing" : "viewing"}
-          label="Name"
-          className="flex-1"
-          value={editing ? draft : (profile?.displayName ?? "")}
-          onChangeText={(value) => {
-            setDraft(value);
-            setError(null);
-          }}
-          error={error}
-          disabled={!editing || saving}
-          autoFocus={editing}
-          maxLength={DISPLAY_NAME_MAX_LENGTH}
-          autoCapitalize="words"
-          autoCorrect={false}
-          returnKeyType="done"
-          onSubmitEditing={() => void save()}
-          placeholder="Daisy"
-        />
-        {/* Offset by the Field label (20px line + 12px margin) so the button sits beside the input. */}
-        <View className="mt-8">
-          {editing ? (
-            <IconButton
-              boxed
-              filled
-              label="Save name"
-              disabled={saving}
-              onPress={() => void save()}
-            >
-              <CheckIcon size={18} color={palette.background} />
-            </IconButton>
-          ) : (
-            <IconButton boxed label="Edit name" disabled={!profile} onPress={startEditing}>
-              <EditIcon size={18} color={palette.foreground} />
-            </IconButton>
-          )}
+      {!profile ? (
+        <FieldSkeleton className="mt-8" />
+      ) : (
+        <View className="mt-8 flex-row items-start gap-3">
+          <Field
+            key={editing ? "editing" : "viewing"}
+            label="Name"
+            className="flex-1"
+            value={editing ? draft : (profile?.displayName ?? "")}
+            onChangeText={(value) => {
+              setDraft(value);
+              setError(null);
+            }}
+            error={error}
+            disabled={!editing || saving}
+            autoFocus={editing}
+            maxLength={DISPLAY_NAME_MAX_LENGTH}
+            autoCapitalize="words"
+            autoCorrect={false}
+            returnKeyType="done"
+            onSubmitEditing={() => void save()}
+            placeholder="Daisy"
+          />
+          {/* Offset by the Field label (20px line + 12px margin) so the button sits beside the input. */}
+          <View className="mt-8">
+            {editing ? (
+              <IconButton
+                boxed
+                filled
+                label="Save name"
+                disabled={saving}
+                onPress={() => void save()}
+              >
+                <CheckIcon size={18} color={palette.background} />
+              </IconButton>
+            ) : (
+              <IconButton boxed label="Edit name" onPress={startEditing}>
+                <EditIcon size={18} color={palette.foreground} />
+              </IconButton>
+            )}
+          </View>
         </View>
-      </View>
-
+      )}
       <Field className="mt-6" label="Email" value={user?.email ?? ""} disabled />
 
       {canSignInWithGoogle ? (

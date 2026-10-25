@@ -191,6 +191,7 @@ export const ActivityList = memo(function ActivityList({
   currentUserId,
   header,
   empty,
+  footer = null,
   refreshControl,
   onEndReached,
   onOpenExpense,
@@ -202,6 +203,7 @@ export const ActivityList = memo(function ActivityList({
   currentUserId: string | null;
   header: ReactElement;
   empty: ReactElement | null;
+  footer?: ReactElement | null;
   refreshControl: ReactElement<RefreshControlProps>;
   onEndReached?: () => void;
   onOpenExpense?: (expenseId: string | null) => void;
@@ -245,6 +247,7 @@ export const ActivityList = memo(function ActivityList({
       stickySectionHeadersEnabled
       ListHeaderComponent={header}
       ListEmptyComponent={empty}
+      ListFooterComponent={footer}
       refreshControl={refreshControl}
       onEndReached={onEndReached}
       onEndReachedThreshold={END_REACHED_THRESHOLD}

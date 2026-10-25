@@ -26,6 +26,11 @@ import { PaymentRow } from "@/components/expenses/PaymentRow";
 import { EmptyItems } from "@/components/grocery/EmptyItems";
 import { SetupHousePrompt } from "@/components/houses/SetupHousePrompt";
 import {
+  BalanceSummarySkeleton,
+  ExpenseActionsSkeleton,
+  ExpenseRowsSkeleton,
+} from "@/components/skeleton/skeletons";
+import {
   expensePath,
   NEW_EXPENSE_PATH,
   paymentPath,
@@ -55,7 +60,11 @@ export function BillsScreen() {
   );
   const simplifyDebts = activeHouse?.house.simplifyDebts ?? false;
   const setSimplifyDebts = useSetSimplifyDebts(houseId ?? "");
-  const { data: balances, isPlaceholderData } = useHouseBalances(houseId, simplifyDebts);
+  const {
+    data: balances,
+    isPending: balancesPending,
+    isPlaceholderData,
+  } = useHouseBalances(houseId, simplifyDebts);
   useBusyWhile(isFetchingNextPage || isPlaceholderData);
 
   const canLoadMore = hasNextPage && !isFetchNextPageError && !isFetchingNextPage;
@@ -91,15 +100,25 @@ export function BillsScreen() {
         <div className="mt-2 px-2">
           <BalanceSummary balances={balances} />
         </div>
+      ) : balancesPending ? (
+        <div className="mt-2 px-2">
+          <BalanceSummarySkeleton />
+        </div>
       ) : null}
       {balances ? (
         <div className="mb-1 mt-8">
           <ExpenseActions />
         </div>
+      ) : balancesPending ? (
+        <div className="mb-1 mt-8">
+          <ExpenseActionsSkeleton />
+        </div>
       ) : null}
 
       <div className="mt-4">
-        {!ready || isLoading ? null : empty ? (
+        {!ready || isLoading ? (
+          <ExpenseRowsSkeleton />
+        ) : empty ? (
           <div className="py-12">
             <EmptyItems
               image="expense"
@@ -134,6 +153,7 @@ export function BillsScreen() {
                 </li>
               ))}
             </ul>
+            {isFetchingNextPage ? <ExpenseRowsSkeleton count={2} /> : null}
             <LoadMoreSentinel active={canLoadMore} onLoadMore={() => void fetchNextPage()} />
           </div>
         )}

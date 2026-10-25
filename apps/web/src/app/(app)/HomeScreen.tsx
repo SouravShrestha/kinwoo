@@ -24,6 +24,12 @@ import { WelcomeHeader } from "@/components/home/WelcomeHeader";
 import { HouseSheet } from "@/components/houses/HouseSheet";
 import { InviteFriendsCard } from "@/components/houses/InviteFriendsCard";
 import { SetupHousePrompt } from "@/components/houses/SetupHousePrompt";
+import {
+  BalanceCardSkeleton,
+  HouseHeaderSkeleton,
+  ItemCarouselSkeleton,
+  QuickAddBarSkeleton,
+} from "@/components/skeleton/skeletons";
 
 export function HomeScreen() {
   const router = useRouter();
@@ -41,7 +47,7 @@ export function HomeScreen() {
   const showWelcome = ready && !house && !hasLoadError;
   const greeting = homeGreeting(profile?.displayName);
 
-  const { data: overview } = useGroceryOverview(house?.id ?? null);
+  const { data: overview, isPending: overviewPending } = useGroceryOverview(house?.id ?? null);
   const todayItems = overview?.todayItems ?? [];
   const mineItems = overview?.myToBuy ?? [];
   const mineFirst = mineItems.length > 0 && todayItems.length === 0;
@@ -61,7 +67,11 @@ export function HomeScreen() {
       onItemPress={setSelectedItem}
     />
   );
-  const { data: balances } = useHouseBalances(house?.id ?? null, house?.simplifyDebts ?? false);
+  const { data: balances, isPending: balancesPending } = useHouseBalances(
+    house?.id ?? null,
+    house?.simplifyDebts ?? false,
+  );
+  const balanceLoading = members.isPending || (!isOnlyMember && balancesPending);
 
   useBusyWhile(!ready);
 
@@ -69,7 +79,9 @@ export function HomeScreen() {
     <main className="flex min-h-[calc(100dvh-4rem-env(safe-area-inset-bottom))] flex-col pb-6">
       <AndroidInstallBanner dismissable />
       <header className="flex items-center justify-between px-6 pb-6 pt-[calc(0.75rem+env(safe-area-inset-top))]">
-        {!ready ? null : showWelcome ? (
+        {!ready ? (
+          <HouseHeaderSkeleton />
+        ) : showWelcome ? (
           <WelcomeHeader salutation={greeting.salutation} message={greeting.message} />
         ) : (
           <HouseHeader
@@ -82,7 +94,19 @@ export function HomeScreen() {
       </header>
 
       <div className="flex flex-1 flex-col px-6 pt-4">
-        {!ready ? null : hasLoadError ? (
+        {!ready ? (
+          <div className="space-y-5">
+            <BalanceCardSkeleton />
+            <ShortcutCards />
+            <div className="mt-4">
+              <QuickAddBarSkeleton />
+            </div>
+            <div className="space-y-10 my-8">
+              <ItemCarouselSkeleton />
+              <ItemCarouselSkeleton />
+            </div>
+          </div>
+        ) : hasLoadError ? (
           <div className="flex flex-col items-center pt-8 text-center">
             <HomeLoadError onRetry={() => void refetchHouses()} />
           </div>
@@ -99,7 +123,11 @@ export function HomeScreen() {
               <InviteFriendsCard canInvite={isAdmin} onPress={() => router.push("/house/invite")} />
             ) : null}
 
-            {!isOnlyMember && balances ? <BalanceCard balances={balances} /> : null}
+            {balanceLoading ? (
+              <BalanceCardSkeleton />
+            ) : !isOnlyMember && balances ? (
+              <BalanceCard balances={balances} />
+            ) : null}
 
             <ShortcutCards />
 
@@ -109,7 +137,16 @@ export function HomeScreen() {
             />
 
             <div className="space-y-10 my-8">
-              {mineFirst ? [mineRow, todayRow] : [todayRow, mineRow]}
+              {overviewPending ? (
+                <>
+                  <ItemCarouselSkeleton />
+                  <ItemCarouselSkeleton />
+                </>
+              ) : mineFirst ? (
+                [mineRow, todayRow]
+              ) : (
+                [todayRow, mineRow]
+              )}
             </div>
           </div>
         )}

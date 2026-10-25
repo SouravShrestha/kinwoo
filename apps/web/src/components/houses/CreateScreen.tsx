@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation";
 
 import { Button } from "../Button";
 import { Field } from "./Field";
+import { CreateHouseSkeleton } from "@/components/skeleton/skeletons";
 import { HouseLimitNotice } from "./HouseLimitNotice";
 import { HouseScreen } from "./HouseScreen";
 
@@ -25,7 +26,9 @@ export function CreateScreen() {
       hiddenTitle={!form.blocked}
       noBack={form.blocked}
     >
-      {form.checking ? null : form.blocked ? (
+      {form.checking ? (
+        <CreateHouseSkeleton />
+      ) : form.blocked ? (
         <HouseLimitNotice message={form.blockedMessage} />
       ) : (
         <form

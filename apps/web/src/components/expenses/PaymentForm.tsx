@@ -19,6 +19,7 @@ import { useEffect, useRef, useState, type AnimationEvent, type ReactNode } from
 import { Button } from "@/components/Button";
 import { Avatar } from "@/components/houses/Avatar";
 import { useSwipeToClose } from "@/lib/use-swipe-to-close";
+import { PaymentDetailSkeleton } from "@/components/skeleton/skeletons";
 import { cn } from "@/lib/utils";
 
 const AVATAR = 72;
@@ -228,7 +229,9 @@ export function PaymentForm({
         </header>
         {data ? (
           <Body data={data} requireChange={requireChange} closing={closing} {...rest} />
-        ) : null}
+        ) : (
+          <PaymentDetailSkeleton />
+        )}
       </div>
       {children}
     </main>

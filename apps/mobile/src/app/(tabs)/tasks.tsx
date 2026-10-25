@@ -72,6 +72,8 @@ import {
   PendingSelectionBar,
 } from "@/components/grocery/PendingSelectionBar";
 import { Pressable } from "@/components/Pressable";
+import { SkeletonText } from "@/components/skeleton/Skeleton";
+import { ItemGridSkeleton } from "@/components/skeleton/skeletons";
 import { openBatchMarkBought, openMarkBought } from "@/lib/house-navigation";
 import { houseStorage } from "@/lib/house-storage";
 import { emptyList } from "@/lib/images";
@@ -298,7 +300,14 @@ function TasksScreen({ view }: { view: TasksView | null }) {
     (windowWidth - SCREEN_PADDING * 2 - PENDING_CARD_GAP * (PENDING_COLUMNS - 1)) / PENDING_COLUMNS;
 
   if (!ready || (listsLoading && !lists)) {
-    return <View className="flex-1 bg-background" />;
+    return (
+      <View className="flex-1 bg-background" style={{ paddingTop: insets.top + 12 }}>
+        <View className="min-h-10 justify-center px-6 pb-3">
+          <SkeletonText size="xl" className="w-32" />
+        </View>
+        <ItemGridSkeleton />
+      </View>
+    );
   }
 
   if (!activeHouse) {
@@ -388,7 +397,9 @@ function TasksScreen({ view }: { view: TasksView | null }) {
                         : insets.bottom + 88,
               }}
             >
-              {!itemsLoaded ? null : visibleByTab[key].length === 0 ? (
+              {!itemsLoaded ? (
+                <ItemGridSkeleton />
+              ) : visibleByTab[key].length === 0 ? (
                 <EmptyItems
                   image={emptyList}
                   {...groceryEmptyCopy(key, { filtering, listEmpty })}
@@ -478,46 +489,49 @@ function TasksScreen({ view }: { view: TasksView | null }) {
                   </View>
                 </View>
               ) : (
-                <View
-                  className="flex-row flex-wrap"
-                  style={{
-                    paddingHorizontal: SCREEN_PADDING,
-                    paddingTop: 8,
-                    gap: PENDING_CARD_GAP,
-                  }}
-                >
-                  {boughtEntries.map((entry) => {
-                    const buyer = entry.kind === "group" ? entry.buyer : itemBuyer(entry.item);
-                    const member = buyer ? memberById.get(buyer.userId) : undefined;
-                    const cardBuyer = buyer
-                      ? {
-                          name: member?.displayName ?? buyer.name,
-                          avatarUrl: member?.avatarUrl ?? null,
-                        }
-                      : undefined;
-                    if (entry.kind === "group") {
+                <>
+                  <View
+                    className="flex-row flex-wrap"
+                    style={{
+                      paddingHorizontal: SCREEN_PADDING,
+                      paddingTop: 8,
+                      gap: PENDING_CARD_GAP,
+                    }}
+                  >
+                    {boughtEntries.map((entry) => {
+                      const buyer = entry.kind === "group" ? entry.buyer : itemBuyer(entry.item);
+                      const member = buyer ? memberById.get(buyer.userId) : undefined;
+                      const cardBuyer = buyer
+                        ? {
+                            name: member?.displayName ?? buyer.name,
+                            avatarUrl: member?.avatarUrl ?? null,
+                          }
+                        : undefined;
+                      if (entry.kind === "group") {
+                        return (
+                          <BoughtGroupCard
+                            key={`batch:${entry.batchId}`}
+                            group={entry}
+                            buyer={cardBuyer}
+                            width={pendingCardWidth}
+                            onOpen={() => openGroup(entry.batchId)}
+                          />
+                        );
+                      }
                       return (
-                        <BoughtGroupCard
-                          key={`batch:${entry.batchId}`}
-                          group={entry}
-                          buyer={cardBuyer}
+                        <PendingItemCard
+                          key={entry.item.id}
+                          item={entry.item}
                           width={pendingCardWidth}
-                          onOpen={() => openGroup(entry.batchId)}
+                          assigneeVerb="bought by"
+                          assignee={cardBuyer}
+                          onOpen={() => openItem(entry.item)}
                         />
                       );
-                    }
-                    return (
-                      <PendingItemCard
-                        key={entry.item.id}
-                        item={entry.item}
-                        width={pendingCardWidth}
-                        assigneeVerb="bought by"
-                        assignee={cardBuyer}
-                        onOpen={() => openItem(entry.item)}
-                      />
-                    );
-                  })}
-                </View>
+                    })}
+                  </View>
+                  {history.loadingOlder ? <ItemGridSkeleton count={2} withHeader={false} /> : null}
+                </>
               )}
             </ScrollView>
             {key === "pending" && selection.count > 0 ? (

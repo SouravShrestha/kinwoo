@@ -2,6 +2,7 @@
 
 import { BottomSheet } from "@/components/BottomSheet";
 import { SheetHeader } from "@/components/houses/SheetHeader";
+import { AssignRowsSkeleton } from "@/components/skeleton/skeletons";
 
 import { useAssignToMember } from "./useAssignToMember";
 
@@ -45,6 +46,7 @@ export function AssignSheet({
       />
 
       <div className="mt-4 space-y-2">
+        {isLoading ? <AssignRowsSkeleton /> : null}
         {!isLoading && members.length === 0 ? (
           <p className="py-6 text-center font-display text-sm font-normal text-muted-foreground">
             No other housemates yet

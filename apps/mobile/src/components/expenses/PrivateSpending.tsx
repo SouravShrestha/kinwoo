@@ -17,6 +17,11 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { BoughtGroupSheet } from "@/components/grocery/BoughtGroupSheet";
 import { ItemDetailSheet } from "@/components/grocery/ItemDetailSheet";
 import { Pressable } from "@/components/Pressable";
+
+import {
+  ExpenseRowsSkeleton,
+  PrivateSpendingHeaderSkeleton,
+} from "@/components/skeleton/skeletons";
 import { SwipeDownScreen } from "@/components/SwipeDownScreen";
 import { goBack } from "@/lib/house-navigation";
 import { useSwipeDownToDismiss } from "@/lib/use-swipe-down-to-dismiss";
@@ -90,9 +95,10 @@ export function PrivateSpending({ houseId }: { houseId: string }) {
                   {PRIVATE_SPENDING_NOTE}
                 </Text>
               </View>
-            ) : null}
+            ) : (
+              <PrivateSpendingHeaderSkeleton />
+            )}
           </View>
-
           {loaded && entries.length === 0 ? (
             <View className="mx-4 mt-4 items-center gap-2 rounded-2xl border border-dashed border-border px-6 py-16">
               <Text className="font-display-medium text-base text-foreground">
@@ -104,11 +110,13 @@ export function PrivateSpending({ houseId }: { houseId: string }) {
             </View>
           ) : null}
 
-          {loaded
-            ? entries.map((spend) => (
-                <PrivatePurchaseRow key={spend.key} entry={spend} onOpen={() => open(spend)} />
-              ))
-            : null}
+          {loaded ? (
+            entries.map((spend) => (
+              <PrivatePurchaseRow key={spend.key} entry={spend} onOpen={() => open(spend)} />
+            ))
+          ) : (
+            <ExpenseRowsSkeleton count={4} />
+          )}
         </Animated.ScrollView>
       </GestureDetector>
 
