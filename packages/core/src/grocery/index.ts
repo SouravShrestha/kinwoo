@@ -15,5 +15,6 @@ export * from "./private-spending";
 export * from "./purchase-date";
 export * from "./sorting";
 export * from "./tabs";
+export * from "./tasks-view";
 export * from "./types";
 export * from "./validation";

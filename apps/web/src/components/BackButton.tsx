@@ -1,9 +1,26 @@
 "use client";
 
+import { EMBED_QUERY } from "@kinwoo/core/app";
 import { ArrowRightIcon } from "@kinwoo/icons";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 
 import { useHouseNavigation } from "@/lib/house-navigation";
+
+function HideWhenEmbedded() {
+  const [key, value] = EMBED_QUERY.split("=");
+  return useSearchParams().get(key) === value ? null : <BackButton />;
+}
+
+// The mobile app opens these pages in its in-app browser, which has its own close button;
+// Back there would only lead to the login page.
+export function PublicBackButton() {
+  return (
+    <Suspense fallback={null}>
+      <HideWhenEmbedded />
+    </Suspense>
+  );
+}
 
 export function BackButton({ href }: { href?: string }) {
   const router = useRouter();

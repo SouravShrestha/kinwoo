@@ -1,8 +1,6 @@
 import {
   JOIN_SCAN_NOT_INVITE,
-  canAddHouse,
   houseAddressErrorMessage,
-  houseErrorMessage,
   houseNameErrorMessage,
   inviteFailureCopy,
   parseInviteInput,
@@ -15,8 +13,8 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useCallback, useRef, useState } from "react";
 
 import { toast } from "../toast";
-import { useActiveHouse } from "./active-house-provider";
 import { houseErrorFromCause } from "./errors";
+import { useHouseLimit } from "./house-limit";
 import { useCreateHouse, useUpdateHouse } from "./mutations";
 import { invitePreviewOptions } from "./queries";
 
@@ -68,12 +66,11 @@ function useHouseFields(initial: InitialFields = {}) {
 export function useCreateHouseForm(onCreated: (house: House) => void) {
   const fields = useHouseFields();
   const create = useCreateHouse();
-  const { houses } = useActiveHouse();
-
-  const blocked = !canAddHouse(houses.length);
-  const blockedMessage = houseErrorMessage("HOUSE_LIMIT_REACHED");
+  const { checking, blocked, message: blockedMessage } = useHouseLimit();
+  const [creating, setCreating] = useState(false);
 
   const submit = async () => {
+    if (checking) return;
     if (blocked) {
       toast.warning(blockedMessage);
       return;
@@ -82,16 +79,18 @@ export function useCreateHouseForm(onCreated: (house: House) => void) {
     const values = fields.validate();
     if (!values) return;
 
+    setCreating(true);
     try {
       const house = await create.mutateAsync(values);
       toast.success(TOAST_MESSAGES.houseCreated);
       onCreated(house);
     } catch (cause) {
+      setCreating(false);
       toast.error(houseErrorFromCause(cause));
     }
   };
 
-  return { ...fields, submit, submitting: create.isPending, blocked, blockedMessage };
+  return { ...fields, submit, submitting: creating, checking, blocked, blockedMessage };
 }
 
 export function useHouseSettingsForm(house: House, onSaved?: () => void) {

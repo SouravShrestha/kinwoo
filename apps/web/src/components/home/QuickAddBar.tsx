@@ -1,11 +1,8 @@
 "use client";
 
 import { createListStorage, useGroceryLists } from "@kinwoo/client/grocery";
-import { listIconOption } from "@kinwoo/core/grocery";
+import { PlusCircleOutlineIcon } from "@kinwoo/icons";
 import { useEffect, useState } from "react";
-
-import { PlusCircleIcon } from "@kinwoo/icons";
-import { ListIconImage } from "@/components/CategoryImages";
 
 import { houseStorage } from "@/lib/house-storage";
 
@@ -38,25 +35,16 @@ export function QuickAddBar({
   return (
     <button
       type="button"
+      aria-label={`Add item to ${targetList?.name ?? "list"}`}
       onClick={() => {
         if (targetList) onPress(targetList.id);
       }}
-      className="flex w-full items-center justify-between rounded-2xl border border-border bg-muted/60 px-4 py-3.5 text-left transition-colors hover:bg-muted hover:cursor-pointer"
+      className="flex w-full items-center gap-2.5 rounded-full border border-border bg-muted/60 px-4 py-3.5 text-left transition-colors hover:bg-muted hover:cursor-pointer mt-4"
     >
-      <div className="flex items-center gap-2.5">
-        <PlusCircleIcon size={24} className="shrink-0 text-primary" />
-        <span className="font-display text-base font-normal text-muted-foreground">
-          Add an item...
-        </span>
-      </div>
-      {targetList ? (
-        <div className="flex items-center gap-1.5 rounded-full border border-border/60 bg-background px-2.5 py-1">
-          <ListIconImage label={listIconOption(targetList.icon).label} size={22} />
-          <span className="max-w-[120px] truncate text-xs font-display font-medium text-foreground">
-            {targetList.name}
-          </span>
-        </div>
-      ) : null}
+      <PlusCircleOutlineIcon size={24} className="shrink-0 text-muted-foreground" />
+      <span className="font-display text-base font-normal text-muted-foreground">
+        Add a new item
+      </span>
     </button>
   );
 }

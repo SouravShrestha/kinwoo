@@ -8,27 +8,25 @@ import {
   HOUSE_SCREEN_TITLES,
 } from "@kinwoo/core/houses";
 import { HousePinIcon } from "@kinwoo/icons";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
-
-import { useHouseNavigation } from "@/lib/house-navigation";
 
 import { Button } from "../Button";
 import { Field } from "./Field";
+import { HouseLimitNotice } from "./HouseLimitNotice";
 import { HouseScreen } from "./HouseScreen";
 
 export function CreateScreen() {
   const router = useRouter();
-  const { goBack } = useHouseNavigation();
   const form = useCreateHouseForm(() => router.replace("/house/invite"));
 
   return (
-    <HouseScreen title={HOUSE_SCREEN_TITLES.create} hiddenTitle={!form.blocked}>
-      {form.blocked ? (
-        <div>
-          <p className="text-base text-muted-foreground">{form.blockedMessage}</p>
-          <Button className="mt-6" variant="outline" label="Back" onClick={goBack} />
-        </div>
+    <HouseScreen
+      title={HOUSE_SCREEN_TITLES.create}
+      hiddenTitle={!form.blocked}
+      noBack={form.blocked}
+    >
+      {form.checking ? null : form.blocked ? (
+        <HouseLimitNotice message={form.blockedMessage} />
       ) : (
         <form
           onSubmit={(event) => {
@@ -36,20 +34,9 @@ export function CreateScreen() {
             void form.submit();
           }}
         >
-          {/* The artwork is white linework; inverted in light mode so it stays visible. */}
-          <Image
-            src="/images/build-your-house.webp"
-            alt=""
-            width={512}
-            height={311}
-            priority
-            className="mx-auto h-36 w-auto invert dark:invert-0"
-          />
-          <h2 className="mb-3 mt-10 font-display text-3xl font-medium">
-            {HOUSE_SCREEN_TITLES.create}
-          </h2>
+          <h2 className="mb-2 font-display text-3xl font-medium">{HOUSE_SCREEN_TITLES.create}</h2>
 
-          <p className="mb-8 font-display text-sm font-normal text-muted-foreground">
+          <p className="mb-10 font-display text-sm font-normal text-muted-foreground">
             {CREATE_HOUSE_SUBTITLE}
           </p>
 

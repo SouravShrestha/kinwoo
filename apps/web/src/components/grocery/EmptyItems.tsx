@@ -20,7 +20,7 @@ export function EmptyItems({
   children?: ReactNode;
 }) {
   return (
-    <div className="flex h-full flex-col items-center justify-center px-6 text-center font-display font-normal">
+    <div className="flex h-full flex-1 flex-col items-center justify-center px-6 text-center font-display font-normal">
       <Image {...EMPTY_IMAGES[image]} alt="" className="size-40 object-contain" />
       <p className="mt-3 text-base text-foreground">{title}</p>
       {hint ? <p className="mt-2 text-base text-muted-foreground">{hint}</p> : null}

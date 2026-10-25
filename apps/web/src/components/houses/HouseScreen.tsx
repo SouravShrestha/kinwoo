@@ -14,12 +14,14 @@ export function HouseScreen({
   title,
   dismissible = false,
   hiddenTitle = false,
+  noBack = false,
   children,
 }: {
   title: string;
   // Presents the screen as a sheet that slides up on open and down on close.
   dismissible?: boolean;
   hiddenTitle?: boolean;
+  noBack?: boolean;
   children: ReactNode;
 }) {
   const { goBack } = useHouseNavigation();
@@ -43,13 +45,16 @@ export function HouseScreen({
     >
       <header
         className={cn(
-          "flex items-center gap-2 px-5 pb-4",
-          dismissible
-            ? "pt-[calc(1.25rem+env(safe-area-inset-top))]"
-            : "pt-[calc(0.75rem+env(safe-area-inset-top))]",
+          "flex items-center gap-2 pb-4",
+          noBack ? "px-6" : "px-5",
+          noBack
+            ? "pt-[calc(2.5rem+env(safe-area-inset-top))]"
+            : dismissible
+              ? "pt-[calc(1.25rem+env(safe-area-inset-top))]"
+              : "pt-[calc(0.75rem+env(safe-area-inset-top))]",
         )}
       >
-        {dismissible ? (
+        {noBack ? null : dismissible ? (
           <button
             type="button"
             aria-label="Close"

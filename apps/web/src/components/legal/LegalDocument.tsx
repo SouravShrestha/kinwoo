@@ -1,7 +1,7 @@
 import { LEGAL_UPDATED } from "@kinwoo/core/app";
 import type { ReactNode } from "react";
 
-import { BackButton } from "../BackButton";
+import { PublicBackButton } from "../BackButton";
 
 export function LegalDocument({
   title,
@@ -14,7 +14,7 @@ export function LegalDocument({
 }) {
   return (
     <main className="px-6 pb-[calc(2rem+env(safe-area-inset-bottom))] pt-[calc(1.25rem+env(safe-area-inset-top))]">
-      <BackButton />
+      <PublicBackButton />
       <h1 className="mt-6 font-display text-2xl font-medium">{title}</h1>
       <p className="mt-2 text-sm text-muted-foreground">Last updated {LEGAL_UPDATED}</p>
       <p className="mt-6 text-sm leading-relaxed">{intro}</p>

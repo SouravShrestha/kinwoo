@@ -54,6 +54,7 @@ export const FilterIcon = /*#__PURE__*/ icon(geometry.filterIcon);
 export const SortIcon = /*#__PURE__*/ icon(geometry.sortIcon);
 export const CaretDownIcon = /*#__PURE__*/ icon(geometry.caretDownIcon);
 export const PlusCircleIcon = /*#__PURE__*/ icon(geometry.plusCircleIcon);
+export const PlusCircleOutlineIcon = /*#__PURE__*/ icon(geometry.plusCircleOutlineIcon);
 export const CartMinusIcon = /*#__PURE__*/ icon(geometry.cartMinusIcon);
 export const CartCheckIcon = /*#__PURE__*/ icon(geometry.cartCheckIcon);
 export const CartPlusIcon = /*#__PURE__*/ icon(geometry.cartPlusIcon);

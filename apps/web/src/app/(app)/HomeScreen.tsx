@@ -1,7 +1,6 @@
 "use client";
 
 import { useBusyWhile } from "@kinwoo/client/activity";
-import { useAuth } from "@kinwoo/client/auth";
 import { useHouseBalances } from "@kinwoo/client/expenses";
 import { useGroceryOverview } from "@kinwoo/client/grocery";
 import { useActiveHouse, useHouseMembers } from "@kinwoo/client/houses";
@@ -19,6 +18,7 @@ import { HomeLoadError } from "@/components/home/HomeLoadError";
 import { HouseHeader } from "@/components/home/HouseHeader";
 import { MyToBuySection } from "@/components/home/MyToBuySection";
 import { QuickAddBar } from "@/components/home/QuickAddBar";
+import { ShortcutCards } from "@/components/home/ShortcutCards";
 import { TodayItemsSection } from "@/components/home/TodayItemsSection";
 import { WelcomeHeader } from "@/components/home/WelcomeHeader";
 import { HouseSheet } from "@/components/houses/HouseSheet";
@@ -27,7 +27,6 @@ import { SetupHousePrompt } from "@/components/houses/SetupHousePrompt";
 
 export function HomeScreen() {
   const router = useRouter();
-  const { user } = useAuth();
   const { activeHouse, houses, ready, loadFailed, refetchHouses } = useActiveHouse();
   const [menuOpen, setMenuOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<GroceryOverviewItem | null>(null);
@@ -43,6 +42,25 @@ export function HomeScreen() {
   const greeting = homeGreeting(profile?.displayName);
 
   const { data: overview } = useGroceryOverview(house?.id ?? null);
+  const todayItems = overview?.todayItems ?? [];
+  const mineItems = overview?.myToBuy ?? [];
+  const mineFirst = mineItems.length > 0 && todayItems.length === 0;
+  const todayRow = (
+    <TodayItemsSection
+      key="today"
+      houseId={house?.id ?? ""}
+      items={todayItems}
+      onItemPress={setSelectedItem}
+    />
+  );
+  const mineRow = (
+    <MyToBuySection
+      key="mine"
+      houseId={house?.id ?? ""}
+      items={mineItems}
+      onItemPress={setSelectedItem}
+    />
+  );
   const { data: balances } = useHouseBalances(house?.id ?? null, house?.simplifyDebts ?? false);
 
   useBusyWhile(!ready);
@@ -50,7 +68,7 @@ export function HomeScreen() {
   return (
     <main className="flex min-h-[calc(100dvh-4rem-env(safe-area-inset-bottom))] flex-col pb-6">
       <AndroidInstallBanner dismissable />
-      <header className="flex items-center justify-between px-6 pb-4 pt-[calc(0.75rem+env(safe-area-inset-top))]">
+      <header className="flex items-center justify-between px-6 pb-6 pt-[calc(0.75rem+env(safe-area-inset-top))]">
         {!ready ? null : showWelcome ? (
           <WelcomeHeader salutation={greeting.salutation} message={greeting.message} />
         ) : (
@@ -63,7 +81,7 @@ export function HomeScreen() {
         {ready ? <HomeHeaderActions showNotifications={!showWelcome} /> : null}
       </header>
 
-      <div className="flex flex-1 flex-col px-6 pt-2">
+      <div className="flex flex-1 flex-col px-6 pt-4">
         {!ready ? null : hasLoadError ? (
           <div className="flex flex-col items-center pt-8 text-center">
             <HomeLoadError onRetry={() => void refetchHouses()} />
@@ -77,24 +95,22 @@ export function HomeScreen() {
           </div>
         ) : (
           <div className="space-y-5">
+            {isOnlyMember ? (
+              <InviteFriendsCard canInvite={isAdmin} onPress={() => router.push("/house/invite")} />
+            ) : null}
+
+            {!isOnlyMember && balances ? <BalanceCard balances={balances} /> : null}
+
+            <ShortcutCards />
+
             <QuickAddBar
               houseId={house.id}
               onPress={(listId) => router.push(`/item/new?listId=${encodeURIComponent(listId)}`)}
             />
 
-            {isOnlyMember ? (
-              <InviteFriendsCard canInvite={isAdmin} onPress={() => router.push("/house/invite")} />
-            ) : balances ? (
-              <BalanceCard balances={balances} />
-            ) : null}
-
-            <TodayItemsSection items={overview?.todayItems ?? []} onItemPress={setSelectedItem} />
-
-            <MyToBuySection
-              items={overview?.myToBuy ?? []}
-              currentUserId={user?.id ?? ""}
-              onItemPress={setSelectedItem}
-            />
+            <div className="space-y-10 my-8">
+              {mineFirst ? [mineRow, todayRow] : [todayRow, mineRow]}
+            </div>
           </div>
         )}
       </div>

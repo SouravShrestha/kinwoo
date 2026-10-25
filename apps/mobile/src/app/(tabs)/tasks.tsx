@@ -26,6 +26,8 @@ import {
   filterGroceryItems,
   GROCERY_SORT_OPTIONS,
   DEFAULT_GROCERY_TAB,
+  parseTasksView,
+  TASKS_VIEWS,
   findBoughtGroup,
   groceryEmptyCopy,
   groceryFilterGroups,
@@ -39,10 +41,11 @@ import {
   sortGroceryItems,
   type GroceryItem,
   type GroceryTabKey,
+  type TasksView,
 } from "@kinwoo/core/grocery";
 import { CaretDownIcon, MoreVerticalIcon } from "@kinwoo/icons/native";
 import { colors } from "@kinwoo/tokens/native";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useMemo, useState } from "react";
 import { ScrollView, Text, useWindowDimensions, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -80,7 +83,8 @@ const PENDING_COLUMNS = 2;
 const PENDING_CARD_GAP = 12;
 const FILTERS_TOP_MARGIN = 8;
 
-export default function TasksScreen() {
+function TasksScreen({ view }: { view: TasksView | null }) {
+  const initial = view ? TASKS_VIEWS[view] : null;
   const insets = useSafeAreaInsets();
   const { width: windowWidth } = useWindowDimensions();
   const { resolvedTheme } = useTheme();
@@ -97,9 +101,11 @@ export default function TasksScreen() {
   const listStorage = useMemo(() => createListStorage(houseStorage), []);
   const [selectedListId, setSelectedListId] = useState<string | null>(null);
 
-  const [filters, setFilters] = useState<FilterSelection>(EMPTY_FILTER_SELECTION);
+  const [filters, setFilters] = useState<FilterSelection>(
+    initial?.filters ?? EMPTY_FILTER_SELECTION,
+  );
   const [sortId, setSortId] = useState(DEFAULT_GROCERY_SORT);
-  const [tab, setTab] = useState<GroceryTabKey>(DEFAULT_GROCERY_TAB);
+  const [tab, setTab] = useState<GroceryTabKey>(initial?.tab ?? DEFAULT_GROCERY_TAB);
   const [filtersHeight, setFiltersHeight] = useState(0);
   const [switcherOpen, setSwitcherOpen] = useState(false);
   const [manageOpen, setManageOpen] = useState(false);
@@ -608,4 +614,11 @@ export default function TasksScreen() {
       />
     </View>
   );
+}
+
+// The Lists tab stays mounted, so a link remounts the screen (via `at`) to apply its tab and filters.
+export default function TasksRoute() {
+  const { view, at } = useLocalSearchParams<{ view?: string; at?: string }>();
+  const parsed = parseTasksView(view);
+  return <TasksScreen key={`${parsed ?? "default"}:${at ?? ""}`} view={parsed} />;
 }

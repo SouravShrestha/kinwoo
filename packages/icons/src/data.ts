@@ -447,6 +447,14 @@ export const plusCircleIcon: IconGeometry = {
   ],
 };
 
+export const plusCircleOutlineIcon: IconGeometry = {
+  viewBox: "0 0 24 24",
+  paths: [
+    { d: "M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20", lineWidth: 1.5 },
+    { d: "M12 8v8M8 12h8", lineWidth: 1.5 },
+  ],
+};
+
 export const cartMinusIcon: IconGeometry = {
   viewBox: "0 0 24 24",
   paths: [

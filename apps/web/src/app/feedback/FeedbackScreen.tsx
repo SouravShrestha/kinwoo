@@ -15,7 +15,7 @@ import {
 import { CaretDownIcon } from "@kinwoo/icons";
 import { useId, useState, type FormEvent } from "react";
 
-import { BackButton } from "@/components/BackButton";
+import { PublicBackButton } from "@/components/BackButton";
 import { Button } from "@/components/Button";
 import { OptionSheet } from "@/components/grocery/OptionSheet";
 import { Field, RequiredMark } from "@/components/houses/Field";
@@ -60,7 +60,7 @@ export function FeedbackScreen() {
 
   return (
     <main className="px-6 pb-[calc(2.5rem+env(safe-area-inset-bottom))] pt-[calc(1.25rem+env(safe-area-inset-top))]">
-      <BackButton />
+      <PublicBackButton />
       <h1 className="mt-6 font-display text-2xl font-medium">{FEEDBACK_COPY.title}</h1>
       <p className="mt-2 text-sm text-muted-foreground">{FEEDBACK_COPY.intro}</p>
 

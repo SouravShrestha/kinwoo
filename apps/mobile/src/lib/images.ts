@@ -8,10 +8,9 @@ export const logoTypedBlack = require("../../assets/images/logo-typed-black.png"
 
 export const logoTypedWhite = require("../../assets/images/logo-typed-white.png") as number;
 
-export const inviteFriends = require("../../assets/images/invite-friends.png") as number;
+export const inviteFriends = require("../../assets/images/invite.png") as number;
 
-export const buildYourHouse = require("../../assets/images/build-your-house.png") as number;
-
+export const sharedBill = require("../../assets/images/shared-bill.png") as number;
 export const emptyList = require("../../assets/images/empty-list.png") as number;
 export const noExpense = require("../../assets/images/no-expense.png") as number;
 export const noActivity = require("../../assets/images/no-activity.png") as number;

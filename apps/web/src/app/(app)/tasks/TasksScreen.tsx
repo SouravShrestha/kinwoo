@@ -28,6 +28,7 @@ import {
   filterGroceryItems,
   GROCERY_SORT_OPTIONS,
   DEFAULT_GROCERY_TAB,
+  TASKS_VIEWS,
   findBoughtGroup,
   groceryEmptyCopy,
   groceryFilterGroups,
@@ -40,6 +41,7 @@ import {
   selectionLabel,
   sortGroceryItems,
   type GroceryTabKey,
+  type TasksView,
 } from "@kinwoo/core/grocery";
 import { CaretDownIcon, MoreVerticalIcon, PlusCircleIcon } from "@kinwoo/icons";
 import { ListIconImage } from "@/components/CategoryImages";
@@ -67,8 +69,9 @@ import { useRouter } from "next/navigation";
 // Opening a transaction leaves this page; remembering the tab lets going back land on it again.
 let lastTab: GroceryTabKey = DEFAULT_GROCERY_TAB;
 
-export function TasksScreen() {
+export function TasksScreen({ view }: { view: TasksView | null }) {
   const router = useRouter();
+  const initial = view ? TASKS_VIEWS[view] : null;
   const { user } = useAuth();
   const currentUserId = user?.id ?? "";
   const currentUserName = user?.user_metadata?.displayName ?? user?.email ?? null;
@@ -82,9 +85,11 @@ export function TasksScreen() {
   const listStorage = useMemo(() => createListStorage(houseStorage), []);
   const [selectedListId, setSelectedListId] = useState<string | null>(null);
 
-  const [filters, setFilters] = useState<FilterSelection>(EMPTY_FILTER_SELECTION);
+  const [filters, setFilters] = useState<FilterSelection>(
+    initial?.filters ?? EMPTY_FILTER_SELECTION,
+  );
   const [sortId, setSortId] = useState(DEFAULT_GROCERY_SORT);
-  const [tab, setTab] = useState<GroceryTabKey>(lastTab);
+  const [tab, setTab] = useState<GroceryTabKey>(initial?.tab ?? lastTab);
   const [switcherOpen, setSwitcherOpen] = useState(false);
   const [manageOpen, setManageOpen] = useState(false);
   const [activeItemId, setActiveItemId] = useState<string | null>(null);

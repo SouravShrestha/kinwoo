@@ -6,7 +6,7 @@ export const LIST_ICON_OPTIONS = [
   { value: "🛒", label: "Grocery" },
   { value: "✅", label: "To-do" },
   { value: "👛", label: "Wallet" },
-  { value: "�", label: "Events" },
+  { value: "📅", label: "Events" },
   { value: "🛍️", label: "Shopping" },
   { value: "🍽️", label: "Dining" },
   { value: "🏠", label: "Home" },
