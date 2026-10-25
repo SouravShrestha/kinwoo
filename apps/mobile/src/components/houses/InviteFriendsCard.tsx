@@ -33,7 +33,7 @@ export function InviteFriendsCard({ canInvite, onPress }: InviteFriendsCardProps
         style={{ aspectRatio: IMAGE_ASPECT_RATIO }}
         className="-mb-2 -ml-2 w-[45%] self-end"
       />
-      <View className="flex-1 justify-between -ml-12 gap-6 py-1.5 pl-2 pr-5">
+      <View className="flex-1 justify-between -ml-12 gap-8 py-4 pl-2 pr-5">
         <Text className="font-display-normal text-sm leading-5 text-foreground text-right">
           Solo mode is fine, but it's better with friends
         </Text>
