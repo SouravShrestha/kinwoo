@@ -13,11 +13,11 @@
       }
     },
     "development": {
-      "developmentClient": true,
+      "developmentClient": false,
       "distribution": "internal",
       "environment": "development",
       "android": {
-        "buildType": "app-bundle"
+        "buildType": "apk"
       },
       "env": {
         "EXPO_PUBLIC_API_URL": "https://test.kinwoo.in"
