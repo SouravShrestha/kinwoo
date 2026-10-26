@@ -85,6 +85,14 @@ jobs:
       - name: Install EAS CLI
         run: npm install -g eas-cli@24.8.0
 
+      # `eas build --local` skips EAS file variables, so fetch google-services.json explicitly.
+      - name: Pull google-services.json from EAS
+        run: |
+          eas env:pull "$PROFILE" --non-interactive --path "$RUNNER_TEMP/eas.env"
+          echo "GOOGLE_SERVICES_JSON=$PWD/.eas/.env/GOOGLE_SERVICES_JSON" >> "$GITHUB_ENV"
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+
       - name: Build locally
         run: |
           eas build --platform android \
