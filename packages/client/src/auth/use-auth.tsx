@@ -38,6 +38,7 @@ export function AuthProvider({ adapter, children }: { adapter: AuthAdapter; chil
   const value = useMemo<AuthContextValue>(
     () => ({
       ...createAuthActions(adapter),
+      client: adapter.client,
       user: state.user,
       isLoggedIn: state.user !== null,
       ready: state.ready,

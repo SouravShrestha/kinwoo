@@ -48,6 +48,7 @@ jobs:
     env:
       PROFILE: ${{ inputs.profile || 'development' }}
       BUILD_REF: ${{ inputs.ref || github.sha }}
+      ARTIFACT: app-${{ inputs.profile || 'development' }}.${{ (inputs.profile || 'development') == 'production' && 'aab' || 'apk' }}
       # Not in eas.json: `eas build --local` does not expand $VAR there, but it does pass
       # the shell environment through to the build, where Metro inlines EXPO_PUBLIC_*.
       EXPO_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL || vars.NEXT_PUBLIC_SUPABASE_URL }}
@@ -85,13 +86,21 @@ jobs:
       - name: Install EAS CLI
         run: npm install -g eas-cli@24.8.0
 
+      # `eas build --local` skips EAS file variables, so fetch google-services.json explicitly.
+      - name: Pull google-services.json from EAS
+        run: |
+          eas env:pull "$PROFILE" --non-interactive --path "$RUNNER_TEMP/eas.env"
+          echo "GOOGLE_SERVICES_JSON=$PWD/.eas/.env/GOOGLE_SERVICES_JSON" >> "$GITHUB_ENV"
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+
       - name: Build locally
         run: |
           eas build --platform android \
             --profile ${{ env.PROFILE }} \
             --local \
             --non-interactive \
-            --output=./app-${{ env.PROFILE }}.aab
+            --output=./${{ env.ARTIFACT }}
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
 
@@ -99,5 +108,5 @@ jobs:
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: android-${{ env.PROFILE }}-${{ env.BUILD_REF }}
-          path: apps/mobile/app-${{ env.PROFILE }}.aab
+          path: apps/mobile/${{ env.ARTIFACT }}
           retention-days: 30

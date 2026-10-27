@@ -16,14 +16,20 @@ import {
   Poppins_600SemiBold,
   Poppins_700Bold,
 } from "@expo-google-fonts/poppins";
+import { Asset } from "expo-asset";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import { AppProviders } from "@/components/AppProviders";
+import { categoryIconModules, illustrationModules, paymentImage } from "@/lib/images";
 import "@/lib/splash";
 import { ThemeProvider } from "@/theme/ThemeProvider";
+
+void Asset.loadAsync([...illustrationModules, paymentImage, ...categoryIconModules]).catch(
+  () => undefined,
+);
 
 // Transparent so the screen below shows through while the sheet is dragged down; the screen
 // handles its own swipe because the native one loses to its ScrollView.
@@ -57,6 +63,8 @@ export default function RootLayout() {
             <Stack screenOptions={{ headerShown: false }}>
               <Stack.Screen name="house/invite" options={SWIPE_DOWN_SHEET} />
               <Stack.Screen name="profile" options={{ animation: "slide_from_right" }} />
+              <Stack.Screen name="notifications" options={{ animation: "slide_from_right" }} />
+              <Stack.Screen name="settings" options={{ animation: "slide_from_right" }} />
               <Stack.Screen name="item/new" options={SWIPE_DOWN_SHEET} />
               <Stack.Screen
                 name="item/bought"

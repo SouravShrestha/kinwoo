@@ -4,7 +4,8 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { AVATAR_BUCKET, toPublicAvatarUrl, toStoredAvatar } from "../avatars/avatarUrls";
 import type { IProfileRepository, Profile, ProfilePreferences } from "./IProfileRepository";
 
-const COLUMNS = "id, display_name, avatar_url, locale, theme, notifications_enabled";
+const COLUMNS =
+  "id, display_name, avatar_url, locale, theme, notifications_enabled, muted_push_types";
 const AVATAR_LIST_LIMIT = 100;
 const IMAGE_FILE = /\.(png|jpe?g|webp)$/i;
 
@@ -21,6 +22,7 @@ export class ProfileRepository implements IProfileRepository {
       locale: row.locale,
       theme: row.theme,
       notificationsEnabled: row.notifications_enabled,
+      mutedPushTypes: row.muted_push_types,
     };
   }
 
@@ -49,6 +51,9 @@ export class ProfileRepository implements IProfileRepository {
     if (preferences.notificationsEnabled !== undefined) {
       patch.notifications_enabled = preferences.notificationsEnabled;
     }
+    if (preferences.mutedPushTypes !== undefined) {
+      patch.muted_push_types = preferences.mutedPushTypes;
+    }
 
     if (Object.keys(patch).length === 0) return this.findById(userId);
     return this.update(userId, patch);
@@ -69,6 +74,10 @@ export class ProfileRepository implements IProfileRepository {
 
     if (error) throw new Error(error.message);
     return data ? this.toProfile(data as ProfileRow) : null;
+  }
+
+  isOwnUpload(userId: string, avatarUrl: string): boolean {
+    return toStoredAvatar(this.client, avatarUrl).startsWith(`${userId}/`);
   }
 
   async listAvatarUrls(): Promise<string[]> {

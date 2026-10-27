@@ -3,6 +3,8 @@ import type { Session } from "@supabase/supabase-js";
 
 import type { AuthAdapter, User } from "./adapter";
 import {
+  EMAIL_TAKEN_MESSAGE,
+  GOOGLE_EMAIL_MESSAGE,
   INITIAL_AUTH_STATE,
   NO_GOOGLE_MESSAGE,
   authStateFromSession,
@@ -58,6 +60,51 @@ describe("createAuthActions", () => {
     await expect(createAuthActions(fakeAdapter()).signInWithGoogle()).rejects.toThrow(
       NO_GOOGLE_MESSAGE,
     );
+    await expect(createAuthActions(fakeAdapter()).linkGoogle()).rejects.toThrow(NO_GOOGLE_MESSAGE);
+  });
+
+  it("delegates Google linking when the capability is present", async () => {
+    const linkGoogle = vi.fn(async () => {});
+    await createAuthActions(fakeAdapter({ linkGoogle })).linkGoogle();
+    expect(linkGoogle).toHaveBeenCalledOnce();
+  });
+
+  it("unlinks the Google identity and refreshes the session", async () => {
+    const google = { provider: "google", identity_id: "g-1" };
+    const unlinkIdentity = vi.fn(async () => ({ data: {}, error: null }));
+    const refreshSession = vi.fn(async () => ({}));
+    const adapter = fakeAdapter({
+      client: {
+        auth: {
+          getUserIdentities: async () => ({
+            data: { identities: [{ provider: "email" }, google] },
+            error: null,
+          }),
+          unlinkIdentity,
+          refreshSession,
+        },
+      } as unknown as AuthAdapter["client"],
+    });
+
+    await createAuthActions(adapter).unlinkGoogle();
+    expect(unlinkIdentity).toHaveBeenCalledWith(google);
+    expect(refreshSession).toHaveBeenCalledOnce();
+  });
+
+  it("surfaces an unlink failure", async () => {
+    const adapter = fakeAdapter({
+      client: {
+        auth: {
+          getUserIdentities: async () => ({
+            data: { identities: [{ provider: "google" }] },
+            error: null,
+          }),
+          unlinkIdentity: async () => ({ data: null, error: { message: "last identity" } }),
+        },
+      } as unknown as AuthAdapter["client"],
+    });
+
+    await expect(createAuthActions(adapter).unlinkGoogle()).rejects.toThrow("last identity");
   });
 
   it("passes the email through and returns the outcome", async () => {
@@ -77,6 +124,21 @@ describe("createAuthActions", () => {
       "123456",
     );
     expect(verifyEmailCode).toHaveBeenCalledWith("daisy@example.com", "123456");
+  });
+
+  it("tells the user to use Google when the email belongs to a linked Google identity", async () => {
+    const signInWithEmail = async () => {
+      throw new Error("User already registered");
+    };
+
+    await expect(
+      createAuthActions(
+        fakeAdapter({ signInWithEmail, signInWithGoogle: async () => {} }),
+      ).signInWithEmail("daisy@example.com"),
+    ).rejects.toThrow(GOOGLE_EMAIL_MESSAGE);
+    await expect(
+      createAuthActions(fakeAdapter({ signInWithEmail })).signInWithEmail("daisy@example.com"),
+    ).rejects.toThrow(EMAIL_TAKEN_MESSAGE);
   });
 
   it("surfaces a sign-out failure instead of swallowing it", async () => {

@@ -4,6 +4,6 @@
     "modules": ["AppLinksModule"]
   },
   "android": {
-    "modules": ["me.cbsdev.kinwoo.applinks.AppLinksModule"]
+    "modules": ["app.kinwoo.applinks.AppLinksModule"]
   }
 }

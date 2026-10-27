@@ -6,7 +6,7 @@ type HomeLoadErrorProps = {
 
 export function HomeLoadError({ onRetry }: HomeLoadErrorProps) {
   return (
-    <div className="w-full">
+    <div className="w-full text-center">
       <p className="text-base text-muted-foreground">Couldn&apos;t load your houses.</p>
       <Button className="mt-4" variant="outline" label="Try again" onClick={onRetry} />
     </div>

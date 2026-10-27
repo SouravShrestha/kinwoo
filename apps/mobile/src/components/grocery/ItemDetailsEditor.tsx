@@ -12,13 +12,7 @@ import {
   type GroceryItem,
   type StoreId,
 } from "@kinwoo/core/grocery";
-import {
-  CaretDownIcon,
-  CategoryIcon,
-  CheckCircleIcon,
-  ClockIcon,
-  CloseIcon,
-} from "@kinwoo/icons/native";
+import { CaretDownIcon, CheckCircleIcon, ClockIcon, CloseIcon } from "@kinwoo/icons/native";
 import { colors } from "@kinwoo/tokens/native";
 import { useState, type ReactNode } from "react";
 import { Image, Keyboard, Text, View } from "react-native";
@@ -31,6 +25,8 @@ import { openAppLinkAsync } from "@/lib/app-links";
 import { blinkitLogo, instamartLogo, zeptoLogo } from "@/lib/images";
 import { useKeyboardVisible } from "@/lib/use-keyboard-visible";
 import { useTheme } from "@/theme/ThemeProvider";
+
+import { ItemCategoryImage } from "./ItemCategoryImage";
 
 type Picker = "category" | "unit" | "urgency";
 
@@ -172,7 +168,7 @@ export function ItemDetailsEditor({
               allowDoublePress
               className="size-12 items-center justify-center rounded-xl bg-muted active:opacity-80"
             >
-              <CategoryIcon name={category?.name} size={26} color={palette.foreground} />
+              <ItemCategoryImage name={category?.name} size={40} />
             </Pressable>
             <SheetTextInput
               accessibilityLabel="Item name"
@@ -324,7 +320,7 @@ export function ItemDetailsEditor({
         options={form.categories.map((c) => ({
           id: c.id,
           label: c.name,
-          icon: (color: string) => <CategoryIcon name={c.name} size={32} color={color} />,
+          icon: () => <ItemCategoryImage name={c.name} size={48} />,
         }))}
         selectedId={draft.categoryId}
         onSelect={(id) => {

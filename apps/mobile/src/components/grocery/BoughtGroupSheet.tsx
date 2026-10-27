@@ -5,7 +5,7 @@ import {
   TRANSACTION_UNAVAILABLE,
   type BoughtGroup,
 } from "@kinwoo/core/grocery";
-import { ArchiveIcon, CategoryIcon, TransactionIcon } from "@kinwoo/icons/native";
+import { ArchiveIcon, TransactionIcon } from "@kinwoo/icons/native";
 import { colors } from "@kinwoo/tokens/native";
 import { ScrollView, Text, View } from "react-native";
 
@@ -16,6 +16,7 @@ import { openExpense } from "@/lib/house-navigation";
 import { useTheme } from "@/theme/ThemeProvider";
 
 import { BoughtTimeline } from "./BoughtTimeline";
+import { ItemCategoryImage } from "./ItemCategoryImage";
 
 const ITEM_WIDTH = 88;
 
@@ -53,11 +54,7 @@ export function BoughtGroupSheet({
         <View className="gap-12 pb-4 pt-12 -mx-6">
           <View className="flex-row items-start gap-5 mx-6">
             <View className="size-12 items-center justify-center rounded-xl bg-muted">
-              <CategoryIcon
-                name={lead?.categoryName ?? undefined}
-                size={26}
-                color={palette.foreground}
-              />
+              <ItemCategoryImage name={lead?.categoryName} size={40} />
             </View>
             <View className="min-w-0 flex-1 gap-1">
               <Text numberOfLines={2} className="font-display-medium text-base text-foreground">
@@ -102,11 +99,7 @@ export function BoughtGroupSheet({
                   style={{ width: ITEM_WIDTH }}
                 >
                   <View className="size-10 items-center justify-center rounded-xl bg-muted">
-                    <CategoryIcon
-                      name={item.categoryName ?? undefined}
-                      size={20}
-                      color={palette.foreground}
-                    />
+                    <ItemCategoryImage name={item.categoryName} size={32} />
                   </View>
                   <View className="w-full items-center gap-0.5">
                     <Text

@@ -65,13 +65,8 @@ describe("icon geometry", () => {
 });
 
 describe("named icons", () => {
-  it("falls back for names without an icon", async () => {
-    const { activityGeometry, expenseCategoryGeometry, groceryCategoryGeometry } =
-      await import("./semantic");
-    expect(groceryCategoryGeometry("Dairy")).toBe(geometry.dairyIcon);
-    expect(groceryCategoryGeometry(undefined)).toBe(geometry.otherIcon);
-    expect(expenseCategoryGeometry("rent")).toBe(geometry.rentIcon);
-    expect(expenseCategoryGeometry("unknown")).toBe(geometry.otherIcon);
+  it("falls back for activity names without an icon", async () => {
+    const { activityGeometry } = await import("./semantic");
     expect(activityGeometry("heart").paths).toBe(geometry.heartIcon.paths);
     expect(activityGeometry("unknown")).toBe(activityGeometry("pulse"));
   });

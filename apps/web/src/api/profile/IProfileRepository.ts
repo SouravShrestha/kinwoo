@@ -9,4 +9,5 @@ export interface IProfileRepository {
   updateAvatarUrl(userId: string, avatarUrl: string): Promise<Profile | null>;
   setAvatarUrlIfMissing(userId: string, avatarUrl: string): Promise<Profile | null>;
   listAvatarUrls(): Promise<string[]>;
+  isOwnUpload(userId: string, avatarUrl: string): boolean;
 }

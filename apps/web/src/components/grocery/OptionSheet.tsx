@@ -73,7 +73,7 @@ export function OptionSheet({
                   "w-full rounded-xl font-display text-base transition-colors hover:cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground",
                   chip
                     ? cn(
-                        "flex min-h-14 flex-col items-center justify-center px-1 py-2 text-base leading-6",
+                        "flex min-h-14 flex-col items-center justify-center px-1 py-2 text-base leading-[calc(1.5rem*var(--font-scale,1))]",
                         columns > 2 && "aspect-[5/4]",
                         selected
                           ? "bg-foreground text-background"
@@ -106,7 +106,9 @@ export function OptionSheet({
                   {option.label}
                 </span>
                 {option.detail ? (
-                  <span className="text-xs leading-5 opacity-70">({option.detail})</span>
+                  <span className="text-xs leading-[calc(1.25rem*var(--font-scale,1))] opacity-70">
+                    ({option.detail})
+                  </span>
                 ) : null}
                 {selected && !grid ? <CheckIcon size={14} /> : null}
               </button>

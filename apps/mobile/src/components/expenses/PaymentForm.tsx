@@ -22,6 +22,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Button } from "@/components/Button";
 import { Avatar } from "@/components/houses/Avatar";
 import { Pressable } from "@/components/Pressable";
+import { PaymentDetailSkeleton } from "@/components/skeleton/skeletons";
 import { SwipeDownScreen } from "@/components/SwipeDownScreen";
 import { goBack } from "@/lib/house-navigation";
 import { useKeyboardVisible } from "@/lib/use-keyboard-visible";
@@ -50,7 +51,6 @@ export function PaymentForm({
   submitting,
   onSubmit,
   requireChange = false,
-  readOnly = false,
   onDelete,
   children,
 }: {
@@ -61,7 +61,6 @@ export function PaymentForm({
   onSubmit: (amountPaise: number) => void;
   // The submit button stays off until the amount differs from the one it started with.
   requireChange?: boolean;
-  readOnly?: boolean;
   onDelete?: () => void;
   // Rendered inside the sheet, for dialogs.
   children?: ReactNode;
@@ -125,7 +124,7 @@ export function PaymentForm({
                 <ArrowRightIcon size={28} color={palette.foreground} />
               </View>
             </Pressable>
-            {data && !readOnly && onDelete ? (
+            {data && onDelete ? (
               <Pressable
                 accessibilityRole="button"
                 accessibilityLabel="Delete payment"
@@ -189,25 +188,25 @@ export function PaymentForm({
                     style={{ bottom: -4 }}
                   />
                 </View>
-                {readOnly ? null : (
-                  <Pressable
-                    accessibilityRole="button"
-                    accessibilityLabel={editing ? "Confirm amount" : "Edit amount"}
-                    disabled={editing && !validAmount}
-                    onPress={toggleEditing}
-                    allowDoublePress
-                    className={editButtonClass}
-                  >
-                    {editing ? (
-                      <TickIcon size={18} color={palette.background} />
-                    ) : (
-                      <EditIcon size={18} color={palette.foreground} />
-                    )}
-                  </Pressable>
-                )}
+                <Pressable
+                  accessibilityRole="button"
+                  accessibilityLabel={editing ? "Confirm amount" : "Edit amount"}
+                  disabled={editing && !validAmount}
+                  onPress={toggleEditing}
+                  allowDoublePress
+                  className={editButtonClass}
+                >
+                  {editing ? (
+                    <TickIcon size={18} color={palette.background} />
+                  ) : (
+                    <EditIcon size={18} color={palette.foreground} />
+                  )}
+                </Pressable>
               </View>
             </View>
-          ) : null}
+          ) : (
+            <PaymentDetailSkeleton />
+          )}
         </Animated.ScrollView>
       </GestureDetector>
       {data ? (
@@ -221,15 +220,13 @@ export function PaymentForm({
           <Text className="text-center font-display-normal text-sm text-muted-foreground">
             {note}
           </Text>
-          {readOnly ? null : (
-            <Button
-              label={submitLabel}
-              icon={<RecordPaymentIcon size={20} color={palette.background} />}
-              loading={submitting}
-              disabled={!validAmount || (requireChange && !changed)}
-              onPress={() => onSubmit(amountPaise)}
-            />
-          )}
+          <Button
+            label={submitLabel}
+            icon={<RecordPaymentIcon size={20} color={palette.background} />}
+            loading={submitting}
+            disabled={!validAmount || (requireChange && !changed)}
+            onPress={() => onSubmit(amountPaise)}
+          />
         </View>
       ) : null}
       {children}

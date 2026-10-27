@@ -1,10 +1,8 @@
 import { createListStorage, useGroceryLists } from "@kinwoo/client/grocery";
-import { listIconOption } from "@kinwoo/core/grocery";
+import { PlusCircleOutlineIcon } from "@kinwoo/icons/native";
 import { colors } from "@kinwoo/tokens/native";
 import { useEffect, useState } from "react";
-import { Text, View } from "react-native";
-
-import { CategoryIcon, PlusCircleIcon } from "@kinwoo/icons/native";
+import { Text } from "react-native";
 
 import { Pressable } from "@/components/Pressable";
 import { houseStorage } from "@/lib/house-storage";
@@ -44,27 +42,10 @@ export function QuickAddBar({ houseId, onPress }: QuickAddBarProps) {
       onPress={() => {
         if (targetList) onPress(targetList.id);
       }}
-      className="flex-row items-center justify-between rounded-2xl border border-border bg-muted/60 px-4 py-3.5 active:opacity-70"
+      className="flex-row items-center gap-2.5 rounded-full border border-border bg-muted/60 px-4 py-3.5 active:opacity-70"
     >
-      <View className="flex-row items-center gap-2.5">
-        <PlusCircleIcon size={24} color={palette.primary} />
-        <Text className="font-display-normal text-base text-muted-foreground">Add an item...</Text>
-      </View>
-      {targetList ? (
-        <View className="flex-row items-center gap-1.5 rounded-full border border-border/60 bg-background px-2.5 py-1">
-          <CategoryIcon
-            name={listIconOption(targetList.icon).label}
-            size={14}
-            color={palette.foreground}
-          />
-          <Text
-            numberOfLines={1}
-            className="max-w-[120px] font-display-medium text-xs text-foreground"
-          >
-            {targetList.name}
-          </Text>
-        </View>
-      ) : null}
+      <PlusCircleOutlineIcon size={24} color={palette.mutedForeground} />
+      <Text className="font-display-normal text-base text-muted-foreground">Add a new item</Text>
     </Pressable>
   );
 }

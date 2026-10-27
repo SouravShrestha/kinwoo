@@ -12,9 +12,9 @@ import { Text, View } from "react-native";
 
 import { Button } from "@/components/Button";
 import { Field } from "@/components/houses/Field";
+import { HouseLimitNotice } from "@/components/houses/HouseLimitNotice";
 import { HouseScreen } from "@/components/houses/HouseScreen";
-import { goBack } from "@/lib/house-navigation";
-import { buildYourHouse } from "@/lib/images";
+import { CreateHouseSkeleton } from "@/components/skeleton/skeletons";
 import { useTheme } from "@/theme/ThemeProvider";
 
 export default function CreateHouseScreen() {
@@ -25,18 +25,16 @@ export default function CreateHouseScreen() {
     <HouseScreen
       title={HOUSE_SCREEN_TITLES.create}
       scrollOnlyWithKeyboard
-      hero={
-        form.blocked ? undefined : { image: buildYourHouse, heading: HOUSE_SCREEN_TITLES.create }
-      }
+      noBack={form.blocked}
+      hero={form.blocked ? undefined : { heading: HOUSE_SCREEN_TITLES.create }}
     >
-      {form.blocked ? (
-        <View>
-          <Text className="text-base text-muted-foreground">{form.blockedMessage}</Text>
-          <Button className="mt-6" variant="outline" label="Back" onPress={goBack} />
-        </View>
+      {form.checking ? (
+        <CreateHouseSkeleton />
+      ) : form.blocked ? (
+        <HouseLimitNotice message={form.blockedMessage} />
       ) : (
         <View>
-          <Text className="mb-8 text-sm text-muted-foreground font-display-normal">
+          <Text className="mb-10 text-sm text-muted-foreground font-display-normal">
             {CREATE_HOUSE_SUBTITLE}
           </Text>
 

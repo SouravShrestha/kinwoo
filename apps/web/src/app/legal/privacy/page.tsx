@@ -28,7 +28,7 @@ export default function PrivacyPage() {
         <List
           items={[
             "Your email address, used to sign you in with a code or through Google.",
-            "Your display name, and your avatar: either your Google profile picture or one of our own preset images. No photo is uploaded.",
+            "Your display name, and your avatar: one of our own preset images, or a photo you upload yourself. Your Google profile picture is not copied.",
             "Your preferences: language, theme and the notifications setting.",
             "Your houses: house name, optional address, your role, when you joined or left, and invite activity.",
             "What you add inside a house: lists, items with quantities, urgency and notes, assignments, and purchase records with quantity, price, store and date.",

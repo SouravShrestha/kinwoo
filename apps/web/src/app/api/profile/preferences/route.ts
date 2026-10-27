@@ -16,6 +16,7 @@ export async function PATCH(request: Request) {
       if ("notificationsEnabled" in body) {
         preferences.notificationsEnabled = body.notificationsEnabled as boolean;
       }
+      if ("mutedPushTypes" in body) preferences.mutedPushTypes = body.mutedPushTypes as string[];
 
       return service.setPreferences(userId, preferences);
     },

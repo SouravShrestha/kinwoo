@@ -36,8 +36,11 @@ export function openSettleUp() {
   router.push("/expenses/settle-up");
 }
 
-export function openRecordPayment(userId: string) {
-  router.push({ pathname: "/expenses/record-payment", params: { userId } });
+export function openRecordPayment(payerId: string, payeeId: string, amountPaise: number) {
+  router.push({
+    pathname: "/expenses/record-payment",
+    params: { payerId, payeeId, amountPaise: String(amountPaise) },
+  });
 }
 
 // Pops the settle-up screens and lands on the expenses tab.

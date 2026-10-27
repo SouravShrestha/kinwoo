@@ -32,6 +32,7 @@ import { CONFIRM_COPY } from "@kinwoo/core/confirm";
 import { TOAST_MESSAGES } from "@kinwoo/core/toast";
 import { useEffect, useId, useRef, useState, type KeyboardEvent } from "react";
 
+import { InviteSkeleton } from "@/components/skeleton/skeletons";
 import { useHouseNavigation } from "@/lib/house-navigation";
 import { copyText, shareOrCopy } from "@/lib/share-text";
 import { siteOrigin } from "@/lib/site";
@@ -65,7 +66,7 @@ function InviteManager({ membership }: { membership: HouseMembership }) {
   const manager = useInviteManager({ house, origin: siteOrigin() });
   const [confirmRotate, setConfirmRotate] = useState(false);
 
-  if (manager.loading) return null;
+  if (manager.loading) return <InviteSkeleton />;
 
   const copyCode = async () => {
     if (manager.code) await copyText(manager.code, TOAST_MESSAGES.codeCopied);
@@ -77,12 +78,12 @@ function InviteManager({ membership }: { membership: HouseMembership }) {
 
   return (
     <div>
-      <p className="font-display text-sm font-normal text-muted-foreground">
+      <p className="pb-2 font-display text-sm font-normal text-muted-foreground">
         {INVITE_SCREEN_SUBTITLE}
       </p>
 
       {manager.code ? (
-        <div className="mt-8 flex items-center gap-6">
+        <div className="mt-6 flex items-center gap-6">
           {manager.shareUrl ? (
             <ExpandableQrCode
               value={manager.shareUrl}
@@ -345,7 +346,7 @@ function JoinModeMenu({
           role="menu"
           aria-label="General access"
           onKeyDown={onMenuKeyDown}
-          className="absolute left-14 top-8 z-10 min-w-60 rounded-md border border-border bg-muted py-1 shadow-lg"
+          className="absolute left-14 top-7 z-10 min-w-60 rounded-md border border-border bg-muted py-1"
         >
           {JOIN_MODE_OPTIONS.map((option, index) => (
             <button

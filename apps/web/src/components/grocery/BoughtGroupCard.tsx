@@ -1,7 +1,8 @@
 "use client";
 
 import { boughtGroupAccessibleLabel, itemCountLabel, type BoughtGroup } from "@kinwoo/core/grocery";
-import { ArrowRightIcon, CategoryIcon } from "@kinwoo/icons";
+import { ArrowRightIcon } from "@kinwoo/icons";
+import { ItemCategoryImage } from "@/components/CategoryImages";
 
 import { Avatar } from "@/components/houses/Avatar";
 import { cn } from "@/lib/utils";
@@ -29,8 +30,8 @@ export function BoughtGroupCard({
         className="group flex w-full flex-col gap-3 rounded-2xl p-3 text-left hover:cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
       >
         <span className="flex items-center justify-between">
-          <span className="flex size-6 shrink-0 items-center justify-center text-foreground">
-            <CategoryIcon name={lead?.categoryName ?? undefined} size={20} />
+          <span className="flex size-8 shrink-0 items-center justify-center text-foreground">
+            <ItemCategoryImage name={lead?.categoryName ?? undefined} size={32} />
           </span>
           <span
             aria-hidden
@@ -48,7 +49,7 @@ export function BoughtGroupCard({
           >
             {group.label}
           </span>
-          <span className="block min-h-4 truncate font-display text-xs text-muted-foreground">
+          <span className="block min-h-4 truncate font-display text-xs font-normal text-muted-foreground">
             {itemCountLabel(group.items.length)}
           </span>
         </span>

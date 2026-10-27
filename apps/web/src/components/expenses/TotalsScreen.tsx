@@ -14,9 +14,11 @@ import {
 } from "@kinwoo/core/expenses";
 import { formatPaise } from "@kinwoo/core/grocery";
 import { ArrowRightIcon } from "@kinwoo/icons";
-import { useEffect, useId, useState, type AnimationEvent } from "react";
+import { useEffect, useId, useRef, useState, type AnimationEvent } from "react";
 
+import { TotalsSkeleton } from "@/components/skeleton/skeletons";
 import { useHouseNavigation } from "@/lib/house-navigation";
+import { useSwipeToClose } from "@/lib/use-swipe-to-close";
 import { cn } from "@/lib/utils";
 
 import { PeriodFilter } from "./PeriodFilter";
@@ -105,7 +107,7 @@ function TotalsChart({ points, yTicks }: { points: TotalsPoint[]; yTicks: Totals
         {yTicks.map((tick) => (
           <span
             key={tick.paise}
-            className="absolute text-right font-display text-xs leading-4 text-muted-foreground"
+            className="absolute text-right font-display text-xs leading-[calc(1rem*var(--font-scale,1))] text-muted-foreground"
             style={{
               left: -AXIS_WIDTH,
               width: AXIS_WIDTH - 8,
@@ -146,7 +148,7 @@ function Stat({
   return (
     <div className="min-w-0 flex-1 text-center">
       <p className="font-display text-base font-medium text-foreground">{label}</p>
-      <p className={cn("mt-2 font-display-normal text-2xl", valueClassName)}>{value}</p>
+      <p className={cn("mt-2 font-display text-2xl", valueClassName)}>{value}</p>
     </div>
   );
 }
@@ -195,7 +197,9 @@ function TotalsBody({ houseId }: { houseId: string }) {
             </div>
           </div>
         </>
-      ) : null}
+      ) : (
+        <TotalsSkeleton />
+      )}
     </>
   );
 }
@@ -205,6 +209,8 @@ export function TotalsScreen() {
   const houseId = activeHouse?.house.id ?? null;
   const { goBack, goHome } = useHouseNavigation();
   const [closing, setClosing] = useState(false);
+  const screenRef = useRef<HTMLElement>(null);
+  useSwipeToClose(screenRef, !closing, () => setClosing(true));
 
   useEffect(() => {
     if (ready && !activeHouse) goHome();
@@ -217,13 +223,14 @@ export function TotalsScreen() {
 
   return (
     <main
+      ref={screenRef}
       onAnimationEnd={onAnimationEnd}
       className={cn(
         "flex h-dvh flex-col overflow-hidden bg-background",
         closing ? "sheet-panel-out" : "sheet-panel-in",
       )}
     >
-      <div className="mx-auto flex w-full max-w-md flex-1 flex-col overflow-y-auto pb-10">
+      <div className="mx-auto flex w-full max-w-md flex-1 flex-col overflow-y-auto pb-[calc(2.5rem+env(safe-area-inset-bottom))]">
         <header className="px-6 pt-[calc(1.25rem+env(safe-area-inset-top))]">
           <button
             type="button"

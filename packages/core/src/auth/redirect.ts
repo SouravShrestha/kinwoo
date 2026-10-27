@@ -37,3 +37,13 @@ export function buildRedirectUrl(origin: string, path: string, error?: string): 
   if (error) url.searchParams.set("auth_error", error);
   return url.toString();
 }
+
+// Supabase reports a Google account that already belongs to another user as
+// error_code=identity_already_exists, alongside a generic error param.
+export function providerErrorCode(
+  params: URLSearchParams,
+): "identity_already_linked" | "provider_denied" {
+  return params.get("error_code") === "identity_already_exists"
+    ? "identity_already_linked"
+    : "provider_denied";
+}

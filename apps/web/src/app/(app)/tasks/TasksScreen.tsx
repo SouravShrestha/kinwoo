@@ -28,6 +28,7 @@ import {
   filterGroceryItems,
   GROCERY_SORT_OPTIONS,
   DEFAULT_GROCERY_TAB,
+  TASKS_VIEWS,
   findBoughtGroup,
   groceryEmptyCopy,
   groceryFilterGroups,
@@ -40,8 +41,10 @@ import {
   selectionLabel,
   sortGroceryItems,
   type GroceryTabKey,
+  type TasksView,
 } from "@kinwoo/core/grocery";
-import { CaretDownIcon, CategoryIcon, MoreVerticalIcon, PlusCircleIcon } from "@kinwoo/icons";
+import { CaretDownIcon, MoreVerticalIcon, PlusCircleIcon } from "@kinwoo/icons";
+import { ListIconImage } from "@/components/CategoryImages";
 import { useEffect, useMemo, useState } from "react";
 
 import { ConfirmDialog } from "@/components/ConfirmDialog";
@@ -58,13 +61,19 @@ import { ListSwitcherSheet } from "@/components/grocery/ListSwitcherSheet";
 import { PendingItemCard } from "@/components/grocery/PendingItemCard";
 import { PendingSelectionBar } from "@/components/grocery/PendingSelectionBar";
 import { SetupHousePrompt } from "@/components/houses/SetupHousePrompt";
+import { SkeletonText } from "@/components/skeleton/Skeleton";
+import { ItemGridSkeleton } from "@/components/skeleton/skeletons";
 import { batchMarkBoughtPath, markBoughtPath } from "@/lib/house-navigation";
 import { houseStorage } from "@/lib/house-storage";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 
-export function TasksScreen() {
+// Opening a transaction leaves this page; remembering the tab lets going back land on it again.
+let lastTab: GroceryTabKey = DEFAULT_GROCERY_TAB;
+
+export function TasksScreen({ view }: { view: TasksView | null }) {
   const router = useRouter();
+  const initial = view ? TASKS_VIEWS[view] : null;
   const { user } = useAuth();
   const currentUserId = user?.id ?? "";
   const currentUserName = user?.user_metadata?.displayName ?? user?.email ?? null;
@@ -78,9 +87,11 @@ export function TasksScreen() {
   const listStorage = useMemo(() => createListStorage(houseStorage), []);
   const [selectedListId, setSelectedListId] = useState<string | null>(null);
 
-  const [filters, setFilters] = useState<FilterSelection>(EMPTY_FILTER_SELECTION);
+  const [filters, setFilters] = useState<FilterSelection>(
+    initial?.filters ?? EMPTY_FILTER_SELECTION,
+  );
   const [sortId, setSortId] = useState(DEFAULT_GROCERY_SORT);
-  const [tab, setTab] = useState<GroceryTabKey>(DEFAULT_GROCERY_TAB);
+  const [tab, setTab] = useState<GroceryTabKey>(initial?.tab ?? lastTab);
   const [switcherOpen, setSwitcherOpen] = useState(false);
   const [manageOpen, setManageOpen] = useState(false);
   const [activeItemId, setActiveItemId] = useState<string | null>(null);
@@ -242,6 +253,7 @@ export function TasksScreen() {
 
   const handleTabChange = (key: GroceryTabKey) => {
     setTab(key);
+    lastTab = key;
     setFilters((current) =>
       pruneSelection(
         current,
@@ -277,11 +289,11 @@ export function TasksScreen() {
   return (
     <main
       className={cn(
-        "flex min-h-[calc(100dvh-4rem)] flex-col px-6 pt-6",
+        "flex min-h-[calc(100dvh-4rem)] flex-col px-6 pt-[calc(0.75rem+env(safe-area-inset-top))]",
         selecting ? (tab === "pending" ? "pb-60" : "pb-44") : "pb-24",
       )}
     >
-      <div className="flex items-center justify-between pb-4">
+      <div className="flex items-center justify-between pb-3">
         <button
           type="button"
           onClick={() => setSwitcherOpen(true)}
@@ -290,11 +302,12 @@ export function TasksScreen() {
         >
           {activeList ? (
             <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-muted">
-              <CategoryIcon name={listIconOption(activeList.icon).label} size={18} />
+              <ListIconImage label={listIconOption(activeList.icon).label} size={28} />
             </span>
           ) : null}
-          <span className="truncate font-display font text-xl font-normal">
-            {activeList?.name ?? "Groceries"}
+          <span className="truncate font-display text-xl font-medium">
+            {activeList?.name ??
+              (lists ? "Groceries" : <SkeletonText size="xl" className="w-32" />)}
           </span>
           <CaretDownIcon size={9} className="shrink-0" />
         </button>
@@ -304,9 +317,9 @@ export function TasksScreen() {
             type="button"
             onClick={() => setManageOpen(true)}
             aria-label="Edit this list"
-            className="flex size-10 items-center justify-center text-foreground transition-opacity hover:opacity-70 hover:cursor-pointer -mr-4"
+            className="flex size-10 items-center justify-center text-foreground transition-opacity hover:opacity-70 hover:cursor-pointer -mr-3"
           >
-            <MoreVerticalIcon size={3} />
+            <MoreVerticalIcon size={3.5} />
           </button>
         ) : null}
       </div>
@@ -326,14 +339,16 @@ export function TasksScreen() {
               defaultValue: DEFAULT_GROCERY_SORT,
               onChange: setSortId,
             }}
-            className="-mx-6 px-6 mt-6 mb-2"
+            className="-mx-6 mb-5 mt-5 px-5"
           />
         }
         renderPage={(key) => {
-          if (!itemsLoaded) return null;
+          if (!itemsLoaded) return <ItemGridSkeleton />;
           const pageItems = visibleByTab[key];
           if (pageItems.length === 0) {
-            const empty = <EmptyItems {...groceryEmptyCopy(key, { filtering, listEmpty })} />;
+            const empty = (
+              <EmptyItems image="list" {...groceryEmptyCopy(key, { filtering, listEmpty })} />
+            );
             if (key !== "bought") return empty;
             return (
               <div className="flex h-full flex-col">
@@ -346,7 +361,10 @@ export function TasksScreen() {
             return (
               <>
                 <div className="mb-3 flex min-h-8 items-center justify-between gap-3">
-                  <span aria-live="polite" className="font-display text-sm text-muted-foreground">
+                  <span
+                    aria-live="polite"
+                    className="font-display text-sm font-normal text-muted-foreground"
+                  >
                     {selection.count > 0
                       ? selectionLabel(selection.count)
                       : pendingCountLabel(pageItems.length)}
@@ -387,7 +405,10 @@ export function TasksScreen() {
             return (
               <>
                 <div className="mb-3 flex min-h-8 items-center justify-between gap-3">
-                  <span aria-live="polite" className="font-display text-sm text-muted-foreground">
+                  <span
+                    aria-live="polite"
+                    className="font-display text-sm font-normal text-muted-foreground"
+                  >
                     {assignedSelection.count > 0
                       ? selectionLabel(assignedSelection.count)
                       : assignedCountLabel(pageItems.length)}
@@ -469,6 +490,11 @@ export function TasksScreen() {
                   );
                 })}
               </ul>
+              {history.loadingOlder ? (
+                <div className="mt-3">
+                  <ItemGridSkeleton count={2} withHeader={false} />
+                </div>
+              ) : null}
               {olderSentinel}
             </>
           );
@@ -477,7 +503,7 @@ export function TasksScreen() {
 
       <div
         hidden={selecting}
-        className="fixed bottom-22.5 left-1/2 -translate-x-1/2 w-full max-w-md px-4 pointer-events-none"
+        className="fixed bottom-[calc(5.625rem+env(safe-area-inset-bottom))] left-1/2 -translate-x-1/2 w-full max-w-md px-4 pointer-events-none"
       >
         <button
           type="button"

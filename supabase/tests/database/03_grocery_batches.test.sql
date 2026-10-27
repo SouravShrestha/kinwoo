@@ -28,6 +28,7 @@ grant execute on all functions in schema tests to public;
 select tests.create_user('00000000-0000-4000-8000-0000000000e1', 'admin@test.local');
 select tests.create_user('00000000-0000-4000-8000-0000000000e2', 'buyer@test.local');
 select tests.create_user('00000000-0000-4000-8000-0000000000e3', 'other@test.local');
+select tests.create_user('00000000-0000-4000-8000-0000000000e4', 'outsider@test.local');
 
 select tests.as_user('00000000-0000-4000-8000-0000000000e1');
 select set_config('tests.house', (public.create_house('Flat')).id::text, true);
@@ -41,6 +42,7 @@ select set_config('tests.i2', (public.add_grocery_item(tests.id('list'), 'Onion'
 select set_config('tests.i3', (public.add_grocery_item(tests.id('list'), 'Milk')).id::text, true);
 select set_config('tests.i4', (public.add_grocery_item(tests.id('list'), 'Bread')).id::text, true);
 select set_config('tests.i5', (public.add_grocery_item(tests.id('list'), 'Eggs')).id::text, true);
+select set_config('tests.i6', (public.add_grocery_item(tests.id('list'), 'Rice')).id::text, true);
 
 select tests.as_user('00000000-0000-4000-8000-0000000000e2');
 select is(public.join_house(current_setting('tests.code'))->>'status', 'joined', 'buyer joins');
@@ -50,6 +52,7 @@ select public.claim_grocery_item(tests.id('i2'));
 select tests.as_user('00000000-0000-4000-8000-0000000000e3');
 select is(public.join_house(current_setting('tests.code'))->>'status', 'joined', 'other joins');
 select public.claim_grocery_item(tests.id('i3'));
+select public.claim_grocery_item(tests.id('i6'));
 
 -- Validation and all-or-nothing failures
 select tests.as_user('00000000-0000-4000-8000-0000000000e2');
@@ -73,10 +76,14 @@ select throws_ok(
   format('select public.mark_items_bought(%L, array[%L, gen_random_uuid()]::uuid[], 100)',
     tests.id('list'), tests.id('i1')),
   'P0001', 'NOT_FOUND', 'an unknown item fails the batch');
+select tests.as_user('00000000-0000-4000-8000-0000000000e4');
 select throws_ok(
   format('select public.mark_items_bought(%L, array[%L, %L]::uuid[], 100)',
-    tests.id('list'), tests.id('i1'), tests.id('i3')),
-  'P0001', 'FORBIDDEN', 'a member cannot buy an item claimed by someone else');
+    tests.id('list'), tests.id('i1'), tests.id('i2')),
+  'P0001', 'FORBIDDEN', 'a non-member cannot buy items');
+select throws_ok(format('select public.mark_item_bought(%L)', tests.id('i1')),
+  'P0001', 'FORBIDDEN', 'a non-member cannot buy a single item');
+select tests.as_user('00000000-0000-4000-8000-0000000000e2');
 
 select tests.as_superuser();
 select is((select count(*) from public.grocery_purchase_batches where house_id = tests.id('house')),
@@ -136,11 +143,13 @@ select is((select status::text from public.grocery_items where id = tests.id('i4
 select is((select count(*) from public.grocery_purchase_batches where house_id = tests.id('house')),
   1::bigint, 'no extra batch is written');
 
--- Admins can batch-buy items claimed by others, with a custom name
-select tests.as_user('00000000-0000-4000-8000-0000000000e1');
+-- Any member can buy items claimed by others, with a custom name
+select tests.as_user('00000000-0000-4000-8000-0000000000e2');
 select isnt(public.mark_items_bought(
   tests.id('list'), array[tests.id('i3'), tests.id('i5')], 9900, ' Weekly veg '), null,
-  'an admin can buy items claimed by someone else');
+  'a member can batch-buy an item claimed by someone else');
+select lives_ok(format('select public.mark_item_bought(%L)', tests.id('i6')),
+  'a member can buy a single item claimed by someone else');
 select tests.as_superuser();
 select is((select payload->>'label' from public.activity_log
             where type = 'grocery_batch.bought' and house_id = tests.id('house')

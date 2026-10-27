@@ -2,42 +2,28 @@
 
 import type { GroceryOverviewItem } from "@kinwoo/core/grocery";
 
-import { OverviewItemRow } from "@/components/home/OverviewItemRow";
-import { SectionHeader } from "@/components/home/SectionHeader";
+import { ItemCarousel } from "@/components/home/ItemCarousel";
 
 export function MyToBuySection({
+  houseId,
   items,
-  currentUserId,
   onItemPress,
 }: {
+  houseId: string;
   items: GroceryOverviewItem[];
-  currentUserId: string;
   onItemPress: (item: GroceryOverviewItem) => void;
 }) {
   return (
-    <div className="space-y-3">
-      <SectionHeader title="My to-buy" count={items.length} tone="primary" />
-      {items.length === 0 ? (
-        <div className="flex items-center justify-center rounded-2xl border border-dashed border-border p-4 text-center">
-          <p className="font-display text-sm text-muted-foreground">
-            You haven&apos;t claimed any items to buy
-          </p>
-        </div>
-      ) : (
-        <div className="space-y-2">
-          {items.map((item) => (
-            <OverviewItemRow
-              key={item.id}
-              item={item}
-              badge={{
-                label: item.assignedTo === currentUserId ? "Assigned" : "Claimed",
-                tone: "primary",
-              }}
-              onPress={onItemPress}
-            />
-          ))}
-        </div>
-      )}
-    </div>
+    <ItemCarousel
+      title="I’ll Get It"
+      viewAll={
+        items.length > 0
+          ? { label: "Everything assigned to me", view: "mine" }
+          : { label: "View all assigned items", view: "assigned" }
+      }
+      houseId={houseId}
+      items={items}
+      onItemPress={onItemPress}
+    />
   );
 }

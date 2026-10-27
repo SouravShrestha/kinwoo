@@ -17,12 +17,12 @@ export function AvatarStack({
 }) {
   const shown = members.slice(0, STACK_LIMIT);
   const hidden = total - shown.length;
-  const ring = surface === "card" ? "ring-card" : "ring-sheet";
+  const ring = surface === "card" ? "border-card" : "border-sheet";
 
   return (
     <span className="flex items-center">
       {shown.map((member, index) => (
-        <span key={index} className={cn("rounded-full", index > 0 && `-ml-2.5 ring-2 ${ring}`)}>
+        <span key={index} className={cn("rounded-full", index > 0 && `-ml-2.5 border-2 ${ring}`)}>
           <Avatar
             name={member.name}
             url={member.avatarUrl}
@@ -35,10 +35,10 @@ export function AvatarStack({
         <span
           aria-hidden
           className={cn(
-            "-ml-2.5 flex items-center justify-center rounded-full bg-border font-semibold ring-2",
+            "-ml-2.5 flex items-center justify-center rounded-full bg-border border-2 font-semibold",
             ring,
           )}
-          style={{ width: size, height: size, fontSize: size * 0.32 }}
+          style={{ width: size + 4, height: size + 4, fontSize: size * 0.32 }}
         >
           +{hidden}
         </span>

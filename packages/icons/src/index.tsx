@@ -1,7 +1,7 @@
 import * as geometry from "./data";
 import type { IconGeometry } from "./data";
 import { SvgIcon, type WebIconProps } from "./icon";
-import { activityGeometry, expenseCategoryGeometry, groceryCategoryGeometry } from "./semantic";
+import { activityGeometry } from "./semantic";
 
 export { DEFAULT_ICON_SIZE, type IconProps } from "./types";
 export type { WebIconProps } from "./icon";
@@ -55,6 +55,7 @@ export const FilterIcon = /*#__PURE__*/ icon(geometry.filterIcon);
 export const SortIcon = /*#__PURE__*/ icon(geometry.sortIcon);
 export const CaretDownIcon = /*#__PURE__*/ icon(geometry.caretDownIcon);
 export const PlusCircleIcon = /*#__PURE__*/ icon(geometry.plusCircleIcon);
+export const PlusCircleOutlineIcon = /*#__PURE__*/ icon(geometry.plusCircleOutlineIcon);
 export const CartMinusIcon = /*#__PURE__*/ icon(geometry.cartMinusIcon);
 export const CartCheckIcon = /*#__PURE__*/ icon(geometry.cartCheckIcon);
 export const CartPlusIcon = /*#__PURE__*/ icon(geometry.cartPlusIcon);
@@ -68,26 +69,8 @@ export const HousePlusIcon = /*#__PURE__*/ icon(geometry.housePlusIcon);
 export const FrownIcon = /*#__PURE__*/ icon(geometry.frownIcon);
 export const PulseIcon = /*#__PURE__*/ icon(geometry.pulseIcon);
 export const CheckCircleIcon = /*#__PURE__*/ icon(geometry.checkCircleIcon);
-export const VegetablesIcon = /*#__PURE__*/ icon(geometry.vegetablesIcon);
-export const FruitsIcon = /*#__PURE__*/ icon(geometry.fruitsIcon);
 export const ClockIcon = /*#__PURE__*/ icon(geometry.clockIcon);
 export const CheckIcon = /*#__PURE__*/ icon(geometry.checkIcon);
-export const StaplesIcon = /*#__PURE__*/ icon(geometry.staplesIcon);
-export const SpicesIcon = /*#__PURE__*/ icon(geometry.spicesIcon);
-export const DairyIcon = /*#__PURE__*/ icon(geometry.dairyIcon);
-export const MeatFishIcon = /*#__PURE__*/ icon(geometry.meatFishIcon);
-export const BakeryIcon = /*#__PURE__*/ icon(geometry.bakeryIcon);
-export const SnacksIcon = /*#__PURE__*/ icon(geometry.snacksIcon);
-export const BeveragesIcon = /*#__PURE__*/ icon(geometry.beveragesIcon);
-export const HouseholdIcon = /*#__PURE__*/ icon(geometry.householdIcon);
-export const OtherIcon = /*#__PURE__*/ icon(geometry.otherIcon);
-export const PersonalCareIcon = /*#__PURE__*/ icon(geometry.personalCareIcon);
-export const GroceryIcon = /*#__PURE__*/ icon(geometry.groceryIcon);
-export const TodoIcon = /*#__PURE__*/ icon(geometry.todoIcon);
-export const WalletIcon = /*#__PURE__*/ icon(geometry.walletIcon);
-export const EventsIcon = /*#__PURE__*/ icon(geometry.eventsIcon);
-export const ShoppingIcon = /*#__PURE__*/ icon(geometry.shoppingIcon);
-export const DiningIcon = /*#__PURE__*/ icon(geometry.diningIcon);
 export const ListSettingsIcon = /*#__PURE__*/ icon(geometry.listSettingsIcon);
 export const HeartIcon = /*#__PURE__*/ icon(geometry.heartIcon);
 export const TrashOutlineIcon = /*#__PURE__*/ icon(geometry.trashOutlineIcon);
@@ -110,9 +93,6 @@ export const ShieldCheckOutlineIcon = /*#__PURE__*/ icon(geometry.shieldCheckOut
 export const RupeeIcon = /*#__PURE__*/ icon(geometry.rupeeIcon);
 export const CalendarIcon = /*#__PURE__*/ icon(geometry.calendarIcon);
 export const SharesIcon = /*#__PURE__*/ icon(geometry.sharesIcon);
-export const UtilitiesIcon = /*#__PURE__*/ icon(geometry.utilitiesIcon);
-export const RentIcon = /*#__PURE__*/ icon(geometry.rentIcon);
-export const CarIcon = /*#__PURE__*/ icon(geometry.carIcon);
 export const GlobeFilledIcon = /*#__PURE__*/ icon(geometry.globeFilledIcon);
 export const CloudLockFilledIcon = /*#__PURE__*/ icon(geometry.cloudLockFilledIcon);
 export const SimplifyIcon = /*#__PURE__*/ icon(geometry.simplifyIcon);
@@ -127,18 +107,16 @@ export const MoveIcon = /*#__PURE__*/ icon(geometry.moveIcon);
 
 // Icons chosen by name; see semantic.ts.
 
-export function CategoryIcon({ name, size }: { name: string | null | undefined; size: number }) {
-  return <SvgIcon size={size} geometry={groceryCategoryGeometry(name)} />;
-}
-
-export function ExpenseCategoryIcon({ category, size }: { category: string; size: number }) {
-  return <SvgIcon size={size} geometry={expenseCategoryGeometry(category)} />;
-}
-
 export function ActivityKindIcon({ name, size }: { name: string; size: number }) {
   return <SvgIcon size={size} geometry={activityGeometry(name)} />;
 }
 export const RecordPaymentIcon = /*#__PURE__*/ icon(geometry.recordPaymentIcon);
 export const GiveMoneyIcon = /*#__PURE__*/ icon(geometry.giveMoneyIcon);
 export const ResetIcon = /*#__PURE__*/ icon(geometry.resetIcon);
-export const PaymentIcon = /*#__PURE__*/ icon(geometry.paymentIcon);
+export const InstallIcon = /*#__PURE__*/ icon(geometry.installIcon);
+export const MailIcon = /*#__PURE__*/ icon(geometry.mailIcon);
+export const BugIcon = /*#__PURE__*/ icon(geometry.bugIcon);
+export const UploadPhotoIcon = /*#__PURE__*/ icon(geometry.uploadPhotoIcon);
+export const LinkIcon = /*#__PURE__*/ icon(geometry.linkIcon);
+export const UnlinkIcon = /*#__PURE__*/ icon(geometry.unlinkIcon);
+export const FeedbackIcon = /*#__PURE__*/ icon(geometry.feedbackIcon);

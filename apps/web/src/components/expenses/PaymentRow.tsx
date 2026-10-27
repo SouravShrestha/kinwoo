@@ -7,7 +7,9 @@ import {
   type Settlement,
 } from "@kinwoo/core/expenses";
 import { formatPaise } from "@kinwoo/core/grocery";
-import { PaymentIcon } from "@kinwoo/icons";
+import Image from "next/image";
+
+import { PAYMENT_IMAGE } from "@/lib/category-images";
 
 export function PaymentRow({
   settlement,
@@ -30,13 +32,12 @@ export function PaymentRow({
     >
       <span aria-hidden className="flex w-8 shrink-0 flex-col items-center font-display">
         <span className="text-xs text-muted-foreground">{month}</span>
-        <span className="text-lg leading-6 text-muted-foreground">{day}</span>
+        <span className="text-lg leading-[calc(1.5rem*var(--font-scale,1))] text-muted-foreground">
+          {day}
+        </span>
       </span>
-      <span
-        aria-hidden
-        className="ml-3 mr-4 flex size-10 shrink-0 items-center justify-center text-accent"
-      >
-        <PaymentIcon size={26} />
+      <span aria-hidden className="ml-3 mr-4 flex size-10 shrink-0 items-center justify-center">
+        <Image src={PAYMENT_IMAGE} alt="" width={36} height={36} className="object-contain" />
       </span>
       <span className="min-w-0 flex-1 font-display text-sm text-foreground">
         {summary.title} <span className="font-medium">{amount}</span>

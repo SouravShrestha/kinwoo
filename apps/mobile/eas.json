@@ -7,15 +7,17 @@
     "local": {
       "developmentClient": true,
       "distribution": "internal",
+      "environment": "development",
       "android": {
         "buildType": "apk"
       }
     },
     "development": {
-      "developmentClient": true,
+      "developmentClient": false,
       "distribution": "internal",
+      "environment": "development",
       "android": {
-        "buildType": "app-bundle"
+        "buildType": "apk"
       },
       "env": {
         "EXPO_PUBLIC_API_URL": "https://test.kinwoo.in"
@@ -23,11 +25,12 @@
     },
     "production": {
       "autoIncrement": true,
+      "environment": "production",
       "android": {
         "buildType": "app-bundle"
       },
       "env": {
-        "EXPO_PUBLIC_API_URL": "https://kinwoo.in"
+        "EXPO_PUBLIC_API_URL": "https://app.kinwoo.in"
       }
     }
   },

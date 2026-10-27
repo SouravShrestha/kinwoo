@@ -18,6 +18,7 @@ export const INVITE_SCREEN_SUBTITLE =
 
 export type HouseScreenName = keyof typeof HOUSE_SCREEN_TITLES;
 
+export const JOIN_BLOCKED_TITLE = "Join a house";
 export const JOIN_SCREEN_HEADING = "Got a code?";
 export const JOIN_SCREEN_SUBTITLE = "Got a 6-character code from a flatmate? Enter it below.";
 export const JOIN_SCAN_NOT_INVITE = "That QR code isn't a Kinwoo invite.";

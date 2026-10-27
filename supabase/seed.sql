@@ -44,3 +44,10 @@ on conflict (house_id, user_id) do nothing;
 insert into public.house_invites (house_id, code, created_by)
 values ('00000000-0000-4000-8000-0000000000b1', 'SEED22', '00000000-0000-4000-8000-0000000000a1')
 on conflict do nothing;
+
+-- Where the push trigger posts locally (Kong, inside the Docker network) and the shared secret
+-- it sends. The secret must match PUSH_FUNCTION_SECRET in supabase/functions/.env.
+select vault.create_secret('http://supabase_kong_kinwoo:8000/functions/v1/send-push', 'push_function_url')
+ where not exists (select 1 from vault.secrets where name = 'push_function_url');
+select vault.create_secret('local-push-secret', 'push_function_secret')
+ where not exists (select 1 from vault.secrets where name = 'push_function_secret');

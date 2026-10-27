@@ -13,15 +13,17 @@ import {
 import {
   ArrowRightIcon,
   CaretDownIcon,
-  CategoryIcon,
   CheckCircleIcon,
   CheckIcon,
   ClockIcon,
   PlusCircleIcon,
 } from "@kinwoo/icons";
+import { ItemCategoryImage, ListIconImage } from "@/components/CategoryImages";
+import { SkeletonText } from "@/components/skeleton/Skeleton";
 import { useEffect, useRef, useState, type AnimationEvent } from "react";
 
 import { useHouseNavigation } from "@/lib/house-navigation";
+import { useSwipeToClose } from "@/lib/use-swipe-to-close";
 import { cn } from "@/lib/utils";
 
 import { NewListSheet } from "./NewListSheet";
@@ -33,7 +35,7 @@ const NO_UNIT = "__none__";
 const NEW_LIST = "__new_list__";
 
 const FIELD =
-  "flex h-12 items-center rounded-xl bg-muted font-display text-base text-foreground focus-within:outline-2 focus-within:outline-foreground";
+  "flex h-12 items-center rounded-xl bg-muted font-display text-base font-normal text-foreground focus-within:outline-2 focus-within:outline-foreground";
 const FIELD_BUTTON =
   "gap-2 px-3.5 transition-opacity hover:cursor-pointer hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground";
 const FOCUS_RING =
@@ -43,6 +45,8 @@ export function AddItemScreen({ listId }: { listId: string | null }) {
   const { activeHouse, ready } = useActiveHouse();
   const { goBack, goHome } = useHouseNavigation();
   const [closing, setClosing] = useState(false);
+  const screenRef = useRef<HTMLElement>(null);
+  useSwipeToClose(screenRef, !closing, () => setClosing(true));
   const [addAnother, setAddAnother] = useState(true);
   const [picker, setPicker] = useState<Picker | null>(null);
   const [newListOpen, setNewListOpen] = useState(false);
@@ -88,6 +92,7 @@ export function AddItemScreen({ listId }: { listId: string | null }) {
 
   return (
     <main
+      ref={screenRef}
       onAnimationEnd={onAnimationEnd}
       className={cn(
         "flex h-dvh flex-col overflow-hidden bg-background",
@@ -115,7 +120,9 @@ export function AddItemScreen({ listId }: { listId: string | null }) {
             <ArrowRightIcon size={28} className="rotate-90" />
           </button>
           <h1 className="flex min-w-0 items-center justify-center font-display text-lg text-foreground">
-            {form.lists.length > 1 ? (
+            {!activeList ? (
+              <SkeletonText size="lg" align="center" className="w-24" />
+            ) : form.lists.length > 1 ? (
               <button
                 type="button"
                 aria-haspopup="dialog"
@@ -143,7 +150,7 @@ export function AddItemScreen({ listId }: { listId: string | null }) {
           </button>
         </header>
 
-        <div className="space-y-8">
+        <div className="space-y-8 pb-8">
           <div>
             <div className="flex gap-3">
               <button
@@ -156,7 +163,7 @@ export function AddItemScreen({ listId }: { listId: string | null }) {
                   FOCUS_RING,
                 )}
               >
-                <CategoryIcon name={category?.name} size={26} />
+                <ItemCategoryImage name={category?.name} size={40} />
               </button>
               <label htmlFor="item-name" className="sr-only">
                 Item name
@@ -185,7 +192,7 @@ export function AddItemScreen({ listId }: { listId: string | null }) {
                 id="item-name-hint"
                 role={form.error ? "alert" : undefined}
                 className={cn(
-                  "mt-2 text-right font-display text-sm",
+                  "mt-2 text-right font-display text-sm font-normal",
                   form.error ? "text-destructive" : "text-muted-foreground",
                 )}
               >
@@ -237,7 +244,7 @@ export function AddItemScreen({ listId }: { listId: string | null }) {
               onChange={(event) => form.setQuantity(event.target.value)}
               className={cn(
                 FIELD,
-                "w-20 shrink-0 justify-center px-2 text-center outline-none placeholder:text-muted-foreground",
+                "w-20 shrink-0 justify-center text-center outline-none placeholder:text-muted-foreground",
               )}
             />
             <button
@@ -288,7 +295,7 @@ export function AddItemScreen({ listId }: { listId: string | null }) {
             aria-checked={addAnother}
             onClick={() => setAddAnother((value) => !value)}
             className={cn(
-              "ml-auto flex w-fit items-center gap-3 font-display text-base text-foreground hover:cursor-pointer",
+              "ml-auto flex w-fit items-center gap-3 font-display text-base font-normal text-foreground hover:cursor-pointer",
               FOCUS_RING,
             )}
           >
@@ -315,7 +322,7 @@ export function AddItemScreen({ listId }: { listId: string | null }) {
           ...form.lists.map((list) => ({
             id: list.id,
             label: list.name,
-            icon: <CategoryIcon name={listIconOption(list.icon).label} size={24} />,
+            icon: <ListIconImage label={listIconOption(list.icon).label} size={36} />,
           })),
           { id: NEW_LIST, label: "New list", icon: <PlusCircleIcon size={24} />, dashed: true },
         ]}
@@ -345,7 +352,7 @@ export function AddItemScreen({ listId }: { listId: string | null }) {
         options={form.categories.map((c) => ({
           id: c.id,
           label: c.name,
-          icon: <CategoryIcon name={c.name} size={32} />,
+          icon: <ItemCategoryImage name={c.name} size={48} />,
         }))}
         selectedId={form.categoryId}
         onSelect={(id) => {

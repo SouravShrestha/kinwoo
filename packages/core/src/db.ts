@@ -11,6 +11,7 @@ export type ProfileRow = {
   locale: string;
   theme: ThemePreference;
   notifications_enabled: boolean;
+  muted_push_types: string[];
   created_at: string;
   updated_at: string;
 };
@@ -22,12 +23,14 @@ export type Profile = {
   locale: string;
   theme: ThemePreference;
   notificationsEnabled: boolean;
+  mutedPushTypes: string[];
 };
 
 export type ProfilePreferences = {
   locale?: string;
   theme?: ThemePreference;
   notificationsEnabled?: boolean;
+  mutedPushTypes?: string[];
 };
 
 // Inserts come from the handle_new_user trigger, never from a client.
@@ -35,7 +38,15 @@ export type ProfileInsert = Pick<ProfileRow, "id"> & Partial<Omit<ProfileRow, "i
 
 // Only the columns the authenticated role holds an UPDATE grant on.
 export type ProfileUpdate = Partial<
-  Pick<ProfileRow, "display_name" | "avatar_url" | "locale" | "theme" | "notifications_enabled">
+  Pick<
+    ProfileRow,
+    | "display_name"
+    | "avatar_url"
+    | "locale"
+    | "theme"
+    | "notifications_enabled"
+    | "muted_push_types"
+  >
 >;
 
 export type { Database, Json } from "./database.generated";

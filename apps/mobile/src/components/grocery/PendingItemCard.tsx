@@ -1,11 +1,13 @@
 import { itemUrgencyLabel, itemUrgencyTone, type GroceryItem } from "@kinwoo/core/grocery";
-import { ArrowRightIcon, CategoryIcon, TickIcon } from "@kinwoo/icons/native";
+import { ArrowRightIcon, TickIcon } from "@kinwoo/icons/native";
 import { colors } from "@kinwoo/tokens/native";
 import { Text, View } from "react-native";
 
 import { Avatar } from "@/components/houses/Avatar";
 import { Pressable } from "@/components/Pressable";
 import { useTheme } from "@/theme/ThemeProvider";
+
+import { ItemCategoryImage } from "./ItemCategoryImage";
 
 const ASSIGNEE_AVATAR_SIZE = 24;
 
@@ -64,12 +66,8 @@ export function PendingItemCard({
         className="gap-3 rounded-2xl p-3 active:opacity-80"
       >
         <View className="flex-row items-center justify-between">
-          <View className="size-6 items-center justify-center">
-            <CategoryIcon
-              name={item.categoryName ?? undefined}
-              size={20}
-              color={palette.foreground}
-            />
+          <View className="size-8 items-center justify-center">
+            <ItemCategoryImage name={item.categoryName} size={32} />
             {selected ? (
               <View className="absolute -right-1 -top-1 size-4 items-center justify-center rounded-full bg-foreground">
                 <TickIcon size={7} color={palette.background} />

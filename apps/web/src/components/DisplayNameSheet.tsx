@@ -44,13 +44,14 @@ export function DisplayNameSheet({ open }: { open: boolean }) {
       zClassName="z-105"
     >
       <form
+        className="pb-2"
         onSubmit={(event) => {
           event.preventDefault();
           void submit();
         }}
       >
-        <h2 className="font-display text-2xl font-medium">What&apos;s your full name?</h2>
-        <p className="mt-2 text-sm text-muted-foreground">
+        <h2 className="font-sans text-2xl font-medium">What&apos;s your full name?</h2>
+        <p className="mt-2 text-[calc(14px*var(--font-scale,1))] leading-[normal] text-muted-foreground">
           Enter your first and last name so others know it&apos;s you.
         </p>
 

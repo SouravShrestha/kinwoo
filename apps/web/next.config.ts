@@ -8,6 +8,9 @@ const pkg = JSON.parse(readFileSync(path.join(__dirname, "../../package.json"), 
 
 const nextConfig: NextConfig = {
   devIndicators: false,
+  // iOS reads apple-touch-startup-image from <head> when the app is added to the home screen;
+  // streamed metadata lands in <body>, so every user agent gets blocking metadata instead.
+  htmlLimitedBots: /.*/,
   transpilePackages: ["@kinwoo/core", "@kinwoo/client", "@kinwoo/icons"],
   outputFileTracingRoot: path.join(__dirname, "../../"),
   env: {
@@ -17,6 +20,9 @@ const nextConfig: NextConfig = {
   // without it every /_next/image request runs the Worker to return the original. Images ship
   // pre-sized instead and load straight from static assets.
   images: { unoptimized: true },
+  // Pages are thin wrappers around client screens that load their data through React Query, so
+  // reusing a visited page's RSC payload is safe and saves a Worker round trip per tab switch.
+  experimental: { staleTimes: { dynamic: 300 } },
   eslint: {
     ignoreDuringBuilds: true,
   },

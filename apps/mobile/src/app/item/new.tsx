@@ -11,7 +11,6 @@ import {
 import {
   ArrowRightIcon,
   CaretDownIcon,
-  CategoryIcon,
   CheckCircleIcon,
   CheckIcon,
   ClockIcon,
@@ -32,9 +31,12 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { ItemCategoryImage } from "@/components/grocery/ItemCategoryImage";
+import { ListIconImage } from "@/components/grocery/ListIconImage";
 import { NewListSheet } from "@/components/grocery/NewListSheet";
 import { OptionSheet, type SheetOption } from "@/components/OptionSheet";
 import { Pressable } from "@/components/Pressable";
+import { SkeletonText } from "@/components/skeleton/Skeleton";
 import { SwipeDownScreen } from "@/components/SwipeDownScreen";
 import { goBack, goHome } from "@/lib/house-navigation";
 import { useSwipeDownToDismiss } from "@/lib/use-swipe-down-to-dismiss";
@@ -121,7 +123,9 @@ export default function AddItemScreen() {
                 </View>
               </Pressable>
               <View className="min-w-0 flex-1 items-center">
-                {form.lists.length > 1 ? (
+                {!activeList ? (
+                  <SkeletonText size="lg" className="w-24" />
+                ) : form.lists.length > 1 ? (
                   <Pressable
                     accessibilityRole="button"
                     accessibilityLabel={`Adding to ${activeList?.name ?? ""}. Change list`}
@@ -171,7 +175,7 @@ export default function AddItemScreen() {
                     allowDoublePress
                     className="size-12 items-center justify-center rounded-xl bg-muted active:opacity-80"
                   >
-                    <CategoryIcon name={category?.name} size={26} color={palette.foreground} />
+                    <ItemCategoryImage name={category?.name} size={40} />
                   </Pressable>
                   <TextInput
                     ref={nameRef}
@@ -335,9 +339,7 @@ export default function AddItemScreen() {
             ...form.lists.map((list) => ({
               id: list.id,
               label: list.name,
-              icon: (color: string) => (
-                <CategoryIcon name={listIconOption(list.icon).label} size={24} color={color} />
-              ),
+              icon: () => <ListIconImage label={listIconOption(list.icon).label} size={36} />,
             })),
             {
               id: NEW_LIST,
@@ -372,7 +374,7 @@ export default function AddItemScreen() {
           options={form.categories.map((c) => ({
             id: c.id,
             label: c.name,
-            icon: (color) => <CategoryIcon name={c.name} size={32} color={color} />,
+            icon: () => <ItemCategoryImage name={c.name} size={48} />,
           }))}
           selectedId={form.categoryId}
           onSelect={(id) => {

@@ -10,6 +10,7 @@ const profile: Profile = {
   locale: "en",
   theme: "system",
   notificationsEnabled: true,
+  mutedPushTypes: [],
 };
 
 function fakeRepository(overrides: Partial<IProfileRepository> = {}): IProfileRepository {
@@ -20,6 +21,7 @@ function fakeRepository(overrides: Partial<IProfileRepository> = {}): IProfileRe
     updateAvatarUrl: async () => profile,
     setAvatarUrlIfMissing: async () => profile,
     listAvatarUrls: async () => [],
+    isOwnUpload: () => false,
     ...overrides,
   };
 }
@@ -57,29 +59,16 @@ describe("ProfileService.getProfile", () => {
   });
 });
 
-const GOOGLE_AVATAR = "https://lh3.googleusercontent.com/a/photo=s96-c";
 const PRESET = "https://cdn.example.com/avatars/one.png";
 
-describe("ProfileService social avatar", () => {
-  it("defaults an empty avatar to the social one instead of a preset", async () => {
-    const setAvatarUrlIfMissing = vi.fn(async () => ({ ...profile, avatarUrl: GOOGLE_AVATAR }));
-    const service = new ProfileService(
-      fakeRepository({ setAvatarUrlIfMissing, listAvatarUrls: async () => [PRESET] }),
-    );
-
-    const result = await service.getProfile("user-1", GOOGLE_AVATAR);
-
-    expect(setAvatarUrlIfMissing).toHaveBeenCalledWith("user-1", GOOGLE_AVATAR);
-    expect(result).toMatchObject({ ok: true, data: { avatarUrl: GOOGLE_AVATAR } });
-  });
-
-  it("falls back to a preset when the social URL is not from Google", async () => {
+describe("ProfileService default avatar", () => {
+  it("assigns a preset to an empty avatar", async () => {
     const setAvatarUrlIfMissing = vi.fn(async () => profile);
     const service = new ProfileService(
       fakeRepository({ setAvatarUrlIfMissing, listAvatarUrls: async () => [PRESET] }),
     );
 
-    await service.getProfile("user-1", "https://evil.example.com/track.png");
+    await service.getProfile("user-1");
 
     expect(setAvatarUrlIfMissing).toHaveBeenCalledWith("user-1", PRESET);
   });
@@ -91,41 +80,49 @@ describe("ProfileService social avatar", () => {
       fakeRepository({ findById: async () => owned, setAvatarUrlIfMissing }),
     );
 
-    await expect(service.getProfile("user-1", GOOGLE_AVATAR)).resolves.toEqual({
+    await expect(service.getProfile("user-1")).resolves.toEqual({
       ok: true,
       data: owned,
     });
     expect(setAvatarUrlIfMissing).not.toHaveBeenCalled();
   });
 
-  it("lists the social avatar first, ahead of the presets", async () => {
+  it("lists only the presets", async () => {
     const service = new ProfileService(fakeRepository({ listAvatarUrls: async () => [PRESET] }));
 
-    await expect(service.listAvatars(GOOGLE_AVATAR)).resolves.toEqual({
-      ok: true,
-      data: [GOOGLE_AVATAR, PRESET],
-    });
     await expect(service.listAvatars()).resolves.toEqual({ ok: true, data: [PRESET] });
   });
 
-  it("lets the user switch back to the social avatar", async () => {
+  it("rejects an external URL", async () => {
     const updateAvatarUrl = vi.fn(async () => profile);
     const service = new ProfileService(
       fakeRepository({ updateAvatarUrl, listAvatarUrls: async () => [PRESET] }),
     );
 
-    await service.setAvatar("user-1", GOOGLE_AVATAR, GOOGLE_AVATAR);
+    const result = await service.setAvatar("user-1", "https://lh3.googleusercontent.com/a/x");
 
-    expect(updateAvatarUrl).toHaveBeenCalledWith("user-1", GOOGLE_AVATAR);
+    expect(result).toMatchObject({ ok: false, code: "INVALID_INPUT" });
+    expect(updateAvatarUrl).not.toHaveBeenCalled();
+  });
+});
+
+describe("ProfileService.setAvatar upload", () => {
+  it("accepts a file from the user's own upload folder", async () => {
+    const updateAvatarUrl = vi.fn(async () => profile);
+    const service = new ProfileService(
+      fakeRepository({ updateAvatarUrl, isOwnUpload: (id, url) => url === `${id}/x.jpg` }),
+    );
+
+    await service.setAvatar("user-1", "user-1/x.jpg");
+
+    expect(updateAvatarUrl).toHaveBeenCalledWith("user-1", "user-1/x.jpg");
   });
 
-  it("rejects a social-looking URL the account does not own", async () => {
+  it("rejects a file outside the user's folder", async () => {
     const updateAvatarUrl = vi.fn(async () => profile);
-    const service = new ProfileService(
-      fakeRepository({ updateAvatarUrl, listAvatarUrls: async () => [PRESET] }),
-    );
+    const service = new ProfileService(fakeRepository({ updateAvatarUrl }));
 
-    const result = await service.setAvatar("user-1", GOOGLE_AVATAR);
+    const result = await service.setAvatar("user-1", "user-2/x.jpg");
 
     expect(result).toMatchObject({ ok: false, code: "INVALID_INPUT" });
     expect(updateAvatarUrl).not.toHaveBeenCalled();
@@ -195,6 +192,17 @@ describe("ProfileService.setPreferences", () => {
     // A one-element array stringifies to a valid code, so the type is checked too.
     const array = ["en"] as unknown as string;
     expect((await service.setPreferences("user-1", { locale: array })).ok).toBe(false);
+  });
+
+  it("accepts known muted push types and rejects anything else", async () => {
+    const service = new ProfileService(fakeRepository());
+    expect((await service.setPreferences("user-1", { mutedPushTypes: [] })).ok).toBe(true);
+    expect(
+      (await service.setPreferences("user-1", { mutedPushTypes: ["join_requested"] })).ok,
+    ).toBe(true);
+    expect((await service.setPreferences("user-1", { mutedPushTypes: ["spam"] })).ok).toBe(false);
+    const notList = "join_requested" as unknown as string[];
+    expect((await service.setPreferences("user-1", { mutedPushTypes: notList })).ok).toBe(false);
   });
 
   it("reports an error state when the write throws", async () => {

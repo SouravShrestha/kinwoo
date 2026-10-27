@@ -11,6 +11,7 @@ import {
 } from "react";
 
 import { useAuth } from "../auth/use-auth";
+import { ownUploadPath, pruneAvatars, putAvatar } from "./avatar-upload";
 import {
   fetchProfile,
   updateAvatar as patchAvatar,
@@ -28,6 +29,7 @@ export interface ProfileContextValue {
   setDisplayName: (value: string) => Promise<void>;
   setPreferences: (preferences: ProfilePreferences) => Promise<void>;
   setAvatar: (avatarUrl: string) => Promise<void>;
+  uploadAvatar: (file: ArrayBuffer | Blob, id: string) => Promise<void>;
   needsDisplayName: boolean;
 }
 
@@ -46,7 +48,7 @@ const messageFor = (cause: unknown) =>
   cause instanceof Error ? cause.message : "Could not load your profile.";
 
 export function ProfileProvider({ children }: { children: ReactNode }) {
-  const { user, isLoggedIn, ready: authReady } = useAuth();
+  const { client, user, isLoggedIn, ready: authReady } = useAuth();
   const [loaded, setLoaded] = useState<LoadedState>(EMPTY);
 
   const userId = user?.id ?? null;
@@ -108,8 +110,25 @@ export function ProfileProvider({ children }: { children: ReactNode }) {
     async (avatarUrl: string) => {
       const updated = await patchAvatar(avatarUrl);
       setLoaded({ userId, profile: updated, error: null });
+      if (userId) {
+        void pruneAvatars(client, userId, ownUploadPath(updated.avatarUrl, userId));
+      }
     },
-    [userId],
+    [client, userId],
+  );
+
+  const uploadAvatar = useCallback(
+    async (file: ArrayBuffer | Blob, id: string) => {
+      if (!userId) throw new Error("Not signed in.");
+      const uploaded = await putAvatar(client, userId, file, id);
+      try {
+        await setAvatar(uploaded.url);
+      } catch (cause) {
+        void pruneAvatars(client, userId, ownUploadPath(profile?.avatarUrl ?? null, userId));
+        throw cause;
+      }
+    },
+    [client, userId, profile?.avatarUrl, setAvatar],
   );
 
   const value = useMemo<ProfileContextValue>(
@@ -121,9 +140,10 @@ export function ProfileProvider({ children }: { children: ReactNode }) {
       setDisplayName,
       setPreferences,
       setAvatar,
+      uploadAvatar,
       needsDisplayName: ready && profile !== null && profile.displayName === null,
     }),
-    [profile, ready, error, refresh, setDisplayName, setPreferences, setAvatar],
+    [profile, ready, error, refresh, setDisplayName, setPreferences, setAvatar, uploadAvatar],
   );
 
   return <ProfileContext.Provider value={value}>{children}</ProfileContext.Provider>;

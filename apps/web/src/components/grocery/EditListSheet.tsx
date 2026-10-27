@@ -19,7 +19,8 @@ import {
   type UpdateListInput,
 } from "@kinwoo/core/grocery";
 import { memberDisplayName } from "@kinwoo/core/houses";
-import { CategoryIcon, TrashIcon } from "@kinwoo/icons";
+import { TrashIcon } from "@kinwoo/icons";
+import { ListIconImage } from "@/components/CategoryImages";
 import { useRef, useState } from "react";
 
 import { BottomSheet } from "@/components/BottomSheet";
@@ -203,7 +204,7 @@ export function EditListSheet({
                   disabled={!canEditMeta}
                   className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-muted text-foreground transition-opacity hover:cursor-pointer hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground disabled:cursor-not-allowed disabled:opacity-50"
                 >
-                  <CategoryIcon name={selectedIcon.label} size={26} />
+                  <ListIconImage label={selectedIcon.label} size={40} />
                 </button>
                 <label htmlFor="edit-list-name" className="sr-only">
                   List name
@@ -218,15 +219,15 @@ export function EditListSheet({
                   placeholder="e.g. Party Supplies, Weekly Essentials"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="h-12 min-w-0 flex-1 rounded-xl bg-muted px-5 font-display text-base text-foreground outline-none placeholder:text-muted-foreground focus-visible:outline-2 focus-visible:outline-foreground read-only:cursor-not-allowed read-only:opacity-60"
+                  className="h-12 min-w-0 flex-1 rounded-xl bg-muted px-5 font-display text-base font-normal text-foreground outline-none placeholder:text-muted-foreground focus-visible:outline-2 focus-visible:outline-foreground read-only:cursor-not-allowed read-only:opacity-60"
                 />
               </div>
 
               {canEditVisibility ? (
                 <div className="mt-10 flex items-center justify-between gap-4">
                   <div className="min-w-0">
-                    <p className="font-display text-base text-foreground">Visibility</p>
-                    <p className="mt-1 font-display text-sm text-muted-foreground">
+                    <p className="font-display text-base font-normal text-foreground">Visibility</p>
+                    <p className="mt-1 font-display text-sm font-normal text-muted-foreground">
                       {wasDefault
                         ? "The default list is always public"
                         : visibility === "private"
@@ -245,8 +246,10 @@ export function EditListSheet({
               {isAdmin && canBeDefault ? (
                 <div className="mt-8 flex items-center justify-between gap-4">
                   <div className="min-w-0">
-                    <p className="font-display text-base text-foreground">Default list</p>
-                    <p className="mt-1 font-display text-sm text-muted-foreground">
+                    <p className="font-display text-base font-normal text-foreground">
+                      Default list
+                    </p>
+                    <p className="mt-1 font-display text-sm font-normal text-muted-foreground">
                       {wasDefault
                         ? "This is the default. Set another list as default to change it."
                         : "New items land here"}
@@ -263,17 +266,19 @@ export function EditListSheet({
 
               {creator ? (
                 <div className="mt-8">
-                  <p className="font-display text-sm text-muted-foreground">Created by</p>
+                  <p className="font-display text-sm font-normal text-muted-foreground">
+                    Created by
+                  </p>
                   <div className="mt-3 flex min-w-0 items-center gap-3">
                     <Avatar name={creator.displayName} url={creator.avatarUrl} size={36} />
                     <div className="min-w-0">
-                      <p className="truncate font-display text-base text-foreground">
+                      <p className="truncate font-display text-base font-normal text-foreground">
                         {creator.userId === currentUserId
                           ? "You"
                           : memberDisplayName(creator.displayName)}
                       </p>
                       {creator.email ? (
-                        <p className="truncate font-display text-sm text-muted-foreground">
+                        <p className="truncate font-display text-sm font-normal text-muted-foreground">
                           {creator.email}
                         </p>
                       ) : null}

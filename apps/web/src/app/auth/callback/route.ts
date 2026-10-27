@@ -1,4 +1,9 @@
-import { buildRedirectUrl, resolveOrigin, safeNextPath } from "@kinwoo/core/auth";
+import {
+  buildRedirectUrl,
+  providerErrorCode,
+  resolveOrigin,
+  safeNextPath,
+} from "@kinwoo/core/auth";
 import type { EmailOtpType } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
 
@@ -12,7 +17,9 @@ export async function GET(request: Request) {
   const next = safeNextPath(url.searchParams.get("next"));
 
   if (url.searchParams.get("error")) {
-    return NextResponse.redirect(buildRedirectUrl(origin, next, "provider_denied"));
+    return NextResponse.redirect(
+      buildRedirectUrl(origin, next, providerErrorCode(url.searchParams)),
+    );
   }
 
   const code = url.searchParams.get("code");

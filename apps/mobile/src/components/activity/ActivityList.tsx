@@ -43,16 +43,18 @@ function ActivityIcon({
         <ActivityKindIcon
           name={activityIconName(entry)}
           size={20}
-          color={colors[resolvedTheme].foreground}
+          color={colors[resolvedTheme][entry.readAt ? "mutedForeground" : "foreground"]}
         />
       </View>
       {entry.actorId ? (
         <View className="absolute -bottom-1.5 -right-1.5 rounded-full bg-background p-0.5">
-          <Avatar
-            name={actor?.displayName ?? entry.actorName}
-            url={actor?.avatarUrl ?? null}
-            size={ACTOR_AVATAR_SIZE}
-          />
+          <View className={entry.readAt ? "opacity-50" : ""}>
+            <Avatar
+              name={actor?.displayName ?? entry.actorName}
+              url={actor?.avatarUrl ?? null}
+              size={ACTOR_AVATAR_SIZE}
+            />
+          </View>
         </View>
       ) : null}
     </View>
@@ -69,8 +71,13 @@ function ActivityDetail({
   const detail = formatActivityDetail(entry, currentUserId);
   if (!detail) return null;
 
-  const textColor = detail.tone === "lent" ? "text-accent" : "text-destructive";
-  const lineColor = detail.tone === "lent" ? "bg-accent" : "bg-destructive";
+  const lent = detail.tone === "lent";
+  const textColor = entry.readAt
+    ? "text-muted-foreground"
+    : lent
+      ? "text-accent"
+      : "text-destructive";
+  const lineColor = entry.readAt ? "bg-muted-foreground" : lent ? "bg-accent" : "bg-destructive";
 
   return (
     <View
@@ -95,29 +102,37 @@ function DayEntries({
   currentUserId,
   onOpenExpense,
   onOpenPayment,
+  onOpenEntry,
 }: {
   entries: GroceryActivityEntry[];
   membersById: Map<string, HouseMember>;
   currentUserId: string | null;
-  onOpenExpense: (expenseId: string | null) => void;
-  onOpenPayment: (settlementId: string | null) => void;
+  onOpenExpense?: (expenseId: string | null) => void;
+  onOpenPayment?: (settlementId: string | null) => void;
+  onOpenEntry?: (entry: GroceryActivityEntry) => void;
 }) {
   return (
     <View className="px-4">
       {entries.map((entry, index) => {
         const expenseId = activityExpenseId(entry);
         const settlementId = activitySettlementId(entry);
-        const open = expenseId
-          ? () => onOpenExpense(expenseId)
-          : settlementId
-            ? () => onOpenPayment(settlementId)
-            : null;
+        const open = onOpenEntry
+          ? () => onOpenEntry(entry)
+          : expenseId
+            ? () => onOpenExpense?.(expenseId)
+            : settlementId
+              ? () => onOpenPayment?.(settlementId)
+              : null;
         const className = `flex-row items-start py-6 ${index > 0 ? "border-t border-border" : ""}`;
         const content = (
           <>
             <ActivityIcon entry={entry} actor={membersById.get(entry.actorId ?? "")} />
             <View className="mr-3 flex-1">
-              <Text className="font-display-normal text-base leading-6 text-foreground">
+              <Text
+                className={`font-display-normal text-base leading-6 ${
+                  entry.readAt ? "text-muted-foreground" : "text-foreground"
+                }`}
+              >
                 {formatActivityParts(entry, currentUserId).map((part, index) => (
                   <Text
                     key={index}
@@ -139,7 +154,13 @@ function DayEntries({
           <Pressable
             key={entry.id}
             accessibilityRole="button"
-            accessibilityHint={expenseId ? "Opens expense details" : "Opens payment details"}
+            accessibilityHint={
+              onOpenEntry
+                ? "Opens this notification"
+                : expenseId
+                  ? "Opens expense details"
+                  : "Opens payment details"
+            }
             onPress={open}
             className={className}
           >
@@ -170,20 +191,24 @@ export const ActivityList = memo(function ActivityList({
   currentUserId,
   header,
   empty,
+  footer = null,
   refreshControl,
   onEndReached,
   onOpenExpense,
   onOpenPayment,
+  onOpenEntry,
 }: {
   entries: GroceryActivityEntry[];
   members: HouseMember[];
   currentUserId: string | null;
   header: ReactElement;
   empty: ReactElement | null;
+  footer?: ReactElement | null;
   refreshControl: ReactElement<RefreshControlProps>;
-  onEndReached: () => void;
-  onOpenExpense: (expenseId: string | null) => void;
-  onOpenPayment: (settlementId: string | null) => void;
+  onEndReached?: () => void;
+  onOpenExpense?: (expenseId: string | null) => void;
+  onOpenPayment?: (settlementId: string | null) => void;
+  onOpenEntry?: (entry: GroceryActivityEntry) => void;
 }) {
   const insets = useSafeAreaInsets();
   const membersById = useMemo(() => new Map(members.map((m) => [m.userId, m])), [members]);
@@ -206,9 +231,10 @@ export const ActivityList = memo(function ActivityList({
         currentUserId={currentUserId}
         onOpenExpense={onOpenExpense}
         onOpenPayment={onOpenPayment}
+        onOpenEntry={onOpenEntry}
       />
     ),
-    [membersById, currentUserId, onOpenExpense, onOpenPayment],
+    [membersById, currentUserId, onOpenExpense, onOpenPayment, onOpenEntry],
   );
 
   return (
@@ -221,6 +247,7 @@ export const ActivityList = memo(function ActivityList({
       stickySectionHeadersEnabled
       ListHeaderComponent={header}
       ListEmptyComponent={empty}
+      ListFooterComponent={footer}
       refreshControl={refreshControl}
       onEndReached={onEndReached}
       onEndReachedThreshold={END_REACHED_THRESHOLD}

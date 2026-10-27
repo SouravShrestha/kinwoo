@@ -1,7 +1,7 @@
 import { useAuth } from "@kinwoo/client/auth";
 import { useProfile } from "@kinwoo/client/profile";
 import { toast } from "@kinwoo/client/toast";
-import { LEGAL_LABELS } from "@kinwoo/core/app";
+import { HELP_LABELS, LEGAL_LABELS, SUPPORT_EMAIL, SUPPORT_MAILTO } from "@kinwoo/core/app";
 import { CONFIRM_COPY } from "@kinwoo/core/confirm";
 import { TOAST_MESSAGES } from "@kinwoo/core/toast";
 import {
@@ -9,15 +9,17 @@ import {
   ArrowRightIcon,
   BellIcon,
   DocumentIcon,
+  EditIcon,
+  FeedbackIcon,
   GlobeIcon,
+  MailIcon,
   ProfileIcon,
   ShieldCheckOutlineIcon,
 } from "@kinwoo/icons/native";
 import { colors } from "@kinwoo/tokens/native";
 import { router } from "expo-router";
-import * as WebBrowser from "expo-web-browser";
 import { useState } from "react";
-import { Image, ScrollView, Text, View } from "react-native";
+import { Image, Linking, ScrollView, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { AppFooter } from "@/components/AppFooter";
@@ -26,10 +28,13 @@ import { AvatarSheet } from "@/components/AvatarSheet";
 import { Button } from "@/components/Button";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { Pressable } from "@/components/Pressable";
-import { SettingsGroup, SettingsRow } from "@/components/Settings";
+import { SettingsGroup, SettingsInfoRow, SettingsRow } from "@/components/Settings";
+import { SkeletonRegion, SkeletonText } from "@/components/skeleton/Skeleton";
 import { goBack } from "@/lib/house-navigation";
 import { profileImage } from "@/lib/images";
-import { PRIVACY_URL, TERMS_URL } from "@/lib/legal";
+import { unregisterDevice } from "@/lib/push";
+import { FEEDBACK_URL, PRIVACY_URL, TERMS_URL } from "@/lib/legal";
+import { useOpenInAppBrowser } from "@/lib/in-app-browser";
 import { usePressGuard } from "@/lib/press-guard";
 import { useTheme } from "@/theme/ThemeProvider";
 
@@ -47,12 +52,20 @@ export default function ProfileScreen() {
   const [logoutOpen, setLogoutOpen] = useState(false);
   const [loggingOut, setLoggingOut] = useState(false);
 
-  const openTerms = usePressGuard(() => void WebBrowser.openBrowserAsync(TERMS_URL));
-  const openPrivacy = usePressGuard(() => void WebBrowser.openBrowserAsync(PRIVACY_URL));
+  const openInAppBrowser = useOpenInAppBrowser();
+  const openTerms = usePressGuard(() => openInAppBrowser(TERMS_URL));
+  const openPrivacy = usePressGuard(() => openInAppBrowser(PRIVACY_URL));
+  const openFeedback = usePressGuard(() => openInAppBrowser(FEEDBACK_URL));
+
+  // mailto: needs the system mail app, so Linking is used here instead of the in-app browser.
+  const openMail = (url: string) =>
+    void Linking.openURL(url).catch(() => toast.error(TOAST_MESSAGES.mailUnavailable));
+  const emailSupport = usePressGuard(() => openMail(SUPPORT_MAILTO));
 
   const confirmLogout = async () => {
     setLoggingOut(true);
     try {
+      await unregisterDevice();
       await signOut();
     } catch {
       toast.error(TOAST_MESSAGES.logoutFailed);
@@ -80,7 +93,7 @@ export default function ProfileScreen() {
         </View>
       </Pressable>
 
-      <View className="flex-row items-center mb-6">
+      <View className="flex-row items-center mb-10">
         <Pressable
           accessibilityRole="button"
           accessibilityLabel="Change avatar"
@@ -93,13 +106,30 @@ export default function ProfileScreen() {
             resizeMode="cover"
             className="size-16"
           />
+          <View
+            pointerEvents="none"
+            className="absolute inset-x-0 bottom-0 h-[30%] items-center justify-center bg-black/55"
+          >
+            <EditIcon size={12} color="#fff" />
+          </View>
         </Pressable>
 
         <View className="ml-4 flex-1">
-          <Text className="font-display text-xl text-foreground font-medium tracking-tight">
-            {profile?.displayName ?? ""}
-          </Text>
-          <Text className="mt-0.5 text-sm text-muted-foreground">{user?.email ?? ""}</Text>
+          {profile ? (
+            <>
+              <Text className="font-display text-xl text-foreground font-medium tracking-tight">
+                {profile.displayName}
+              </Text>
+              <Text className="mt-0.5 text-sm text-muted-foreground">{user?.email ?? ""}</Text>
+            </>
+          ) : (
+            <SkeletonRegion>
+              <SkeletonText size="xl" className="w-40" />
+              <View className="mt-0.5">
+                <SkeletonText size="sm" className="w-52" />
+              </View>
+            </SkeletonRegion>
+          )}
         </View>
       </View>
 
@@ -109,11 +139,10 @@ export default function ProfileScreen() {
           label="Personal Information"
           onPress={() => router.push("/settings/personal")}
         />
-        <SettingsRow
+        <SettingsInfoRow
           icon={<GlobeIcon size={20} color={palette.foreground} />}
           label="Language"
           value="English"
-          onPress={() => router.push("/settings/language")}
         />
       </SettingsGroup>
 
@@ -125,7 +154,7 @@ export default function ProfileScreen() {
           onPress={() => setAppearanceOpen(true)}
         />
         <SettingsRow
-          icon={<BellIcon size={20} color={palette.foreground} />}
+          icon={<BellIcon size={24} color={palette.foreground} />}
           label="Notifications"
           onPress={() => router.push("/settings/notifications")}
         />
@@ -133,14 +162,28 @@ export default function ProfileScreen() {
 
       <SettingsGroup title={LEGAL_LABELS.group}>
         <SettingsRow
-          icon={<DocumentIcon size={20} color={palette.foreground} />}
+          icon={<DocumentIcon size={24} color={palette.foreground} />}
           label={LEGAL_LABELS.terms}
           onPress={openTerms}
         />
         <SettingsRow
-          icon={<ShieldCheckOutlineIcon size={20} color={palette.foreground} />}
+          icon={<ShieldCheckOutlineIcon size={24} color={palette.foreground} />}
           label={LEGAL_LABELS.privacy}
           onPress={openPrivacy}
+        />
+      </SettingsGroup>
+
+      <SettingsGroup title={HELP_LABELS.group}>
+        <SettingsRow
+          icon={<MailIcon size={24} color={palette.foreground} />}
+          label={HELP_LABELS.email}
+          value={SUPPORT_EMAIL}
+          onPress={emailSupport}
+        />
+        <SettingsRow
+          icon={<FeedbackIcon size={24} color={palette.foreground} />}
+          label={HELP_LABELS.feedback}
+          onPress={openFeedback}
         />
       </SettingsGroup>
 

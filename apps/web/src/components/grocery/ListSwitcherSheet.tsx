@@ -1,7 +1,8 @@
 "use client";
 
 import { listIconOption, type GroceryList } from "@kinwoo/core/grocery";
-import { CategoryIcon, PlusCircleIcon } from "@kinwoo/icons";
+import { PlusCircleIcon } from "@kinwoo/icons";
+import { ListIconImage } from "@/components/CategoryImages";
 import { useState } from "react";
 
 import { NewListSheet } from "./NewListSheet";
@@ -37,7 +38,7 @@ export function ListSwitcherSheet({
           ...lists.map((list) => ({
             id: list.id,
             label: list.name,
-            icon: <CategoryIcon name={listIconOption(list.icon).label} size={24} />,
+            icon: <ListIconImage label={listIconOption(list.icon).label} size={36} />,
           })),
           { id: NEW_LIST, label: "New list", icon: <PlusCircleIcon size={24} />, dashed: true },
         ]}

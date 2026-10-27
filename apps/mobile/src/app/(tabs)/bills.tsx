@@ -23,13 +23,20 @@ import { ExpenseRow } from "@/components/expenses/ExpenseRow";
 import { ExpensesMenuSheet } from "@/components/expenses/ExpensesMenuSheet";
 import { PaymentRow } from "@/components/expenses/PaymentRow";
 import { Fab } from "@/components/Fab";
+import { EmptyItems } from "@/components/grocery/EmptyItems";
 import { Pressable } from "@/components/Pressable";
+import {
+  BalanceSummarySkeleton,
+  ExpenseActionsSkeleton,
+  ExpenseRowsSkeleton,
+} from "@/components/skeleton/skeletons";
 import {
   openExpense,
   openNewExpense,
   openPayment,
   openPrivateSpending,
 } from "@/lib/house-navigation";
+import { noExpense } from "@/lib/images";
 import { usePullToRefresh } from "@/lib/use-pull-to-refresh";
 import { useTheme } from "@/theme/ThemeProvider";
 
@@ -61,6 +68,7 @@ export default function BillsScreen() {
   const setSimplifyDebts = useSetSimplifyDebts(houseId ?? "");
   const {
     data: balances,
+    isPending: balancesPending,
     isPlaceholderData,
     refetch: refetchBalances,
   } = useHouseBalances(houseId, simplifyDebts);
@@ -77,11 +85,7 @@ export default function BillsScreen() {
     if (moreToFetch && !isFetchingNextPage) void fetchNextPage();
   }, [moreToFetch, isFetchingNextPage, fetchNextPage]);
 
-  if (!ready) {
-    return <View className="flex-1 bg-background" />;
-  }
-
-  if (!activeHouse) {
+  if (ready && !activeHouse) {
     return (
       <View
         className="flex-1 items-center justify-center bg-background px-6"
@@ -105,7 +109,8 @@ export default function BillsScreen() {
     </Pressable>
   );
 
-  const empty = !isLoading && feed.length === 0;
+  const loading = !ready || isLoading;
+  const empty = !loading && feed.length === 0;
 
   return (
     <View className="flex-1 bg-background" style={{ paddingTop: insets.top }}>
@@ -125,10 +130,18 @@ export default function BillsScreen() {
                 <View className="mt-2 px-6">
                   <BalanceSummary balances={balances} />
                 </View>
+              ) : balancesPending ? (
+                <View className="mt-2 px-6">
+                  <BalanceSummarySkeleton />
+                </View>
               ) : null}
               {balances ? (
                 <View className="mt-8 mb-1">
                   <ExpenseActions />
+                </View>
+              ) : balancesPending ? (
+                <View className="mt-8 mb-1 px-6">
+                  <ExpenseActionsSkeleton />
                 </View>
               ) : null}
             </View>
@@ -149,14 +162,19 @@ export default function BillsScreen() {
             />
           )
         }
+        ListFooterComponent={isFetchingNextPage ? <ExpenseRowsSkeleton count={2} /> : null}
         ListEmptyComponent={
-          empty ? (
-            <View className="mx-4 mt-4 items-center gap-4 rounded-2xl border border-dashed border-border px-6 py-16">
-              <Text className="font-display-medium text-base text-foreground">No expenses yet</Text>
-              <Text className="text-center font-display-normal text-sm text-muted-foreground">
-                Add rent, bills or anything you share. Split grocery purchases show up here too.
-              </Text>
-              <Button label="Add expense" onPress={openNewExpense} className="mt-2 px-8" />
+          loading ? (
+            <ExpenseRowsSkeleton />
+          ) : empty ? (
+            <View className="py-12">
+              <EmptyItems
+                image={noExpense}
+                title="Nothing to see here"
+                hint="Add rent, bills or anything you share. Split grocery purchases show up here too."
+              >
+                <Button label="Add expense" onPress={openNewExpense} className="px-8" />
+              </EmptyItems>
             </View>
           ) : null
         }

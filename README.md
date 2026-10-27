@@ -44,7 +44,7 @@ How it fits together:
 
 1. Create a project at supabase.com. Two projects (test + production) matches what `eas.json` and CI already assume.
 2. From **Settings → API** copy the Project URL, the `anon` key and the `service_role` key.
-3. Migrations are applied by CI (test on every `main` merge, production on release). Locally: `supabase link --project-ref <ref>` then `supabase db push`. The `avatars` storage bucket is not part of the migrations: create it by hand (public) in each project.
+3. Migrations are applied by CI (test on every `main` merge, production on release). Locally: `supabase link --project-ref <ref>` then `supabase db push`. The `avatars` storage bucket is not part of the migrations: create it by hand in each project: public, 1 MiB limit, allowed types `image/png`, `image/jpeg`, `image/webp`. Create a second bucket, `uploaded_avatars`, for user-uploaded photos: public, 1 MiB limit, allowed type `image/jpeg`.
 4. **Authentication → Providers → Email**: enabled, with "Confirm email" on.
 5. **Authentication → Emails → Magic Link**: the template body must contain `{{ .Token }}`. This is the step people miss — with only `{{ .ConfirmationURL }}` Supabase sends a link instead of a code, and the OTP screen can never succeed.
 6. **Authentication → Providers → Google**: paste the Client ID and Secret from Google Cloud (below).
@@ -53,7 +53,7 @@ How it fits together:
    ```
    http://localhost:3000/auth/callback
    https://test.kinwoo.in/auth/callback
-   https://kinwoo.in/auth/callback
+   https://app.kinwoo.in/auth/callback
    kinwoo://auth/callback
    ```
    The custom-scheme entry is what makes the Android deep-link return work.
@@ -84,25 +84,43 @@ Free-tier projects pause after 7 days of inactivity; logins fail with network er
 
 1. **API token** with `Workers Scripts: Edit`, `Workers KV Storage: Edit`, `Account Settings: Read`, plus `Zone: Read` and `Workers Routes: Edit` for the custom domains.
 2. Copy the **Account ID** from the Workers dashboard.
-3. Runtime secret, per environment — CI deliberately does not pass this:
+3. Runtime secrets, per environment — CI deliberately does not pass these:
+
    ```bash
    cd apps/web
    wrangler secret put SUPABASE_SERVICE_ROLE_KEY --env test
    wrangler secret put SUPABASE_SERVICE_ROLE_KEY --env production
+   wrangler secret put TELEGRAM_BOT_TOKEN --env test
+   wrangler secret put TELEGRAM_BOT_TOKEN --env production
+   wrangler secret put TELEGRAM_CHAT_ID --env test
+   wrangler secret put TELEGRAM_CHAT_ID --env production
    ```
+
    The `NEXT_PUBLIC_*` values are build-time and inlined by CI, so they do not go here.
+
+   The `/feedback` form posts to `POST /api/feedback`, which forwards the message to Telegram and stores nothing. `TELEGRAM_BOT_TOKEN` comes from BotFather; `TELEGRAM_CHAT_ID` is the chat to notify (comma-separated for several). For local dev, put both in `apps/web/.env.local`. The route checks the request origin, allows 1 request per IP per 60s (the `RATE_LIMITER` binding in `wrangler.toml`, in-memory locally), and silently drops honeypot hits.
+
 4. **KV namespaces** `kinwoo-cache-test` and `kinwoo-cache-prod` back the incremental cache (`open-next.config.ts`). Their ids are already in `apps/web/wrangler.toml`; to recreate them, run `wrangler kv namespace create <name>` and paste the new ids.
-5. **Custom domains.** `workers_dev` and `preview_urls` are both off, so the routes in `wrangler.toml` are the only way to reach a deployed Worker. `kinwoo.in` has to be on Cloudflare DNS.
+5. **Custom domains.** `workers_dev` and `preview_urls` are both off, so the routes in `wrangler.toml` are the only way to reach a deployed Worker. `kinwoo.in` has to be on Cloudflare DNS. Test is served at `test.kinwoo.in` and production at `app.kinwoo.in`; the apex and `www` are left for the landing page.
 
 ### GitHub
 
 1. Environments named exactly `test` and `production` — the workflows reference both by name.
 2. Repository secrets: `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`, `SUPABASE_ACCESS_TOKEN` (supabase.com → Account → Access Tokens), and `EXPO_TOKEN` if you keep Android builds.
-3. In each environment, as secrets or variables: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `NEXT_PUBLIC_SITE_URL`. The `production` environment needs its own copies; it does not inherit from `test`.
+3. In each environment, as secrets or variables: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `NEXT_PUBLIC_SITE_URL`, and `NEXT_PUBLIC_VAPID_PUBLIC_KEY` (the public half of the web push key pair, see Web push below). The `production` environment needs its own copies; it does not inherit from `test`.
 4. In each environment, a secret `SUPABASE_DB_PASSWORD` holding that project's database password. Migrations cannot be applied without it. Add required reviewers to `production` to gate the release.
 5. **Settings → Actions → General → Workflow permissions**: read and write, and allow Actions to create pull requests. release-please cannot open the release PR otherwise.
 
 `NEXT_PUBLIC_SITE_URL` is not cosmetic: unset, it falls back to `localhost:3000` and inlines that into `metadataBase`, `robots.txt`, `sitemap.xml` and the PWA `start_url`.
+
+### Web push (optional)
+
+Browser notifications use a VAPID key pair per Supabase project. Without it the web app shows "This browser doesn't support push notifications" and `send-push` skips browsers; Android push is unaffected.
+
+1. `npx web-push generate-vapid-keys`.
+2. Put the public key in `NEXT_PUBLIC_VAPID_PUBLIC_KEY` (GitHub environment, and `apps/web/.env.local`). It is inlined at build time.
+3. Set the function secrets: `supabase secrets set VAPID_PUBLIC_KEY=… VAPID_PRIVATE_KEY=… VAPID_SUBJECT=mailto:you@example.com` (locally, add the same three to `supabase/functions/.env`).
+4. The service worker is registered in production builds only, so test push with `npm run build` and `npm start`, or on a deployed Worker. iPhone and iPad need the app added to the Home Screen first.
 
 ### Expo / EAS (optional)
 

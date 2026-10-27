@@ -18,6 +18,8 @@ import { useEffect, useRef, useState, type AnimationEvent, type ReactNode } from
 
 import { Button } from "@/components/Button";
 import { Avatar } from "@/components/houses/Avatar";
+import { useSwipeToClose } from "@/lib/use-swipe-to-close";
+import { PaymentDetailSkeleton } from "@/components/skeleton/skeletons";
 import { cn } from "@/lib/utils";
 
 const AVATAR = 72;
@@ -43,7 +45,6 @@ function Body({
   submitting,
   onSubmit,
   requireChange,
-  readOnly,
   onDelete,
   closing,
 }: {
@@ -53,7 +54,6 @@ function Body({
   submitting: boolean;
   onSubmit: (amountPaise: number) => void;
   requireChange: boolean;
-  readOnly: boolean;
   onDelete?: () => void;
   closing: boolean;
 }) {
@@ -77,7 +77,7 @@ function Body({
 
   return (
     <>
-      {!readOnly && onDelete ? (
+      {onDelete ? (
         <div className="pointer-events-none absolute inset-x-0 top-0 mx-auto flex w-full max-w-md justify-end px-6 pt-[calc(1.25rem+env(safe-area-inset-top))]">
           <button
             type="button"
@@ -101,7 +101,7 @@ function Body({
         {data.email ? (
           <p className="mt-1 font-display text-xs text-muted-foreground">{data.email}</p>
         ) : null}
-        <div className="mt-6 flex items-center gap-3 font-display text-[40px] leading-[56px] text-foreground">
+        <div className="mt-6 flex items-center gap-3 font-display text-[calc(40px*var(--font-scale,1))] leading-[calc(56px*var(--font-scale,1))] text-foreground">
           <RupeeIcon size={30} />
           <label className="relative">
             <span className="sr-only">Amount</span>
@@ -132,23 +132,21 @@ function Body({
               )}
             />
           </label>
-          {readOnly ? null : (
-            <button
-              type="button"
-              aria-label={editLabel}
-              disabled={editing && !validAmount}
-              onClick={toggle}
-              className={cn(
-                editing
-                  ? "border-foreground bg-foreground text-background"
-                  : "border-border bg-card text-foreground",
-                "ml-2 flex size-10 items-center justify-center rounded-full border transition-opacity hover:cursor-pointer hover:opacity-80 disabled:cursor-not-allowed disabled:opacity-50",
-                FOCUS_RING,
-              )}
-            >
-              {editIcon}
-            </button>
-          )}
+          <button
+            type="button"
+            aria-label={editLabel}
+            disabled={editing && !validAmount}
+            onClick={toggle}
+            className={cn(
+              editing
+                ? "border-foreground bg-foreground text-background"
+                : "border-border bg-card text-foreground",
+              "ml-2 flex size-10 items-center justify-center rounded-full border transition-opacity hover:cursor-pointer hover:opacity-80 disabled:cursor-not-allowed disabled:opacity-50",
+              FOCUS_RING,
+            )}
+          >
+            {editIcon}
+          </button>
         </div>
       </div>
       <div
@@ -159,15 +157,13 @@ function Body({
         )}
       >
         <p className="text-center font-display text-sm text-muted-foreground">{note}</p>
-        {readOnly ? null : (
-          <Button
-            label={submitLabel}
-            icon={<RecordPaymentIcon size={20} />}
-            loading={submitting}
-            disabled={!validAmount || (requireChange && !changed)}
-            onClick={() => onSubmit(amountPaise)}
-          />
-        )}
+        <Button
+          label={submitLabel}
+          icon={<RecordPaymentIcon size={20} />}
+          loading={submitting}
+          disabled={!validAmount || (requireChange && !changed)}
+          onClick={() => onSubmit(amountPaise)}
+        />
       </div>
     </>
   );
@@ -181,7 +177,6 @@ export function PaymentForm({
   onClosed,
   title,
   requireChange = false,
-  readOnly = false,
   children,
   ...rest
 }: {
@@ -196,11 +191,12 @@ export function PaymentForm({
   onSubmit: (amountPaise: number) => void;
   // The submit button stays off until the amount differs from the one it started with.
   requireChange?: boolean;
-  readOnly?: boolean;
   onDelete?: () => void;
   // Rendered inside the sheet, for dialogs.
   children?: ReactNode;
 }) {
+  const screenRef = useRef<HTMLElement>(null);
+  useSwipeToClose(screenRef, !closing, onClose);
   // Children fire their own animationend events, which bubble up here.
   const onAnimationEnd = (event: AnimationEvent<HTMLElement>) => {
     if (closing && event.target === event.currentTarget) onClosed();
@@ -208,6 +204,7 @@ export function PaymentForm({
 
   return (
     <main
+      ref={screenRef}
       onAnimationEnd={onAnimationEnd}
       className={cn(
         "relative flex h-dvh flex-col overflow-hidden bg-background",
@@ -231,14 +228,10 @@ export function PaymentForm({
           <h1 className="sr-only">{title}</h1>
         </header>
         {data ? (
-          <Body
-            data={data}
-            requireChange={requireChange}
-            readOnly={readOnly}
-            closing={closing}
-            {...rest}
-          />
-        ) : null}
+          <Body data={data} requireChange={requireChange} closing={closing} {...rest} />
+        ) : (
+          <PaymentDetailSkeleton />
+        )}
       </div>
       {children}
     </main>

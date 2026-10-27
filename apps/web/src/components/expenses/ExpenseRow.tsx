@@ -10,7 +10,7 @@ import {
 } from "@kinwoo/core/expenses";
 import { formatPaise, formatPickedDate } from "@kinwoo/core/grocery";
 
-import { ExpenseCategoryIcon } from "@kinwoo/icons";
+import { ExpenseCategoryImage } from "@/components/CategoryImages";
 
 import { cn } from "@/lib/utils";
 
@@ -42,21 +42,23 @@ export function ExpenseRow({
     >
       <span aria-hidden className="flex w-8 shrink-0 flex-col items-center font-display">
         <span className="text-xs text-muted-foreground">{month}</span>
-        <span className="text-lg leading-6 text-muted-foreground">{day}</span>
+        <span className="text-lg leading-[calc(1.5rem*var(--font-scale,1))] text-muted-foreground">
+          {day}
+        </span>
       </span>
       <span
         aria-hidden
         title={EXPENSE_CATEGORY_LABELS[expense.category]}
         className="ml-3 mr-4 flex size-10 shrink-0 items-center justify-center rounded-lg bg-muted text-foreground"
       >
-        <ExpenseCategoryIcon category={expense.category} size={22} />
+        <ExpenseCategoryImage category={expense.category} size={30} />
       </span>
       <span className="mr-3 flex min-w-0 flex-1 flex-col gap-0.5">
         <span className="truncate font-display text-base text-foreground">{expense.title}</span>
         <span className="truncate font-display text-xs text-muted-foreground">{payers}</span>
       </span>
       <span className={cn("flex shrink-0 flex-col items-end gap-0.5", TONE_CLASS[share.tone])}>
-        <span className="font-display text-[11px]">{share.label}</span>
+        <span className="font-display text-[calc(11px*var(--font-scale,1))]">{share.label}</span>
         {shareAmount ? (
           <span className="font-display text-base font-medium">{shareAmount}</span>
         ) : null}

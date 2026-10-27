@@ -1,95 +1,62 @@
 "use client";
 
 import { useAuth } from "@kinwoo/client/auth";
-import {
-  expenseErrorFromCause,
-  useHouseBalances,
-  useRecordSettlement,
-} from "@kinwoo/client/expenses";
+import { expenseErrorFromCause, useRecordSettlement } from "@kinwoo/client/expenses";
 import { useActiveHouse, useHouseMembers } from "@kinwoo/client/houses";
 import { toast } from "@kinwoo/client/toast";
-import { paiseToAmountDraft } from "@kinwoo/core/expenses";
-import { memberDisplayName } from "@kinwoo/core/houses";
+import { paiseToAmountDraft, paymentHeading } from "@kinwoo/core/expenses";
 import { TOAST_MESSAGES } from "@kinwoo/core/toast";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { PaymentForm, type PaymentFormData } from "@/components/expenses/PaymentForm";
 import { useHouseNavigation } from "@/lib/house-navigation";
 
-function useRecordPayment(
-  houseId: string,
-  simplifyDebts: boolean,
-  userId: string,
-  onMissing: () => void,
-  onRecorded: () => void,
-) {
+type Payment = { payerId: string; payeeId: string; amountPaise: number };
+
+function Recorder({
+  houseId,
+  payerId,
+  payeeId,
+  amountPaise: suggestedPaise,
+}: Payment & { houseId: string }) {
   const { user } = useAuth();
-  const { data: balances } = useHouseBalances(houseId, simplifyDebts);
+  const { goBack, goToExpenses } = useHouseNavigation();
   const { data: members } = useHouseMembers(houseId);
   const recordSettlement = useRecordSettlement(houseId);
-  const recorded = useRef(false);
-  const pair = balances?.pairs.find((entry) => entry.userId === userId && entry.netPaise !== 0);
-
-  useEffect(() => {
-    if (balances && !pair && !recorded.current) onMissing();
-  }, [balances, pair, onMissing]);
+  const [closing, setClosing] = useState(false);
 
   let data: PaymentFormData | null = null;
-  if (pair) {
-    const self = members?.find((member) => member.userId === user?.id);
-    const youPay = pair.netPaise < 0;
-    const me = { name: self?.displayName ?? null, url: self?.avatarUrl ?? null };
-    const them = { name: pair.name, url: pair.avatarUrl };
-    const name = memberDisplayName(pair.name);
+  if (members && payerId !== payeeId) {
+    const payer = members.find((member) => member.userId === payerId);
+    const payee = members.find((member) => member.userId === payeeId);
+    const other = payerId === user?.id ? payee : payeeId === user?.id ? payer : undefined;
     data = {
-      payer: youPay ? me : them,
-      payee: youPay ? them : me,
-      heading: youPay ? `You paid ${name}` : `${name} paid you`,
-      email: members?.find((member) => member.userId === userId)?.email ?? null,
-      initialAmount: paiseToAmountDraft(Math.abs(pair.netPaise)),
+      payer: { name: payer?.displayName ?? null, url: payer?.avatarUrl ?? null },
+      payee: { name: payee?.displayName ?? null, url: payee?.avatarUrl ?? null },
+      heading: paymentHeading(
+        { id: payerId, name: payer?.displayName ?? null },
+        { id: payeeId, name: payee?.displayName ?? null },
+        user?.id ?? null,
+      ),
+      email: other?.email ?? null,
+      initialAmount: paiseToAmountDraft(suggestedPaise),
     };
   }
 
+  useEffect(() => {
+    if (payerId === payeeId) goBack();
+  }, [payerId, payeeId, goBack]);
+
   const record = async (amountPaise: number) => {
-    if (!pair || !user) return;
-    const youPay = pair.netPaise < 0;
     try {
-      await recordSettlement.mutateAsync({
-        payerId: youPay ? user.id : pair.userId,
-        payeeId: youPay ? pair.userId : user.id,
-        amountPaise,
-      });
+      await recordSettlement.mutateAsync({ payerId, payeeId, amountPaise });
     } catch (cause) {
       toast.error(expenseErrorFromCause(cause, "Couldn't record that payment. Try again."));
       return;
     }
-    // Set before the refreshed balances land, so the effect above does not also navigate.
-    recorded.current = true;
     toast.success(TOAST_MESSAGES.paymentRecorded);
-    onRecorded();
+    goToExpenses();
   };
-
-  return { data, record, submitting: recordSettlement.isPending };
-}
-
-function Recorder({
-  houseId,
-  simplifyDebts,
-  userId,
-}: {
-  houseId: string;
-  simplifyDebts: boolean;
-  userId: string;
-}) {
-  const { goBack, goToExpenses } = useHouseNavigation();
-  const [closing, setClosing] = useState(false);
-  const { data, record, submitting } = useRecordPayment(
-    houseId,
-    simplifyDebts,
-    userId,
-    goBack,
-    goToExpenses,
-  );
 
   return (
     <PaymentForm
@@ -100,13 +67,13 @@ function Recorder({
       onClosed={goBack}
       note="You are recording a payment that happened outside Kinwoo. No money will be moved."
       submitLabel="Record payment"
-      submitting={submitting}
+      submitting={recordSettlement.isPending}
       onSubmit={(amountPaise) => void record(amountPaise)}
     />
   );
 }
 
-export function RecordPaymentScreen({ userId }: { userId: string }) {
+export function RecordPaymentScreen(payment: Payment) {
   const { activeHouse, ready } = useActiveHouse();
   const { goHome } = useHouseNavigation();
 
@@ -114,11 +81,5 @@ export function RecordPaymentScreen({ userId }: { userId: string }) {
     if (ready && !activeHouse) goHome();
   }, [ready, activeHouse, goHome]);
 
-  return activeHouse ? (
-    <Recorder
-      houseId={activeHouse.house.id}
-      simplifyDebts={activeHouse.house.simplifyDebts}
-      userId={userId}
-    />
-  ) : null;
+  return activeHouse ? <Recorder houseId={activeHouse.house.id} {...payment} /> : null;
 }

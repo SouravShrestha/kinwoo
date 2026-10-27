@@ -43,8 +43,8 @@ export function Button({
       aria-busy={loading || undefined}
       disabled={isDisabled}
       className={cn(
-        "flex h-14 w-full items-center justify-center gap-2.5 rounded-xl px-5",
-        "font-display text-base transition-opacity",
+        "flex min-h-14 w-full items-center justify-center gap-2.5 whitespace-nowrap rounded-xl px-5 py-3",
+        "font-display text-base",
         labelWeight === "normal" ? "font-normal" : "font-medium",
         "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground",
         VARIANTS[variant],

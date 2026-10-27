@@ -45,6 +45,12 @@ const EMPTY_TAB_TITLE: Record<GroceryTabKey, string> = {
 
 const ADD_ITEMS_HINT = "Tap “+” below to add items";
 
+const EMPTY_TAB_HINT: Record<GroceryTabKey, string> = {
+  pending: ADD_ITEMS_HINT,
+  assigned: "Items you claim or that get assigned to someone show up here",
+  bought: "Items marked as bought show up here",
+};
+
 export function groceryEmptyCopy(
   tab: GroceryTabKey,
   state: { filtering: boolean; listEmpty: boolean },
@@ -56,7 +62,7 @@ export function groceryEmptyCopy(
       hint: ADD_ITEMS_HINT,
     };
   }
-  return { title: EMPTY_TAB_TITLE[tab], hint: tab === "pending" ? ADD_ITEMS_HINT : null };
+  return { title: EMPTY_TAB_TITLE[tab], hint: EMPTY_TAB_HINT[tab] };
 }
 
 export function groceryItemsByTab(

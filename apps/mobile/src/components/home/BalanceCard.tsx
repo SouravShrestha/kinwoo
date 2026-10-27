@@ -1,31 +1,51 @@
 import { balanceHeadline, balanceHeadlineParts, type HouseBalances } from "@kinwoo/core/expenses";
-import { ArrowRightIcon } from "@kinwoo/icons/native";
-import { colors } from "@kinwoo/tokens/native";
+import { Image } from "expo-image";
 import { router } from "expo-router";
 import { Text, View } from "react-native";
 
 import { BalanceLine } from "@/components/expenses/BalanceSummary";
 import { Pressable } from "@/components/Pressable";
-import { useTheme } from "@/theme/ThemeProvider";
+import { sharedBill } from "@/lib/images";
+
+const IMAGE_STYLE = {
+  width: "45%",
+  aspectRatio: 600 / 318,
+  alignSelf: "flex-end",
+  marginLeft: -8,
+  marginBottom: -8,
+} as const;
+
+const LEAD = {
+  owed: "Across all your shared bills, you're owed",
+  owe: "Across all your shared bills, you owe",
+} as const;
 
 export function BalanceCard({ balances }: { balances: HouseBalances }) {
-  const { resolvedTheme } = useTheme();
+  const text = balanceHeadlineParts(balances);
+  const lead = text.tone === "neutral" ? text.before.trim() : LEAD[text.tone];
 
   return (
     <Pressable
       accessibilityRole="button"
       accessibilityLabel={`${balanceHeadline(balances)}. Open bills`}
       onPress={() => router.push("/bills")}
-      className="flex-row items-center justify-between rounded-2xl border border-border bg-card px-4 py-3.5 active:opacity-70"
+      className="w-full flex-row items-stretch overflow-hidden rounded-lg border border-border bg-card active:opacity-80"
     >
-      <View className="flex-1">
-        <Text className="font-display-normal text-xs text-muted-foreground">Balance</Text>
-        <BalanceLine
-          text={balanceHeadlineParts(balances)}
-          className="mt-0.5 font-display-normal text-base text-foreground"
-        />
+      <Image
+        source={sharedBill}
+        accessibilityIgnoresInvertColors
+        contentFit="contain"
+        style={IMAGE_STYLE}
+      />
+      <View className="flex-1 justify-between -ml-12 gap-4 py-6 pl-2 pr-5">
+        <Text className="font-display-normal text-sm text-right text-muted-foreground">{lead}</Text>
+        {text.amount ? (
+          <BalanceLine
+            text={{ ...text, before: "", after: "" }}
+            className="font-display-normal text-xl text-right text-foreground"
+          />
+        ) : null}
       </View>
-      <ArrowRightIcon size={16} color={colors[resolvedTheme].mutedForeground} />
     </Pressable>
   );
 }

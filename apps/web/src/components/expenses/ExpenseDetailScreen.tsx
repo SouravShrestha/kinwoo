@@ -8,13 +8,16 @@ import { CONFIRM_COPY } from "@kinwoo/core/confirm";
 import { canManageExpense, type Expense } from "@kinwoo/core/expenses";
 import { formatFullDate, formatPaise } from "@kinwoo/core/grocery";
 import { memberDisplayName } from "@kinwoo/core/houses";
-import { ArrowRightIcon, EditIcon, ExpenseCategoryIcon, NoteIcon, TrashIcon } from "@kinwoo/icons";
+import { ArrowRightIcon, EditIcon, NoteIcon, TrashIcon } from "@kinwoo/icons";
+import { ExpenseCategoryImage } from "@/components/CategoryImages";
 import { useRouter } from "next/navigation";
-import { useEffect, useState, type AnimationEvent } from "react";
+import { useEffect, useRef, useState, type AnimationEvent } from "react";
 
 import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { Avatar } from "@/components/houses/Avatar";
 import { editExpensePath, useHouseNavigation } from "@/lib/house-navigation";
+import { useSwipeToClose } from "@/lib/use-swipe-to-close";
+import { ExpenseDetailSkeleton } from "@/components/skeleton/skeletons";
 import { cn } from "@/lib/utils";
 
 const FOCUS_RING =
@@ -81,7 +84,7 @@ function ShareTree({
         const last = index === expense.shares.length - 1;
         return (
           <li key={share.userId} className="flex items-center" style={{ height: SHARE_ROW_HEIGHT }}>
-            <div className="relative h-full w-5" aria-hidden>
+            <div className="relative h-full w-5 shrink-0" aria-hidden>
               <div
                 className="absolute left-0 top-0 w-px bg-border"
                 style={{ bottom: last ? "50%" : 0 }}
@@ -141,14 +144,14 @@ function ExpenseDetails({
   avatars: Avatars;
 }) {
   return (
-    <div className="space-y-7">
+    <div className="flex flex-col gap-7">
       <div className="flex gap-4">
         <span className="flex size-16 shrink-0 items-center justify-center rounded-xl bg-muted text-foreground">
-          <ExpenseCategoryIcon category={expense.category} size={32} />
+          <ExpenseCategoryImage category={expense.category} size={56} />
         </span>
         <div className="min-w-0 flex-1 space-y-1.5">
           <h1 className="font-display text-lg font-medium text-foreground">{expense.title}</h1>
-          <p className="font-display text-[28px] font-medium leading-tight text-foreground">
+          <p className="font-display text-[calc(28px*var(--font-scale,1))] font-medium leading-[normal] text-foreground">
             {formatPaise(expense.amountPaise)}
           </p>
         </div>
@@ -192,7 +195,7 @@ function ExpenseDetails({
           <div key={payer.userId}>
             {index > 0 ? (
               <div
-                className="flex py-2"
+                className="flex flex-col py-2"
                 style={{ height: PAYER_LINK_HEIGHT, marginLeft: ROOT_AVATAR / 2 }}
                 aria-hidden
               >
@@ -226,6 +229,8 @@ export function ExpenseDetailScreen({ expenseId }: { expenseId: string | null })
   const { goBack, goHome } = useHouseNavigation();
   const houseId = activeHouse?.house.id ?? null;
   const [closing, setClosing] = useState(false);
+  const screenRef = useRef<HTMLElement>(null);
+  useSwipeToClose(screenRef, !closing, () => setClosing(true));
   const [confirmDelete, setConfirmDelete] = useState(false);
 
   const { data: expense, isError } = useExpense(houseId, expenseId);
@@ -257,13 +262,14 @@ export function ExpenseDetailScreen({ expenseId }: { expenseId: string | null })
 
   return (
     <main
+      ref={screenRef}
       onAnimationEnd={onAnimationEnd}
       className={cn(
         "flex h-dvh flex-col overflow-hidden bg-background",
         closing ? "sheet-panel-out" : "sheet-panel-in",
       )}
     >
-      <div className="mx-auto flex w-full max-w-md flex-1 flex-col overflow-y-auto px-6 pb-10">
+      <div className="mx-auto flex w-full max-w-md flex-1 flex-col overflow-y-auto px-6 pb-[calc(2.5rem+env(safe-area-inset-bottom))]">
         <header className="flex items-center justify-between pb-8 pt-[calc(1.25rem+env(safe-area-inset-top))]">
           <button
             type="button"
@@ -307,9 +313,10 @@ export function ExpenseDetailScreen({ expenseId }: { expenseId: string | null })
           <p className="pt-16 text-center font-display text-base text-muted-foreground">
             We couldn&apos;t find that expense. It may have been deleted.
           </p>
-        ) : null}
+        ) : (
+          <ExpenseDetailSkeleton />
+        )}
       </div>
-
       <ConfirmDialog
         open={confirmDelete}
         copy={CONFIRM_COPY.deleteExpense}

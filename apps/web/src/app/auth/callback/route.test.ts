@@ -97,6 +97,12 @@ describe("rejections before any credential work", () => {
     expect(exchangeCodeForSession).not.toHaveBeenCalled();
   });
 
+  it("reports identity_already_linked when the Google account belongs to another user", async () => {
+    const response = await call("?error=server_error&error_code=identity_already_exists");
+
+    expect(locationOf(response)).toContain("auth_error=identity_already_linked");
+  });
+
   it("reports missing_code when there is no credential", async () => {
     expect(locationOf(await call(""))).toContain("auth_error=missing_code");
   });

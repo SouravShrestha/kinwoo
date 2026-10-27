@@ -1,13 +1,20 @@
 import { ArrowRightIcon } from "@kinwoo/icons/native";
 import { colors } from "@kinwoo/tokens/native";
-import { Image, Text, View } from "react-native";
+import { Image } from "expo-image";
+import { Text, View } from "react-native";
 
 import { Pressable } from "@/components/Pressable";
 
 import { inviteFriends } from "@/lib/images";
 import { useTheme } from "@/theme/ThemeProvider";
 
-const IMAGE_ASPECT_RATIO = 900 / 575;
+const IMAGE_STYLE = {
+  width: "45%",
+  aspectRatio: 2,
+  alignSelf: "flex-end",
+  marginLeft: -8,
+  marginBottom: -8,
+} as const;
 
 type InviteFriendsCardProps = {
   canInvite: boolean;
@@ -24,21 +31,19 @@ export function InviteFriendsCard({ canInvite, onPress }: InviteFriendsCardProps
       accessibilityLabel="Invite friends. Solo mode is fine, but it's better with friends"
       disabled={!canInvite}
       onPress={onPress}
-      className="w-full flex-row items-stretch overflow-hidden rounded-lg border border-border bg-card active:opacity-80"
+      className="mt-4 w-full flex-row items-stretch overflow-hidden rounded-lg border border-border bg-card active:opacity-80"
     >
       <Image
         source={inviteFriends}
-        tintColor={foreground}
         accessibilityIgnoresInvertColors
-        resizeMode="contain"
-        style={{ aspectRatio: IMAGE_ASPECT_RATIO }}
-        className="w-[45%] self-end -ml-3 -mb-2"
+        contentFit="contain"
+        style={IMAGE_STYLE}
       />
-      <View className="flex-1 justify-between gap-6 py-5 pl-3 pr-5 -ml-10">
+      <View className="flex-1 justify-between -ml-12 gap-8 py-4 pl-2 pr-5">
         <Text className="font-display-normal text-sm leading-5 text-foreground text-right">
           Solo mode is fine, but it's better with friends
         </Text>
-        <View className="flex-row items-center justify-end gap-2 mt-5">
+        <View className="flex-row items-center justify-end gap-2">
           <Text className="font-display-medium text-base text-foreground">Invite friends</Text>
           {canInvite ? <ArrowRightIcon size={16} color={foreground} /> : null}
         </View>

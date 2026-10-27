@@ -14,7 +14,7 @@
     "dev:mobile": "npm run start --workspace @kinwoo/mobile",
     "build": "turbo run build",
     "typecheck": "turbo run typecheck",
-    "test": "turbo run test",
+    "test": "turbo run test && vitest run --root supabase/functions",
     "lint": "node scripts/check-boundaries.mjs && eslint .",
     "check:boundaries": "node scripts/check-boundaries.mjs",
     "format": "prettier --write .",
@@ -25,7 +25,8 @@
     "dev:down": "supabase stop && colima stop",
     "db:reset": "supabase db reset",
     "db:test": "supabase test db",
-    "db:types": "node scripts/gen-db-types.mjs"
+    "db:types": "node scripts/gen-db-types.mjs",
+    "splash:generate": "node scripts/gen-splash.mjs"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.6",

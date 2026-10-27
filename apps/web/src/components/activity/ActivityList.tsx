@@ -28,17 +28,23 @@ function ActivityIcon({
   actor: HouseMember | undefined;
 }) {
   return (
-    <span className="relative mr-5 shrink-0">
-      <span className="flex size-9 items-center justify-center rounded-lg bg-muted pt-0.5 text-foreground">
+    <span className="relative mr-5 mt-px shrink-0">
+      <span
+        className={`flex size-9 items-center justify-center rounded-lg bg-muted pt-0.5 ${
+          entry.readAt ? "text-muted-foreground" : "text-foreground"
+        }`}
+      >
         <ActivityKindIcon name={activityIconName(entry)} size={20} />
       </span>
       {entry.actorId ? (
         <span className="absolute -bottom-1.5 -right-1.5 rounded-full bg-background p-0.5">
-          <Avatar
-            name={actor?.displayName ?? entry.actorName}
-            url={actor?.avatarUrl ?? null}
-            size={ACTOR_AVATAR_SIZE}
-          />
+          <span className={`flex ${entry.readAt ? "opacity-50" : ""}`}>
+            <Avatar
+              name={actor?.displayName ?? entry.actorName}
+              url={actor?.avatarUrl ?? null}
+              size={ACTOR_AVATAR_SIZE}
+            />
+          </span>
         </span>
       ) : null}
     </span>
@@ -55,10 +61,16 @@ function ActivityDetail({
   const detail = formatActivityDetail(entry, currentUserId);
   if (!detail) return null;
 
-  const color = detail.tone === "lent" ? "text-accent" : "text-destructive";
+  const color = entry.readAt
+    ? "text-muted-foreground"
+    : detail.tone === "lent"
+      ? "text-accent"
+      : "text-destructive";
 
   return (
-    <p className={`mt-1 font-display text-sm leading-5 ${color}`}>
+    <p
+      className={`mt-1 font-display text-sm font-normal leading-[calc(1.25rem*var(--font-scale,1))] ${color}`}
+    >
       {detail.struck ? (
         <del className="relative no-underline">
           {detail.text}
@@ -78,18 +90,21 @@ export const ActivityList = memo(function ActivityList({
   entries,
   members,
   currentUserId,
-  canLoadMore,
+  canLoadMore = false,
   onLoadMore,
   onOpenExpense,
   onOpenPayment,
+  onOpenEntry,
 }: {
   entries: GroceryActivityEntry[];
   members: HouseMember[];
   currentUserId: string | null;
-  canLoadMore: boolean;
-  onLoadMore: () => void;
-  onOpenExpense: (expenseId: string | null) => void;
-  onOpenPayment: (settlementId: string | null) => void;
+  canLoadMore?: boolean;
+  onLoadMore?: () => void;
+  onOpenExpense?: (expenseId: string | null) => void;
+  onOpenPayment?: (settlementId: string | null) => void;
+  // Makes every row tappable and replaces the expense and payment shortcuts.
+  onOpenEntry?: (entry: GroceryActivityEntry) => void;
 }) {
   const groups = useMemo(() => groupActivityByDay(entries), [entries]);
   const membersById = useMemo(() => new Map(members.map((m) => [m.userId, m])), [members]);
@@ -103,7 +118,7 @@ export const ActivityList = memo(function ActivityList({
 
     const observer = new IntersectionObserver(
       (observed) => {
-        if (observed.some((entry) => entry.isIntersecting)) onLoadMore();
+        if (observed.some((entry) => entry.isIntersecting)) onLoadMore?.();
       },
       { rootMargin: LOAD_MORE_MARGIN },
     );
@@ -122,17 +137,23 @@ export const ActivityList = memo(function ActivityList({
             {group.entries.map((entry, index) => {
               const expenseId = activityExpenseId(entry);
               const settlementId = activitySettlementId(entry);
-              const open = expenseId
-                ? () => onOpenExpense(expenseId)
-                : settlementId
-                  ? () => onOpenPayment(settlementId)
-                  : null;
+              const open = onOpenEntry
+                ? () => onOpenEntry(entry)
+                : expenseId
+                  ? () => onOpenExpense?.(expenseId)
+                  : settlementId
+                    ? () => onOpenPayment?.(settlementId)
+                    : null;
               const className = "flex w-full items-start py-6 text-left";
               const content = (
                 <>
                   <ActivityIcon entry={entry} actor={membersById.get(entry.actorId ?? "")} />
                   <div className="mr-3 min-w-0 flex-1">
-                    <p className="font-display text-base leading-6 text-foreground">
+                    <p
+                      className={`font-display text-base font-normal leading-[calc(1.5rem*var(--font-scale,1))] ${
+                        entry.readAt ? "text-muted-foreground" : "text-foreground"
+                      }`}
+                    >
                       {formatActivityParts(entry, currentUserId).map((part, index) =>
                         part.emphasis ? (
                           <em key={index} className="font-medium italic">
@@ -144,7 +165,7 @@ export const ActivityList = memo(function ActivityList({
                       )}
                     </p>
                     <ActivityDetail entry={entry} currentUserId={currentUserId} />
-                    <p className="mt-3 font-display text-xs text-muted-foreground">
+                    <p className="mt-3 font-display text-xs font-normal text-muted-foreground">
                       {formatActivityTimestamp(entry.createdAt)}
                     </p>
                   </div>

@@ -38,6 +38,7 @@ export function Field({
   | "maxLength"
   | "autoCapitalize"
   | "autoCorrect"
+  | "autoFocus"
   | "keyboardType"
   | "autoComplete"
   | "returnKeyType"

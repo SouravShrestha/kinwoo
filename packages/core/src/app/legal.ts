@@ -10,3 +10,5 @@ export const LEGAL_LABELS = {
   terms: "Terms & Conditions",
   privacy: "Privacy Policy",
 } as const;
+
+export const EMBED_QUERY = "embed=1";

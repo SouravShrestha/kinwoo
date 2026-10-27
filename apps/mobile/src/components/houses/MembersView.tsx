@@ -11,6 +11,7 @@ import {
 import { Text, View } from "react-native";
 
 import { Button } from "../Button";
+import { ListRowsSkeleton } from "@/components/skeleton/skeletons";
 import { Avatar } from "./Avatar";
 import { ListRow } from "./Rows";
 import { SheetHeader } from "./SheetHeader";
@@ -65,7 +66,9 @@ export function MembersView({
             );
           })}
         </View>
-      ) : null}
+      ) : (
+        <ListRowsSkeleton count={4} spaced className="mt-6" />
+      )}
     </View>
   );
 }

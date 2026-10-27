@@ -1,85 +1,30 @@
 import {
   archiveIcon,
   bagDollarIcon,
-  bakeryIcon,
-  beveragesIcon,
-  carIcon,
   cartCheckIcon,
   cartCrossIcon,
   cartMinusIcon,
   cartPlusIcon,
-  dairyIcon,
-  diningIcon,
   editNoteIcon,
   emailIcon,
-  eventsIcon,
   filePlusIcon,
   frownIcon,
-  fruitsIcon,
-  groceryIcon,
   heartIcon,
-  householdIcon,
   housePlusIcon,
   listSettingsIcon,
-  meatFishIcon,
   moveIcon,
-  otherIcon,
   paperPlaneIcon,
-  personalCareIcon,
   pulseIcon,
-  rentIcon,
   shieldCheckIcon,
-  shoppingIcon,
-  snacksIcon,
-  spicesIcon,
-  staplesIcon,
-  todoIcon,
   transactionIcon,
   trashOutlineIcon,
   userCheckIcon,
   userCrossIcon,
-  utilitiesIcon,
-  vegetablesIcon,
-  walletIcon,
-  worldIcon,
   type IconGeometry,
 } from "./data";
 
 // Names to shapes, shared by the web and native entry points so both apps draw the same icon for
 // the same thing. Geometry objects (not names) keep the lookup tree-shakeable.
-
-// Keyed by grocery category and list icon names, matching the system category names.
-const GROCERY_CATEGORY: Record<string, IconGeometry> = {
-  Fruits: fruitsIcon,
-  Vegetables: vegetablesIcon,
-  Staples: staplesIcon,
-  Spices: spicesIcon,
-  Dairy: dairyIcon,
-  "Meat & Fish": meatFishIcon,
-  Bakery: bakeryIcon,
-  Snacks: snacksIcon,
-  Beverages: beveragesIcon,
-  Household: householdIcon,
-  "Personal Care": personalCareIcon,
-  Grocery: groceryIcon,
-  "To-do": todoIcon,
-  Wallet: walletIcon,
-  Events: eventsIcon,
-  Shopping: shoppingIcon,
-  Dining: diningIcon,
-};
-
-// Keyed by ExpenseCategory from @kinwoo/core/expenses.
-const EXPENSE_CATEGORY: Record<string, IconGeometry> = {
-  rent: rentIcon,
-  utilities: utilitiesIcon,
-  groceries: groceryIcon,
-  internet: worldIcon,
-  household: householdIcon,
-  food_dining: diningIcon,
-  transport: carIcon,
-  other: otherIcon,
-};
 
 // Square viewBoxes that fit each glyph's longest side to 20/24 of the tile, as archive does, so
 // every feed icon renders at the same size. Scoped here because the glyphs are shared with other
@@ -138,14 +83,6 @@ const ACTIVITY: Record<string, IconGeometry> = Object.fromEntries(
     { ...shape, viewBox: ACTIVITY_VIEWBOX[name] ?? shape.viewBox },
   ]),
 );
-
-export function groceryCategoryGeometry(name: string | null | undefined): IconGeometry {
-  return (name && GROCERY_CATEGORY[name]) || otherIcon;
-}
-
-export function expenseCategoryGeometry(category: string): IconGeometry {
-  return EXPENSE_CATEGORY[category] ?? otherIcon;
-}
 
 export function activityGeometry(name: string): IconGeometry {
   return ACTIVITY[name] ?? ACTIVITY.pulse;

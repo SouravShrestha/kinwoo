@@ -18,6 +18,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ExpandCaret, useExpandProgress } from "@/components/grocery/AssignMemberStrip";
 import { Avatar } from "@/components/houses/Avatar";
 import { Pressable } from "@/components/Pressable";
+import { MemberBalanceRowsSkeleton } from "@/components/skeleton/skeletons";
 import { SwipeDownScreen } from "@/components/SwipeDownScreen";
 import { goBack, openRecordPayment } from "@/lib/house-navigation";
 import { useSwipeDownToDismiss } from "@/lib/use-swipe-down-to-dismiss";
@@ -59,7 +60,9 @@ function MemberRow({ row, houseName }: { row: MemberBalanceRow; houseName: strin
       <Pressable
         accessibilityRole="button"
         accessibilityLabel={
-          settlements.length > 0 ? `${open ? "Hide" : "Show"} who ${name} settles with` : undefined
+          settlements.length > 0
+            ? `${open ? "Hide" : "Show"} who ${member.isSelf ? "you settle" : `${name} settles`} with`
+            : undefined
         }
         accessibilityState={{ expanded: settlements.length > 0 ? open : undefined }}
         disabled={settlements.length === 0}
@@ -69,12 +72,22 @@ function MemberRow({ row, houseName }: { row: MemberBalanceRow; houseName: strin
       >
         <Avatar name={member.name} url={member.avatarUrl} size={MEMBER_AVATAR} />
         <Text className="flex-1 font-display-normal text-base text-foreground">
-          <Text className="font-display-medium">{name}</Text>
+          <Text className="font-display-medium">{member.isSelf ? "You" : name}</Text>
           {member.netPaise === 0 ? (
-            " is settled up"
+            member.isSelf ? (
+              " are settled up"
+            ) : (
+              " is settled up"
+            )
           ) : (
             <>
-              {owes ? " owes " : " gets back "}
+              {owes
+                ? member.isSelf
+                  ? " owe "
+                  : " owes "
+                : member.isSelf
+                  ? " get back "
+                  : " gets back "}
               <Text className={`font-display-medium ${owes ? "text-destructive" : "text-accent"}`}>
                 {formatPaise(Math.abs(member.netPaise))}
               </Text>
@@ -118,11 +131,13 @@ function MemberRow({ row, houseName }: { row: MemberBalanceRow; houseName: strin
                       <View className="flex-row items-center gap-3" style={{ height: BRANCH_ROW }}>
                         <Avatar name={other.name} url={other.avatarUrl} size={26} />
                         <Text className="flex-1 font-display-normal text-sm text-muted-foreground">
-                          {shortMemberName(settlement.from.name)} owes{" "}
+                          {settlement.from.isSelf
+                            ? "You owe"
+                            : `${shortMemberName(settlement.from.name)} owes`}{" "}
                           <Text className="font-display-medium text-destructive">
                             {formatPaise(settlement.amountPaise)}
                           </Text>{" "}
-                          to {shortMemberName(settlement.to.name)}
+                          to {settlement.to.isSelf ? "you" : shortMemberName(settlement.to.name)}
                         </Text>
                       </View>
                       <View className="flex-row gap-2" style={{ paddingLeft: 38 }}>
@@ -144,16 +159,16 @@ function MemberRow({ row, houseName }: { row: MemberBalanceRow; houseName: strin
                             }
                           />
                         )}
-                        {settlement.from.isSelf || settlement.to.isSelf ? (
-                          <PillButton
-                            label="Settle up"
-                            onPress={() =>
-                              openRecordPayment(
-                                (settlement.from.isSelf ? settlement.to : settlement.from).userId,
-                              )
-                            }
-                          />
-                        ) : null}
+                        <PillButton
+                          label="Settle up"
+                          onPress={() =>
+                            openRecordPayment(
+                              settlement.from.userId,
+                              settlement.to.userId,
+                              settlement.amountPaise,
+                            )
+                          }
+                        />
                       </View>
                     </View>
                   </View>
@@ -213,7 +228,9 @@ export function MemberBalances({ houseId }: { houseId: string }) {
                 <MemberRow key={row.member.userId} row={row} houseName={activeHouse.house.name} />
               ))}
             </View>
-          ) : null}
+          ) : (
+            <MemberBalanceRowsSkeleton />
+          )}
         </Animated.ScrollView>
       </GestureDetector>
     </SwipeDownScreen>

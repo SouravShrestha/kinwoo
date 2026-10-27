@@ -14,7 +14,8 @@ import {
   type GroceryItem,
   type StoreId,
 } from "@kinwoo/core/grocery";
-import { CaretDownIcon, CategoryIcon, CheckCircleIcon, ClockIcon, CloseIcon } from "@kinwoo/icons";
+import { CaretDownIcon, CheckCircleIcon, ClockIcon, CloseIcon } from "@kinwoo/icons";
+import { ItemCategoryImage } from "@/components/CategoryImages";
 import Image from "next/image";
 import { useState, type ReactNode } from "react";
 
@@ -34,7 +35,7 @@ const STORE_LOGOS: Record<StoreId, string> = {
 };
 
 const FIELD =
-  "flex h-12 items-center rounded-xl bg-muted font-display text-base text-foreground focus-within:outline-2 focus-within:outline-foreground";
+  "flex h-12 items-center rounded-xl bg-muted font-display text-base font-normal text-foreground focus-within:outline-2 focus-within:outline-foreground";
 const FIELD_BUTTON =
   "gap-2 px-3.5 transition-opacity enabled:hover:cursor-pointer enabled:hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground";
 export const FOCUS_RING =
@@ -156,7 +157,7 @@ export function ItemDetailsEditor({
                 FOCUS_RING,
               )}
             >
-              <CategoryIcon name={category?.name} size={26} />
+              <ItemCategoryImage name={category?.name} size={40} />
             </button>
             <label htmlFor="edit-item-name" className="sr-only">
               Item name
@@ -183,7 +184,7 @@ export function ItemDetailsEditor({
             <p
               id="edit-item-name-error"
               role="alert"
-              className="mt-2 text-right font-display text-sm text-destructive"
+              className="mt-2 text-right font-display text-sm font-normal text-destructive"
             >
               {form.error}
             </p>
@@ -207,7 +208,7 @@ export function ItemDetailsEditor({
             onChange={(event) => form.setQuantity(event.target.value)}
             className={cn(
               FIELD,
-              "w-20 shrink-0 justify-center px-2 text-center outline-none placeholder:text-muted-foreground",
+              "w-20 shrink-0 justify-center text-center outline-none placeholder:text-muted-foreground",
             )}
           />
           <button
@@ -256,7 +257,9 @@ export function ItemDetailsEditor({
         </div>
 
         <div className="ml-auto flex w-fit max-w-full flex-col items-end gap-1">
-          <span className="font-display text-[11px] text-muted-foreground">Last edited by</span>
+          <span className="font-display text-[calc(11px*var(--font-scale,1))] font-normal text-muted-foreground">
+            Last edited by
+          </span>
           <span className="flex min-w-0 items-center gap-1.5">
             <Avatar
               name={editor?.displayName ?? editorName}
@@ -307,7 +310,7 @@ export function ItemDetailsEditor({
         options={form.categories.map((c) => ({
           id: c.id,
           label: c.name,
-          icon: <CategoryIcon name={c.name} size={32} />,
+          icon: <ItemCategoryImage name={c.name} size={48} />,
         }))}
         selectedId={draft.categoryId}
         onSelect={(id) => {

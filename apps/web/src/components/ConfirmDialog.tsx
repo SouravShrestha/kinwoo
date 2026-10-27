@@ -9,6 +9,7 @@ import {
   LogoutIcon,
   TrashIcon,
   UserCheckIcon,
+  UnlinkIcon,
   UserCrossIcon,
   WorldIcon,
   type WebIconProps,
@@ -29,6 +30,7 @@ const ICONS: Record<ConfirmIconName, ComponentType<WebIconProps>> = {
   leaveHouse: LeaveHouseIcon,
   userCheck: UserCheckIcon,
   userCross: UserCrossIcon,
+  unlink: UnlinkIcon,
 };
 
 // A centred card over a dimmed backdrop. It interrupts the current flow rather than being part of
@@ -128,7 +130,7 @@ export function ConfirmDialog({
             {copy.message}
           </p>
           {error ? (
-            <p role="alert" className="mt-3 text-base text-destructive">
+            <p role="alert" className="mt-3 text-center text-base text-destructive">
               {error}
             </p>
           ) : null}
@@ -139,9 +141,11 @@ export function ConfirmDialog({
             type="button"
             disabled={isPending}
             onClick={onCancel}
-            className="h-14 flex-1 font-display text-base font-medium text-foreground underline underline-offset-[6px] hover:cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground disabled:cursor-not-allowed disabled:opacity-50"
+            className="flex h-14 flex-1 items-center justify-center font-display text-base font-medium text-foreground hover:cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground disabled:cursor-not-allowed disabled:opacity-50"
           >
-            {CONFIRM_CANCEL_LABEL}
+            <span className="inline-block border-b-[1.4px] border-foreground">
+              {CONFIRM_CANCEL_LABEL}
+            </span>
           </button>
           <div className="flex-1">
             <Button label={copy.confirmLabel} loading={isPending} onClick={onConfirm} />

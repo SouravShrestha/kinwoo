@@ -11,6 +11,7 @@ import {
   type HouseMembership,
 } from "@kinwoo/core/houses";
 
+import { ListRowsSkeleton } from "@/components/skeleton/skeletons";
 import { Button } from "../Button";
 import { Avatar } from "./Avatar";
 import { ListRow } from "./Rows";
@@ -67,7 +68,9 @@ export function MembersView({
             );
           })}
         </ul>
-      ) : null}
+      ) : (
+        <ListRowsSkeleton count={4} spaced className="mt-6" />
+      )}
     </div>
   );
 }

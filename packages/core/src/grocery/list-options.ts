@@ -1,14 +1,19 @@
 import type { ListVisibility } from "./types";
 
 // `value` is what gets stored on the list. It stays an emoji so every screen that still renders
-// `list.icon` as text keeps working; `label` names the matching glyph in `CategoryIcon`.
+// `list.icon` as text keeps working; `label` keys the matching image on each platform.
 export const LIST_ICON_OPTIONS = [
   { value: "🛒", label: "Grocery" },
   { value: "✅", label: "To-do" },
   { value: "👛", label: "Wallet" },
-  { value: "�", label: "Events" },
+  { value: "📅", label: "Events" },
   { value: "🛍️", label: "Shopping" },
   { value: "🍽️", label: "Dining" },
+  { value: "🏠", label: "Home" },
+  { value: "🚗", label: "Travel" },
+  { value: "💡", label: "Bills" },
+  { value: "❤️", label: "Health" },
+  { value: "🥤", label: "Drinks" },
 ] as const;
 
 export const DEFAULT_LIST_ICON = LIST_ICON_OPTIONS[0].value;

@@ -2,6 +2,7 @@
 
 import { BottomSheet } from "@/components/BottomSheet";
 import { SheetHeader } from "@/components/houses/SheetHeader";
+import { AssignRowsSkeleton } from "@/components/skeleton/skeletons";
 
 import { useAssignToMember } from "./useAssignToMember";
 
@@ -45,8 +46,9 @@ export function AssignSheet({
       />
 
       <div className="mt-4 space-y-2">
+        {isLoading ? <AssignRowsSkeleton /> : null}
         {!isLoading && members.length === 0 ? (
-          <p className="py-6 text-center font-display text-sm text-muted-foreground">
+          <p className="py-6 text-center font-display text-sm font-normal text-muted-foreground">
             No other housemates yet
           </p>
         ) : null}
@@ -56,31 +58,29 @@ export function AssignSheet({
           const isAssigning = assigningId === m.userId;
 
           return (
-            <button
+            <div
               key={m.userId}
-              type="button"
-              disabled={assigningId !== null}
-              onClick={() => assign(m.userId, name)}
-              className="flex w-full items-center justify-between rounded-xl border border-border bg-card p-3.5 text-left transition-colors hover:cursor-pointer hover:bg-muted/50 disabled:cursor-not-allowed disabled:opacity-60"
+              className="flex items-center justify-between rounded-xl border border-border/60 bg-muted/30 px-4 py-3"
             >
-              <div className="flex min-w-0 items-center gap-3">
-                <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-primary/10 font-display text-sm font-medium text-primary">
-                  {name.charAt(0).toUpperCase()}
-                </div>
-                <div className="min-w-0">
-                  <span className="block truncate font-display text-base font-medium text-foreground">
-                    {name}
+              <div className="min-w-0 flex-1 pr-2">
+                <span className="block truncate font-display text-base font-medium text-foreground">
+                  {name}
+                </span>
+                {m.role ? (
+                  <span className="block font-display text-xs font-normal capitalize text-muted-foreground">
+                    {m.role}
                   </span>
-                  <span className="font-display text-xs text-muted-foreground">
-                    {m.role === "admin" ? "Admin" : "Member"}
-                  </span>
-                </div>
+                ) : null}
               </div>
-
-              <span className="shrink-0 rounded-lg bg-primary/10 px-2.5 py-1 font-display text-xs font-medium text-primary">
+              <button
+                type="button"
+                disabled={assigningId !== null}
+                onClick={() => assign(m.userId, name)}
+                className="shrink-0 rounded-lg bg-primary px-3 py-1.5 font-display text-xs font-medium text-primary-foreground hover:cursor-pointer disabled:cursor-not-allowed disabled:opacity-60"
+              >
                 {isAssigning ? "Assigning..." : "Assign"}
-              </span>
-            </button>
+              </button>
+            </div>
           );
         })}
       </div>

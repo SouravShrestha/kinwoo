@@ -1,9 +1,9 @@
 import { displayNameErrorMessage, validateDisplayName } from "@kinwoo/core/auth";
+import { isPushType } from "@kinwoo/core/push";
 
 import { serviceResults } from "../_shared/result";
 import type { IProfileRepository, Profile, ProfilePreferences } from "./IProfileRepository";
 import type { IProfileService, ProfileResult, ProfileServiceErrorCode } from "./IProfileService";
-import { normaliseSocialAvatar } from "./socialAvatar";
 
 const VALID_THEMES = new Set(["light", "dark", "system"]);
 const LOCALE_PATTERN = /^[a-z]{2}(-[A-Za-z0-9]{2,8})?$/;
@@ -28,20 +28,20 @@ const found = (profile: Profile | null): ProfileResult =>
 export class ProfileService implements IProfileService {
   constructor(private readonly repository: IProfileRepository) {}
 
-  async getProfile(userId: string, socialAvatarUrl?: string): Promise<ProfileResult> {
+  async getProfile(userId: string): Promise<ProfileResult> {
     const result = await run(async () => {
       const profile = await this.repository.findById(userId);
       if (!profile || profile.avatarUrl) return profile;
-      return this.withAvatar(profile, normaliseSocialAvatar(socialAvatarUrl));
+      return this.withAvatar(profile);
     });
     return result.ok ? found(result.data) : result;
   }
 
   // Never fails the profile load: without a default avatar the clients fall back to a placeholder.
-  private async withAvatar(profile: Profile, social: string | null): Promise<Profile> {
+  private async withAvatar(profile: Profile): Promise<Profile> {
     try {
-      const presets = social ? [] : await this.repository.listAvatarUrls();
-      const pick = social ?? presets[Math.floor(Math.random() * presets.length)];
+      const presets = await this.repository.listAvatarUrls();
+      const pick = presets[Math.floor(Math.random() * presets.length)];
       if (!pick) return profile;
 
       // Conditional on the column still being empty, so two concurrent loads settle on one avatar.
@@ -50,13 +50,6 @@ export class ProfileService implements IProfileService {
     } catch {
       return profile;
     }
-  }
-
-  // The social avatar leads the presets: it is the default, so it is the first choice shown.
-  private async selectableAvatars(socialAvatarUrl: string | undefined): Promise<string[]> {
-    const social = normaliseSocialAvatar(socialAvatarUrl);
-    const presets = await this.repository.listAvatarUrls();
-    return social ? [social, ...presets.filter((url) => url !== social)] : presets;
   }
 
   async setDisplayName(userId: string, input: string): Promise<ProfileResult> {
@@ -77,21 +70,19 @@ export class ProfileService implements IProfileService {
     return result.ok ? found(result.data) : result;
   }
 
-  async listAvatars(socialAvatarUrl?: string): Promise<ProfileResult<string[]>> {
-    return run(() => this.selectableAvatars(socialAvatarUrl));
+  async listAvatars(): Promise<ProfileResult<string[]>> {
+    return run(() => this.repository.listAvatarUrls());
   }
 
-  async setAvatar(
-    userId: string,
-    avatarUrl: string,
-    socialAvatarUrl?: string,
-  ): Promise<ProfileResult> {
-    // Only a URL we list ourselves is stored, so a client cannot point a profile at an
-    // arbitrary image.
-    const avatars = await run(() => this.selectableAvatars(socialAvatarUrl));
-    if (!avatars.ok) return avatars;
-    if (!avatars.data.includes(avatarUrl)) {
-      return invalidInput("Choose one of the available avatars.");
+  async setAvatar(userId: string, avatarUrl: string): Promise<ProfileResult> {
+    // Only a URL we list ourselves, or a file in the user's own upload folder, is stored, so a
+    // client cannot point a profile at an arbitrary image. The database checks the file exists.
+    if (!this.repository.isOwnUpload(userId, avatarUrl)) {
+      const avatars = await run(() => this.repository.listAvatarUrls());
+      if (!avatars.ok) return avatars;
+      if (!avatars.data.includes(avatarUrl)) {
+        return invalidInput("Choose one of the available avatars.");
+      }
     }
 
     const result = await run(() => this.repository.updateAvatarUrl(userId, avatarUrl));
@@ -116,6 +107,13 @@ function validatePreferences(preferences: ProfilePreferences): string | null {
     typeof preferences.notificationsEnabled !== "boolean"
   ) {
     return "Notifications must be on or off.";
+  }
+
+  if (
+    preferences.mutedPushTypes !== undefined &&
+    !(Array.isArray(preferences.mutedPushTypes) && preferences.mutedPushTypes.every(isPushType))
+  ) {
+    return "Choose from the notification types listed.";
   }
 
   return null;

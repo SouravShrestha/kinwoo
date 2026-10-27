@@ -1,8 +1,9 @@
 "use client";
 
-import { useJoinCodeForm } from "@kinwoo/client/houses";
+import { useHouseLimit, useJoinCodeForm } from "@kinwoo/client/houses";
 import {
   HOUSE_SCREEN_TITLES,
+  JOIN_BLOCKED_TITLE,
   JOIN_SCREEN_HEADING,
   JOIN_SCREEN_SUBTITLE,
 } from "@kinwoo/core/houses";
@@ -10,6 +11,7 @@ import { QrIcon, TextInputIcon } from "@kinwoo/icons";
 import { useState } from "react";
 import { Button } from "../Button";
 import { Field } from "./Field";
+import { HouseLimitNotice } from "./HouseLimitNotice";
 import { HouseScreen } from "./HouseScreen";
 import { JoinPreviewSheet } from "./JoinPreviewSheet";
 import { QrScanner } from "./QrScanner";
@@ -17,13 +19,26 @@ import { ErrorText } from "./Rows";
 
 type Confirmation = { code: string; open: boolean; id: number };
 
-export function JoinScreen({
-  initialCode,
-  confirmInitialCode = false,
-}: {
-  initialCode?: string;
-  confirmInitialCode?: boolean;
-}) {
+type JoinScreenProps = { initialCode?: string; confirmInitialCode?: boolean };
+
+export function JoinScreen(props: JoinScreenProps) {
+  const limit = useHouseLimit();
+
+  if (limit.checking || limit.blocked) {
+    return (
+      <HouseScreen
+        title={limit.blocked ? JOIN_BLOCKED_TITLE : HOUSE_SCREEN_TITLES.join}
+        noBack={limit.blocked}
+      >
+        {limit.blocked ? <HouseLimitNotice message={limit.message} /> : null}
+      </HouseScreen>
+    );
+  }
+
+  return <JoinForm {...props} />;
+}
+
+function JoinForm({ initialCode, confirmInitialCode = false }: JoinScreenProps) {
   const [scanning, setScanning] = useState(false);
   const [confirmation, setConfirmation] = useState<Confirmation | null>(
     confirmInitialCode && initialCode ? { code: initialCode, open: true, id: 0 } : null,

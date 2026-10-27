@@ -9,13 +9,7 @@ import {
   type ExpenseCategory,
 } from "@kinwoo/core/expenses";
 import { formatPickedDate } from "@kinwoo/core/grocery";
-import {
-  ArrowRightIcon,
-  CalendarIcon,
-  CheckCircleIcon,
-  ExpenseCategoryIcon,
-  RupeeIcon,
-} from "@kinwoo/icons/native";
+import { ArrowRightIcon, CalendarIcon, CheckCircleIcon, RupeeIcon } from "@kinwoo/icons/native";
 import { colors } from "@kinwoo/tokens/native";
 import { useState } from "react";
 import { Keyboard, KeyboardAvoidingView, Platform, Text, TextInput, View } from "react-native";
@@ -32,6 +26,7 @@ import { useFocusedInputAboveKeyboard } from "@/lib/use-focused-input-above-keyb
 import { useSwipeDownToDismiss } from "@/lib/use-swipe-down-to-dismiss";
 import { useTheme } from "@/theme/ThemeProvider";
 
+import { ExpenseCategoryImage } from "./ExpenseCategoryImage";
 import { PayerSheet } from "./PayerSheet";
 import { SplitSheet } from "./SplitSheet";
 
@@ -139,11 +134,7 @@ export function ExpenseFormScreen({
                   allowDoublePress
                   className="size-12 items-center justify-center rounded-xl bg-muted active:opacity-80"
                 >
-                  <ExpenseCategoryIcon
-                    category={form.category}
-                    size={24}
-                    color={palette.foreground}
-                  />
+                  <ExpenseCategoryImage category={form.category} size={40} />
                 </Pressable>
                 <TextInput
                   autoFocus={!form.isEditing}
@@ -185,8 +176,8 @@ export function ExpenseFormScreen({
                     onFocus={revealFocusedInput}
                     value={form.amount}
                     onChangeText={form.setAmount}
-                    className="h-11 min-w-0 flex-1 font-display-medium text-foreground"
-                    style={{ fontSize: 34, paddingVertical: 0 }}
+                    className="h-14 min-w-0 flex-1 font-display-medium text-foreground"
+                    style={{ fontSize: 34, lineHeight: 44, paddingVertical: 0 }}
                   />
                 </View>
                 {form.amountError ? (
@@ -290,9 +281,7 @@ export function ExpenseFormScreen({
         options={EXPENSE_CATEGORIES.map((category) => ({
           id: category,
           label: EXPENSE_CATEGORY_LABELS[category],
-          icon: (color: string) => (
-            <ExpenseCategoryIcon category={category} size={32} color={color} />
-          ),
+          icon: () => <ExpenseCategoryImage category={category} size={48} />,
         }))}
         selectedId={form.category}
         onSelect={(id) => {

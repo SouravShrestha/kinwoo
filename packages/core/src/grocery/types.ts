@@ -173,6 +173,7 @@ export type GroceryActivityEntry = {
   entityId: string | null;
   payload: Record<string, unknown>;
   createdAt: string;
+  readAt?: string | null;
 };
 
 export type GroceryActivityPage = {

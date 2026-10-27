@@ -87,7 +87,6 @@ function Detail({ houseId, settlementId }: { houseId: string; settlementId: stri
       submitting={update.isPending}
       onSubmit={(amountPaise) => void save(amountPaise)}
       requireChange
-      readOnly={!involved}
       onDelete={() => setConfirmDelete(true)}
     >
       <ConfirmDialog

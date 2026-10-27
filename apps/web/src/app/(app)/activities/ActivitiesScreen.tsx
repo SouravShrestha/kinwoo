@@ -6,13 +6,15 @@ import { useOpenExpense, useOpenSettlement } from "@kinwoo/client/expenses";
 import { useRecentActivity } from "@kinwoo/client/grocery";
 import { useActiveHouse, useHouseMembers } from "@kinwoo/client/houses";
 import { countSelected, EMPTY_FILTER_SELECTION, type FilterSelection } from "@kinwoo/core/filters";
-import { activityFilterGroups, filterActivity } from "@kinwoo/core/grocery";
+import { ACTIVITY_EMPTY_HINT, activityFilterGroups, filterActivity } from "@kinwoo/core/grocery";
 import { useRouter } from "next/navigation";
 import { useCallback, useDeferredValue, useMemo, useState } from "react";
 
 import { ActivityList } from "@/components/activity/ActivityList";
 import { Filters } from "@/components/Filters";
+import { EmptyItems } from "@/components/grocery/EmptyItems";
 import { SetupHousePrompt } from "@/components/houses/SetupHousePrompt";
+import { ActivityRowsSkeleton } from "@/components/skeleton/skeletons";
 import { expensePath, paymentPath } from "@/lib/house-navigation";
 
 export function ActivitiesScreen() {
@@ -73,7 +75,7 @@ export function ActivitiesScreen() {
   }
 
   return (
-    <main className="flex min-h-[calc(100dvh-4rem)] flex-col px-4 pb-24 pt-6">
+    <main className="flex min-h-[calc(100dvh-4rem)] flex-col px-4 pb-24 pt-[calc(0.75rem+env(safe-area-inset-top))]">
       <h1 className="mb-4 flex min-h-10 items-center px-2 font-display text-xl font-normal text-foreground">
         Recent Activity
       </h1>
@@ -82,18 +84,22 @@ export function ActivitiesScreen() {
         groups={filterGroups}
         value={filters}
         onChange={setFilters}
-        className="-mx-4 mb-6 mt-2 px-6"
+        className="-mx-4 mb-6 mt-2 px-5"
       />
 
-      <div className="flex-1">
-        {!ready || isLoading ? null : filteredEntries.length === 0 && !moreToFetch ? (
-          <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-border py-16 text-center">
-            <p className="font-display font-medium text-foreground">
-              {countSelected(deferredFilters) > 0
+      <div className="flex flex-1 flex-col">
+        {!ready || isLoading ? (
+          <ActivityRowsSkeleton />
+        ) : filteredEntries.length === 0 && !moreToFetch ? (
+          <EmptyItems
+            image="activity"
+            title={
+              countSelected(deferredFilters) > 0
                 ? "No activity matches these filters"
-                : "No activity yet"}
-            </p>
-          </div>
+                : "No activity yet"
+            }
+            hint={countSelected(deferredFilters) > 0 ? null : ACTIVITY_EMPTY_HINT}
+          />
         ) : (
           <ActivityList
             entries={filteredEntries}
@@ -105,6 +111,7 @@ export function ActivitiesScreen() {
             onOpenPayment={handleOpenPayment}
           />
         )}
+        {isFetchingNextPage ? <ActivityRowsSkeleton count={2} withHeading={false} /> : null}
       </div>
     </main>
   );

@@ -1,43 +1,25 @@
-import { router } from "expo-router";
+import type { ReactNode } from "react";
 import { Text, View } from "react-native";
-
-import { Pressable } from "@/components/Pressable";
-
-const BADGE = {
-  primary: { box: "bg-primary/15", text: "text-primary" },
-  destructive: { box: "bg-destructive/15", text: "text-destructive" },
-} as const;
 
 type SectionHeaderProps = {
   title: string;
   count: number;
-  tone: keyof typeof BADGE;
+  trailing?: ReactNode;
 };
 
-export function SectionHeader({ title, count, tone }: SectionHeaderProps) {
+export function SectionHeader({ title, count, trailing }: SectionHeaderProps) {
   return (
     <View className="flex-row items-center justify-between">
-      <View className="flex-row items-center gap-2">
-        <Text
-          accessibilityRole="header"
-          className="font-display-semibold text-base text-foreground"
-        >
-          {title}
+      <Text accessibilityRole="header" className="font-display-normal text-sm text-foreground">
+        {title}
+        <Text className="font-display-normal text-muted-foreground">
+          {" "}
+          <Text className="text-xs">(</Text>
+          {count}
+          <Text className="text-xs">)</Text>
         </Text>
-        {count > 0 ? (
-          <View className={`rounded-full px-2 py-0.5 ${BADGE[tone].box}`}>
-            <Text className={`font-display-medium text-xs ${BADGE[tone].text}`}>{count}</Text>
-          </View>
-        ) : null}
-      </View>
-      <Pressable
-        accessibilityRole="link"
-        accessibilityLabel="See all lists"
-        hitSlop={8}
-        onPress={() => router.push("/tasks")}
-      >
-        <Text className="font-display-medium text-xs text-muted-foreground">See all</Text>
-      </Pressable>
+      </Text>
+      {trailing}
     </View>
   );
 }

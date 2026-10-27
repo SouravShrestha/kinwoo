@@ -75,6 +75,15 @@ describe("expense activity", () => {
     ]);
   });
 
+  it("reads a join request instead of a generic action", () => {
+    const request: GroceryActivityEntry = { ...entry, type: "join_requested", payload: {} };
+    expect(formatActivityParts(request, "u2").map((part) => part.text)).toEqual([
+      "Sourav",
+      " asked to join the house",
+    ]);
+    expect(activityIconName(request)).toBe("house-plus");
+  });
+
   it("reads a recorded payment from the viewer's side", () => {
     const payment: GroceryActivityEntry = {
       ...entry,

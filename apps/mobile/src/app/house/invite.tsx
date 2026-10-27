@@ -44,6 +44,7 @@ import { ExpandableQrCode } from "@/components/houses/ExpandableQrCode";
 import { InviteCard } from "@/components/houses/InviteCard";
 import { HouseSheet } from "@/components/houses/HouseSheet";
 import { ListRow } from "@/components/houses/Rows";
+import { InviteSkeleton } from "@/components/skeleton/skeletons";
 import { goHome } from "@/lib/house-navigation";
 import { captureInviteCard, openInviteShare } from "@/lib/share-invite";
 import { siteOrigin } from "@/lib/site";
@@ -96,7 +97,9 @@ function InviteManager({ membership }: { membership: HouseMembership }) {
 
   return (
     <HouseScreen title={HOUSE_SCREEN_TITLES.invite} dismissible>
-      {manager.loading ? null : (
+      {manager.loading ? (
+        <InviteSkeleton />
+      ) : (
         <View>
           <Text className="text-sm font-display-normal text-muted-foreground mb-2">
             {INVITE_SCREEN_SUBTITLE}

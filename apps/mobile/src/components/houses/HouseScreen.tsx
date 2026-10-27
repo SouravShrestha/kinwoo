@@ -1,7 +1,7 @@
 import { ArrowRightIcon } from "@kinwoo/icons/native";
 import { colors } from "@kinwoo/tokens/native";
 import { useEffect, useState, type ReactNode } from "react";
-import { Image, KeyboardAvoidingView, Platform, Text, View } from "react-native";
+import { KeyboardAvoidingView, Platform, Text, View } from "react-native";
 import { GestureDetector } from "react-native-gesture-handler";
 import Animated, {
   Easing,
@@ -19,22 +19,23 @@ import { useKeyboardVisible } from "@/lib/use-keyboard-visible";
 import { useSwipeDownToDismiss } from "@/lib/use-swipe-down-to-dismiss";
 import { useTheme } from "@/theme/ThemeProvider";
 
-const HERO_ASPECT_RATIO = 512 / 311;
 const HERO_ANIMATION_MS = 250;
 
-type Hero = { image: number; heading: string };
+type Hero = { heading: string };
 
 export function HouseScreen({
   title,
   hero,
   dismissible = false,
   scrollOnlyWithKeyboard = false,
+  noBack = false,
   children,
 }: {
   title: string;
   hero?: Hero;
   dismissible?: boolean;
   scrollOnlyWithKeyboard?: boolean;
+  noBack?: boolean;
   children: ReactNode;
 }) {
   const insets = useSafeAreaInsets();
@@ -56,20 +57,22 @@ export function HouseScreen({
 
   const header = (
     <View
-      className="flex-row items-center px-5 pb-4"
-      style={{ paddingTop: insets.top + (dismissible ? 20 : 12) }}
+      className={`flex-row items-center pb-4 ${noBack ? "px-6" : "px-5"}`}
+      style={{ paddingTop: insets.top + (noBack ? 40 : dismissible ? 20 : 12) }}
     >
-      <Pressable
-        accessibilityRole="button"
-        accessibilityLabel={dismissible ? "Close" : "Back"}
-        onPress={goBack}
-        hitSlop={12}
-        className="mr-2 size-9 items-start justify-center"
-      >
-        <View style={{ transform: [{ rotate: dismissible ? "90deg" : "180deg" }] }}>
-          <ArrowRightIcon size={26} color={palette.foreground} />
-        </View>
-      </Pressable>
+      {noBack ? null : (
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={dismissible ? "Close" : "Back"}
+          onPress={goBack}
+          hitSlop={12}
+          className="mr-2 size-9 items-start justify-center"
+        >
+          <View style={{ transform: [{ rotate: dismissible ? "90deg" : "180deg" }] }}>
+            <ArrowRightIcon size={26} color={palette.foreground} />
+          </View>
+        </Pressable>
+      )}
 
       <Animated.Text
         accessibilityRole="header"
@@ -103,17 +106,9 @@ export function HouseScreen({
       <View className="px-6 pt-2">
         {hero ? (
           <CollapsibleHero collapse={collapse} collapsed={collapsed}>
-            <Image
-              source={hero.image}
-              tintColor={palette.foreground}
-              accessibilityIgnoresInvertColors
-              resizeMode="contain"
-              style={{ aspectRatio: HERO_ASPECT_RATIO }}
-              className="self-center h-36"
-            />
             <Text
               accessibilityRole="header"
-              className="mb-3 mt-10 font-display-medium text-3xl text-foreground"
+              className="mb-2 font-display-medium text-3xl text-foreground"
             >
               {hero.heading}
             </Text>

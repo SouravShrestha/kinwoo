@@ -2,7 +2,7 @@
 
 import { LIST_ICON_OPTIONS } from "@kinwoo/core/grocery";
 
-import { CategoryIcon } from "@kinwoo/icons";
+import { ListIconImage } from "@/components/CategoryImages";
 
 import { SheetHeader } from "@/components/houses/SheetHeader";
 import { cn } from "@/lib/utils";
@@ -35,11 +35,11 @@ export function ListIconPicker({
               >
                 <span
                   className={cn(
-                    "flex size-14 items-center justify-center rounded-xl",
-                    isSelected ? "bg-foreground text-background" : "bg-muted text-foreground",
+                    "flex size-16 items-center justify-center rounded-xl border-2 bg-muted",
+                    isSelected ? "border-foreground" : "border-transparent",
                   )}
                 >
-                  <CategoryIcon name={option.label} size={32} />
+                  <ListIconImage label={option.label} size={48} />
                 </span>
               </button>
             </li>

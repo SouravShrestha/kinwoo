@@ -24,8 +24,8 @@ export function paymentPath(settlementId: string) {
   return `/expenses/payment/${encodeURIComponent(settlementId)}`;
 }
 
-export function recordPaymentPath(userId: string) {
-  return `/expenses/record-payment/${encodeURIComponent(userId)}`;
+export function recordPaymentPath(payerId: string, payeeId: string, amountPaise: number) {
+  return `/expenses/record-payment/${encodeURIComponent(payerId)}/${encodeURIComponent(payeeId)}?amountPaise=${amountPaise}`;
 }
 
 export function expensePath(expenseId: string) {

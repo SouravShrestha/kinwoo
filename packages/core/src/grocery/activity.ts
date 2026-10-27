@@ -135,6 +135,8 @@ export function filterActivity(
   );
 }
 
+export const ACTIVITY_EMPTY_HINT = "Grocery and expense updates from your house show up here";
+
 export function activityFilterGroups(
   entries: readonly GroceryActivityEntry[],
   currentUserId?: string | null,
@@ -234,6 +236,7 @@ const AMOUNT_PREPOSITIONS: Record<string, string> = {
 const PLAIN_PHRASES: Record<string, string> = {
   house_created: "created the house",
   member_joined: "joined the house",
+  join_requested: "asked to join the house",
   member_left: "left the house",
   join_rejected: "rejected a join request",
   invite_revoked: "revoked an invite",
@@ -631,6 +634,7 @@ const ICON_BY_ACTIVITY: Record<string, ActivityIconName> = {
   "grocery_list.deleted": "trash",
   house_created: "house-plus",
   member_joined: "heart",
+  join_requested: "house-plus",
   member_left: "frown",
   member_removed: "user-cross",
   role_changed: "shield-check",

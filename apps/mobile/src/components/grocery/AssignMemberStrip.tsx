@@ -13,6 +13,7 @@ import Animated, {
 
 import { Avatar } from "@/components/houses/Avatar";
 import { Pressable } from "@/components/Pressable";
+import { MemberStripSkeleton } from "@/components/skeleton/skeletons";
 
 const STRIP_GAP = 16;
 const MEMBER_AVATAR_SIZE = 48;
@@ -88,7 +89,11 @@ export function AssignMemberStrip({
           paddingBottom: gapAt === "bottom" ? STRIP_GAP : 0,
         }}
       >
-        {isLoading ? null : members.length === 0 ? (
+        {isLoading ? (
+          <View style={{ paddingHorizontal: inset }}>
+            <MemberStripSkeleton />
+          </View>
+        ) : members.length === 0 ? (
           <Text className="text-center text-sm text-muted-foreground font-display-normal">
             No other house members found
           </Text>

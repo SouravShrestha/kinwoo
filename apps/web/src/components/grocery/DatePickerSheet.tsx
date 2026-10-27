@@ -81,7 +81,7 @@ function MonthPane({
               disabled={future}
               onClick={() => onSelect(date)}
               className={cn(
-                "flex size-11 items-center justify-center rounded-full font-display text-base transition-colors hover:cursor-pointer disabled:cursor-not-allowed disabled:opacity-30",
+                "flex size-11 items-center justify-center rounded-full font-display text-base font-normal transition-colors hover:cursor-pointer disabled:cursor-not-allowed disabled:opacity-30",
                 FOCUS_RING,
                 selected
                   ? "bg-foreground text-background"
@@ -295,7 +295,10 @@ function Calendar({
 
       <div className="mb-1 grid grid-cols-7" aria-hidden>
         {WEEKDAY_LABELS.map((label, index) => (
-          <span key={index} className="py-1 text-center font-display text-xs text-muted-foreground">
+          <span
+            key={index}
+            className="py-1 text-center font-display text-xs font-normal text-muted-foreground"
+          >
             {label}
           </span>
         ))}
@@ -347,7 +350,7 @@ function Calendar({
         <button
           type="button"
           onClick={() => onSelect(today)}
-          className={cn(TEXT_BUTTON, "underline underline-offset-4", FOCUS_RING)}
+          className={cn(TEXT_BUTTON, "underline", FOCUS_RING)}
         >
           Today
         </button>

@@ -9,6 +9,7 @@ import { BottomSheet } from "../BottomSheet";
 import { Button } from "../Button";
 import { Avatar } from "./Avatar";
 import { AvatarStack } from "./AvatarStack";
+import { JoinPreviewSkeleton } from "@/components/skeleton/skeletons";
 import { goHome } from "@/lib/house-navigation";
 import { useTheme } from "@/theme/ThemeProvider";
 
@@ -33,7 +34,7 @@ export function JoinPreviewSheet({
     goHome();
   }, [alreadyMemberOf, setActiveHouse]);
 
-  const visible = open && !flow.loading && !alreadyMemberOf;
+  const visible = open && !alreadyMemberOf;
 
   return (
     <BottomSheet open={visible} onClose={onClose} label="Join a house" scrollable={false}>
@@ -51,6 +52,7 @@ function SheetBody({
 }) {
   const { resolvedTheme } = useTheme();
 
+  if (flow.loading) return <JoinPreviewSkeleton />;
   if (flow.loadError) {
     return (
       <Notice title="Couldn't check that code" message={flow.loadError}>

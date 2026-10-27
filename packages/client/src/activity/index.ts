@@ -1,7 +1,10 @@
 "use client";
 
-import { useIsFetching, useIsMutating } from "@tanstack/react-query";
+import { TOAST_MESSAGES } from "@kinwoo/core/toast";
+import { onlineManager, useIsFetching, useIsMutating } from "@tanstack/react-query";
 import { useEffect, useSyncExternalStore } from "react";
+
+import { toast } from "../toast";
 
 let manualCount = 0;
 const listeners = new Set<() => void>();
@@ -40,4 +43,14 @@ export function useIsBusy(): boolean {
   const mutating = useIsMutating();
   const manual = useSyncExternalStore(subscribe, getManualCount, () => 0);
   return fetching > 0 || mutating > 0 || manual > 0;
+}
+
+/** Toasts when the connection drops or returns, and once on mount if the app starts offline. */
+export function useOfflineToast() {
+  useEffect(() => {
+    if (!onlineManager.isOnline()) toast.warning(TOAST_MESSAGES.offline);
+    return onlineManager.subscribe((online) =>
+      online ? toast.success(TOAST_MESSAGES.backOnline) : toast.warning(TOAST_MESSAGES.offline),
+    );
+  }, []);
 }

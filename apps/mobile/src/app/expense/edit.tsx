@@ -4,6 +4,7 @@ import { useLocalSearchParams } from "expo-router";
 import { useEffect } from "react";
 
 import { ExpenseFormScreen } from "@/components/expenses/ExpenseFormScreen";
+import { ExpenseFormPageSkeleton } from "@/components/skeleton/skeletons";
 import { goHome } from "@/lib/house-navigation";
 
 export default function EditExpenseRoute() {
@@ -18,6 +19,6 @@ export default function EditExpenseRoute() {
   }, [ready, activeHouse, expenseId, isError]);
 
   // The form seeds its payer and split state on mount, so it waits for both.
-  if (!houseId || !expense || !members) return null;
+  if (!houseId || !expense || !members) return <ExpenseFormPageSkeleton title="Edit expense" />;
   return <ExpenseFormScreen houseId={houseId} expense={expense} />;
 }

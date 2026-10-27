@@ -1,4 +1,5 @@
 import { ArrowRightIcon } from "@kinwoo/icons";
+import Image from "next/image";
 import type { ReactNode } from "react";
 
 type InviteFriendsCardProps = {
@@ -7,22 +8,24 @@ type InviteFriendsCardProps = {
 };
 
 const CARD =
-  "flex w-full items-stretch overflow-hidden rounded-lg border border-border bg-card text-left";
+  "mt-4 flex w-full items-stretch overflow-hidden rounded-lg border border-border bg-card text-left";
 
 export function InviteFriendsCard({ canInvite, onPress }: InviteFriendsCardProps) {
   const content: ReactNode = (
     <>
-      <div
-        role="img"
-        aria-label="Friends high-fiving"
-        style={{ aspectRatio: 900 / 575, maskImage: "url(/images/invite-friends.webp)" }}
-        className="-mb-2 -ml-3 w-[45%] shrink-0 self-end bg-foreground mask-contain mask-bottom-left mask-no-repeat"
+      <Image
+        src="/images/invite.webp"
+        alt="Two friends high-fiving"
+        width={600}
+        height={300}
+        loading="eager"
+        className="h-auto w-[45%] shrink-0 self-end -mb-2 -ml-2"
       />
-      <div className="flex flex-1 flex-col justify-between gap-6 py-5 pr-5 pl-3 text-right -ml-10">
-        <p className="font-display text-sm leading-5 font-normal">
+      <div className="flex flex-1 flex-col justify-between gap-8 py-4 pr-5 pl-2 -ml-12 text-right">
+        <p className="font-display text-sm leading-[calc(1.25rem*var(--font-scale,1))] font-normal">
           Solo mode is fine, but it&apos;s better with friends
         </p>
-        <div className="mt-5 flex items-center justify-end gap-2">
+        <div className="flex items-center justify-end gap-2">
           <span className="font-display text-base font-medium">Invite friends</span>
           {canInvite ? <ArrowRightIcon size={16} /> : null}
         </div>

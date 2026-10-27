@@ -12,7 +12,7 @@ import {
 } from "@kinwoo/core/grocery";
 import { useRef, useState } from "react";
 
-import { CategoryIcon } from "@kinwoo/icons";
+import { ListIconImage } from "@/components/CategoryImages";
 
 import { BottomSheet } from "@/components/BottomSheet";
 import { Button } from "@/components/Button";
@@ -110,7 +110,7 @@ export function NewListSheet({
                 onClick={showPicker}
                 className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-muted text-foreground transition-opacity hover:cursor-pointer hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
               >
-                <CategoryIcon name={selectedIcon.label} size={26} />
+                <ListIconImage label={selectedIcon.label} size={40} />
               </button>
               <label htmlFor="list-name" className="sr-only">
                 List name
@@ -124,16 +124,19 @@ export function NewListSheet({
                 placeholder="e.g. Party Supplies, Weekly Essentials"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="h-12 min-w-0 flex-1 rounded-xl bg-muted px-5 font-display text-base text-foreground outline-none placeholder:text-muted-foreground focus-visible:outline-2 focus-visible:outline-foreground"
+                className="h-12 min-w-0 flex-1 rounded-xl bg-muted px-5 font-display text-base font-normal text-foreground outline-none placeholder:text-muted-foreground focus-visible:outline-2 focus-visible:outline-foreground"
               />
             </div>
 
             <div className="mt-8 flex items-center justify-between gap-4">
               <div className="min-w-0">
-                <p className="font-display text-base text-foreground" aria-live="polite">
+                <p
+                  className="font-display text-base font-normal text-foreground"
+                  aria-live="polite"
+                >
                   Your list is {selectedVisibility.label}
                 </p>
-                <p className="mt-1 font-display text-sm text-muted-foreground">
+                <p className="mt-1 font-display text-sm font-normal text-muted-foreground">
                   {selectedVisibility.description}
                 </p>
               </div>

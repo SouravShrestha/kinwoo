@@ -6,6 +6,7 @@ export * from "./cache";
 export * from "./errors";
 export * from "./forms";
 export * from "./house-access";
+export * from "./house-limit";
 export * from "./invite-manager";
 export * from "./join-flow";
 export * from "./keys";

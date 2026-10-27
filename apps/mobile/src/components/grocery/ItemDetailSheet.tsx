@@ -12,6 +12,7 @@ import { useState } from "react";
 
 import { BottomSheet } from "@/components/BottomSheet";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
+import { ItemDetailSkeleton } from "@/components/skeleton/skeletons";
 import { openMarkBought } from "@/lib/house-navigation";
 
 import { AssignedItemDetails } from "./AssignedItemDetails";
@@ -37,7 +38,11 @@ export function ItemDetailSheet({
   const currentUserId = user?.id ?? "";
   const currentUserName = user?.user_metadata?.displayName ?? user?.email ?? null;
 
-  const { data: item } = useGroceryItem(houseId || null, listId || null, itemId);
+  const { data: item, isPending: itemPending } = useGroceryItem(
+    houseId || null,
+    listId || null,
+    itemId,
+  );
   const { data: lists } = useGroceryLists(houseId || null);
   const isPrivateList = lists?.find((list) => list.id === listId)?.visibility === "private";
   const isPending = item?.status === "pending";
@@ -68,7 +73,7 @@ export function ItemDetailSheet({
   return (
     <>
       <BottomSheet
-        open={open && !!item}
+        open={open && (!!item || (itemId !== null && itemPending))}
         onClose={onClose}
         label="Item details"
         showClose={!isPending && !isTaken}
@@ -98,7 +103,6 @@ export function ItemDetailSheet({
             canEdit={canManage || isClaimer}
             canDelete={canManage}
             canUnassign={canManage || isClaimer || isAssignee || item.assignedBy === currentUserId}
-            canMarkBought={isAdmin || isClaimer || isAssignee}
             onDelete={() => setConfirmDelete(true)}
             onMarkBought={() => {
               onClose();
@@ -115,6 +119,8 @@ export function ItemDetailSheet({
             onArchive={() => setConfirmDelete(true)}
             onClose={onClose}
           />
+        ) : itemPending ? (
+          <ItemDetailSkeleton />
         ) : null}
       </BottomSheet>
 

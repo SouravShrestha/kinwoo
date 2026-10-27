@@ -10,6 +10,7 @@ import {
   type HouseMembership,
 } from "@kinwoo/core/houses";
 
+import { Skeleton, SkeletonRegion, SkeletonText } from "@/components/skeleton/Skeleton";
 import { cn } from "@/lib/utils";
 
 import { Button } from "../Button";
@@ -36,7 +37,22 @@ export function MemberView({
   const list = members.data ?? [];
   const member = list.find((entry) => entry.userId === userId);
 
-  if (members.isPending) return <SheetHeader onBack={onBack} />;
+  if (members.isPending) {
+    return (
+      <div>
+        <SheetHeader onBack={onBack} />
+        <SkeletonRegion className={cn("flex items-start gap-4", onBack ? "mt-6" : "mt-16")}>
+          <Skeleton className="size-16 shrink-0 rounded-full" />
+          <span className="block flex-1">
+            <SkeletonText size="xl" className="w-2/5" />
+            <span className="mt-0.5 block">
+              <SkeletonText size="sm" className="w-3/5" />
+            </span>
+          </span>
+        </SkeletonRegion>
+      </div>
+    );
+  }
 
   if (!member) {
     return (

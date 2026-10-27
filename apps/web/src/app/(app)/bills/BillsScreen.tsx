@@ -23,7 +23,13 @@ import { ExpenseActions } from "@/components/expenses/ExpenseActions";
 import { ExpenseRow } from "@/components/expenses/ExpenseRow";
 import { ExpensesMenuSheet } from "@/components/expenses/ExpensesMenuSheet";
 import { PaymentRow } from "@/components/expenses/PaymentRow";
+import { EmptyItems } from "@/components/grocery/EmptyItems";
 import { SetupHousePrompt } from "@/components/houses/SetupHousePrompt";
+import {
+  BalanceSummarySkeleton,
+  ExpenseActionsSkeleton,
+  ExpenseRowsSkeleton,
+} from "@/components/skeleton/skeletons";
 import {
   expensePath,
   NEW_EXPENSE_PATH,
@@ -54,7 +60,11 @@ export function BillsScreen() {
   );
   const simplifyDebts = activeHouse?.house.simplifyDebts ?? false;
   const setSimplifyDebts = useSetSimplifyDebts(houseId ?? "");
-  const { data: balances, isPlaceholderData } = useHouseBalances(houseId, simplifyDebts);
+  const {
+    data: balances,
+    isPending: balancesPending,
+    isPlaceholderData,
+  } = useHouseBalances(houseId, simplifyDebts);
   useBusyWhile(isFetchingNextPage || isPlaceholderData);
 
   const canLoadMore = hasNextPage && !isFetchNextPageError && !isFetchingNextPage;
@@ -77,42 +87,53 @@ export function BillsScreen() {
       type="button"
       onClick={() => setMenuOpen(true)}
       aria-label="Expense options"
-      className="-mr-2 flex size-10 items-center justify-center text-foreground transition-opacity hover:cursor-pointer hover:opacity-70"
+      className="-mr-3 flex size-10 items-center justify-center text-foreground transition-opacity hover:cursor-pointer hover:opacity-70"
     >
-      <MoreVerticalIcon size={3} />
+      <MoreVerticalIcon size={3.5} />
     </button>
   );
 
   return (
-    <main className="flex min-h-[calc(100dvh-4rem)] flex-col overflow-x-clip px-4 pb-24 pt-6">
+    <main className="flex min-h-[calc(100dvh-4rem)] flex-col overflow-x-clip px-4 pb-24 pt-[calc(0.75rem+env(safe-area-inset-top))]">
       <div className="flex justify-end px-2">{menuButton}</div>
       {balances ? (
         <div className="mt-2 px-2">
           <BalanceSummary balances={balances} />
         </div>
+      ) : balancesPending ? (
+        <div className="mt-2 px-2">
+          <BalanceSummarySkeleton />
+        </div>
       ) : null}
       {balances ? (
-        <div className="mt-9">
+        <div className="mb-1 mt-8">
           <ExpenseActions />
+        </div>
+      ) : balancesPending ? (
+        <div className="mb-1 mt-8">
+          <ExpenseActionsSkeleton />
         </div>
       ) : null}
 
       <div className="mt-4">
-        {!ready || isLoading ? null : empty ? (
-          <div className="flex flex-col items-center justify-center gap-4 rounded-2xl border border-dashed border-border px-6 py-16 text-center">
-            <p className="font-display font-medium text-foreground">No expenses yet</p>
-            <p className="font-display text-sm text-muted-foreground">
-              Add rent, bills or anything you share. Split grocery purchases show up here too.
-            </p>
-            <Button
-              label="Add expense"
-              className="mt-2 w-auto"
-              onClick={() => router.push(NEW_EXPENSE_PATH)}
-            />
+        {!ready || isLoading ? (
+          <ExpenseRowsSkeleton />
+        ) : empty ? (
+          <div className="py-12">
+            <EmptyItems
+              image="expense"
+              title="Nothing to see here"
+              hint="Add rent, bills or anything you share. Split grocery purchases show up here too."
+            >
+              <Button
+                label="Add expense"
+                className="w-auto"
+                onClick={() => router.push(NEW_EXPENSE_PATH)}
+              />
+            </EmptyItems>
           </div>
         ) : (
           <div className="-mx-4">
-            <div className="mb-2" />
             <ul>
               {feed.map((item) => (
                 <li key={item.id}>
@@ -132,13 +153,14 @@ export function BillsScreen() {
                 </li>
               ))}
             </ul>
+            {isFetchingNextPage ? <ExpenseRowsSkeleton count={2} /> : null}
             <LoadMoreSentinel active={canLoadMore} onLoadMore={() => void fetchNextPage()} />
           </div>
         )}
       </div>
 
       {empty ? null : (
-        <div className="pointer-events-none fixed bottom-22.5 left-1/2 w-full max-w-md -translate-x-1/2 px-4">
+        <div className="pointer-events-none fixed bottom-[calc(5.625rem+env(safe-area-inset-bottom))] left-1/2 w-full max-w-md -translate-x-1/2 px-4">
           <button
             type="button"
             onClick={() => router.push(NEW_EXPENSE_PATH)}

@@ -1,5 +1,5 @@
 import { boughtGroupAccessibleLabel, itemCountLabel, type BoughtGroup } from "@kinwoo/core/grocery";
-import { ArrowRightIcon, CategoryIcon } from "@kinwoo/icons/native";
+import { ArrowRightIcon } from "@kinwoo/icons/native";
 import { colors } from "@kinwoo/tokens/native";
 import { Text, View } from "react-native";
 
@@ -7,6 +7,7 @@ import { Avatar } from "@/components/houses/Avatar";
 import { Pressable } from "@/components/Pressable";
 import { useTheme } from "@/theme/ThemeProvider";
 
+import { ItemCategoryImage } from "./ItemCategoryImage";
 import type { CardAssignee } from "./PendingItemCard";
 
 export function BoughtGroupCard({
@@ -34,12 +35,8 @@ export function BoughtGroupCard({
         className="gap-3 rounded-2xl p-3 active:opacity-80"
       >
         <View className="flex-row items-center justify-between">
-          <View className="size-6 items-center justify-center">
-            <CategoryIcon
-              name={lead?.categoryName ?? undefined}
-              size={20}
-              color={palette.foreground}
-            />
+          <View className="size-8 items-center justify-center">
+            <ItemCategoryImage name={lead?.categoryName} size={32} />
           </View>
           <View className="size-7 items-center justify-center rounded-full border border-dialog-border">
             <View style={{ transform: [{ rotate: "-90deg" }] }}>

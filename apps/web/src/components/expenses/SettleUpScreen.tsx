@@ -1,5 +1,6 @@
 "use client";
 
+import { useAuth } from "@kinwoo/client/auth";
 import { useHouseBalances } from "@kinwoo/client/expenses";
 import { useActiveHouse, useHouseMembers } from "@kinwoo/client/houses";
 import { unsettledPairs } from "@kinwoo/core/expenses";
@@ -7,16 +8,22 @@ import { formatPaise } from "@kinwoo/core/grocery";
 import { memberDisplayName } from "@kinwoo/core/houses";
 import { ArrowRightIcon } from "@kinwoo/icons";
 import Link from "next/link";
-import { useEffect, useState, type AnimationEvent } from "react";
+import { useEffect, useRef, useState, type AnimationEvent } from "react";
 
 import { Avatar } from "@/components/houses/Avatar";
+
+import { SettleUpSkeleton } from "@/components/skeleton/skeletons";
 import { recordPaymentPath, useHouseNavigation } from "@/lib/house-navigation";
+import { useSwipeToClose } from "@/lib/use-swipe-to-close";
 import { cn } from "@/lib/utils";
 
 function Balances({ houseId, simplifyDebts }: { houseId: string; simplifyDebts: boolean }) {
+  const { user } = useAuth();
   const { data: balances } = useHouseBalances(houseId, simplifyDebts);
   const { data: members } = useHouseMembers(houseId);
-  if (!balances) return null;
+  if (!balances || !user) {
+    return <SettleUpSkeleton />;
+  }
   const pairs = unsettledPairs(balances);
 
   return (
@@ -35,7 +42,11 @@ function Balances({ houseId, simplifyDebts }: { houseId: string; simplifyDebts: 
               className={cn(index < pairs.length - 1 && "border-b border-border")}
             >
               <Link
-                href={recordPaymentPath(pair.userId)}
+                href={recordPaymentPath(
+                  owes ? user.id : pair.userId,
+                  owes ? pair.userId : user.id,
+                  Math.abs(pair.netPaise),
+                )}
                 className="flex w-full items-center gap-4 px-6 py-5 text-left transition-opacity hover:cursor-pointer hover:opacity-80 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-foreground"
               >
                 <Avatar name={pair.name} url={pair.avatarUrl} size={48} />
@@ -68,6 +79,8 @@ export function SettleUpScreen() {
   const { activeHouse, ready } = useActiveHouse();
   const { goBack, goHome } = useHouseNavigation();
   const [closing, setClosing] = useState(false);
+  const screenRef = useRef<HTMLElement>(null);
+  useSwipeToClose(screenRef, !closing, () => setClosing(true));
 
   useEffect(() => {
     if (ready && !activeHouse) goHome();
@@ -80,13 +93,14 @@ export function SettleUpScreen() {
 
   return (
     <main
+      ref={screenRef}
       onAnimationEnd={onAnimationEnd}
       className={cn(
         "flex h-dvh flex-col overflow-hidden bg-background",
         closing ? "sheet-panel-out" : "sheet-panel-in",
       )}
     >
-      <div className="mx-auto flex w-full max-w-md flex-1 flex-col overflow-y-auto pb-10">
+      <div className="mx-auto flex w-full max-w-md flex-1 flex-col overflow-y-auto pb-[calc(2.5rem+env(safe-area-inset-bottom))]">
         <header className="px-6 pt-[calc(1.25rem+env(safe-area-inset-top))]">
           <button
             type="button"

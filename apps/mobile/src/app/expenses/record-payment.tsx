@@ -6,8 +6,13 @@ import { RecordPaymentScreen } from "@/components/expenses/RecordPaymentScreen";
 import { goHome } from "@/lib/house-navigation";
 
 export default function RecordPaymentRoute() {
-  const { userId } = useLocalSearchParams<{ userId?: string }>();
+  const { payerId, payeeId, amountPaise } = useLocalSearchParams<{
+    payerId?: string;
+    payeeId?: string;
+    amountPaise?: string;
+  }>();
   const { activeHouse, ready } = useActiveHouse();
+  const suggested = Number.parseInt(amountPaise ?? "", 10);
 
   useEffect(() => {
     if (ready && !activeHouse) goHome();
@@ -16,8 +21,9 @@ export default function RecordPaymentRoute() {
   return activeHouse ? (
     <RecordPaymentScreen
       houseId={activeHouse.house.id}
-      simplifyDebts={activeHouse.house.simplifyDebts}
-      userId={userId ?? null}
+      payerId={payerId ?? null}
+      payeeId={payeeId ?? null}
+      amountPaise={Number.isSafeInteger(suggested) ? suggested : 0}
     />
   ) : null;
 }

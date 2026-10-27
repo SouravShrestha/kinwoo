@@ -3,7 +3,15 @@ import type { LeaveState } from "../houses/leave";
 import type { HouseRole } from "../houses/types";
 
 export type ConfirmIconName =
-  "trash" | "archive" | "logout" | "lock" | "world" | "leaveHouse" | "userCheck" | "userCross";
+  | "trash"
+  | "archive"
+  | "logout"
+  | "lock"
+  | "world"
+  | "leaveHouse"
+  | "userCheck"
+  | "userCross"
+  | "unlink";
 
 export type ConfirmTone = "destructive" | "primary";
 
@@ -24,6 +32,13 @@ export const CONFIRM_COPY = {
     title: "Log out?",
     message: "You'll need to sign in again to use Kinwoo.",
     confirmLabel: "Log out",
+  },
+  unlinkGoogle: {
+    icon: "unlink",
+    tone: "destructive",
+    title: "Unlink Google?",
+    message: "You won't be able to sign in with this Google account. You can link it again later.",
+    confirmLabel: "Unlink",
   },
   deleteList: {
     icon: "trash",

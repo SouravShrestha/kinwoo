@@ -55,7 +55,7 @@ function Bar({
             icon={<VerifiedIcon size={18} />}
             disabled={!canMarkBought}
             onClick={onMarkBought}
-            className="h-12 w-full"
+            className="min-h-12 w-full"
           />
         </div>
       </div>

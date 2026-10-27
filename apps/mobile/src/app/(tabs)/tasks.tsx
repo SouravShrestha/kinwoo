@@ -26,6 +26,8 @@ import {
   filterGroceryItems,
   GROCERY_SORT_OPTIONS,
   DEFAULT_GROCERY_TAB,
+  parseTasksView,
+  TASKS_VIEWS,
   findBoughtGroup,
   groceryEmptyCopy,
   groceryFilterGroups,
@@ -39,10 +41,11 @@ import {
   sortGroceryItems,
   type GroceryItem,
   type GroceryTabKey,
+  type TasksView,
 } from "@kinwoo/core/grocery";
-import { CaretDownIcon, CategoryIcon, MoreVerticalIcon } from "@kinwoo/icons/native";
+import { CaretDownIcon, MoreVerticalIcon } from "@kinwoo/icons/native";
 import { colors } from "@kinwoo/tokens/native";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useMemo, useState } from "react";
 import { ScrollView, Text, useWindowDimensions, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -61,6 +64,7 @@ import { useLoadOlderOnScroll } from "@/components/grocery/useLoadOlderOnScroll"
 import { GroceryTabView } from "@/components/grocery/GroceryTabView";
 import { ItemDetailSheet } from "@/components/grocery/ItemDetailSheet";
 import { EditListSheet } from "@/components/grocery/EditListSheet";
+import { ListIconImage } from "@/components/grocery/ListIconImage";
 import { ListSwitcherSheet } from "@/components/grocery/ListSwitcherSheet";
 import { PendingItemCard } from "@/components/grocery/PendingItemCard";
 import {
@@ -68,8 +72,11 @@ import {
   PendingSelectionBar,
 } from "@/components/grocery/PendingSelectionBar";
 import { Pressable } from "@/components/Pressable";
+import { SkeletonText } from "@/components/skeleton/Skeleton";
+import { ItemGridSkeleton } from "@/components/skeleton/skeletons";
 import { openBatchMarkBought, openMarkBought } from "@/lib/house-navigation";
 import { houseStorage } from "@/lib/house-storage";
+import { emptyList } from "@/lib/images";
 import { usePullToRefresh } from "@/lib/use-pull-to-refresh";
 import { useTheme } from "@/theme/ThemeProvider";
 
@@ -78,7 +85,8 @@ const PENDING_COLUMNS = 2;
 const PENDING_CARD_GAP = 12;
 const FILTERS_TOP_MARGIN = 8;
 
-export default function TasksScreen() {
+function TasksScreen({ view }: { view: TasksView | null }) {
+  const initial = view ? TASKS_VIEWS[view] : null;
   const insets = useSafeAreaInsets();
   const { width: windowWidth } = useWindowDimensions();
   const { resolvedTheme } = useTheme();
@@ -95,9 +103,11 @@ export default function TasksScreen() {
   const listStorage = useMemo(() => createListStorage(houseStorage), []);
   const [selectedListId, setSelectedListId] = useState<string | null>(null);
 
-  const [filters, setFilters] = useState<FilterSelection>(EMPTY_FILTER_SELECTION);
+  const [filters, setFilters] = useState<FilterSelection>(
+    initial?.filters ?? EMPTY_FILTER_SELECTION,
+  );
   const [sortId, setSortId] = useState(DEFAULT_GROCERY_SORT);
-  const [tab, setTab] = useState<GroceryTabKey>(DEFAULT_GROCERY_TAB);
+  const [tab, setTab] = useState<GroceryTabKey>(initial?.tab ?? DEFAULT_GROCERY_TAB);
   const [filtersHeight, setFiltersHeight] = useState(0);
   const [switcherOpen, setSwitcherOpen] = useState(false);
   const [manageOpen, setManageOpen] = useState(false);
@@ -290,7 +300,14 @@ export default function TasksScreen() {
     (windowWidth - SCREEN_PADDING * 2 - PENDING_CARD_GAP * (PENDING_COLUMNS - 1)) / PENDING_COLUMNS;
 
   if (!ready || (listsLoading && !lists)) {
-    return <View className="flex-1 bg-background" />;
+    return (
+      <View className="flex-1 bg-background" style={{ paddingTop: insets.top + 12 }}>
+        <View className="min-h-10 justify-center px-6 pb-3">
+          <SkeletonText size="xl" className="w-32" />
+        </View>
+        <ItemGridSkeleton />
+      </View>
+    );
   }
 
   if (!activeHouse) {
@@ -320,11 +337,7 @@ export default function TasksScreen() {
         >
           {currentList ? (
             <View className="size-8 shrink-0 items-center justify-center rounded-lg bg-muted">
-              <CategoryIcon
-                name={listIconOption(currentList.icon).label}
-                size={18}
-                color={palette.foreground}
-              />
+              <ListIconImage label={listIconOption(currentList.icon).label} size={28} />
             </View>
           ) : null}
           <Text className="shrink font-display-medium text-xl text-foreground" numberOfLines={1}>
@@ -384,10 +397,13 @@ export default function TasksScreen() {
                         : insets.bottom + 88,
               }}
             >
-              {!itemsLoaded ? null : visibleByTab[key].length === 0 ? (
-                <>
-                  <EmptyItems {...groceryEmptyCopy(key, { filtering, listEmpty })} />
-                </>
+              {!itemsLoaded ? (
+                <ItemGridSkeleton />
+              ) : visibleByTab[key].length === 0 ? (
+                <EmptyItems
+                  image={emptyList}
+                  {...groceryEmptyCopy(key, { filtering, listEmpty })}
+                />
               ) : key === "pending" ? (
                 <View style={{ paddingHorizontal: SCREEN_PADDING, paddingTop: 8 }}>
                   <View className="mb-3 min-h-8 flex-row items-center justify-between gap-3">
@@ -473,46 +489,49 @@ export default function TasksScreen() {
                   </View>
                 </View>
               ) : (
-                <View
-                  className="flex-row flex-wrap"
-                  style={{
-                    paddingHorizontal: SCREEN_PADDING,
-                    paddingTop: 8,
-                    gap: PENDING_CARD_GAP,
-                  }}
-                >
-                  {boughtEntries.map((entry) => {
-                    const buyer = entry.kind === "group" ? entry.buyer : itemBuyer(entry.item);
-                    const member = buyer ? memberById.get(buyer.userId) : undefined;
-                    const cardBuyer = buyer
-                      ? {
-                          name: member?.displayName ?? buyer.name,
-                          avatarUrl: member?.avatarUrl ?? null,
-                        }
-                      : undefined;
-                    if (entry.kind === "group") {
+                <>
+                  <View
+                    className="flex-row flex-wrap"
+                    style={{
+                      paddingHorizontal: SCREEN_PADDING,
+                      paddingTop: 8,
+                      gap: PENDING_CARD_GAP,
+                    }}
+                  >
+                    {boughtEntries.map((entry) => {
+                      const buyer = entry.kind === "group" ? entry.buyer : itemBuyer(entry.item);
+                      const member = buyer ? memberById.get(buyer.userId) : undefined;
+                      const cardBuyer = buyer
+                        ? {
+                            name: member?.displayName ?? buyer.name,
+                            avatarUrl: member?.avatarUrl ?? null,
+                          }
+                        : undefined;
+                      if (entry.kind === "group") {
+                        return (
+                          <BoughtGroupCard
+                            key={`batch:${entry.batchId}`}
+                            group={entry}
+                            buyer={cardBuyer}
+                            width={pendingCardWidth}
+                            onOpen={() => openGroup(entry.batchId)}
+                          />
+                        );
+                      }
                       return (
-                        <BoughtGroupCard
-                          key={`batch:${entry.batchId}`}
-                          group={entry}
-                          buyer={cardBuyer}
+                        <PendingItemCard
+                          key={entry.item.id}
+                          item={entry.item}
                           width={pendingCardWidth}
-                          onOpen={() => openGroup(entry.batchId)}
+                          assigneeVerb="bought by"
+                          assignee={cardBuyer}
+                          onOpen={() => openItem(entry.item)}
                         />
                       );
-                    }
-                    return (
-                      <PendingItemCard
-                        key={entry.item.id}
-                        item={entry.item}
-                        width={pendingCardWidth}
-                        assigneeVerb="bought by"
-                        assignee={cardBuyer}
-                        onOpen={() => openItem(entry.item)}
-                      />
-                    );
-                  })}
-                </View>
+                    })}
+                  </View>
+                  {history.loadingOlder ? <ItemGridSkeleton count={2} withHeader={false} /> : null}
+                </>
               )}
             </ScrollView>
             {key === "pending" && selection.count > 0 ? (
@@ -609,4 +628,11 @@ export default function TasksScreen() {
       />
     </View>
   );
+}
+
+// The Lists tab stays mounted, so a link remounts the screen (via `at`) to apply its tab and filters.
+export default function TasksRoute() {
+  const { view, at } = useLocalSearchParams<{ view?: string; at?: string }>();
+  const parsed = parseTasksView(view);
+  return <TasksScreen key={`${parsed ?? "default"}:${at ?? ""}`} view={parsed} />;
 }

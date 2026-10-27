@@ -37,6 +37,9 @@ enable_refresh_token_rotation = true
 refresh_token_reuse_interval = 10
 enable_signup = true
 enable_anonymous_sign_ins = false
+# Lets a signed-in user link a Google account from their profile. The hosted project needs
+# "Allow manual linking" switched on in the dashboard.
+enable_manual_linking = true
 
 [auth.email]
 enable_signup = true
@@ -80,7 +83,11 @@ enabled = false
 enabled = true
 
 [edge_runtime]
-enabled = false
+enabled = true
+
+# The database trigger calls this with a shared secret instead of a user JWT.
+[functions.send-push]
+verify_jwt = false
 
 [storage]
 enabled = true
@@ -89,6 +96,11 @@ enabled = true
 public = true
 file_size_limit = "1MiB"
 allowed_mime_types = ["image/png", "image/jpeg", "image/webp"]
+
+[storage.buckets.uploaded_avatars]
+public = true
+file_size_limit = "1MiB"
+allowed_mime_types = ["image/jpeg"]
 
 [auth.email.template.confirmation]
 subject = "Your Kinwoo verification code"

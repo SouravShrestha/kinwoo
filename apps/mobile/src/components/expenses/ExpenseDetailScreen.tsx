@@ -6,13 +6,7 @@ import { CONFIRM_COPY } from "@kinwoo/core/confirm";
 import { canManageExpense, type Expense } from "@kinwoo/core/expenses";
 import { formatFullDate, formatPaise } from "@kinwoo/core/grocery";
 import { memberDisplayName } from "@kinwoo/core/houses";
-import {
-  ArrowRightIcon,
-  EditIcon,
-  ExpenseCategoryIcon,
-  NoteIcon,
-  TrashIcon,
-} from "@kinwoo/icons/native";
+import { ArrowRightIcon, EditIcon, NoteIcon, TrashIcon } from "@kinwoo/icons/native";
 import { colors } from "@kinwoo/tokens/native";
 import { useEffect, useState } from "react";
 import { Text, View } from "react-native";
@@ -23,10 +17,13 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { Avatar } from "@/components/houses/Avatar";
 import { Pressable } from "@/components/Pressable";
+import { ExpenseDetailSkeleton } from "@/components/skeleton/skeletons";
 import { SwipeDownScreen } from "@/components/SwipeDownScreen";
 import { goBack, goHome, openEditExpense } from "@/lib/house-navigation";
 import { useSwipeDownToDismiss } from "@/lib/use-swipe-down-to-dismiss";
 import { useTheme } from "@/theme/ThemeProvider";
+
+import { ExpenseCategoryImage } from "./ExpenseCategoryImage";
 
 const ROOT_AVATAR = 36;
 const SHARE_ROW_HEIGHT = 48;
@@ -146,20 +143,18 @@ function ExpenseDetails({
   expense,
   currentUserId,
   avatars,
-  iconColor,
   mutedColor,
 }: {
   expense: Expense;
   currentUserId: string | null;
   avatars: ReadonlyMap<string, string | null>;
-  iconColor: string;
   mutedColor: string;
 }) {
   return (
     <View className="gap-7">
       <View className="flex-row gap-4">
         <View className="size-16 items-center justify-center rounded-xl bg-muted">
-          <ExpenseCategoryIcon category={expense.category} size={32} color={iconColor} />
+          <ExpenseCategoryImage category={expense.category} size={56} />
         </View>
         <View className="min-w-0 flex-1 gap-1.5">
           <Text accessibilityRole="header" className="font-display-medium text-lg text-foreground">
@@ -327,7 +322,6 @@ export function ExpenseDetailScreen({ expenseId }: { expenseId: string | null })
                 expense={expense}
                 currentUserId={currentUserId}
                 avatars={avatars}
-                iconColor={palette.foreground}
                 mutedColor={palette.mutedForeground}
               />
             </>
@@ -335,7 +329,9 @@ export function ExpenseDetailScreen({ expenseId }: { expenseId: string | null })
             <Text className="pt-16 text-center font-display-normal text-base text-muted-foreground">
               We couldn&apos;t find that expense. It may have been deleted.
             </Text>
-          ) : null}
+          ) : (
+            <ExpenseDetailSkeleton />
+          )}
         </Animated.ScrollView>
       </GestureDetector>
 

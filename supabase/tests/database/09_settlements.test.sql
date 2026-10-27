@@ -89,10 +89,12 @@ select is((select payload ->> 'amount_paise' from public.activity_log
 
 -- Rules
 select tests.as_user(tests.id('b'));
-select throws_ok(
+select tests.net('a', 'c') as before_third \gset
+select lives_ok(
   format('select public.record_settlement(%L, %L, %L, 100)',
          tests.id('house'), tests.id('a'), tests.id('c')),
-  'P0001', 'FORBIDDEN', 'the caller has to be the payer or the payee');
+  'any housemate can record a payment they are not part of');
+select is(tests.net('a', 'c'), :before_third::bigint + 100, 'and it moves that pair''s balance');
 select throws_ok(
   format('select public.record_settlement(%L, %L, %L, 100)',
          tests.id('house'), tests.id('b'), tests.id('b')),
@@ -108,7 +110,11 @@ select throws_ok(
 select throws_ok(
   format('select public.record_settlement(%L, %L, %L, 100)',
          tests.id('house'), tests.id('b'), tests.id('x')),
-  'P0001', 'NOT_A_MEMBER', 'the other side must have belonged to the house');
+  'P0001', 'NOT_A_MEMBER', 'both sides must have belonged to the house');
+select throws_ok(
+  format('select public.record_settlement(%L, %L, %L, 100)',
+         tests.id('house'), tests.id('x'), tests.id('a')),
+  'P0001', 'NOT_A_MEMBER', 'including the payer');
 select throws_ok(
   format('insert into public.settlements (house_id, payer_id, payee_id, amount_paise, created_by)
           values (%L, %L, %L, 100, %L)',
@@ -123,7 +129,7 @@ select throws_ok(
 
 -- Reading
 select tests.as_user(tests.id('c'));
-select is((select count(*) from public.settlements), 2::bigint, 'housemates read the payments');
+select is((select count(*) from public.settlements), 3::bigint, 'housemates read the payments');
 select tests.as_user(tests.id('x'));
 select is((select count(*) from public.settlements), 0::bigint, 'outsiders read nothing');
 
@@ -132,7 +138,7 @@ reset role;
 update public.settlements set reversed_at = now() where id = tests.id('s1');
 select tests.as_user(tests.id('b'));
 select is(tests.net('b', 'a'), -10000::bigint, 'a reversed payment no longer counts');
-select is((select count(*) from public.settlements), 1::bigint, 'and is hidden from the list');
+select is((select count(*) from public.settlements), 2::bigint, 'and is hidden from the list');
 
 -- Editing and deleting
 select tests.as_user(tests.id('b'));
@@ -154,18 +160,15 @@ select throws_ok(
   'P0001', 'INVALID_INPUT', 'the new amount has to be positive');
 
 select tests.as_user(tests.id('c'));
-select throws_ok(
-  format('select public.update_settlement(%L, 100)', tests.id('s3')),
-  'P0001', 'FORBIDDEN', 'only the two people can edit a payment');
-select throws_ok(
-  format('select public.reverse_settlement(%L)', tests.id('s3')),
-  'P0001', 'FORBIDDEN', 'or delete it');
+select public.update_settlement(tests.id('s3'), 3500);
+select is(tests.net('b', 'a'), :before::bigint + 3500,
+  'any housemate can edit a payment they are not part of');
 select tests.as_user(tests.id('x'));
 select throws_ok(
   format('select public.reverse_settlement(%L)', tests.id('s3')),
   'P0001', 'NOT_FOUND', 'outsiders cannot see it');
 
-select tests.as_user(tests.id('a'));
+select tests.as_user(tests.id('c'));
 select public.reverse_settlement(tests.id('s3'));
 select is(tests.net('b', 'a'), :before::bigint, 'a deleted payment stops counting');
 select is((select count(*) from public.activity_log

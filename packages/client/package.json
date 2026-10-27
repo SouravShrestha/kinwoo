@@ -13,7 +13,9 @@
     "./api": "./src/api/index.ts",
     "./auth": "./src/auth/index.ts",
     "./expenses": "./src/expenses/index.ts",
+    "./notifications": "./src/notifications/index.ts",
     "./profile": "./src/profile/index.ts",
+    "./push": "./src/push/index.ts",
     "./houses": "./src/houses/index.ts",
     "./grocery": "./src/grocery/index.ts",
     "./sheets": "./src/sheets/index.ts",
@@ -28,12 +30,16 @@
   },
   "peerDependencies": {
     "@supabase/supabase-js": ">=2",
+    "@tanstack/query-async-storage-persister": ">=5",
     "@tanstack/react-query": ">=5",
+    "@tanstack/react-query-persist-client": ">=5",
     "react": ">=19"
   },
   "devDependencies": {
     "@supabase/supabase-js": "2.117.3",
+    "@tanstack/query-async-storage-persister": "5.104.1",
     "@tanstack/react-query": "5.104.1",
+    "@tanstack/react-query-persist-client": "5.104.1",
     "@types/node": "^22.0.0",
     "@types/react": "~19.2.0",
     "vitest": "^3.2.4"
