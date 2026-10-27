@@ -3,6 +3,7 @@
 import { useActiveHouse } from "@kinwoo/client/houses";
 import { useEffect } from "react";
 
+import { ExpenseFormPageSkeleton } from "@/components/skeleton/skeletons";
 import { useHouseNavigation } from "@/lib/house-navigation";
 
 import { ExpenseFormScreen } from "./ExpenseFormScreen";
@@ -16,6 +17,6 @@ export function NewExpenseScreen() {
     if (ready && !activeHouse) goHome();
   }, [ready, activeHouse, goHome]);
 
-  if (!houseId) return null;
+  if (!houseId) return <ExpenseFormPageSkeleton />;
   return <ExpenseFormScreen houseId={houseId} />;
 }

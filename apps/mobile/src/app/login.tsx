@@ -3,7 +3,6 @@ import { useProfile } from "@kinwoo/client/profile";
 import { APP_NAME } from "@kinwoo/core/app";
 import { GoogleIcon } from "@kinwoo/icons/native";
 import { router } from "expo-router";
-import * as WebBrowser from "expo-web-browser";
 import { useEffect, useState } from "react";
 import { Image, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -12,6 +11,7 @@ import { AuthSheet } from "@/components/AuthSheet";
 import { Button } from "@/components/Button";
 import { landingImage, logoTypedBlack, logoTypedWhite } from "@/lib/images";
 import { PRIVACY_URL, TERMS_URL } from "@/lib/legal";
+import { useOpenInAppBrowser } from "@/lib/in-app-browser";
 import { usePressGuard } from "@/lib/press-guard";
 import { useTheme } from "@/theme/ThemeProvider";
 
@@ -43,8 +43,9 @@ export default function LoginScreen() {
     }
   };
 
-  const openTerms = usePressGuard(() => void WebBrowser.openBrowserAsync(TERMS_URL));
-  const openPrivacy = usePressGuard(() => void WebBrowser.openBrowserAsync(PRIVACY_URL));
+  const openInAppBrowser = useOpenInAppBrowser();
+  const openTerms = usePressGuard(() => openInAppBrowser(TERMS_URL));
+  const openPrivacy = usePressGuard(() => openInAppBrowser(PRIVACY_URL));
 
   return (
     <View className="flex-1 bg-background px-7" style={{ paddingTop: insets.top + 16 }}>

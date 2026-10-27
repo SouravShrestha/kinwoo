@@ -40,6 +40,15 @@ export const viewport: Viewport = {
   ],
 };
 
+const ILLUSTRATIONS = [
+  "empty-list",
+  "no-expense",
+  "no-activity",
+  "no-notifications",
+  "shared-bill",
+  "invite",
+];
+
 const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 const DESCRIPTION = "Everything shared. Nothing forgotten.";
 
@@ -72,8 +81,10 @@ export const metadata: Metadata = {
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   // Reading the request makes every page render per request, which a nonce-based CSP requires.
   const nonce = (await headers()).get("x-nonce") ?? undefined;
-  preload("/images/empty-list.webp", { as: "image" });
-  preload("/images/no-expense.webp", { as: "image" });
+  // Illustrations appear only after data loads; fetching them up front means they paint with it.
+  for (const name of ILLUSTRATIONS) {
+    preload(`/images/${name}.webp`, { as: "image" });
+  }
 
   return (
     <html lang="en" suppressHydrationWarning className={`${inter.variable} ${poppins.variable}`}>

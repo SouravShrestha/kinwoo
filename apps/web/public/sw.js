@@ -1,6 +1,6 @@
 // Lets the installed app open offline and shows push notifications. Offline data comes from the
 // persisted React Query cache, so API and auth requests are never cached here.
-const CACHE = "kinwoo-v1";
+const CACHE = "kinwoo-v2";
 
 self.addEventListener("install", () => self.skipWaiting());
 
@@ -94,7 +94,8 @@ self.addEventListener("fetch", (event) => {
   if (url.pathname.startsWith("/api/") || url.pathname.startsWith("/auth/")) return;
 
   // shortcut: hashed chunks from old deploys stay cached until CACHE is bumped; prune if it grows.
-  if (url.pathname.startsWith("/_next/static/")) {
+  // shortcut: /images/ files are not content-hashed; bump CACHE whenever one is replaced.
+  if (url.pathname.startsWith("/_next/static/") || url.pathname.startsWith("/images/")) {
     event.respondWith(cacheFirst(request));
   } else if (request.mode === "navigate" || STATIC_DESTINATIONS.has(request.destination)) {
     event.respondWith(networkFirst(request));

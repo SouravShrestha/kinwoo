@@ -19,6 +19,7 @@ import {
   PlusCircleIcon,
 } from "@kinwoo/icons";
 import { ItemCategoryImage, ListIconImage } from "@/components/CategoryImages";
+import { SkeletonText } from "@/components/skeleton/Skeleton";
 import { useEffect, useRef, useState, type AnimationEvent } from "react";
 
 import { useHouseNavigation } from "@/lib/house-navigation";
@@ -119,7 +120,9 @@ export function AddItemScreen({ listId }: { listId: string | null }) {
             <ArrowRightIcon size={28} className="rotate-90" />
           </button>
           <h1 className="flex min-w-0 items-center justify-center font-display text-lg text-foreground">
-            {form.lists.length > 1 ? (
+            {!activeList ? (
+              <SkeletonText size="lg" align="center" className="w-24" />
+            ) : form.lists.length > 1 ? (
               <button
                 type="button"
                 aria-haspopup="dialog"

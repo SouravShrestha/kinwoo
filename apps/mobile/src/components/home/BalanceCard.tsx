@@ -1,12 +1,19 @@
 import { balanceHeadline, balanceHeadlineParts, type HouseBalances } from "@kinwoo/core/expenses";
+import { Image } from "expo-image";
 import { router } from "expo-router";
-import { Image, Text, View } from "react-native";
+import { Text, View } from "react-native";
 
 import { BalanceLine } from "@/components/expenses/BalanceSummary";
 import { Pressable } from "@/components/Pressable";
 import { sharedBill } from "@/lib/images";
 
-const IMAGE_ASPECT_RATIO = 1000 / 529;
+const IMAGE_STYLE = {
+  width: "45%",
+  aspectRatio: 600 / 318,
+  alignSelf: "flex-end",
+  marginLeft: -8,
+  marginBottom: -8,
+} as const;
 
 const LEAD = {
   owed: "Across all your shared bills, you're owed",
@@ -27,9 +34,8 @@ export function BalanceCard({ balances }: { balances: HouseBalances }) {
       <Image
         source={sharedBill}
         accessibilityIgnoresInvertColors
-        resizeMode="contain"
-        style={{ aspectRatio: IMAGE_ASPECT_RATIO }}
-        className="-ml-2 w-[45%] self-end -mb-2"
+        contentFit="contain"
+        style={IMAGE_STYLE}
       />
       <View className="flex-1 justify-between -ml-12 gap-4 py-6 pl-2 pr-5">
         <Text className="font-display-normal text-sm text-right text-muted-foreground">{lead}</Text>

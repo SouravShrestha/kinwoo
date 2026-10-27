@@ -21,6 +21,6 @@ export function EditExpenseScreen({ expenseId }: { expenseId: string | null }) {
   }, [ready, activeHouse, expenseId, isError, goHome]);
 
   // The form seeds its payer and split state on mount, so it waits for both.
-  if (!houseId || !expense || !members) return <ExpenseFormPageSkeleton />;
+  if (!houseId || !expense || !members) return <ExpenseFormPageSkeleton title="Edit expense" />;
   return <ExpenseFormScreen houseId={houseId} expense={expense} />;
 }

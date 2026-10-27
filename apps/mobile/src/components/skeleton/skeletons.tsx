@@ -1,5 +1,9 @@
-import { ScrollView, useWindowDimensions, View } from "react-native";
+import { ArrowRightIcon, CheckCircleIcon } from "@kinwoo/icons/native";
+import { colors } from "@kinwoo/tokens/native";
+import { ScrollView, Text, useWindowDimensions, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+
+import { useTheme } from "@/theme/ThemeProvider";
 import { Skeleton, SkeletonRegion, SkeletonText } from "./Skeleton";
 
 // Every composition below copies the spacing and sizes of the component it stands in for.
@@ -396,14 +400,22 @@ export function ExpenseFormSkeleton() {
   );
 }
 
-export function ExpenseFormPageSkeleton() {
+export function ExpenseFormPageSkeleton({ title = "Add expense" }: { title?: string }) {
   const insets = useSafeAreaInsets();
+  const { resolvedTheme } = useTheme();
+  const foreground = colors[resolvedTheme].foreground;
   return (
     <View className="flex-1 bg-background px-6" style={{ paddingTop: insets.top + 20 }}>
       <View className="flex-row items-center justify-between pb-8">
-        <Skeleton className="size-10 rounded-lg" />
-        <SkeletonText size="lg" className="w-28" />
-        <Skeleton className="size-10 rounded-lg" />
+        <View className="size-10 items-start justify-center">
+          <View style={{ transform: [{ rotate: "90deg" }] }}>
+            <ArrowRightIcon size={28} color={foreground} />
+          </View>
+        </View>
+        <Text className="font-display-medium text-lg text-foreground">{title}</Text>
+        <View className="size-10 items-end justify-center opacity-40">
+          <CheckCircleIcon size={26} color={foreground} />
+        </View>
       </View>
       <ExpenseFormSkeleton />
     </View>
@@ -516,16 +528,35 @@ export function SettleUpSkeleton() {
   );
 }
 
+// The first row is the current user's, which opens on its settlements.
 export function MemberBalanceRowsSkeleton({ count = 3 }: { count?: number }) {
   return (
     <SkeletonRegion className="mt-10">
       {times(count).map((index) => (
-        <View key={index} className="flex-row items-center gap-3 border-b border-border px-6 py-6">
-          <Skeleton className="size-11 rounded-full" />
-          <View className="flex-1">
-            <SkeletonText size="base" className="w-4/5" />
+        <View key={index} className="border-b border-border px-6 py-6">
+          <View className="flex-row items-center gap-3">
+            <Skeleton className="size-11 rounded-full" />
+            <View className="flex-1">
+              <SkeletonText size="base" className="w-4/5" />
+            </View>
+            <View className="-mr-2 size-10" />
           </View>
-          <View className="-mr-2 size-10" />
+          {index === 0 ? (
+            <View className="ml-[22px] mt-2">
+              <View className="absolute left-0 top-0 h-6 w-px bg-border" />
+              <View className="absolute left-0 top-6 h-px w-5 bg-border" />
+              <View className="ml-5">
+                <View className="h-12 flex-row items-center gap-3">
+                  <Skeleton className="size-[26px] rounded-full" />
+                  <SkeletonText size="sm" className="w-44" />
+                </View>
+                <View className="flex-row gap-2 pl-[38px]">
+                  <Skeleton className="h-[38px] w-[90px] rounded-xl" />
+                  <Skeleton className="h-[38px] w-[100px] rounded-xl" />
+                </View>
+              </View>
+            </View>
+          ) : null}
         </View>
       ))}
     </SkeletonRegion>

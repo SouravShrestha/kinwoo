@@ -16,8 +16,9 @@ export function InviteFriendsCard({ canInvite, onPress }: InviteFriendsCardProps
       <Image
         src="/images/invite.webp"
         alt="Two friends high-fiving"
-        width={1000}
-        height={500}
+        width={600}
+        height={300}
+        loading="eager"
         className="h-auto w-[45%] shrink-0 self-end -mb-2 -ml-2"
       />
       <div className="flex flex-1 flex-col justify-between gap-8 py-4 pr-5 pl-2 -ml-12 text-right">

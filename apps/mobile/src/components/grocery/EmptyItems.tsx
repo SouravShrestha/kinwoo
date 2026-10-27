@@ -1,6 +1,7 @@
 import type { GroceryEmptyCopy } from "@kinwoo/core/grocery";
+import { Image } from "expo-image";
 import type { ReactNode } from "react";
-import { Image, Text, View } from "react-native";
+import { Text, View } from "react-native";
 
 const IMAGE_SIZE = 160;
 
@@ -19,7 +20,7 @@ export function EmptyItems({
       <Image
         source={image}
         accessibilityIgnoresInvertColors
-        resizeMode="contain"
+        contentFit="contain"
         style={{ width: IMAGE_SIZE, height: IMAGE_SIZE }}
       />
       <Text className="text-center text-base text-foreground font-display-normal mt-3">

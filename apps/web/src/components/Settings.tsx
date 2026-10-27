@@ -1,7 +1,8 @@
 "use client";
 
+import { useBusyWhile } from "@kinwoo/client/activity";
 import { ArrowRightIcon } from "@kinwoo/icons";
-import Link from "next/link";
+import Link, { useLinkStatus } from "next/link";
 import type { ReactNode } from "react";
 
 export function SettingsGroup({ title, children }: { title: string; children: ReactNode }) {
@@ -22,6 +23,13 @@ function RowBody({ icon, label, value }: { icon: ReactNode; label: string; value
       <ArrowRightIcon size={16} className="text-muted-foreground" />
     </>
   );
+}
+
+// Routes without a loading.tsx (legal, feedback) give no feedback until they land, so the row
+// drives the top bar while its navigation is pending.
+function PendingLinkBusy() {
+  useBusyWhile(useLinkStatus().pending);
+  return null;
 }
 
 const ROW =
@@ -60,6 +68,7 @@ export function SettingsLinkRow({
     <li className="mt-2">
       <Link href={href} className={ROW} aria-label={value ? `${label}, ${value}` : label}>
         <RowBody icon={icon} label={label} value={value} />
+        <PendingLinkBusy />
       </Link>
     </li>
   );

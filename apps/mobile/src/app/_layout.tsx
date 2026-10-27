@@ -23,11 +23,11 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import { AppProviders } from "@/components/AppProviders";
-import { categoryIconModules, emptyList, noExpense, paymentImage } from "@/lib/images";
+import { categoryIconModules, illustrationModules, paymentImage } from "@/lib/images";
 import "@/lib/splash";
 import { ThemeProvider } from "@/theme/ThemeProvider";
 
-void Asset.loadAsync([emptyList, noExpense, paymentImage, ...categoryIconModules]).catch(
+void Asset.loadAsync([...illustrationModules, paymentImage, ...categoryIconModules]).catch(
   () => undefined,
 );
 

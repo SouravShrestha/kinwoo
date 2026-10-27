@@ -11,6 +11,7 @@ import {
   suggestCategory,
   suggestItemDefaults,
   validateItemName,
+  type GroceryItem,
   type ItemSuggestion,
   type ItemUrgency,
 } from "@kinwoo/core/grocery";
@@ -47,6 +48,9 @@ export function useAddItemForm({
   const [note, setNote] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [pendingMode, setPendingMode] = useState<AddItemSubmitMode | null>(null);
+  // The optimistic row lands before the form resets, so while a submit is in flight the hints
+  // read the list as it was; otherwise the new item flags itself as a duplicate.
+  const [itemsBeforeSubmit, setItemsBeforeSubmit] = useState<GroceryItem[] | null>(null);
 
   const { data: lists } = useGroceryLists(houseId || null);
   const activeLists = useMemo(() => lists ?? [], [lists]);
@@ -90,8 +94,9 @@ export function useAddItemForm({
     (suggestedDefaults ? String(suggestedDefaults.quantity) : DEFAULT_ITEM_QUANTITY);
   const unit =
     unitChoice === undefined ? (suggestedDefaults?.unit ?? DEFAULT_ITEM_UNIT) : unitChoice;
-  const duplicate = useMemo(() => findOpenItemByName(items ?? [], name), [items, name]);
-  const suggestions = useMemo(() => itemSuggestions(items ?? [], name), [items, name]);
+  const hintItems = itemsBeforeSubmit ?? items;
+  const duplicate = useMemo(() => findOpenItemByName(hintItems ?? [], name), [hintItems, name]);
+  const suggestions = useMemo(() => itemSuggestions(hintItems ?? [], name), [hintItems, name]);
 
   const resetItemFields = () => {
     setName("");
@@ -112,6 +117,7 @@ export function useAddItemForm({
     }
 
     setPendingMode(mode);
+    setItemsBeforeSubmit(items ?? []);
     try {
       await addItem.mutateAsync({
         name: result.value,
@@ -129,6 +135,7 @@ export function useAddItemForm({
       toast.error("Couldn't add that item. Try again.");
     } finally {
       setPendingMode(null);
+      setItemsBeforeSubmit(null);
     }
   };
 

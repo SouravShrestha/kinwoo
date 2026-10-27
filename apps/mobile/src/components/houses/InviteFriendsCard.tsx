@@ -1,13 +1,20 @@
 import { ArrowRightIcon } from "@kinwoo/icons/native";
 import { colors } from "@kinwoo/tokens/native";
-import { Image, Text, View } from "react-native";
+import { Image } from "expo-image";
+import { Text, View } from "react-native";
 
 import { Pressable } from "@/components/Pressable";
 
 import { inviteFriends } from "@/lib/images";
 import { useTheme } from "@/theme/ThemeProvider";
 
-const IMAGE_ASPECT_RATIO = 2;
+const IMAGE_STYLE = {
+  width: "45%",
+  aspectRatio: 2,
+  alignSelf: "flex-end",
+  marginLeft: -8,
+  marginBottom: -8,
+} as const;
 
 type InviteFriendsCardProps = {
   canInvite: boolean;
@@ -29,9 +36,8 @@ export function InviteFriendsCard({ canInvite, onPress }: InviteFriendsCardProps
       <Image
         source={inviteFriends}
         accessibilityIgnoresInvertColors
-        resizeMode="contain"
-        style={{ aspectRatio: IMAGE_ASPECT_RATIO }}
-        className="-mb-2 -ml-2 w-[45%] self-end"
+        contentFit="contain"
+        style={IMAGE_STYLE}
       />
       <View className="flex-1 justify-between -ml-12 gap-8 py-4 pl-2 pr-5">
         <Text className="font-display-normal text-sm leading-5 text-foreground text-right">

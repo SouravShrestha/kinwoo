@@ -36,6 +36,7 @@ import { ListIconImage } from "@/components/grocery/ListIconImage";
 import { NewListSheet } from "@/components/grocery/NewListSheet";
 import { OptionSheet, type SheetOption } from "@/components/OptionSheet";
 import { Pressable } from "@/components/Pressable";
+import { SkeletonText } from "@/components/skeleton/Skeleton";
 import { SwipeDownScreen } from "@/components/SwipeDownScreen";
 import { goBack, goHome } from "@/lib/house-navigation";
 import { useSwipeDownToDismiss } from "@/lib/use-swipe-down-to-dismiss";
@@ -122,7 +123,9 @@ export default function AddItemScreen() {
                 </View>
               </Pressable>
               <View className="min-w-0 flex-1 items-center">
-                {form.lists.length > 1 ? (
+                {!activeList ? (
+                  <SkeletonText size="lg" className="w-24" />
+                ) : form.lists.length > 1 ? (
                   <Pressable
                     accessibilityRole="button"
                     accessibilityLabel={`Adding to ${activeList?.name ?? ""}. Change list`}

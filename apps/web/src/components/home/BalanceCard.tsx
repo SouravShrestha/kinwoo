@@ -21,8 +21,9 @@ export function BalanceCard({ balances }: { balances: HouseBalances }) {
       <Image
         src="/images/shared-bill.webp"
         alt=""
-        width={1000}
-        height={529}
+        width={600}
+        height={318}
+        loading="eager"
         className="h-auto w-[45%] shrink-0 self-end -ml-2 -mb-2"
       />
       <div className="flex flex-1 flex-col justify-between gap-4 py-6 pr-5 pl-2 -ml-12 text-right">

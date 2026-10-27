@@ -18,7 +18,6 @@ import {
 } from "@kinwoo/icons/native";
 import { colors } from "@kinwoo/tokens/native";
 import { router } from "expo-router";
-import * as WebBrowser from "expo-web-browser";
 import { useState } from "react";
 import { Image, Linking, ScrollView, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -35,6 +34,7 @@ import { goBack } from "@/lib/house-navigation";
 import { profileImage } from "@/lib/images";
 import { unregisterDevice } from "@/lib/push";
 import { FEEDBACK_URL, PRIVACY_URL, TERMS_URL } from "@/lib/legal";
+import { useOpenInAppBrowser } from "@/lib/in-app-browser";
 import { usePressGuard } from "@/lib/press-guard";
 import { useTheme } from "@/theme/ThemeProvider";
 
@@ -52,9 +52,10 @@ export default function ProfileScreen() {
   const [logoutOpen, setLogoutOpen] = useState(false);
   const [loggingOut, setLoggingOut] = useState(false);
 
-  const openTerms = usePressGuard(() => void WebBrowser.openBrowserAsync(TERMS_URL));
-  const openPrivacy = usePressGuard(() => void WebBrowser.openBrowserAsync(PRIVACY_URL));
-  const openFeedback = usePressGuard(() => void WebBrowser.openBrowserAsync(FEEDBACK_URL));
+  const openInAppBrowser = useOpenInAppBrowser();
+  const openTerms = usePressGuard(() => openInAppBrowser(TERMS_URL));
+  const openPrivacy = usePressGuard(() => openInAppBrowser(PRIVACY_URL));
+  const openFeedback = usePressGuard(() => openInAppBrowser(FEEDBACK_URL));
 
   // mailto: needs the system mail app, so Linking is used here instead of the in-app browser.
   const openMail = (url: string) =>
