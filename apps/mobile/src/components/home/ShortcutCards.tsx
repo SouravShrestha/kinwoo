@@ -29,7 +29,7 @@ export function ShortcutCards() {
       <View className="flex-row gap-4">
         <ShortcutCard
           icon={<PendingActiveIcon size={16} color={color} />}
-          title="Pending items"
+          title="Pending"
           onPress={() => router.push("/tasks")}
         />
         <ShortcutCard

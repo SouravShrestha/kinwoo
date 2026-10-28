@@ -23,7 +23,7 @@ export function ShortcutCards() {
       />
       <ShortcutCard
         icon={<PendingActiveIcon size={16} />}
-        title="Pending items"
+        title="Pending"
         onClick={() => router.push("/tasks")}
       />
       <ShortcutCard
