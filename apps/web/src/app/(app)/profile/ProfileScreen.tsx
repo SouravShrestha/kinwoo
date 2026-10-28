@@ -7,7 +7,7 @@ import {
   FEEDBACK_PATH,
   HELP_LABELS,
   LEGAL_LABELS,
-  LEGAL_PATHS,
+  LEGAL_URLS,
   SUPPORT_EMAIL,
   SUPPORT_MAILTO,
 } from "@kinwoo/core/app";
@@ -143,12 +143,14 @@ export function ProfileScreen() {
 
       <SettingsGroup title={LEGAL_LABELS.group}>
         <SettingsLinkRow
-          href={LEGAL_PATHS.terms}
+          href={LEGAL_URLS.terms}
+          newTab
           icon={<DocumentIcon size={24} />}
           label={LEGAL_LABELS.terms}
         />
         <SettingsLinkRow
-          href={LEGAL_PATHS.privacy}
+          href={LEGAL_URLS.privacy}
+          newTab
           icon={<ShieldCheckOutlineIcon size={24} />}
           label={LEGAL_LABELS.privacy}
         />

@@ -4,6 +4,7 @@ import {
   paiseToAmountDraft,
   payerNamesLabel,
   payerSplit,
+  rescaleAmounts,
 } from "@kinwoo/core/expenses";
 import { parseRupeesToPaise } from "@kinwoo/core/grocery";
 import { memberDisplayName, sortMembers } from "@kinwoo/core/houses";
@@ -18,16 +19,33 @@ export type PayerMember = {
   isYou: boolean;
 };
 
-type Choice = { selected: string[]; amounts: Record<string, string> };
+export type PayerChoice = { selected: string[]; amounts: Record<string, string> };
 
-function assignedPaiseOf(choice: Choice, members: readonly PayerMember[]): number {
+function assignedPaiseOf(choice: PayerChoice, members: readonly PayerMember[]): number {
   return members
     .filter((member) => choice.selected.includes(member.userId))
     .reduce((sum, member) => sum + amountDraftToPaise(choice.amounts[member.userId] ?? ""), 0);
 }
 
+// A sole payer always covers the whole amount, so ticking or unticking down to one person moves
+// the total to them.
+export function togglePayer(choice: PayerChoice, userId: string, totalPaise: number): PayerChoice {
+  const removing = choice.selected.includes(userId);
+  const selected = removing
+    ? choice.selected.filter((id) => id !== userId)
+    : [...choice.selected, userId];
+  if (selected.length === 1) {
+    return { selected, amounts: { [selected[0]]: paiseToAmountDraft(totalPaise) } };
+  }
+  const amounts = removing
+    ? Object.fromEntries(Object.entries(choice.amounts).filter(([id]) => id !== userId))
+    : { ...choice.amounts, [userId]: "" };
+  return { selected, amounts };
+}
+
 // Until the user edits the split, they are the sole payer and cover the full price. A new price
-// resets to that default, since amounts entered against the old total no longer add up.
+// keeps whoever was chosen and rescales their amounts from the total they were entered against,
+// so retyping the price never loses the original proportions.
 // Edits in the sheet stay a draft until `commit`; `discard` drops them.
 export function usePayerSplit({
   houseId,
@@ -41,22 +59,21 @@ export function usePayerSplit({
   initialAmounts?: Readonly<Record<string, string>>;
 }) {
   const membersQuery = useHouseMembers(houseId || null);
-  const [choice, setChoice] = useState<Choice | null>(() =>
-    initialAmounts
-      ? { selected: Object.keys(initialAmounts), amounts: { ...initialAmounts } }
-      : null,
-  );
-  const [draft, setDraft] = useState<Choice | null>(null);
-
   const totalPaise = useMemo(() => {
     const result = parseRupeesToPaise(price);
     return result.ok ? (result.value ?? 0) : 0;
   }, [price]);
 
-  const [choiceTotal, setChoiceTotal] = useState(totalPaise);
-  if (choiceTotal !== totalPaise) {
-    setChoiceTotal(totalPaise);
-    setChoice(null);
+  const [choice, setChoice] = useState<(PayerChoice & { totalPaise: number }) | null>(() =>
+    initialAmounts
+      ? { selected: Object.keys(initialAmounts), amounts: { ...initialAmounts }, totalPaise }
+      : null,
+  );
+  const [draft, setDraft] = useState<PayerChoice | null>(null);
+
+  const [seenTotal, setSeenTotal] = useState(totalPaise);
+  if (seenTotal !== totalPaise) {
+    setSeenTotal(totalPaise);
     setDraft(null);
   }
 
@@ -70,27 +87,20 @@ export function usePayerSplit({
     return [...all.filter((member) => member.isYou), ...all.filter((member) => !member.isYou)];
   }, [membersQuery.data, currentUserId]);
 
-  const committed: Choice = choice ?? {
-    selected: currentUserId ? [currentUserId] : [],
-    amounts: currentUserId ? { [currentUserId]: paiseToAmountDraft(totalPaise) } : {},
-  };
+  const committed: PayerChoice = !choice
+    ? {
+        selected: currentUserId ? [currentUserId] : [],
+        amounts: currentUserId ? { [currentUserId]: paiseToAmountDraft(totalPaise) } : {},
+      }
+    : choice.totalPaise === totalPaise
+      ? choice
+      : {
+          selected: choice.selected,
+          amounts: rescaleAmounts(choice.selected, choice.amounts, totalPaise),
+        };
   const editing = draft ?? committed;
 
-  const toggle = (userId: string) => {
-    if (editing.selected.includes(userId)) {
-      setDraft({
-        selected: editing.selected.filter((id) => id !== userId),
-        amounts: Object.fromEntries(
-          Object.entries(editing.amounts).filter(([id]) => id !== userId),
-        ),
-      });
-      return;
-    }
-    setDraft({
-      selected: [...editing.selected, userId],
-      amounts: { ...editing.amounts, [userId]: "" },
-    });
-  };
+  const toggle = (userId: string) => setDraft(togglePayer(editing, userId, totalPaise));
 
   const setAmount = (userId: string, text: string) => {
     if (!isAmountDraft(text)) return;
@@ -131,6 +141,7 @@ export function usePayerSplit({
         setChoice({
           selected,
           amounts: Object.fromEntries(selected.map((id) => [id, draft.amounts[id] ?? ""])),
+          totalPaise,
         });
       }
       setDraft(null);

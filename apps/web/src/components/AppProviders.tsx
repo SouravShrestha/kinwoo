@@ -11,6 +11,7 @@ import { useRouter } from "next/navigation";
 import type { ReactNode } from "react";
 
 import { AuthGate } from "./AuthGate";
+import { CookieNotice } from "./CookieNotice";
 import { DoubleClickGuard } from "./DoubleClickGuard";
 import { FontScale } from "./FontScale";
 import { HouseGate } from "./HouseGate";
@@ -69,6 +70,7 @@ export function AppProviders({ children }: { children: ReactNode }) {
           <InstallPromoSheet />
           <PushPromoSheet />
           <PushRegistration />
+          <CookieNotice />
         </HousesProvider>
       </ProfileProvider>
     </AuthProvider>

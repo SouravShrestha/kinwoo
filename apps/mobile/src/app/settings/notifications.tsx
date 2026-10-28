@@ -6,15 +6,16 @@ import { TOAST_MESSAGES } from "@kinwoo/core/toast";
 import { ArrowRightIcon, CheckIcon } from "@kinwoo/icons/native";
 import { colors } from "@kinwoo/tokens/native";
 import { useRef, useState } from "react";
-import { Linking, ScrollView, Text, View } from "react-native";
+import { ScrollView, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { NotificationsBlockedSheet } from "@/components/NotificationsBlockedSheet";
 import { Pressable } from "@/components/Pressable";
 import { Skeleton } from "@/components/skeleton/Skeleton";
 import { NotificationSettingsSkeleton } from "@/components/skeleton/skeletons";
 import { Switch } from "@/components/Switch";
 import { goBack } from "@/lib/house-navigation";
-import { registerDevice } from "@/lib/push";
+import { registerDevice, usePushStatus } from "@/lib/push";
 import { useTheme } from "@/theme/ThemeProvider";
 
 export const unstable_settings = { title: "Notifications" };
@@ -28,6 +29,8 @@ export default function NotificationsScreen() {
   const palette = colors[resolvedTheme];
   const insets = useSafeAreaInsets();
   const [shown, setShown] = useState<{ enabled?: boolean; muted?: string[] }>({});
+  const [pushStatus, refreshPushStatus] = usePushStatus();
+  const [allowOpen, setAllowOpen] = useState(false);
   // Saves run one after another so the last tap is the last write.
   const saves = useRef(Promise.resolve());
 
@@ -43,7 +46,8 @@ export default function NotificationsScreen() {
       </View>
     );
   }
-  const enabled = shown.enabled ?? profile.notificationsEnabled;
+  const blocked = pushStatus?.blocked === true;
+  const enabled = shown.enabled ?? (profile.notificationsEnabled && !blocked);
   const muted = shown.muted ?? profile.mutedPushTypes;
 
   // The screen changes at once; a failed save puts the saved value back.
@@ -59,17 +63,22 @@ export default function NotificationsScreen() {
     );
   };
 
-  const togglePush = (next: boolean) => {
+  const savePush = (next: boolean) => {
     setShown((current) => ({ ...current, enabled: next }));
     save("enabled", async () => {
       if (next && (await registerDevice(true)) === "denied") {
         toast.error(TOAST_MESSAGES.notificationsBlocked);
-        void Linking.openSettings();
+        refreshPushStatus();
         return false;
       }
       await setPreferences({ notificationsEnabled: next });
       return true;
     });
+  };
+
+  const togglePush = (next: boolean) => {
+    if (next && blocked) setAllowOpen(true);
+    else savePush(next);
   };
 
   const toggleEvent = (type: SettingType, next: boolean) => {
@@ -116,6 +125,31 @@ export default function NotificationsScreen() {
         <Text className="flex-1 text-base text-foreground">Push notifications</Text>
         <Switch checked={enabled} onChange={togglePush} accessibilityLabel="Push notifications" />
       </View>
+      {blocked ? (
+        <View className="flex-row items-center gap-4">
+          <Text className="flex-1 text-sm text-muted-foreground">
+            Notifications are blocked on this phone.
+          </Text>
+          <Pressable
+            accessibilityRole="button"
+            onPress={() => setAllowOpen(true)}
+            hitSlop={8}
+            className="active:opacity-70"
+          >
+            <Text className="text-sm font-medium text-foreground underline">Allow</Text>
+          </Pressable>
+        </View>
+      ) : null}
+      <NotificationsBlockedSheet
+        open={allowOpen}
+        status={pushStatus}
+        onClose={() => setAllowOpen(false)}
+        onAllowed={() => {
+          setAllowOpen(false);
+          refreshPushStatus();
+          savePush(true);
+        }}
+      />
 
       {groups.map((group) => (
         <View key={group} className="mt-8">

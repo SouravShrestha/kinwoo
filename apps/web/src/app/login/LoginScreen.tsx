@@ -1,7 +1,7 @@
 "use client";
 
 import { useAuth } from "@kinwoo/client/auth";
-import { APP_NAME } from "@kinwoo/core/app";
+import { APP_NAME, LEGAL_URLS } from "@kinwoo/core/app";
 import { GoogleIcon } from "@kinwoo/icons";
 import Image from "next/image";
 import Link from "next/link";
@@ -98,11 +98,21 @@ export function LoginScreen() {
 
         <p className="mt-8 pb-[calc(1.5rem+env(safe-area-inset-bottom))] text-center text-xs text-muted-foreground">
           By continuing to use {APP_NAME}, you agree to our{" "}
-          <Link href="/legal/terms" className="underline hover:cursor-pointer">
+          <Link
+            href={LEGAL_URLS.terms}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline hover:cursor-pointer"
+          >
             Terms &amp; Conditions
           </Link>{" "}
           and{" "}
-          <Link href="/legal/privacy" className="underline hover:cursor-pointer">
+          <Link
+            href={LEGAL_URLS.privacy}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline hover:cursor-pointer"
+          >
             Privacy Policy
           </Link>
           .

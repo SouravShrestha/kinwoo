@@ -3,13 +3,14 @@
 import { useAuth } from "@kinwoo/client/auth";
 import { useHouseBalances } from "@kinwoo/client/expenses";
 import { useActiveHouse, useHouseMembers } from "@kinwoo/client/houses";
-import { unsettledPairs } from "@kinwoo/core/expenses";
+import { SETTLED_UP_HINT, unsettledPairs } from "@kinwoo/core/expenses";
 import { formatPaise } from "@kinwoo/core/grocery";
 import { memberDisplayName } from "@kinwoo/core/houses";
 import { ArrowRightIcon } from "@kinwoo/icons";
 import Link from "next/link";
 import { useEffect, useRef, useState, type AnimationEvent } from "react";
 
+import { EmptyItems } from "@/components/grocery/EmptyItems";
 import { Avatar } from "@/components/houses/Avatar";
 
 import { SettleUpSkeleton } from "@/components/skeleton/skeletons";
@@ -25,11 +26,18 @@ function Balances({ houseId, simplifyDebts }: { houseId: string; simplifyDebts: 
     return <SettleUpSkeleton />;
   }
   const pairs = unsettledPairs(balances);
+  if (pairs.length === 0) {
+    return (
+      <div className="flex flex-1 flex-col">
+        <EmptyItems image="expense" title="You are settled up" hint={SETTLED_UP_HINT} />
+      </div>
+    );
+  }
 
   return (
     <>
       <h2 className="mt-4 px-6 font-display text-xl font-normal text-foreground">
-        {pairs.length > 0 ? "Which balance do you want to settle?" : "You are settled up"}
+        Which balance do you want to settle?
       </h2>
       <ul className="mt-8">
         {pairs.map((pair, index) => {

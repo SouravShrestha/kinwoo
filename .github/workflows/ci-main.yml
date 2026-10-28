@@ -162,13 +162,5 @@ jobs:
           wranglerVersion: "4.151.2"
           workingDirectory: apps/web
 
-  mobile-prod:
-    name: Mobile Build (Production)
-    needs: release-please
-    if: ${{ needs.release-please.outputs.release_created == 'true' }}
-    uses: ./.github/workflows/mobile-deploy.yml
-    with:
-      profile: production
-      ref: ${{ needs.release-please.outputs.tag_name }}
-    # Not an explicit map: environment secrets only resolve in the called workflow with inherit.
-    secrets: inherit
+  # The production mobile build is slow, so it is started by hand: run "Mobile Build & Deploy"
+  # with profile "production" and the release tag as ref.
