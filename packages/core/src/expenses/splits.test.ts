@@ -1,8 +1,30 @@
 import { describe, expect, it } from "vitest";
 
-import { allocatePaise, computeSplit, formatHundredths } from "./splits";
+import { allocatePaise, computeSplit, formatHundredths, rescaleAmounts } from "./splits";
 
 const ids = ["a", "b", "c"];
+
+describe("rescaleAmounts", () => {
+  it("moves a sole payer to the new total", () => {
+    expect(rescaleAmounts(["a"], { a: "500" }, 80000)).toEqual({ a: "800" });
+  });
+
+  it("keeps several payers in proportion and adds up exactly", () => {
+    expect(rescaleAmounts(["a", "b"], { a: "300", b: "100" }, 100000)).toEqual({
+      a: "750",
+      b: "250",
+    });
+    expect(rescaleAmounts(["a", "b", "c"], { a: "1", b: "1", c: "1" }, 100)).toEqual({
+      a: "0.34",
+      b: "0.33",
+      c: "0.33",
+    });
+  });
+
+  it("splits evenly when no amount is set", () => {
+    expect(rescaleAmounts(["a", "b"], { a: "", b: "0" }, 1000)).toEqual({ a: "5", b: "5" });
+  });
+});
 
 describe("allocatePaise", () => {
   it("always adds up to the total", () => {

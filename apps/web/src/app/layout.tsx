@@ -76,6 +76,8 @@ export const metadata: Metadata = {
     type: "website",
     url: "/",
   },
+  // The image itself comes from app/opengraph-image.png; X falls back to it.
+  twitter: { card: "summary_large_image", title: APP_NAME, description: DESCRIPTION },
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {

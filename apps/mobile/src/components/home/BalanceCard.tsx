@@ -38,13 +38,25 @@ export function BalanceCard({ balances }: { balances: HouseBalances }) {
         style={IMAGE_STYLE}
       />
       <View className="flex-1 justify-between -ml-12 gap-4 py-6 pl-2 pr-5">
-        <Text className="font-display-normal text-sm text-right text-muted-foreground">{lead}</Text>
+        {/* Two lead lines and an amount row are always reserved, so a settled card keeps the
+            height of one with a balance. */}
+        <Text className="min-h-10 font-display-normal text-sm text-right text-muted-foreground">
+          {lead}
+        </Text>
         {text.amount ? (
           <BalanceLine
             text={{ ...text, before: "", after: "" }}
             className="font-display-normal text-xl text-right text-foreground"
           />
-        ) : null}
+        ) : (
+          <Text
+            importantForAccessibility="no-hide-descendants"
+            accessibilityElementsHidden
+            className="font-display-normal text-xl opacity-0"
+          >
+            {" "}
+          </Text>
+        )}
       </View>
     </Pressable>
   );

@@ -64,7 +64,7 @@ export default function PrivacyPage() {
       <LegalSection title="Cookies and on-device storage">
         <List
           items={[
-            "Web: sign-in cookies set by our authentication provider. They are strictly necessary, because without them the site cannot tell that a request is yours.",
+            "Web: sign-in cookies set by our authentication provider. They are strictly necessary, because without them the site cannot tell that a request is yours. Your browser also remembers that you accepted the cookie notice.",
             "Mobile: your sign-in session is kept in the app's storage on your device.",
             "Both: your theme, your last active house and an invite code you opened before signing in are kept on your device. They are not sent to us as tracking data.",
           ]}

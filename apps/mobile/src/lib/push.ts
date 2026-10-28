@@ -4,7 +4,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import Constants from "expo-constants";
 import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
-import { Platform } from "react-native";
+import { useEffect, useState } from "react";
+import { AppState, Linking, Platform } from "react-native";
 
 const CHANNEL_ID = "default";
 const TOKEN_KEY = "kinwoo.pushToken";
@@ -29,6 +30,44 @@ function toPermission(status: string): PushPermission {
 
 async function readPermission(): Promise<PushPermission> {
   return toPermission((await Notifications.getPermissionsAsync()).status);
+}
+
+export type PushStatus = { permission: PushPermission; blocked: boolean; canAskAgain: boolean };
+
+async function readPushStatus(): Promise<PushStatus> {
+  const result = await Notifications.getPermissionsAsync();
+  const permission = toPermission(result.status);
+  return {
+    permission,
+    blocked: supported && permission === "denied",
+    canAskAgain: result.canAskAgain,
+  };
+}
+
+// Re-read whenever the app comes back to the foreground, so a change made in system settings shows.
+export function usePushStatus(): [status: PushStatus | null, refresh: () => void] {
+  const [status, setStatus] = useState<PushStatus | null>(null);
+  const [refresh] = useState(() => () => void readPushStatus().then(setStatus, () => undefined));
+  useEffect(() => {
+    refresh();
+    const subscription = AppState.addEventListener("change", (state) => {
+      if (state === "active") refresh();
+    });
+    return () => subscription.remove();
+  }, [refresh]);
+  return [status, refresh];
+}
+
+// Android may show the permission dialog again after one denial; after that only system
+// settings can allow notifications. Resolves true when permission is now granted.
+export async function allowNotifications(canAskAgain: boolean): Promise<boolean> {
+  if (canAskAgain) {
+    const asked = await Notifications.requestPermissionsAsync();
+    if (toPermission(asked.status) === "granted") return true;
+    if (asked.canAskAgain) return false;
+  }
+  await Linking.openSettings();
+  return false;
 }
 
 async function fetchToken(): Promise<string | null> {

@@ -1,5 +1,5 @@
 import { formatPaise } from "../grocery/bought-groups";
-import { amountDraftToPaise, payerRemainingLabel, payerSplit } from "./payers";
+import { amountDraftToPaise, paiseToAmountDraft, payerRemainingLabel, payerSplit } from "./payers";
 
 export type SplitMethod = "equal" | "exact" | "percent" | "shares";
 
@@ -47,6 +47,20 @@ export function allocatePaise(totalPaise: number, weights: readonly number[]): n
     leftover -= 1;
   }
   return parts;
+}
+
+// Fits amounts to a new total in proportion to the old ones; if none is set, it is split evenly.
+export function rescaleAmounts(
+  ids: readonly string[],
+  amounts: Readonly<Record<string, string>>,
+  totalPaise: number,
+): Record<string, string> {
+  const weights = ids.map((id) => amountDraftToPaise(amounts[id] ?? ""));
+  const parts = allocatePaise(
+    totalPaise,
+    weights.some((weight) => weight > 0) ? weights : ids.map(() => 1),
+  );
+  return Object.fromEntries(ids.map((id, index) => [id, paiseToAmountDraft(parts[index])]));
 }
 
 export function formatHundredths(value: number): string {

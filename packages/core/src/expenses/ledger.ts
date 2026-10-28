@@ -127,6 +127,8 @@ export function balanceHeadlineParts(balances: HouseBalances): BalanceText {
   return { before, amount: "", after: "", tone: "neutral" };
 }
 
+export const SETTLED_UP_HINT = "Nothing to settle right now. New balances show up here.";
+
 export function balanceHeadline(balances: HouseBalances): string {
   return joinBalanceText(balanceHeadlineParts(balances));
 }

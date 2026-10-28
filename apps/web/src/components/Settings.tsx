@@ -58,17 +58,24 @@ export function SettingsLinkRow({
   icon,
   label,
   value,
+  newTab = false,
 }: {
   href: string;
   icon: ReactNode;
   label: string;
   value?: string;
+  newTab?: boolean;
 }) {
   return (
     <li className="mt-2">
-      <Link href={href} className={ROW} aria-label={value ? `${label}, ${value}` : label}>
+      <Link
+        href={href}
+        className={ROW}
+        aria-label={value ? `${label}, ${value}` : label}
+        {...(newTab && { target: "_blank", rel: "noopener noreferrer" })}
+      >
         <RowBody icon={icon} label={label} value={value} />
-        <PendingLinkBusy />
+        {newTab ? null : <PendingLinkBusy />}
       </Link>
     </li>
   );

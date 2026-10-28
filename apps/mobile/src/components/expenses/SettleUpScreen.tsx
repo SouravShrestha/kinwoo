@@ -1,7 +1,7 @@
 import { useAuth } from "@kinwoo/client/auth";
 import { useHouseBalances } from "@kinwoo/client/expenses";
 import { useHouseMembers } from "@kinwoo/client/houses";
-import { unsettledPairs } from "@kinwoo/core/expenses";
+import { SETTLED_UP_HINT, unsettledPairs } from "@kinwoo/core/expenses";
 import { formatPaise } from "@kinwoo/core/grocery";
 import { memberDisplayName } from "@kinwoo/core/houses";
 import { ArrowRightIcon } from "@kinwoo/icons/native";
@@ -11,12 +11,14 @@ import { GestureDetector } from "react-native-gesture-handler";
 import Animated from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { EmptyItems } from "@/components/grocery/EmptyItems";
 import { Avatar } from "@/components/houses/Avatar";
 import { Pressable } from "@/components/Pressable";
 
 import { SettleUpSkeleton } from "@/components/skeleton/skeletons";
 import { SwipeDownScreen } from "@/components/SwipeDownScreen";
 import { goBack, openRecordPayment } from "@/lib/house-navigation";
+import { noExpense } from "@/lib/images";
 import { useSwipeDownToDismiss } from "@/lib/use-swipe-down-to-dismiss";
 import { useTheme } from "@/theme/ThemeProvider";
 
@@ -46,7 +48,7 @@ export function SettleUpScreen({
           bounces={false}
           showsVerticalScrollIndicator={false}
           overScrollMode="never"
-          contentContainerStyle={{ paddingBottom: insets.bottom + 40 }}
+          contentContainerStyle={{ flexGrow: 1, paddingBottom: insets.bottom + 40 }}
         >
           <View className="px-6" style={{ paddingTop: insets.top + 20 }}>
             <Pressable
@@ -62,13 +64,17 @@ export function SettleUpScreen({
             </Pressable>
           </View>
 
-          {balances && user ? (
+          {balances && user && pairs.length === 0 ? (
+            <View className="flex-1">
+              <EmptyItems image={noExpense} title="You are settled up" hint={SETTLED_UP_HINT} />
+            </View>
+          ) : balances && user ? (
             <>
               <Text
                 accessibilityRole="header"
                 className="mt-4 px-6 font-display-normal text-xl text-foreground"
               >
-                {pairs.length > 0 ? "Which balance do you want to settle?" : "You are settled up"}
+                Which balance do you want to settle?
               </Text>
               <View className="mt-8">
                 {pairs.map((pair, index) => {

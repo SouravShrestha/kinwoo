@@ -11,6 +11,7 @@ import {
 import { useMemo, useState } from "react";
 
 import { BoughtGroupSheet } from "@/components/grocery/BoughtGroupSheet";
+import { EmptyItems } from "@/components/grocery/EmptyItems";
 import { ItemDetailSheet } from "@/components/grocery/ItemDetailSheet";
 
 import {
@@ -64,15 +65,14 @@ export function PrivateSpending({ houseId }: { houseId: string }) {
         <p className="mt-2 font-display text-sm text-muted-foreground">{PRIVATE_SPENDING_NOTE}</p>
       </section>
 
-      <div>
+      <div className="flex flex-1 flex-col">
         {entries.length === 0 ? (
-          <div className="flex flex-col items-center justify-center gap-2 mx-4 mt-4 rounded-2xl border border-dashed border-border px-6 py-16 text-center">
-            <p className="font-display text-base font-medium text-foreground">
-              No private purchases yet
-            </p>
-            <p className="font-display text-sm text-muted-foreground">
-              Things you buy from your private lists show up here.
-            </p>
+          <div className="flex flex-1 flex-col">
+            <EmptyItems
+              image="expense"
+              title="No private purchases yet"
+              hint="Things you buy from your private lists show up here."
+            />
           </div>
         ) : (
           <ul>

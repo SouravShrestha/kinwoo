@@ -8,6 +8,7 @@ import { TOAST_MESSAGES } from "@kinwoo/core/toast";
 import { CheckIcon } from "@kinwoo/icons";
 import { useRef, useState } from "react";
 import { BackButton } from "@/components/BackButton";
+import { NotificationsBlockedSheet } from "@/components/NotificationsBlockedSheet";
 import { NotificationSettingsSkeleton } from "@/components/skeleton/skeletons";
 import { Switch } from "@/components/Switch";
 import { useInstallKind } from "@/lib/install-prompt";
@@ -17,12 +18,10 @@ import { cn } from "@/lib/utils";
 const PUSH_NOTE =
   "These settings only control push notifications. Everything still appears in your in-app notifications.";
 function hintFor(state: BrowserPushState, iosNeedsInstall: boolean): string | null {
-  if (state === "unsupported") {
-    return iosNeedsInstall
-      ? "Add Kinwoo to your Home Screen to get push notifications on iPhone and iPad."
-      : "This browser doesn't support push notifications.";
-  }
-  return state === "denied" ? TOAST_MESSAGES.notificationsBlockedInBrowser : null;
+  if (state !== "unsupported") return null;
+  return iosNeedsInstall
+    ? "Add Kinwoo to your Home Screen to get push notifications on iPhone and iPad."
+    : "This browser doesn't support push notifications.";
 }
 
 export function NotificationSettingsLoading() {
@@ -42,6 +41,7 @@ export function NotificationSettingsScreen() {
   const pushState = useBrowserPushState();
   const iosNeedsInstall = useInstallKind() === "ios";
   const [shown, setShown] = useState<{ enabled?: boolean; muted?: string[] }>({});
+  const [allowOpen, setAllowOpen] = useState(false);
   // Saves run one after another so the last tap is the last write.
   const saves = useRef(Promise.resolve());
 
@@ -65,6 +65,10 @@ export function NotificationSettingsScreen() {
   };
 
   const togglePush = (next: boolean) => {
+    if (next && pushState === "denied") {
+      setAllowOpen(true);
+      return;
+    }
     setShown((current) => ({ ...current, enabled: next }));
     // Started here, not in the queued save: browsers show the permission prompt only for a tap.
     const registered = next ? registerBrowser(true, true) : null;
@@ -110,6 +114,28 @@ export function NotificationSettingsScreen() {
         />
       </div>
       {hint ? <p className="text-sm text-muted-foreground">{hint}</p> : null}
+      {pushState === "denied" ? (
+        <div className="flex items-center gap-4">
+          <p className="flex-1 text-sm text-muted-foreground">
+            Notifications are blocked for this site.
+          </p>
+          <button
+            type="button"
+            onClick={() => setAllowOpen(true)}
+            className="rounded-lg text-sm font-medium text-foreground underline hover:cursor-pointer hover:opacity-70 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
+          >
+            Allow
+          </button>
+        </div>
+      ) : null}
+      <NotificationsBlockedSheet
+        open={allowOpen}
+        onClose={() => setAllowOpen(false)}
+        onAllowed={() => {
+          setAllowOpen(false);
+          togglePush(true);
+        }}
+      />
 
       {groups.map((group) => (
         <section key={group} className="mt-8">

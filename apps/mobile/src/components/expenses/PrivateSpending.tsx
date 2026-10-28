@@ -15,6 +15,7 @@ import Animated from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { BoughtGroupSheet } from "@/components/grocery/BoughtGroupSheet";
+import { EmptyItems } from "@/components/grocery/EmptyItems";
 import { ItemDetailSheet } from "@/components/grocery/ItemDetailSheet";
 import { Pressable } from "@/components/Pressable";
 
@@ -24,6 +25,7 @@ import {
 } from "@/components/skeleton/skeletons";
 import { SwipeDownScreen } from "@/components/SwipeDownScreen";
 import { goBack } from "@/lib/house-navigation";
+import { noExpense } from "@/lib/images";
 import { useSwipeDownToDismiss } from "@/lib/use-swipe-down-to-dismiss";
 import { useTheme } from "@/theme/ThemeProvider";
 
@@ -67,7 +69,7 @@ export function PrivateSpending({ houseId }: { houseId: string }) {
           bounces={false}
           showsVerticalScrollIndicator={false}
           overScrollMode="never"
-          contentContainerStyle={{ paddingBottom: insets.bottom + 40 }}
+          contentContainerStyle={{ flexGrow: 1, paddingBottom: insets.bottom + 40 }}
         >
           <View className="px-6 pb-4" style={{ paddingTop: insets.top + 20 }}>
             <Pressable
@@ -100,13 +102,12 @@ export function PrivateSpending({ houseId }: { houseId: string }) {
             )}
           </View>
           {loaded && entries.length === 0 ? (
-            <View className="mx-4 mt-4 items-center gap-2 rounded-2xl border border-dashed border-border px-6 py-16">
-              <Text className="font-display-medium text-base text-foreground">
-                No private purchases yet
-              </Text>
-              <Text className="text-center font-display-normal text-sm text-muted-foreground">
-                Things you buy from your private lists show up here.
-              </Text>
+            <View className="flex-1">
+              <EmptyItems
+                image={noExpense}
+                title="No private purchases yet"
+                hint="Things you buy from your private lists show up here."
+              />
             </View>
           ) : null}
 
