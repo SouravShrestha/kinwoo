@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.1](https://github.com/SouravShrestha/kinwoo/compare/kinwoo-monorepo-v1.0.0...kinwoo-monorepo-v1.0.1) (2026-10-28)
+
+
+### Bug Fixes
+
+* **notifications:** add push permission blocking detection and cookie notice ([9041281](https://github.com/SouravShrestha/kinwoo/commit/904128189875e4fe6673ecaa2a2fb6101fbe6bbf))
+
 ## [1.0.0](https://github.com/SouravShrestha/kinwoo/compare/kinwoo-monorepo-v0.1.0...kinwoo-monorepo-v1.0.0) (2026-10-27)
 
 
