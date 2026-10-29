@@ -44,3 +44,4 @@ _current_branch*
 .plans
 # Local-only DB scripts (seed scenarios, data wipe)
 supabase/local/
+brag-output/

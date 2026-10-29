@@ -79,6 +79,16 @@ select throws_ok(
   $$insert into storage.objects (bucket_id, name) values ('avatars', 'avatar-99.png')$$,
   '42501', null, 'a user cannot add a preset-style file');
 select lives_ok(
+  $$insert into storage.objects (bucket_id, name) values
+      ('uploaded_avatars', '00000000-0000-4000-8000-0000000000e1/3f2b8c1e-0000-4000-8000-000000000005.jpg'),
+      ('uploaded_avatars', '00000000-0000-4000-8000-0000000000e1/3f2b8c1e-0000-4000-8000-000000000006.jpg'),
+      ('uploaded_avatars', '00000000-0000-4000-8000-0000000000e1/3f2b8c1e-0000-4000-8000-000000000007.jpg')$$,
+  'a user can hold up to five uploads');
+select throws_ok(
+  $$insert into storage.objects (bucket_id, name)
+    values ('uploaded_avatars', '00000000-0000-4000-8000-0000000000e1/3f2b8c1e-0000-4000-8000-000000000008.jpg')$$,
+  '42501', null, 'a sixth upload is refused');
+select lives_ok(
   $$update public.profiles set avatar_url = null
      where id = '00000000-0000-4000-8000-0000000000e1'$$,
   'clearing the avatar is accepted');

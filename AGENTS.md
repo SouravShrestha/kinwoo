@@ -16,6 +16,14 @@ npm workspaces + Turborepo. `apps/web` is Next.js 15 (App Router) on Cloudflare 
 - `apps/mobile/tsconfig.json` extends Expo's base, not `tsconfig.base.json`.
 - Web uses Tailwind v4 (`@theme inline`); mobile uses Tailwind v3 via NativeWind. The two configs cannot be shared; tokens are what they share.
 
+## Database migrations
+
+- Migrations in `supabase/migrations/` are applied in the order of the number at the start of the file name. The existing files are dated in the future (December 2026), so they are numbered ahead of the real clock.
+- Do not run `supabase migration new`. It stamps the file with today's date, which sorts before the existing files, and `supabase db push` (used by CI) then refuses to apply it.
+- Create the file by hand, numbered one step above the highest existing file: `YYYYMMDDHHMMSS_name.sql`, for example `20261224000000_name.sql` after `20261223000000_...`. Check the latest with `ls supabase/migrations | tail -1`.
+- Never rename or edit a migration that has already been applied to the test or production project. Add a new one.
+- Once the real date passes the latest file's date, `supabase migration new` works again and this rule can be removed.
+
 ## Conventions
 
 - Prettier: 100 columns, double quotes, trailing commas.
