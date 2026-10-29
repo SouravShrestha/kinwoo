@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.1.0](https://github.com/SouravShrestha/kinwoo/compare/v1.0.1...v1.1.0) (2026-10-29)
+
+
+### Features
+
+* **houses:** add multi-house support with switching and validation rules ([b1371ad](https://github.com/SouravShrestha/kinwoo/commit/b1371ade4247ee743327de90bb0928aceec68516))
+
+
+### Bug Fixes
+
+* **ui,ci:** simplify shortcut card labels and improve progress bar cleanup ([4fb6a06](https://github.com/SouravShrestha/kinwoo/commit/4fb6a06605ed59a400601bf44e09cc79ecb8ddf6))
+
 ## [1.0.1](https://github.com/SouravShrestha/kinwoo/compare/kinwoo-monorepo-v1.0.0...kinwoo-monorepo-v1.0.1) (2026-10-28)
 
 
