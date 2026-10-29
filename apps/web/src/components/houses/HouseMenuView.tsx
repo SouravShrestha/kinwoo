@@ -1,44 +1,44 @@
 "use client";
 
-import { useActiveHouse, useHouseMembers, type HouseSheetView } from "@kinwoo/client/houses";
+import { useHouseMembers, type HouseSheetView } from "@kinwoo/client/houses";
 import { toast } from "@kinwoo/client/toast";
 import {
   INVITE_ACTION_TITLE,
   MEMBERS_SHEET_TITLE,
   SETTINGS_SHEET_TITLE,
-  canAddHouse,
+  SWITCH_HOUSE_TITLE,
   memberCountLabel,
   type HouseMembership,
 } from "@kinwoo/core/houses";
 import { TOAST_MESSAGES } from "@kinwoo/core/toast";
-import { HousePinIcon, HouseSettingsIcon, InviteIcon, MemberIcon } from "@kinwoo/icons";
+import {
+  HousePinIcon,
+  HouseSettingsIcon,
+  InviteIcon,
+  MemberIcon,
+  SwitchHouseIcon,
+} from "@kinwoo/icons";
 import { useRouter } from "next/navigation";
 
 import { Skeleton } from "@/components/skeleton/Skeleton";
-import { Button } from "../Button";
 import { AvatarStack } from "./AvatarStack";
 import { MenuCard } from "./MenuCard";
-import { ListRow } from "./Rows";
 
 export function HouseMenuView({
   membership,
   onNavigate,
   onClose,
+  onSwitch,
 }: {
   membership: HouseMembership;
   onNavigate: (view: HouseSheetView) => void;
   onClose: () => void;
+  onSwitch?: () => void;
 }) {
   const router = useRouter();
-  const { houses, activeHouseId, setActiveHouse } = useActiveHouse();
   const { house } = membership;
   const members = useHouseMembers(house.id);
   const isAdmin = membership.role === "admin";
-
-  const go = (href: string) => {
-    onClose();
-    router.push(href);
-  };
 
   return (
     <div>
@@ -53,29 +53,6 @@ export function HouseMenuView({
           </span>
         ) : null}
       </h2>
-
-      {houses.length > 1 ? (
-        <div className="mt-4">
-          {houses.map(({ house: option, role }) => {
-            const active = option.id === activeHouseId;
-
-            return (
-              <ListRow
-                key={option.id}
-                leading={<HousePinIcon size={28} />}
-                title={option.name}
-                subtitle={role === "admin" ? "Admin" : "Member"}
-                label={active ? `${option.name}, current house` : `Switch to ${option.name}`}
-                trailing={active ? <span aria-hidden>✓</span> : null}
-                onClick={() => {
-                  setActiveHouse(option.id);
-                  onClose();
-                }}
-              />
-            );
-          })}
-        </div>
-      ) : null}
 
       <div className="mt-8 flex flex-col gap-3">
         <MenuCard
@@ -101,30 +78,33 @@ export function HouseMenuView({
         />
         <div className="flex gap-3">
           <MenuCard
-            tall
+            size="tall"
             icon={<InviteIcon size={14} />}
             title={INVITE_ACTION_TITLE}
             onClick={() => {
-              if (isAdmin) return go("/house/invite");
               onClose();
+              if (isAdmin) return router.push("/house/invite");
               toast.warning(TOAST_MESSAGES.inviteAdminOnly);
             }}
           />
-          <MenuCard
-            tall
-            icon={<HouseSettingsIcon size={15} />}
-            title={SETTINGS_SHEET_TITLE}
-            onClick={() => onNavigate({ name: "settings" })}
-          />
+          <div className="flex min-w-0 flex-1 flex-col gap-3">
+            <MenuCard
+              size="half"
+              icon={<HouseSettingsIcon size={15} />}
+              title={SETTINGS_SHEET_TITLE}
+              onClick={() => onNavigate({ name: "settings" })}
+            />
+            {onSwitch ? (
+              <MenuCard
+                size="half"
+                icon={<SwitchHouseIcon size={15} />}
+                title={SWITCH_HOUSE_TITLE}
+                onClick={onSwitch}
+              />
+            ) : null}
+          </div>
         </div>
       </div>
-
-      {canAddHouse(houses.length) ? (
-        <div className="mt-4 flex flex-col gap-3">
-          <Button label="Create a house" onClick={() => go("/house/create")} />
-          <Button label="Join with a code" variant="outline" onClick={() => go("/house/join")} />
-        </div>
-      ) : null}
     </div>
   );
 }

@@ -6,6 +6,7 @@ import {
   formatActivityParts,
   formatActivityTimestamp,
   formatTimelineTime,
+  withHouseName,
 } from "./activity";
 import type { GroceryActivityEntry } from "./types";
 
@@ -184,5 +185,19 @@ describe("simplify debts activity", () => {
 
   it("uses the expense icon", () => {
     expect(activityIconName(entry(true))).toBe("transaction");
+  });
+});
+
+describe("withHouseName", () => {
+  const names = new Map([["h1", "Flat"]]);
+
+  it("appends the house name when the entry has a known house", () => {
+    expect(withHouseName("2h ago", { houseId: "h1" }, names)).toBe("2h ago · Flat");
+  });
+
+  it("leaves the text alone otherwise", () => {
+    expect(withHouseName("2h ago", { houseId: "h2" }, names)).toBe("2h ago");
+    expect(withHouseName("2h ago", {}, names)).toBe("2h ago");
+    expect(withHouseName("2h ago", { houseId: "h1" }, undefined)).toBe("2h ago");
   });
 });

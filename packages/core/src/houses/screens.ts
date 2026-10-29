@@ -3,6 +3,8 @@ export const HOUSE_MENU_TITLE = "Your house";
 export const MEMBERS_SHEET_TITLE = "Manage members";
 export const INVITE_ACTION_TITLE = "Invite housemates";
 export const SETTINGS_SHEET_TITLE = "House settings";
+export const SWITCH_HOUSE_TITLE = "Switch house";
+export const ADD_HOUSE_LABEL = "Add new house";
 
 export const HOUSE_SCREEN_TITLES = {
   create: "Build your house",

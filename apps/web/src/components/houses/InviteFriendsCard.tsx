@@ -8,7 +8,7 @@ type InviteFriendsCardProps = {
 };
 
 const CARD =
-  "mt-4 flex w-full items-stretch overflow-hidden rounded-lg border border-border bg-card text-left";
+  "flex w-full items-stretch overflow-hidden rounded-lg border border-border bg-card text-left";
 
 export function InviteFriendsCard({ canInvite, onPress }: InviteFriendsCardProps) {
   const content: ReactNode = (
@@ -21,11 +21,12 @@ export function InviteFriendsCard({ canInvite, onPress }: InviteFriendsCardProps
         loading="eager"
         className="h-auto w-[45%] shrink-0 self-end -mb-2 -ml-2"
       />
-      <div className="flex flex-1 flex-col justify-between gap-8 py-4 pr-5 pl-2 -ml-12 text-right">
-        <p className="font-display text-sm leading-[calc(1.25rem*var(--font-scale,1))] font-normal">
+      {/* Same paddings and reserved line heights as BalanceCard, so both cards are one height. */}
+      <div className="flex flex-1 flex-col justify-between gap-4 py-6 pr-5 pl-2 -ml-12 text-right">
+        <p className="min-h-[2lh] font-display text-sm font-normal">
           Solo mode is fine, but it&apos;s better with friends
         </p>
-        <div className="flex items-center justify-end gap-2">
+        <div className="flex min-h-[1lh] items-center justify-end gap-2 text-xl">
           <span className="font-display text-base font-medium">Invite friends</span>
           {canInvite ? <ArrowRightIcon size={16} /> : null}
         </div>

@@ -7,6 +7,13 @@ export function notificationInboxId(data: unknown): string | null {
   return typeof id === "string" && UUID.test(id) ? id : null;
 }
 
+export function notificationHouseId(data: unknown): string | null {
+  if (typeof data !== "object" || data === null) return null;
+
+  const id = (data as { houseId?: unknown }).houseId;
+  return typeof id === "string" && UUID.test(id) ? id : null;
+}
+
 // A notification's data comes from outside the app, so only an in-app path is followed.
 // "//host" and backslashes are rejected because clients treat them as another origin.
 export function notificationTarget(data: unknown): string | null {

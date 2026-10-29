@@ -97,6 +97,12 @@ function InviteManager({ membership }: { membership: HouseMembership }) {
 
   return (
     <HouseScreen title={HOUSE_SCREEN_TITLES.invite} dismissible>
+      <Text
+        accessibilityRole="header"
+        className="pb-1 font-display-medium text-base text-foreground"
+      >
+        {house.name}
+      </Text>
       {manager.loading ? (
         <InviteSkeleton />
       ) : (

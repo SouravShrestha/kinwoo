@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 type SetupHousePromptProps = {
   onCreate: () => void;
   onJoin: () => void;
+  level?: boolean;
 };
 
 type ActionCardProps = {
@@ -53,7 +54,7 @@ function ActionCard({
   );
 }
 
-export function SetupHousePrompt({ onCreate, onJoin }: SetupHousePromptProps) {
+export function SetupHousePrompt({ onCreate, onJoin, level = false }: SetupHousePromptProps) {
   return (
     <div className="flex w-full flex-1 flex-col justify-center">
       <div className="flex w-full items-start gap-5">
@@ -65,7 +66,7 @@ export function SetupHousePrompt({ onCreate, onJoin }: SetupHousePromptProps) {
           background={<BuildIcon size={84} />}
           backgroundClassName="right-3 -bottom-4"
           labelAtTop
-          className="mt-14 aspect-square"
+          className={level ? "aspect-square" : "mt-14 aspect-square"}
         />
         <ActionCard
           lines={["I have", "a code"]}

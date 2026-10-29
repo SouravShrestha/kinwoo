@@ -32,7 +32,8 @@ select tests.create_user(tests.id('a'), 'asha@test.local');
 select tests.create_user(tests.id('b'), 'rohan@test.local');
 select tests.create_user(tests.id('x'), 'outsider@test.local');
 select tests.as_user(tests.id('a'));
-select set_config('tests.house', (public.create_house('Flat')).id::text, true);
+select set_config('tests.house', (public.create_house('Flat', '12 Test Street, Bengaluru')).id::text, true);
+update public.houses set join_mode = 'anyone' where id = tests.id('house');
 select set_config('tests.code',
   (select code from public.house_invites where house_id = tests.id('house')), true);
 select tests.as_user(tests.id('b'));

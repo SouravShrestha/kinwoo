@@ -1,4 +1,11 @@
+import { HOUSE_LIMIT_MESSAGE, MAX_HOUSES_PER_USER } from "./limits";
 import type { InviteFailureStatus } from "./types";
+import {
+  HOUSE_ADDRESS_MAX_LENGTH,
+  HOUSE_ADDRESS_MIN_LENGTH,
+  HOUSE_NAME_MAX_LENGTH,
+  HOUSE_NAME_MIN_LENGTH,
+} from "./validation";
 
 // The RPCs raise these as the exception message.
 export const HOUSE_ERROR_CODES = [
@@ -12,6 +19,7 @@ export const HOUSE_ERROR_CODES = [
   "HOUSE_LIMIT_REACHED",
   "HOUSE_FULL",
   "INVALID_NAME",
+  "INVALID_ADDRESS",
   "INVALID_EMAIL",
   "NOT_FOUND",
   "NO_PENDING_REQUEST",
@@ -37,9 +45,10 @@ const MESSAGES: Record<HouseErrorCode, string> = {
   OUTSTANDING_BALANCE:
     "There is an unsettled balance. Every balance in Bills has to be zero first.",
   RATE_LIMITED: "Too many attempts. Try again in a few minutes.",
-  HOUSE_LIMIT_REACHED: "You can only be in one house for now. Leave your current house first.",
+  HOUSE_LIMIT_REACHED: `${HOUSE_LIMIT_MESSAGE} Leave one first.`,
   HOUSE_FULL: "This house is full.",
-  INVALID_NAME: "Give your house a name of 60 characters or fewer.",
+  INVALID_NAME: `Give your house a name of ${HOUSE_NAME_MIN_LENGTH} to ${HOUSE_NAME_MAX_LENGTH} characters.`,
+  INVALID_ADDRESS: `Enter an address of ${HOUSE_ADDRESS_MIN_LENGTH} to ${HOUSE_ADDRESS_MAX_LENGTH} characters.`,
   INVALID_EMAIL: "Enter a valid email address.",
   NOT_FOUND: "We couldn't find that house.",
   NO_PENDING_REQUEST: "There is no pending request to answer.",
@@ -68,8 +77,8 @@ const FAILURE_COPY: Record<InviteFailureStatus, InviteFailureCopy> = {
     message: "This house has no room for more members.",
   },
   house_limit: {
-    title: "You're already in a house",
-    message: "You can only be in one house for now. Leave your current house to join this one.",
+    title: `You're in ${MAX_HOUSES_PER_USER} houses`,
+    message: `${HOUSE_LIMIT_MESSAGE} Leave one to join this house.`,
   },
 };
 

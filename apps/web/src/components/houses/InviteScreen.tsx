@@ -56,7 +56,12 @@ export function InviteScreen() {
 
   return (
     <HouseScreen title={HOUSE_SCREEN_TITLES.invite} dismissible>
-      {membership ? <InviteManager key={membership.house.id} membership={membership} /> : null}
+      {membership ? (
+        <>
+          <h2 className="pb-1 font-display text-base font-medium">{membership.house.name}</h2>
+          <InviteManager key={membership.house.id} membership={membership} />
+        </>
+      ) : null}
     </HouseScreen>
   );
 }

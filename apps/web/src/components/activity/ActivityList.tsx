@@ -8,6 +8,7 @@ import {
   formatActivityParts,
   formatActivityTimestamp,
   groupActivityByDay,
+  withHouseName,
   type GroceryActivityEntry,
 } from "@kinwoo/core/grocery";
 import type { HouseMember } from "@kinwoo/core/houses";
@@ -95,6 +96,7 @@ export const ActivityList = memo(function ActivityList({
   onOpenExpense,
   onOpenPayment,
   onOpenEntry,
+  houseNames,
 }: {
   entries: GroceryActivityEntry[];
   members: HouseMember[];
@@ -105,6 +107,8 @@ export const ActivityList = memo(function ActivityList({
   onOpenPayment?: (settlementId: string | null) => void;
   // Makes every row tappable and replaces the expense and payment shortcuts.
   onOpenEntry?: (entry: GroceryActivityEntry) => void;
+  // Adds the house name after the time, for lists that mix houses.
+  houseNames?: Map<string, string>;
 }) {
   const groups = useMemo(() => groupActivityByDay(entries), [entries]);
   const membersById = useMemo(() => new Map(members.map((m) => [m.userId, m])), [members]);
@@ -166,7 +170,7 @@ export const ActivityList = memo(function ActivityList({
                     </p>
                     <ActivityDetail entry={entry} currentUserId={currentUserId} />
                     <p className="mt-3 font-display text-xs font-normal text-muted-foreground">
-                      {formatActivityTimestamp(entry.createdAt)}
+                      {withHouseName(formatActivityTimestamp(entry.createdAt), entry, houseNames)}
                     </p>
                   </div>
                 </>

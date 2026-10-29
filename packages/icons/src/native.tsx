@@ -103,6 +103,7 @@ export const ArchiveIcon = /*#__PURE__*/ icon(geometry.archiveIcon);
 export const EditNoteIcon = /*#__PURE__*/ icon(geometry.editNoteIcon);
 export const PaperPlaneIcon = /*#__PURE__*/ icon(geometry.paperPlaneIcon);
 export const MoveIcon = /*#__PURE__*/ icon(geometry.moveIcon);
+export const SwitchHouseIcon = /*#__PURE__*/ icon(geometry.switchHouseIcon);
 
 // Icons chosen by name; see semantic.ts.
 

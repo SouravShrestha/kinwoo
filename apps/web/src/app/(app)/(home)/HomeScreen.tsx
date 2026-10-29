@@ -24,6 +24,7 @@ import { WelcomeHeader } from "@/components/home/WelcomeHeader";
 import { HouseSheet } from "@/components/houses/HouseSheet";
 import { InviteFriendsCard } from "@/components/houses/InviteFriendsCard";
 import { SetupHousePrompt } from "@/components/houses/SetupHousePrompt";
+import { SwitchHouseSheet } from "@/components/houses/SwitchHouseSheet";
 import {
   BalanceCardSkeleton,
   HouseHeaderSkeleton,
@@ -35,6 +36,7 @@ export function HomeScreen() {
   const router = useRouter();
   const { activeHouse, houses, ready, loadFailed, refetchHouses } = useActiveHouse();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [switchOpen, setSwitchOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<GroceryOverviewItem | null>(null);
 
   const { profile } = useProfile();
@@ -162,7 +164,15 @@ export function HomeScreen() {
         />
       ) : null}
 
-      <HouseSheet open={menuOpen} onClose={() => setMenuOpen(false)} />
+      <HouseSheet
+        open={menuOpen}
+        onClose={() => setMenuOpen(false)}
+        onSwitch={() => {
+          setMenuOpen(false);
+          setSwitchOpen(true);
+        }}
+      />
+      <SwitchHouseSheet open={switchOpen} onClose={() => setSwitchOpen(false)} />
     </main>
   );
 }

@@ -23,6 +23,7 @@ import { WelcomeHeader } from "@/components/home/WelcomeHeader";
 import { HouseSheet } from "@/components/houses/HouseSheet";
 import { InviteFriendsCard } from "@/components/houses/InviteFriendsCard";
 import { SetupHousePrompt } from "@/components/houses/SetupHousePrompt";
+import { SwitchHouseSheet } from "@/components/houses/SwitchHouseSheet";
 import {
   BalanceCardSkeleton,
   HouseHeaderSkeleton,
@@ -33,6 +34,7 @@ import {
 export default function HomeScreen() {
   const insets = useSafeAreaInsets();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [switchOpen, setSwitchOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<GroceryOverviewItem | null>(null);
 
   const { activeHouse, houses, ready, loadFailed, refetchHouses } = useActiveHouse();
@@ -167,7 +169,15 @@ export default function HomeScreen() {
         itemId={selectedItem?.id ?? null}
       />
 
-      <HouseSheet open={menuOpen} onClose={() => setMenuOpen(false)} />
+      <HouseSheet
+        open={menuOpen}
+        onClose={() => setMenuOpen(false)}
+        onSwitch={() => {
+          setMenuOpen(false);
+          setSwitchOpen(true);
+        }}
+      />
+      <SwitchHouseSheet open={switchOpen} onClose={() => setSwitchOpen(false)} />
     </View>
   );
 }

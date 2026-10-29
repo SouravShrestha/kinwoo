@@ -37,13 +37,18 @@ export function useExpense(houseId: string | null, expenseId: string | null) {
 }
 
 // Navigates only when the expense still exists; a deleted or unreachable one shows a toast.
-export function useOpenExpense(houseId: string | null) {
+// Pass houseId to the call to open one from another house, such as a notification's.
+export function useOpenExpense(defaultHouseId: string | null) {
   const queryClient = useQueryClient();
   const [pending, setPending] = useState(false);
   useBusyWhile(pending);
 
   return useCallback(
-    async (expenseId: string | null, navigate: (expenseId: string) => void) => {
+    async (
+      expenseId: string | null,
+      navigate: (expenseId: string) => void,
+      houseId: string | null = defaultHouseId,
+    ) => {
       if (!houseId || !expenseId) return toast.error(TRANSACTION_UNAVAILABLE);
       setPending(true);
       try {
@@ -59,18 +64,22 @@ export function useOpenExpense(houseId: string | null) {
       }
       navigate(expenseId);
     },
-    [houseId, queryClient],
+    [defaultHouseId, queryClient],
   );
 }
 
 // Navigates only when the payment still exists; a deleted one shows a toast.
-export function useOpenSettlement(houseId: string | null) {
+export function useOpenSettlement(defaultHouseId: string | null) {
   const queryClient = useQueryClient();
   const [pending, setPending] = useState(false);
   useBusyWhile(pending);
 
   return useCallback(
-    async (settlementId: string | null, navigate: (settlementId: string) => void) => {
+    async (
+      settlementId: string | null,
+      navigate: (settlementId: string) => void,
+      houseId: string | null = defaultHouseId,
+    ) => {
       if (!houseId || !settlementId) return toast.error(TRANSACTION_UNAVAILABLE);
       setPending(true);
       try {
@@ -89,7 +98,7 @@ export function useOpenSettlement(houseId: string | null) {
       }
       navigate(settlementId);
     },
-    [houseId, queryClient],
+    [defaultHouseId, queryClient],
   );
 }
 

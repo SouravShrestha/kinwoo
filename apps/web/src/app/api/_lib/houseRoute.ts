@@ -9,6 +9,7 @@ export { badRequest, readJsonObject } from "./route";
 const STATUS_BY_CODE: Record<HouseServiceErrorCode, number> = {
   INVALID_INPUT: 400,
   INVALID_NAME: 400,
+  INVALID_ADDRESS: 400,
   INVALID_EMAIL: 400,
   NOT_AUTHENTICATED: 401,
   FORBIDDEN: 403,

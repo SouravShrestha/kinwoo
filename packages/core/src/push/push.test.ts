@@ -6,6 +6,7 @@ import {
   isPushType,
   isWebPushToken,
   webPushToken,
+  notificationHouseId,
   notificationInboxId,
   notificationTarget,
   pushAction,
@@ -155,5 +156,16 @@ describe("push types", () => {
       "expense.created",
     ]);
     expect(withPushType(muted, "join_requested", true)).toEqual([]);
+  });
+});
+
+describe("notificationHouseId", () => {
+  it("returns a uuid and rejects anything else", () => {
+    const id = "0b6f1f0e-3c1a-4f6e-9d57-2f6f7c1a9e10";
+    expect(notificationHouseId({ houseId: id })).toBe(id);
+    for (const value of ["", "abc", `${id}?x=1`, 42, null, undefined]) {
+      expect(notificationHouseId({ houseId: value }), String(value)).toBeNull();
+    }
+    expect(notificationHouseId(null)).toBeNull();
   });
 });

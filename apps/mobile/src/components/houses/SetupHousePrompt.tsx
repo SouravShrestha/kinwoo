@@ -10,6 +10,7 @@ import { useTheme } from "@/theme/ThemeProvider";
 type SetupHousePromptProps = {
   onCreate: () => void;
   onJoin: () => void;
+  level?: boolean;
 };
 
 type ActionCardProps = {
@@ -60,7 +61,7 @@ function ActionCard({
   );
 }
 
-export function SetupHousePrompt({ onCreate, onJoin }: SetupHousePromptProps) {
+export function SetupHousePrompt({ onCreate, onJoin, level = false }: SetupHousePromptProps) {
   const { resolvedTheme } = useTheme();
 
   return (
@@ -74,7 +75,7 @@ export function SetupHousePrompt({ onCreate, onJoin }: SetupHousePromptProps) {
           background={<BuildIcon size={84} color={colors[resolvedTheme].foreground} />}
           backgroundClassName="-bottom-4 right-3"
           labelAtTop
-          className="mt-14 aspect-square"
+          className={level ? "aspect-square" : "mt-14 aspect-square"}
         />
         <ActionCard
           label={"I have\na code"}

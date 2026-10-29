@@ -1,6 +1,11 @@
 import { useAuth } from "@kinwoo/client/auth";
 import { useOpenExpense, useOpenSettlement } from "@kinwoo/client/expenses";
-import { useActiveHouse, useHouseMembers } from "@kinwoo/client/houses";
+import {
+  useActiveHouse,
+  useHouseMembers,
+  useHouseNames,
+  useSwitchToHouse,
+} from "@kinwoo/client/houses";
 import {
   useMarkAllNotificationsRead,
   useMarkNotificationRead,
@@ -50,24 +55,31 @@ export default function NotificationsScreen() {
 
   const openExpense = useOpenExpense(houseId);
   const openSettlement = useOpenSettlement(houseId);
+  const switchToHouse = useSwitchToHouse();
+  const houseNames = useHouseNames();
 
   const handleOpen = useCallback(
     (entry: GroceryActivityEntry) => {
       if (!entry.readAt) markRead(entry.id);
+      const inHouse = entry.houseId ?? houseId;
+      const inThatHouse = (navigate: (id: string) => void) => (id: string) => {
+        switchToHouse(entry.houseId);
+        navigate(id);
+      };
 
       const expenseId = activityExpenseId(entry);
       const settlementId = activitySettlementId(entry);
       if (expenseId) {
-        void openExpense(expenseId, openExpenseScreen);
+        void openExpense(expenseId, inThatHouse(openExpenseScreen), inHouse);
       } else if (settlementId) {
-        void openSettlement(settlementId, openPayment);
-      } else if (entry.type === "grocery_item.assigned") {
-        router.dismissTo("/tasks");
+        void openSettlement(settlementId, inThatHouse(openPayment), inHouse);
       } else {
-        goHome();
+        switchToHouse(entry.houseId);
+        if (entry.type === "grocery_item.assigned") router.dismissTo("/tasks");
+        else goHome();
       }
     },
-    [markRead, openExpense, openSettlement],
+    [markRead, openExpense, openSettlement, houseId, switchToHouse],
   );
 
   const hasUnread = entries?.some((entry) => !entry.readAt) ?? false;
@@ -131,6 +143,7 @@ export default function NotificationsScreen() {
         currentUserId={currentUserId}
         refreshControl={refreshControl}
         onOpenEntry={handleOpen}
+        houseNames={houseNames}
         header={header}
         empty={empty}
       />
