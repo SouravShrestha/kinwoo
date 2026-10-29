@@ -31,7 +31,7 @@ export function InviteFriendsCard({ canInvite, onPress }: InviteFriendsCardProps
       accessibilityLabel="Invite friends. Solo mode is fine, but it's better with friends"
       disabled={!canInvite}
       onPress={onPress}
-      className="mt-4 w-full flex-row items-stretch overflow-hidden rounded-lg border border-border bg-card active:opacity-80"
+      className="w-full flex-row items-stretch overflow-hidden rounded-lg border border-border bg-card active:opacity-80"
     >
       <Image
         source={inviteFriends}
@@ -39,11 +39,12 @@ export function InviteFriendsCard({ canInvite, onPress }: InviteFriendsCardProps
         contentFit="contain"
         style={IMAGE_STYLE}
       />
-      <View className="flex-1 justify-between -ml-12 gap-8 py-4 pl-2 pr-5">
-        <Text className="font-display-normal text-sm leading-5 text-foreground text-right">
+      {/* Same paddings and reserved line heights as BalanceCard, so both cards are one height. */}
+      <View className="flex-1 justify-between -ml-12 gap-4 py-6 pl-2 pr-5">
+        <Text className="min-h-10 font-display-normal text-sm leading-5 text-foreground text-right">
           Solo mode is fine, but it's better with friends
         </Text>
-        <View className="flex-row items-center justify-end gap-2">
+        <View className="min-h-7 flex-row items-center justify-end gap-2">
           <Text className="font-display-medium text-base text-foreground">Invite friends</Text>
           {canInvite ? <ArrowRightIcon size={16} color={foreground} /> : null}
         </View>

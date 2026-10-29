@@ -1,17 +1,15 @@
 import type { HouseJoinMode } from "./types";
 
-export const HOUSE_NAME_MAX_LENGTH = 60;
-export const HOUSE_ADDRESS_MAX_LENGTH = 200;
+export const HOUSE_NAME_MIN_LENGTH = 2;
+export const HOUSE_NAME_MAX_LENGTH = 40;
+export const HOUSE_ADDRESS_MIN_LENGTH = 10;
+export const HOUSE_ADDRESS_MAX_LENGTH = 120;
 export const INVITE_EMAIL_MAX_LENGTH = 254;
 
 export const HOUSE_JOIN_MODES = ["anyone", "invited"] as const satisfies readonly HouseJoinMode[];
 
-export type HouseNameError = "empty" | "too-long" | "invalid-characters";
-export type HouseNameResult = { ok: true; value: string } | { ok: false; error: HouseNameError };
-
-export type HouseOptionalTextError = "too-long" | "invalid-characters";
-export type HouseOptionalTextResult =
-  { ok: true; value: string | null } | { ok: false; error: HouseOptionalTextError };
+export type HouseTextError = "empty" | "too-short" | "too-long" | "invalid-characters";
+export type HouseTextResult = { ok: true; value: string } | { ok: false; error: HouseTextError };
 
 export type InviteEmailError = "empty" | "invalid";
 export type InviteEmailResult =
@@ -29,28 +27,24 @@ function collapse(value: string): string {
 // eslint-disable-next-line no-control-regex
 const CONTROL_CHARACTERS = /[\u0000-\u001f\u007f]/;
 
-export function validateHouseName(input: string): HouseNameResult {
-  const value = collapse(input);
+function validateHouseText(input: string | null | undefined, min: number, max: number) {
+  const value = collapse(input ?? "");
+  const length = lengthOf(value);
 
-  if (lengthOf(value) < 1) return { ok: false, error: "empty" };
-  if (lengthOf(value) > HOUSE_NAME_MAX_LENGTH) return { ok: false, error: "too-long" };
-  if (CONTROL_CHARACTERS.test(value)) return { ok: false, error: "invalid-characters" };
-
-  return { ok: true, value };
-}
-
-function validateOptionalText(input: string | null | undefined, max: number, multiline: boolean) {
-  const value = multiline ? (input ?? "").trim() : collapse(input ?? "");
-  if (value === "") return { ok: true, value: null } as const;
-
-  if (lengthOf(value) > max) return { ok: false, error: "too-long" } as const;
+  if (length < 1) return { ok: false, error: "empty" } as const;
+  if (length < min) return { ok: false, error: "too-short" } as const;
+  if (length > max) return { ok: false, error: "too-long" } as const;
   if (CONTROL_CHARACTERS.test(value)) return { ok: false, error: "invalid-characters" } as const;
 
   return { ok: true, value } as const;
 }
 
-export function validateHouseAddress(input: string | null | undefined): HouseOptionalTextResult {
-  return validateOptionalText(input, HOUSE_ADDRESS_MAX_LENGTH, false);
+export function validateHouseName(input: string): HouseTextResult {
+  return validateHouseText(input, HOUSE_NAME_MIN_LENGTH, HOUSE_NAME_MAX_LENGTH);
+}
+
+export function validateHouseAddress(input: string | null | undefined): HouseTextResult {
+  return validateHouseText(input, HOUSE_ADDRESS_MIN_LENGTH, HOUSE_ADDRESS_MAX_LENGTH);
 }
 
 export function isHouseJoinMode(value: unknown): value is HouseJoinMode {
@@ -75,19 +69,35 @@ export function inviteEmailErrorMessage(error: InviteEmailError): string {
   return error === "empty" ? "Enter an email address." : "Enter a valid email address.";
 }
 
-export function houseNameErrorMessage(error: HouseNameError): string {
+function houseTextErrorMessage(
+  error: HouseTextError,
+  subject: string,
+  min: number,
+  max: number,
+): string {
   switch (error) {
     case "empty":
-      return "Give your house a name.";
+      return `Enter your house ${subject}.`;
+    case "too-short":
+      return `Use at least ${min} characters.`;
     case "too-long":
-      return `Use ${HOUSE_NAME_MAX_LENGTH} characters or fewer.`;
+      return `Use ${max} characters or fewer.`;
     case "invalid-characters":
-      return "That name contains characters we can't use.";
+      return `That ${subject} contains characters we can't use.`;
   }
 }
 
-export function houseAddressErrorMessage(error: HouseOptionalTextError): string {
-  return error === "too-long"
-    ? `Use ${HOUSE_ADDRESS_MAX_LENGTH} characters or fewer.`
-    : "That address contains characters we can't use.";
+export function houseNameErrorMessage(error: HouseTextError): string {
+  return error === "empty"
+    ? "Give your house a name."
+    : houseTextErrorMessage(error, "name", HOUSE_NAME_MIN_LENGTH, HOUSE_NAME_MAX_LENGTH);
+}
+
+export function houseAddressErrorMessage(error: HouseTextError): string {
+  return houseTextErrorMessage(
+    error,
+    "address",
+    HOUSE_ADDRESS_MIN_LENGTH,
+    HOUSE_ADDRESS_MAX_LENGTH,
+  );
 }

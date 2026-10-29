@@ -23,11 +23,13 @@ export function HouseSheet({
   onClose,
   initialView,
   onLeft,
+  onSwitch,
 }: {
   open: boolean;
   onClose: () => void;
   initialView?: HouseSheetView;
   onLeft?: () => void;
+  onSwitch?: () => void;
 }) {
   const { activeHouse } = useActiveHouse();
 
@@ -44,6 +46,7 @@ export function HouseSheet({
           initialView={initialView}
           onClose={onClose}
           onLeft={onLeft}
+          onSwitch={onSwitch}
         />
       ) : null}
     </BottomSheet>
@@ -56,11 +59,13 @@ function HouseSheetContent({
   initialView,
   onClose,
   onLeft,
+  onSwitch,
 }: {
   membership: HouseMembership;
   initialView?: HouseSheetView;
   onClose: () => void;
   onLeft?: () => void;
+  onSwitch?: () => void;
 }) {
   const nav = useHouseSheetNav(initialView);
   const confirm = useMemberConfirm(membership.house.id, {
@@ -109,7 +114,14 @@ function HouseSheetContent({
       <SettingsView membership={membership} confirm={confirm} onBack={onBack} onSaved={onClose} />
     );
   } else {
-    content = <HouseMenuView membership={membership} onNavigate={nav.push} onClose={onClose} />;
+    content = (
+      <HouseMenuView
+        membership={membership}
+        onNavigate={nav.push}
+        onClose={onClose}
+        onSwitch={onSwitch}
+      />
+    );
   }
 
   return (

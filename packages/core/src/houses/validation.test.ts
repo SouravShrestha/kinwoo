@@ -2,7 +2,9 @@ import { describe, expect, it } from "vitest";
 
 import {
   HOUSE_ADDRESS_MAX_LENGTH,
+  HOUSE_ADDRESS_MIN_LENGTH,
   HOUSE_NAME_MAX_LENGTH,
+  HOUSE_NAME_MIN_LENGTH,
   validateHouseAddress,
   INVITE_EMAIL_MAX_LENGTH,
   isHouseJoinMode,
@@ -18,6 +20,14 @@ describe("validateHouseName", () => {
   it("rejects empty and whitespace-only names", () => {
     expect(validateHouseName("")).toEqual({ ok: false, error: "empty" });
     expect(validateHouseName("   ")).toEqual({ ok: false, error: "empty" });
+  });
+
+  it("rejects a name below the minimum length", () => {
+    expect(validateHouseName("a".repeat(HOUSE_NAME_MIN_LENGTH - 1))).toEqual({
+      ok: false,
+      error: "too-short",
+    });
+    expect(validateHouseName("a".repeat(HOUSE_NAME_MIN_LENGTH)).ok).toBe(true);
   });
 
   it("accepts the maximum length and rejects one more", () => {
@@ -38,11 +48,17 @@ describe("validateHouseName", () => {
 });
 
 describe("validateHouseAddress", () => {
-  it("treats blank input as no address", () => {
-    expect(validateHouseAddress(null)).toEqual({ ok: true, value: null });
+  it("is required", () => {
+    expect(validateHouseAddress(null)).toEqual({ ok: false, error: "empty" });
+    expect(validateHouseAddress("   ")).toEqual({ ok: false, error: "empty" });
   });
 
-  it("enforces the maximum length", () => {
+  it("enforces the minimum and maximum length", () => {
+    expect(validateHouseAddress("a".repeat(HOUSE_ADDRESS_MIN_LENGTH - 1))).toEqual({
+      ok: false,
+      error: "too-short",
+    });
+    expect(validateHouseAddress("a".repeat(HOUSE_ADDRESS_MIN_LENGTH)).ok).toBe(true);
     expect(validateHouseAddress("a".repeat(HOUSE_ADDRESS_MAX_LENGTH)).ok).toBe(true);
     expect(validateHouseAddress("a".repeat(HOUSE_ADDRESS_MAX_LENGTH + 1))).toEqual({
       ok: false,

@@ -51,7 +51,8 @@ select tests.create_user('00000000-0000-4000-8000-0000000000c3', 'outsider@test.
 select tests.create_user('00000000-0000-4000-8000-0000000000c4', 'admin-b@test.local');
 
 select tests.as_user('00000000-0000-4000-8000-0000000000c1');
-select set_config('tests.house_a', (public.create_house('House A')).id::text, true);
+select set_config('tests.house_a', (public.create_house('House A', '12 Test Street, Bengaluru')).id::text, true);
+update public.houses set join_mode = 'anyone' where id = current_setting('tests.house_a')::uuid;
 select set_config('tests.code_a',
   (select code from public.house_invites where house_id = current_setting('tests.house_a')::uuid),
   true);
@@ -61,7 +62,7 @@ select is(public.join_house(current_setting('tests.code_a'))->>'status', 'joined
   'member joins house A');
 
 select tests.as_user('00000000-0000-4000-8000-0000000000c4');
-select set_config('tests.house_b', (public.create_house('House B')).id::text, true);
+select set_config('tests.house_b', (public.create_house('House B', '12 Test Street, Bengaluru')).id::text, true);
 
 -- Outsider with no house
 select tests.as_user('00000000-0000-4000-8000-0000000000c3');
@@ -138,13 +139,13 @@ select throws_ok($$update public.houses set member_limit = 50$$,
 select is((select count(*) from public.house_invites), 1::bigint, 'admin reads invites');
 
 select tests.as_anon();
-select throws_ok($$select public.create_house('Nope')$$,
+select throws_ok($$select public.create_house('Nope', '12 Test Street, Bengaluru')$$,
   '42501', null, 'anon cannot call create_house');
 select throws_ok($$select * from public.houses$$,
   '42501', null, 'anon cannot read houses');
 
 select tests.as_nobody();
-select throws_ok($$select public.create_house('Nope')$$,
+select throws_ok($$select public.create_house('Nope', '12 Test Street, Bengaluru')$$,
   'P0001', 'NOT_AUTHENTICATED', 'create_house requires a user');
 select throws_ok($$select public.join_house('ABCDEF')$$,
   'P0001', 'NOT_AUTHENTICATED', 'join_house requires a user');

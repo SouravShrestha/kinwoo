@@ -158,7 +158,11 @@ Deno.serve(async (request) => {
           to,
           title: message.title,
           body: message.body,
-          data: { url: message.url, notificationId: idForToken.get(to) },
+          data: {
+            url: message.url,
+            notificationId: idForToken.get(to),
+            houseId: activity.house_id,
+          },
           channelId: CHANNEL_ID,
           priority: "high",
           ttl: TTL_SECONDS,
@@ -180,7 +184,7 @@ Deno.serve(async (request) => {
           if (!subscription) return { token, status: 410 };
           const status = await sendWebPush(
             subscription,
-            { ...message, notificationId: idForToken.get(token) },
+            { ...message, notificationId: idForToken.get(token), houseId: activity.house_id },
             vapid,
             TTL_SECONDS,
           );

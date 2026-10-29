@@ -51,14 +51,20 @@ self.addEventListener("push", (event) => {
     self.registration.showNotification(data.title, {
       body: data.body,
       icon: "/icons/icon-192.png",
-      data: { url: data.url, notificationId: data.notificationId },
+      data: { url: data.url, notificationId: data.notificationId, houseId: data.houseId },
     }),
   );
 });
 
+function withHouse(path, houseId) {
+  const target = new URL(path, self.location.origin);
+  target.searchParams.set("house", houseId);
+  return target.pathname + target.search;
+}
+
 // An open window handles the tap itself (read mark and navigation share the app's cache). With
 // none open, the app is opened on the target and the inbox row is marked read from here.
-async function openFromNotification({ url, notificationId }) {
+async function openFromNotification({ url, notificationId, houseId }) {
   const target = new URL(url ?? "/", self.location.origin);
   const path = target.origin === self.location.origin ? target.pathname + target.search : "/";
 
@@ -66,12 +72,13 @@ async function openFromNotification({ url, notificationId }) {
   if (windows.length > 0) {
     const [client] = windows;
     await client.focus();
-    client.postMessage({ type: "notification-click", url: path, notificationId });
+    client.postMessage({ type: "notification-click", url: path, notificationId, houseId });
     return;
   }
 
   await Promise.all([
-    self.clients.openWindow(path),
+    // The app reads ?house= on start to switch to the house the push is about.
+    self.clients.openWindow(houseId ? withHouse(path, houseId) : path),
     notificationId
       ? fetch(`/api/notifications/${encodeURIComponent(notificationId)}`, {
           method: "PATCH",

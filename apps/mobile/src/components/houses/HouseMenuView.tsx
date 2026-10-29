@@ -1,46 +1,46 @@
-import { useActiveHouse, useHouseMembers, type HouseSheetView } from "@kinwoo/client/houses";
+import { useHouseMembers, type HouseSheetView } from "@kinwoo/client/houses";
 import { toast } from "@kinwoo/client/toast";
 import {
   INVITE_ACTION_TITLE,
   MEMBERS_SHEET_TITLE,
   SETTINGS_SHEET_TITLE,
-  canAddHouse,
+  SWITCH_HOUSE_TITLE,
   memberCountLabel,
   type HouseMembership,
 } from "@kinwoo/core/houses";
 import { TOAST_MESSAGES } from "@kinwoo/core/toast";
-import { HousePinIcon, HouseSettingsIcon, InviteIcon, MemberIcon } from "@kinwoo/icons/native";
+import {
+  HousePinIcon,
+  HouseSettingsIcon,
+  InviteIcon,
+  MemberIcon,
+  SwitchHouseIcon,
+} from "@kinwoo/icons/native";
 import { colors } from "@kinwoo/tokens/native";
-import { router, type Href } from "expo-router";
+import { router } from "expo-router";
 import { Text, View } from "react-native";
 
-import { Button } from "../Button";
 import { Skeleton } from "@/components/skeleton/Skeleton";
 import { useTheme } from "@/theme/ThemeProvider";
 import { AvatarStack } from "./AvatarStack";
 import { MenuCard } from "./MenuCard";
-import { ListRow } from "./Rows";
 
 export function HouseMenuView({
   membership,
   onNavigate,
   onClose,
+  onSwitch,
 }: {
   membership: HouseMembership;
   onNavigate: (view: HouseSheetView) => void;
   onClose: () => void;
+  onSwitch?: () => void;
 }) {
   const { resolvedTheme } = useTheme();
   const palette = colors[resolvedTheme];
-  const { houses, activeHouseId, setActiveHouse } = useActiveHouse();
   const { house } = membership;
   const members = useHouseMembers(house.id);
   const isAdmin = membership.role === "admin";
-
-  const go = (href: Href) => {
-    onClose();
-    router.push(href);
-  };
 
   return (
     <View>
@@ -60,31 +60,6 @@ export function HouseMenuView({
           </Text>
         ) : null}
       </View>
-
-      {houses.length > 1 ? (
-        <View className="mt-4">
-          {houses.map(({ house: option, role }) => {
-            const active = option.id === activeHouseId;
-
-            return (
-              <ListRow
-                key={option.id}
-                leading={<HousePinIcon size={28} color={palette.foreground} />}
-                title={option.name}
-                subtitle={role === "admin" ? "Admin" : "Member"}
-                accessibilityLabel={
-                  active ? `${option.name}, current house` : `Switch to ${option.name}`
-                }
-                trailing={active ? <Text className="text-base text-foreground">✓</Text> : null}
-                onPress={() => {
-                  setActiveHouse(option.id);
-                  onClose();
-                }}
-              />
-            );
-          })}
-        </View>
-      ) : null}
 
       <View className="mt-8 gap-3">
         <MenuCard
@@ -110,30 +85,33 @@ export function HouseMenuView({
         />
         <View className="flex-row gap-3">
           <MenuCard
-            tall
+            size="tall"
             icon={<InviteIcon size={14} color={palette.foreground} />}
             title={INVITE_ACTION_TITLE}
             onPress={() => {
-              if (isAdmin) return go("/house/invite");
               onClose();
+              if (isAdmin) return router.push("/house/invite");
               toast.warning(TOAST_MESSAGES.inviteAdminOnly);
             }}
           />
-          <MenuCard
-            tall
-            icon={<HouseSettingsIcon size={15} color={palette.foreground} />}
-            title={SETTINGS_SHEET_TITLE}
-            onPress={() => onNavigate({ name: "settings" })}
-          />
+          <View className="flex-1 gap-3">
+            <MenuCard
+              size="half"
+              icon={<HouseSettingsIcon size={15} color={palette.foreground} />}
+              title={SETTINGS_SHEET_TITLE}
+              onPress={() => onNavigate({ name: "settings" })}
+            />
+            {onSwitch ? (
+              <MenuCard
+                size="half"
+                icon={<SwitchHouseIcon size={15} color={palette.foreground} />}
+                title={SWITCH_HOUSE_TITLE.replace(" ", "\n")}
+                onPress={onSwitch}
+              />
+            ) : null}
+          </View>
         </View>
       </View>
-
-      {canAddHouse(houses.length) ? (
-        <View className="mt-4 gap-3">
-          <Button label="Create a house" onPress={() => go("/house/create")} />
-          <Button label="Join with a code" variant="outline" onPress={() => go("/house/join")} />
-        </View>
-      ) : null}
     </View>
   );
 }

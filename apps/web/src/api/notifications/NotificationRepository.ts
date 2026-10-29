@@ -5,7 +5,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { INotificationRepository } from "./INotificationRepository";
 
 const COLUMNS =
-  "id, created_at, read_at, activity_log!inner(actor_id, type, entity_type, entity_id, payload, created_at, profiles!activity_log_actor_id_fkey(display_name))";
+  "id, created_at, read_at, activity_log!inner(house_id, actor_id, type, entity_type, entity_id, payload, created_at, profiles!activity_log_actor_id_fkey(display_name))";
 
 // Takes the session-scoped client: RLS and the RPCs read the caller from the JWT, so a user can
 // only ever see or mark their own notifications.
@@ -32,6 +32,7 @@ export class NotificationRepository implements INotificationRepository {
       const activity = row.activity_log;
       return {
         id: row.id,
+        houseId: activity.house_id,
         actorId: activity.actor_id,
         actorName: activity.profiles?.display_name ?? null,
         type: activity.type,

@@ -6,6 +6,7 @@ import {
   formatActivityParts,
   formatActivityTimestamp,
   groupActivityByDay,
+  withHouseName,
   type GroceryActivityEntry,
 } from "@kinwoo/core/grocery";
 import type { HouseMember } from "@kinwoo/core/houses";
@@ -103,6 +104,7 @@ function DayEntries({
   onOpenExpense,
   onOpenPayment,
   onOpenEntry,
+  houseNames,
 }: {
   entries: GroceryActivityEntry[];
   membersById: Map<string, HouseMember>;
@@ -110,6 +112,7 @@ function DayEntries({
   onOpenExpense?: (expenseId: string | null) => void;
   onOpenPayment?: (settlementId: string | null) => void;
   onOpenEntry?: (entry: GroceryActivityEntry) => void;
+  houseNames?: Map<string, string>;
 }) {
   return (
     <View className="px-4">
@@ -144,7 +147,7 @@ function DayEntries({
               </Text>
               <ActivityDetail entry={entry} currentUserId={currentUserId} />
               <Text className="mt-3 font-display-normal text-xs text-muted-foreground">
-                {formatActivityTimestamp(entry.createdAt)}
+                {withHouseName(formatActivityTimestamp(entry.createdAt), entry, houseNames)}
               </Text>
             </View>
           </>
@@ -197,6 +200,7 @@ export const ActivityList = memo(function ActivityList({
   onOpenExpense,
   onOpenPayment,
   onOpenEntry,
+  houseNames,
 }: {
   entries: GroceryActivityEntry[];
   members: HouseMember[];
@@ -209,6 +213,8 @@ export const ActivityList = memo(function ActivityList({
   onOpenExpense?: (expenseId: string | null) => void;
   onOpenPayment?: (settlementId: string | null) => void;
   onOpenEntry?: (entry: GroceryActivityEntry) => void;
+  // Adds the house name after the time, for lists that mix houses.
+  houseNames?: Map<string, string>;
 }) {
   const insets = useSafeAreaInsets();
   const membersById = useMemo(() => new Map(members.map((m) => [m.userId, m])), [members]);
@@ -232,9 +238,10 @@ export const ActivityList = memo(function ActivityList({
         onOpenExpense={onOpenExpense}
         onOpenPayment={onOpenPayment}
         onOpenEntry={onOpenEntry}
+        houseNames={houseNames}
       />
     ),
-    [membersById, currentUserId, onOpenExpense, onOpenPayment, onOpenEntry],
+    [membersById, currentUserId, onOpenExpense, onOpenPayment, onOpenEntry, houseNames],
   );
 
   return (

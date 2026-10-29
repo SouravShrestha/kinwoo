@@ -23,10 +23,12 @@ export function TopLoader() {
       progress.value = withTiming(0.9, { duration: 5000, easing: Easing.out(Easing.cubic) });
       return;
     }
-    if (opacity.value === 0) return;
-    progress.value = withTiming(1, { duration: FINISH_MS }, () => {
-      opacity.value = withTiming(0, { duration: FINISH_MS }, () => {
-        progress.value = 0;
+    // No early return on `opacity.value === 0`: the JS-side read lags the UI thread, so a busy
+    // blip (Android's openBrowserAsync resolves at once) skipped the finish and left the bar up.
+    progress.value = withTiming(1, { duration: FINISH_MS }, (finished) => {
+      if (!finished) return;
+      opacity.value = withTiming(0, { duration: FINISH_MS }, (done) => {
+        if (done) progress.value = 0;
       });
     });
   }, [busy, opacity, progress]);

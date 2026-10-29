@@ -54,13 +54,13 @@ describe("createHouse", () => {
 
     const result = await new HousesService(repository).createHouse("u1", {
       name: "  Sourav   G4 ",
-      address: " 12 Street ",
+      address: " 12 Street, Bengaluru ",
     });
 
     expect(result).toEqual({ ok: true, data: house });
     expect(repository.createHouse).toHaveBeenCalledWith({
       name: "Sourav G4",
-      address: "12 Street",
+      address: "12 Street, Bengaluru",
     });
   });
 
@@ -78,12 +78,15 @@ describe("createHouse", () => {
       createHouse: vi.fn().mockRejectedValue(new HouseRepositoryError("x", "HOUSE_LIMIT_REACHED")),
     });
 
-    const result = await new HousesService(repository).createHouse("u1", { name: "Flat" });
+    const result = await new HousesService(repository).createHouse("u1", {
+      name: "Flat",
+      address: "12 Street, Bengaluru",
+    });
 
     expect(result).toEqual({
       ok: false,
       code: "HOUSE_LIMIT_REACHED",
-      message: "You can only be in one house for now. Leave your current house first.",
+      message: "You can be in up to 3 houses. Leave one first.",
     });
   });
 
@@ -92,19 +95,25 @@ describe("createHouse", () => {
       createHouse: vi.fn().mockRejectedValue(new Error("connection reset")),
     });
 
-    const result = await new HousesService(repository).createHouse("u1", { name: "Flat" });
+    const result = await new HousesService(repository).createHouse("u1", {
+      name: "Flat",
+      address: "12 Street, Bengaluru",
+    });
 
     expect(result).toMatchObject({ ok: false, code: "UNAVAILABLE" });
   });
 });
 
 describe("createHouse house limit", () => {
-  it("refuses a second house without writing", async () => {
+  it("refuses a fourth house without writing", async () => {
     const repository = fakeRepository({
-      listMemberships: vi.fn().mockResolvedValue([memberOf("h1")]),
+      listMemberships: vi.fn().mockResolvedValue([memberOf("h1"), memberOf("h2"), memberOf("h3")]),
     });
 
-    const result = await new HousesService(repository).createHouse("u1", { name: "Another" });
+    const result = await new HousesService(repository).createHouse("u1", {
+      name: "Another",
+      address: "12 Street, Bengaluru",
+    });
 
     expect(result).toMatchObject({ ok: false, code: "HOUSE_LIMIT_REACHED" });
     expect(repository.createHouse).not.toHaveBeenCalled();
@@ -124,12 +133,13 @@ describe("updateHouse", () => {
     expect(result).toMatchObject({ ok: false, code: "INVALID_INPUT" });
   });
 
-  it("clears an optional field when given a blank value", async () => {
+  it("rejects a blank address without calling the repository", async () => {
     const repository = fakeRepository();
 
-    await new HousesService(repository).updateHouse("u1", "h1", { address: "" });
+    const result = await new HousesService(repository).updateHouse("u1", "h1", { address: "" });
 
-    expect(repository.updateHouse).toHaveBeenCalledWith("h1", { address: null });
+    expect(result).toMatchObject({ ok: false, code: "INVALID_INPUT" });
+    expect(repository.updateHouse).not.toHaveBeenCalled();
   });
 
   it("tells a non-admin member apart from a stranger when no row changes", async () => {
@@ -139,12 +149,14 @@ describe("updateHouse", () => {
     });
     const asStranger = fakeRepository({ updateHouse: vi.fn().mockResolvedValue(null) });
 
-    expect(await new HousesService(asMember).updateHouse("u1", "h1", { name: "X" })).toMatchObject({
-      ok: false,
-      code: "FORBIDDEN",
-    });
+    expect(await new HousesService(asMember).updateHouse("u1", "h1", { name: "Xy" })).toMatchObject(
+      {
+        ok: false,
+        code: "FORBIDDEN",
+      },
+    );
     expect(
-      await new HousesService(asStranger).updateHouse("u1", "h1", { name: "X" }),
+      await new HousesService(asStranger).updateHouse("u1", "h1", { name: "Xy" }),
     ).toMatchObject({ ok: false, code: "NOT_FOUND" });
   });
 });

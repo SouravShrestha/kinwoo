@@ -31,7 +31,8 @@ select tests.create_user('00000000-0000-4000-8000-0000000000e3', 'other@test.loc
 select tests.create_user('00000000-0000-4000-8000-0000000000e4', 'outsider@test.local');
 
 select tests.as_user('00000000-0000-4000-8000-0000000000e1');
-select set_config('tests.house', (public.create_house('Flat')).id::text, true);
+select set_config('tests.house', (public.create_house('Flat', '12 Test Street, Bengaluru')).id::text, true);
+update public.houses set join_mode = 'anyone' where id = tests.id('house');
 select set_config('tests.code',
   (select code from public.house_invites where house_id = tests.id('house')), true);
 select set_config('tests.list',

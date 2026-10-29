@@ -15,7 +15,9 @@ Roles: `admin` and `member`. Joiners are always plain members. Money is integer 
 
 ## Houses and members
 
-- A user belongs to one house for now (`max_houses_per_user()` = 1, `MAX_HOUSES_PER_USER` in core). Raise both to allow more.
+- A user belongs to at most 3 houses (`max_houses_per_user()` and `MAX_HOUSES_PER_USER` in core, `20261221000000`). Create, preview, join and approving a join request all check it; approval raises `HOUSE_LIMIT_REACHED` and leaves the request pending.
+- The chosen house is per user and per device. Everything is scoped to it except Profile and Notifications. Switching happens in the Switch house sheet opened from the house menu; tapping a notification or push from another house switches to it first.
+- A house name is 2 to 40 characters and the address is required, 10 to 120 (`create_house`, plus a trigger on name and address changes, `20261221000001`; houses made earlier keep their values until edited). Errors are `INVALID_NAME` and `INVALID_ADDRESS`.
 - `member_limit` is 15 per house. Joining a full house returns `full`.
 - Memberships are never hard-deleted. Former members render as "Former member".
 - Only admins change roles, remove members and edit house settings. The last admin cannot leave or be demoted (`LAST_ADMIN`). A sole member leaving soft-deletes the house.
@@ -27,7 +29,7 @@ Roles: `admin` and `member`. Joiners are always plain members. Money is integer 
 ## Invites
 
 - One fixed code per house. Admins can rotate it (`rotate_invite_code`); there is no expiry or use limit.
-- `join_mode` decides who may redeem: anyone, or only confirmed emails on the admin's allowlist. It is read at redemption time.
+- `join_mode` decides who may redeem: anyone, or only confirmed emails on the admin's allowlist. It is read at redemption time. New houses start `invited` (private) (`20261222000000`; existing houses keep their setting).
 - Only admins see invites and the allowlist.
 - A member who left on their own rejoins directly. A member an admin removed always waits for admin approval.
 - 30 invite attempts per 10 minutes per user (`RATE_LIMITED`).

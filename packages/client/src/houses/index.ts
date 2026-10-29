@@ -20,3 +20,4 @@ export * from "./query-client";
 export * from "./realtime";
 export * from "./require-house";
 export * from "./storage";
+export * from "./switch-to-house";

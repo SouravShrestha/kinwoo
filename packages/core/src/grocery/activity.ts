@@ -686,3 +686,12 @@ export function formatTimelineTime(dateString: string, now: number = Date.now())
     ? formatRelativeTime(dateString, now)
     : formatFullDate(time);
 }
+
+export function withHouseName(
+  text: string,
+  entry: Pick<GroceryActivityEntry, "houseId">,
+  houseNames: ReadonlyMap<string, string> | undefined,
+): string {
+  const name = entry.houseId ? houseNames?.get(entry.houseId) : undefined;
+  return name ? `${text} · ${name}` : text;
+}

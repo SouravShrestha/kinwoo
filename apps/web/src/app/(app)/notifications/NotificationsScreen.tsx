@@ -2,7 +2,12 @@
 
 import { useAuth } from "@kinwoo/client/auth";
 import { useOpenExpense, useOpenSettlement } from "@kinwoo/client/expenses";
-import { useActiveHouse, useHouseMembers } from "@kinwoo/client/houses";
+import {
+  useActiveHouse,
+  useHouseMembers,
+  useHouseNames,
+  useSwitchToHouse,
+} from "@kinwoo/client/houses";
 import {
   useMarkAllNotificationsRead,
   useMarkNotificationRead,
@@ -38,22 +43,29 @@ export function NotificationsScreen() {
 
   const openExpense = useOpenExpense(houseId);
   const openSettlement = useOpenSettlement(houseId);
+  const switchToHouse = useSwitchToHouse();
+  const houseNames = useHouseNames();
 
   const handleOpen = useCallback(
     (entry: GroceryActivityEntry) => {
       if (!entry.readAt) markRead(entry.id);
+      const inHouse = entry.houseId ?? houseId;
+      const go = (path: string) => {
+        switchToHouse(entry.houseId);
+        router.push(path);
+      };
 
       const expenseId = activityExpenseId(entry);
       const settlementId = activitySettlementId(entry);
       if (expenseId) {
-        void openExpense(expenseId, (id) => router.push(expensePath(id)));
+        void openExpense(expenseId, (id) => go(expensePath(id)), inHouse);
       } else if (settlementId) {
-        void openSettlement(settlementId, (id) => router.push(paymentPath(id)));
+        void openSettlement(settlementId, (id) => go(paymentPath(id)), inHouse);
       } else {
-        router.push(entry.type === "grocery_item.assigned" ? "/tasks" : "/");
+        go(entry.type === "grocery_item.assigned" ? "/tasks" : "/");
       }
     },
-    [markRead, openExpense, openSettlement, router],
+    [markRead, openExpense, openSettlement, router, houseId, switchToHouse],
   );
 
   const hasUnread = entries?.some((entry) => !entry.readAt) ?? false;
@@ -90,6 +102,7 @@ export function NotificationsScreen() {
             members={members ?? []}
             currentUserId={currentUserId}
             onOpenEntry={handleOpen}
+            houseNames={houseNames}
           />
         )}
       </div>

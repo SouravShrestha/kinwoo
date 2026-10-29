@@ -174,6 +174,8 @@ export type GroceryActivityEntry = {
   payload: Record<string, unknown>;
   createdAt: string;
   readAt?: string | null;
+  // Set on notifications only, which span every house the person is in.
+  houseId?: string;
 };
 
 export type GroceryActivityPage = {
