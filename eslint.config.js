@@ -25,6 +25,7 @@ export default tseslint.config(
       "**/next-env.d.ts",
       "**/android/**",
       "**/ios/**",
+      "brag-output/**",
       "packages/tokens/generated/**",
       "packages/core/src/database.generated.ts",
     ],

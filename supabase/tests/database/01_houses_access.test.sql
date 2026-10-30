@@ -45,6 +45,8 @@ begin
   perform set_config('role', 'anon', true);
 end $$;
 
+grant execute on all functions in schema tests to public;
+
 select tests.create_user('00000000-0000-4000-8000-0000000000c1', 'admin-a@test.local');
 select tests.create_user('00000000-0000-4000-8000-0000000000c2', 'member-a@test.local');
 select tests.create_user('00000000-0000-4000-8000-0000000000c3', 'outsider@test.local');

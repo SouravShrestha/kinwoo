@@ -122,7 +122,7 @@ export function ProfileProvider({ children }: { children: ReactNode }) {
       if (!userId) throw new Error("Not signed in.");
       const uploaded = await putAvatar(client, userId, file, id);
       try {
-        await setAvatar(uploaded.url);
+        await setAvatar(uploaded.path);
       } catch (cause) {
         void pruneAvatars(client, userId, ownUploadPath(profile?.avatarUrl ?? null, userId));
         throw cause;

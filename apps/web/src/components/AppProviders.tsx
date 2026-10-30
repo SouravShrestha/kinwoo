@@ -16,6 +16,7 @@ import { DoubleClickGuard } from "./DoubleClickGuard";
 import { FontScale } from "./FontScale";
 import { HouseGate } from "./HouseGate";
 import { InstallPromoSheet } from "./InstallPromoSheet";
+import { OfflineNavigationGuard } from "./OfflineNavigationGuard";
 import { PushPromoSheet } from "./PushPromoSheet";
 import { PushRegistration } from "./PushRegistration";
 import { Toaster } from "./Toaster";
@@ -62,6 +63,7 @@ export function AppProviders({ children }: { children: ReactNode }) {
           <GroceryRealtimeGate />
           <TopLoader />
           <Toaster />
+          <OfflineNavigationGuard />
           <DoubleClickGuard />
           <FontScale />
           {children}

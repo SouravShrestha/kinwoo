@@ -2,7 +2,7 @@ import type { Database } from "@kinwoo/core/db";
 import { parseExpenseRpcError, type ExpenseParts } from "@kinwoo/core/expenses";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
-import { toPublicAvatarUrl } from "../avatars/avatarUrls";
+import { toAvatarUrl } from "../avatars/avatarUrls";
 import {
   ExpensesRepositoryError,
   type Expense,
@@ -97,16 +97,16 @@ function rpcArgs(input: ExpenseInput) {
 const SETTLEMENT_COLUMNS =
   "id, house_id, payer_id, payee_id, amount_paise, created_by, created_at, payer:profiles!payer_id(display_name, avatar_url), payee:profiles!payee_id(display_name, avatar_url)";
 
-function toSettlement(client: SupabaseClient<Database>, row: any): Settlement {
+async function toSettlement(client: SupabaseClient<Database>, row: any): Promise<Settlement> {
   return {
     id: row.id,
     houseId: row.house_id,
     payerId: row.payer_id,
     payerName: one<any>(row.payer)?.display_name ?? null,
-    payerAvatarUrl: toPublicAvatarUrl(client, one<any>(row.payer)?.avatar_url ?? null),
+    payerAvatarUrl: await toAvatarUrl(client, one<any>(row.payer)?.avatar_url ?? null),
     payeeId: row.payee_id,
     payeeName: one<any>(row.payee)?.display_name ?? null,
-    payeeAvatarUrl: toPublicAvatarUrl(client, one<any>(row.payee)?.avatar_url ?? null),
+    payeeAvatarUrl: await toAvatarUrl(client, one<any>(row.payee)?.avatar_url ?? null),
     amountPaise: row.amount_paise,
     createdBy: row.created_by,
     createdAt: row.created_at,
@@ -184,12 +184,14 @@ export class ExpensesRepository implements IExpensesRepository {
     const { data, error } = await this.client.rpc("house_balances", { p_house_id: houseId });
     if (error) fail(error);
 
-    const pairs = (data ?? []).map((row) => ({
-      userId: row.user_id,
-      name: row.display_name ?? null,
-      avatarUrl: toPublicAvatarUrl(this.client, row.avatar_url),
-      netPaise: Number(row.net_paise),
-    }));
+    const pairs = await Promise.all(
+      (data ?? []).map(async (row) => ({
+        userId: row.user_id,
+        name: row.display_name ?? null,
+        avatarUrl: await toAvatarUrl(this.client, row.avatar_url),
+        netPaise: Number(row.net_paise),
+      })),
+    );
     return { netPaise: pairs.reduce((sum, pair) => sum + pair.netPaise, 0), pairs };
   }
 
@@ -236,7 +238,7 @@ export class ExpensesRepository implements IExpensesRepository {
       .order("id", { ascending: false })
       .limit(limit);
     if (error) fail(error);
-    return (data ?? []).map((row) => toSettlement(this.client, row));
+    return Promise.all((data ?? []).map((row) => toSettlement(this.client, row)));
   }
 
   async getTotals(houseId: string): Promise<MonthTotal[]> {
@@ -252,12 +254,14 @@ export class ExpensesRepository implements IExpensesRepository {
   async getMemberNets(houseId: string): Promise<MemberNet[]> {
     const { data, error } = await this.client.rpc("house_member_nets", { p_house_id: houseId });
     if (error) fail(error);
-    return (data ?? []).map((row) => ({
-      userId: row.user_id,
-      name: row.display_name ?? null,
-      avatarUrl: toPublicAvatarUrl(this.client, row.avatar_url),
-      netPaise: Number(row.net_paise),
-      isSelf: row.is_self,
-    }));
+    return Promise.all(
+      (data ?? []).map(async (row) => ({
+        userId: row.user_id,
+        name: row.display_name ?? null,
+        avatarUrl: await toAvatarUrl(this.client, row.avatar_url),
+        netPaise: Number(row.net_paise),
+        isSelf: row.is_self,
+      })),
+    );
   }
 }

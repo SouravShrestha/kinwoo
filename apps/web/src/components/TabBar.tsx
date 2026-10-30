@@ -13,11 +13,14 @@ import {
   type WebIconProps,
 } from "@kinwoo/icons";
 import { rejectHouseRequired, useHouseAccess } from "@kinwoo/client/houses";
+import { toast } from "@kinwoo/client/toast";
+import { TOAST_MESSAGES } from "@kinwoo/core/toast";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState, type ComponentType } from "react";
 
 import { cn } from "@/lib/utils";
+import { isOffline } from "./OfflineNavigationGuard";
 
 const ICONS: Record<
   TabKey,
@@ -61,6 +64,12 @@ export function TabBar() {
                 href={tab.href}
                 prefetch
                 onClick={(event) => {
+                  if (isOffline()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    toast.warning(TOAST_MESSAGES.offline);
+                    return;
+                  }
                   if (!hasNoHouse || !tab.requiresHouse) return;
                   event.preventDefault();
                   rejectHouseRequired(pathname, () => router.replace("/"));
