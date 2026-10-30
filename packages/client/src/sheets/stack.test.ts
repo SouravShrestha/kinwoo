@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from "vitest";
 
-import { isTop, push, remove, reset } from "./stack";
+import { closeAll, isTop, push, remove, reset } from "./stack";
 
 beforeEach(() => reset());
 
@@ -61,5 +61,13 @@ describe("the sheet stack", () => {
     remove(Symbol("other"));
 
     expect(isTop(a)).toBe(true);
+  });
+  it("closes only sheets that registered a close callback, topmost first", () => {
+    const order: string[] = [];
+    push(Symbol("a"), () => order.push("a"));
+    push(Symbol("locked"));
+    push(Symbol("b"), () => order.push("b"));
+    closeAll();
+    expect(order).toEqual(["b", "a"]);
   });
 });

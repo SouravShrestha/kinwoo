@@ -1,6 +1,7 @@
 import type { GroceryActivityEntry } from "@kinwoo/core/grocery";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
+import { invalidateWhileOnline } from "../houses/query-client";
 import { fetchNotifications, markAllNotificationsRead, markNotificationRead } from "./api";
 
 export const notificationsKey = (userId: string) => ["notifications", userId] as const;
@@ -41,7 +42,7 @@ function useMarkRead<Variables>(
     onError: (_error, _variables, context) => {
       queryClient.setQueryData(queryKey, context?.previous);
     },
-    onSettled: () => queryClient.invalidateQueries({ queryKey }),
+    onSettled: () => invalidateWhileOnline(queryClient, { queryKey }),
   });
 }
 

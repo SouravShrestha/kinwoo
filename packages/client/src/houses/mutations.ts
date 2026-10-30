@@ -21,6 +21,7 @@ import {
 } from "./api";
 import { addHouseToCache, patchHouseInCache, updateHouseInCache } from "./cache";
 import { houseKeys } from "./keys";
+import { invalidateWhileOnline } from "./query-client";
 
 export function useCreateHouse() {
   const queryClient = useQueryClient();
@@ -59,7 +60,7 @@ export function useJoinHouse() {
       if (result.status !== "joined" && result.status !== "already_member") return;
 
       // The list has to include the house before it is made active, or the choice falls back.
-      await queryClient.invalidateQueries({ queryKey: houseKeys.list() });
+      await invalidateWhileOnline(queryClient, { queryKey: houseKeys.list() });
       setActiveHouse(result.houseId);
     },
   });
@@ -71,7 +72,7 @@ export function useSetMemberRole(houseId: string) {
   return useMutation({
     mutationFn: ({ userId, role }: { userId: string; role: HouseRole }) =>
       setMemberRole(houseId, userId, role),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: houseKeys.members(houseId) }),
+    onSuccess: () => invalidateWhileOnline(queryClient, { queryKey: houseKeys.members(houseId) }),
   });
 }
 
@@ -81,7 +82,7 @@ export function useRemoveMember(houseId: string) {
   return useMutation({
     mutationFn: ({ userId, keepDebt = false }: { userId: string; keepDebt?: boolean }) =>
       removeMember(houseId, userId, keepDebt),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: houseKeys.members(houseId) }),
+    onSuccess: () => invalidateWhileOnline(queryClient, { queryKey: houseKeys.members(houseId) }),
   });
 }
 
@@ -136,7 +137,8 @@ export function useAddInvitedEmail(houseId: string) {
 
   return useMutation({
     mutationFn: (email: string) => addInvitedEmail(houseId, email),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: houseKeys.invitedEmails(houseId) }),
+    onSuccess: () =>
+      invalidateWhileOnline(queryClient, { queryKey: houseKeys.invitedEmails(houseId) }),
   });
 }
 
@@ -145,6 +147,7 @@ export function useRemoveInvitedEmail(houseId: string) {
 
   return useMutation({
     mutationFn: (invitedEmailId: string) => removeInvitedEmail(houseId, invitedEmailId),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: houseKeys.invitedEmails(houseId) }),
+    onSuccess: () =>
+      invalidateWhileOnline(queryClient, { queryKey: houseKeys.invitedEmails(houseId) }),
   });
 }

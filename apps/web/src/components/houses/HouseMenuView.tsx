@@ -98,7 +98,7 @@ export function HouseMenuView({
               <MenuCard
                 size="half"
                 icon={<SwitchHouseIcon size={15} />}
-                title={SWITCH_HOUSE_TITLE}
+                title={SWITCH_HOUSE_TITLE.replace(" ", "\n")}
                 onClick={onSwitch}
               />
             ) : null}

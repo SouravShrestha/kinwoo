@@ -34,6 +34,8 @@ export const viewport: Viewport = {
   // Required for env(safe-area-inset-*) to resolve in iOS Safari; without it
   // the fixed tab bar sits under the home bar.
   viewportFit: "cover",
+  // Without it the canvas painted before the CSS loads is white, even when the system is dark.
+  colorScheme: "light dark",
   themeColor: [
     { media: "(prefers-color-scheme: light)", color: "#fefefe" },
     { media: "(prefers-color-scheme: dark)", color: "#0e0e0e" },

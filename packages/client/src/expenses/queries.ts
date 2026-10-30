@@ -2,7 +2,8 @@
 
 import { memberBalanceRows } from "@kinwoo/core/expenses";
 import { TRANSACTION_UNAVAILABLE } from "@kinwoo/core/grocery";
-import { useInfiniteQuery, useQuery, useQueryClient } from "@tanstack/react-query";
+import { TOAST_MESSAGES } from "@kinwoo/core/toast";
+import { onlineManager, useInfiniteQuery, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useCallback, useState } from "react";
 
 import { useBusyWhile } from "../activity";
@@ -50,6 +51,13 @@ export function useOpenExpense(defaultHouseId: string | null) {
       houseId: string | null = defaultHouseId,
     ) => {
       if (!houseId || !expenseId) return toast.error(TRANSACTION_UNAVAILABLE);
+      // A forced refetch would wait for a connection forever; use what is saved instead.
+      if (!onlineManager.isOnline()) {
+        if (!queryClient.getQueryData(expenseKeys.detail(houseId, expenseId))) {
+          return toast.warning(TOAST_MESSAGES.offlineNoData);
+        }
+        return navigate(expenseId);
+      }
       setPending(true);
       try {
         await queryClient.fetchQuery({
@@ -81,6 +89,13 @@ export function useOpenSettlement(defaultHouseId: string | null) {
       houseId: string | null = defaultHouseId,
     ) => {
       if (!houseId || !settlementId) return toast.error(TRANSACTION_UNAVAILABLE);
+      if (!onlineManager.isOnline()) {
+        const saved = queryClient.getQueryData<{ id: string }[]>(expenseKeys.settlements(houseId));
+        if (!saved?.some((settlement) => settlement.id === settlementId)) {
+          return toast.warning(TOAST_MESSAGES.offlineNoData);
+        }
+        return navigate(settlementId);
+      }
       setPending(true);
       try {
         const settlements = await queryClient.fetchQuery({

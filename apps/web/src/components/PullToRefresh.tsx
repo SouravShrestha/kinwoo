@@ -1,7 +1,9 @@
 "use client";
 
 import { useBusyWhile } from "@kinwoo/client/activity";
-import { useQueryClient } from "@tanstack/react-query";
+import { toast } from "@kinwoo/client/toast";
+import { TOAST_MESSAGES } from "@kinwoo/core/toast";
+import { onlineManager, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 
 import { isStandalone } from "@/lib/install-prompt";
@@ -44,7 +46,15 @@ export function PullToRefresh({ children }: { children: ReactNode }) {
       return false;
     };
 
+    // Any non-"none" translate makes the wrapper the containing block of fixed children (the add
+    // button), so they scroll with the page. It must be cleared whenever no transition will end.
+    const reset = () => {
+      el.style.translate = "";
+      setLoader("hidden");
+    };
+
     const settle = () => {
+      if (offset === 0) return reset();
       el.style.transition = "translate 200ms ease-out";
       el.style.translate = "0 0";
     };
@@ -60,6 +70,8 @@ export function PullToRefresh({ children }: { children: ReactNode }) {
       startX = event.touches[0].clientX;
       startY = event.touches[0].clientY;
       el.style.transition = "none";
+      // A settle cut short by this touch never fires transitionend.
+      el.style.translate = "";
     };
 
     const onMove = (event: TouchEvent) => {
@@ -89,18 +101,20 @@ export function PullToRefresh({ children }: { children: ReactNode }) {
       setLoader("spinning");
       el.style.transition = "translate 200ms ease-out";
       el.style.translate = `0 ${HOLD_PX}px`;
-      void queryClient.refetchQueries({ type: "active" }).finally(() => {
+      // Offline, refetches wait for a connection, which would leave the spinner up indefinitely.
+      const refetched = onlineManager.isOnline()
+        ? queryClient.refetchQueries({ type: "active" })
+        : Promise.resolve(toast.warning(TOAST_MESSAGES.offline));
+      void refetched.finally(() => {
         holding = false;
         setRefreshing(false);
         settle();
       });
     };
 
-    // Clearing translate afterwards stops the wrapper being a containing block for fixed children.
     const onTransitionEnd = (event: TransitionEvent) => {
       if (event.target !== el || dragging || holding) return;
-      el.style.translate = "";
-      setLoader("hidden");
+      reset();
     };
 
     el.addEventListener("touchstart", onStart, { passive: true });

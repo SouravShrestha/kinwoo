@@ -1,4 +1,9 @@
-import { MutationCache, onlineManager, QueryClient } from "@tanstack/react-query";
+import {
+  MutationCache,
+  onlineManager,
+  QueryClient,
+  type InvalidateQueryFilters,
+} from "@tanstack/react-query";
 
 import { ApiRequestError } from "../api/request";
 
@@ -31,4 +36,24 @@ export function createAppQueryClient(): QueryClient {
       mutations: { retry: false },
     },
   });
+}
+
+// A write that already succeeded must not hang on its follow-up refresh when the connection drops:
+// the refetch would wait for a connection indefinitely and keep the loading bar up.
+export async function invalidateWhileOnline(
+  queryClient: QueryClient,
+  filters: InvalidateQueryFilters,
+): Promise<void> {
+  let stop = () => {};
+  const wentOffline = new Promise<void>((resolve) => {
+    if (!onlineManager.isOnline()) return resolve();
+    stop = onlineManager.subscribe((online) => {
+      if (!online) resolve();
+    });
+  });
+  try {
+    await Promise.race([queryClient.invalidateQueries(filters), wentOffline]);
+  } finally {
+    stop();
+  }
 }
