@@ -1,1 +1,1 @@
-export { isTop, push, remove, reset } from "./stack";
+export { closeAll, isTop, push, remove, reset } from "./stack";

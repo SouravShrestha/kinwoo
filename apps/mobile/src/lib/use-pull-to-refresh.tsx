@@ -1,5 +1,8 @@
 import { useBusyWhile } from "@kinwoo/client/activity";
+import { toast } from "@kinwoo/client/toast";
+import { TOAST_MESSAGES } from "@kinwoo/core/toast";
 import { colors } from "@kinwoo/tokens/native";
+import { onlineManager } from "@tanstack/react-query";
 import { useCallback, useState } from "react";
 import { RefreshControl } from "react-native";
 
@@ -14,7 +17,13 @@ export function usePullToRefresh(refetch: () => Promise<unknown>) {
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
     try {
-      await refetch();
+      if (onlineManager.isOnline()) {
+        await refetch();
+      } else {
+        // A refetch would wait for a connection indefinitely. The pause lets the spinner show.
+        toast.warning(TOAST_MESSAGES.offline);
+        await new Promise((resolve) => setTimeout(resolve, 400));
+      }
     } finally {
       setRefreshing(false);
     }

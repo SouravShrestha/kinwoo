@@ -6,6 +6,7 @@ import { PersistQueryClientProvider, type Persister } from "@tanstack/react-quer
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { useLayoutEffect, useRef, useState, type ReactNode } from "react";
 
+import { OfflineLoadGuard } from "../activity/offline-guard";
 import { useAuth } from "../auth/use-auth";
 import { ActiveHouseProvider } from "./active-house-provider";
 import { NotificationsRealtime } from "../notifications/NotificationsRealtime";
@@ -65,6 +66,7 @@ export function HousesProvider({
   return (
     <PersistQueryClientProvider client={queryClient} persistOptions={persistOptions}>
       <ClearCacheOnUserChange persister={persistOptions.persister} />
+      <OfflineLoadGuard />
       <ActiveHouseProvider storage={storage}>
         {realtimeClient ? <HousesRealtime client={realtimeClient} /> : null}
         {realtimeClient ? <NotificationsRealtime client={realtimeClient} /> : null}

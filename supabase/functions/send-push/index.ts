@@ -153,21 +153,28 @@ Deno.serve(async (request) => {
     const dead: string[] = [];
 
     for (const batch of chunk(tokens.filter((token) => !isWeb(token)))) {
-      const tickets = await sendBatch(
-        batch.map((to) => ({
-          to,
-          title: message.title,
-          body: message.body,
-          data: {
-            url: message.url,
-            notificationId: idForToken.get(to),
-            houseId: activity.house_id,
-          },
-          channelId: CHANNEL_ID,
-          priority: "high",
-          ttl: TTL_SECONDS,
-        })),
-      );
+      let tickets: Ticket[];
+      try {
+        tickets = await sendBatch(
+          batch.map((to) => ({
+            to,
+            title: message.title,
+            body: message.body,
+            data: {
+              url: message.url,
+              notificationId: idForToken.get(to),
+              houseId: activity.house_id,
+            },
+            channelId: CHANNEL_ID,
+            priority: "high",
+            ttl: TTL_SECONDS,
+          })),
+        );
+      } catch (cause) {
+        // An Expo outage must not stop the browser pushes or the cleanup below.
+        console.error("Expo push batch failed:", cause);
+        continue;
+      }
       for (const ticket of tickets) {
         if (ticket.status !== "ok") console.error("Expo rejected a push:", JSON.stringify(ticket));
       }

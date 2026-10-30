@@ -26,6 +26,31 @@ export default (): ExpoConfig => ({
       foregroundImage: "./assets/adaptive-icon.png",
       backgroundColor: "#0e0e0e",
     },
+    // Only screens that exist in the app. /auth, /legal, /feedback and /api stay in the browser,
+    // and web OAuth finishes on /auth/callback there.
+    intentFilters: [
+      {
+        action: "VIEW",
+        autoVerify: true,
+        category: ["BROWSABLE", "DEFAULT"],
+        data: [
+          { scheme: "https", host: "app.kinwoo.in", path: "/" },
+          ...[
+            "/join",
+            "/house",
+            "/expense",
+            "/expenses",
+            "/item",
+            "/bills",
+            "/tasks",
+            "/activities",
+            "/notifications",
+            "/profile",
+            "/login",
+          ].map((pathPrefix) => ({ scheme: "https", host: "app.kinwoo.in", pathPrefix })),
+        ],
+      },
+    ],
   },
   plugins: [
     "expo-router",

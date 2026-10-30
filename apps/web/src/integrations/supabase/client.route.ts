@@ -97,21 +97,23 @@ type ClaimsCapable = {
 // feature-detected (newer than the pinned types); getUser is the fallback. Returns null, never throws.
 export async function getVerifiedUser(request: Request): Promise<VerifiedUser | null> {
   const token = bearerToken(request);
-  if (token) return verifyBearerToken(token);
+  if (!token) return verifyWithClient(createRouteClient(request).supabase);
 
-  const { supabase } = createRouteClient(request);
-  return verifyWithClient(supabase);
-}
-
-async function verifyBearerToken(token: string): Promise<VerifiedUser | null> {
   const { url, anonKey } = readEnv();
-
   const supabase = createServerClient<Database>(url, anonKey, {
     cookies: { getAll: () => [], setAll: () => {} },
     global: { headers: { Authorization: `Bearer ${token}` } },
   });
+  return verifyWithClient(supabase, token);
+}
 
+// Without a token, the client's own session (cookie) is checked.
+async function verifyWithClient(
+  supabase: SupabaseClient<Database>,
+  token?: string,
+): Promise<VerifiedUser | null> {
   const auth = supabase.auth as unknown as ClaimsCapable;
+
   if (auth.getClaims) {
     try {
       const { data, error } = await auth.getClaims(token);
@@ -124,25 +126,6 @@ async function verifyBearerToken(token: string): Promise<VerifiedUser | null> {
   }
 
   const { data, error } = await supabase.auth.getUser(token);
-  if (error || !data.user) return null;
-  return { id: data.user.id };
-}
-
-async function verifyWithClient(supabase: SupabaseClient<Database>): Promise<VerifiedUser | null> {
-  const auth = supabase.auth as unknown as ClaimsCapable;
-
-  if (auth.getClaims) {
-    try {
-      const { data, error } = await auth.getClaims();
-      const sub = data?.claims?.sub;
-      if (!error && sub) return { id: sub };
-      if (!error) return null;
-    } catch {
-      // Fall through to the remote check.
-    }
-  }
-
-  const { data, error } = await supabase.auth.getUser();
   if (error || !data.user) return null;
   return { id: data.user.id };
 }

@@ -27,7 +27,7 @@ export function MenuCard({
   return (
     <button
       type="button"
-      aria-label={caption ? `${title}, ${caption}` : title}
+      aria-label={(caption ? `${title}, ${caption}` : title).replace("\n", " ")}
       onClick={onClick}
       className={cn(
         "flex rounded-lg border border-border bg-card text-left",
@@ -40,7 +40,9 @@ export function MenuCard({
     >
       {size === "half" ? (
         <>
-          <span className="min-w-0 font-display text-base leading-tight font-normal">{title}</span>
+          <span className="min-w-0 whitespace-pre-line font-display text-base leading-tight font-normal">
+            {title}
+          </span>
           {iconBadge}
         </>
       ) : (

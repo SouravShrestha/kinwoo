@@ -42,6 +42,7 @@ export function BottomSheet({
 
   const stackId = useRef(Symbol("sheet"));
   const openedAt = useRef(0);
+  const onCloseRef = useRef(onClose);
   const panelRef = useRef<HTMLDivElement>(null);
   const previousFocus = useRef<HTMLElement | null>(null);
 
@@ -72,11 +73,15 @@ export function BottomSheet({
   // Only the topmost sheet answers Escape and Tab, so a confirmation stacked on another sheet
   // doesn't also close or trap the sheet underneath.
   useEffect(() => {
+    onCloseRef.current = onClose;
+  });
+  useEffect(() => {
     if (!open) return;
     const id = stackId.current;
-    push(id);
+    // Non-dismissable sheets (the login wall) stay put when something else closes sheets.
+    push(id, dismissable ? () => onCloseRef.current?.() : undefined);
     return () => remove(id);
-  }, [open]);
+  }, [open, dismissable]);
 
   const guardedClose = useCallback(() => {
     if (Date.now() - openedAt.current < MISFIRE_MS) return;

@@ -41,6 +41,7 @@ export const TOAST_MESSAGES = {
   loginUnavailable: "We could not reach the login service. Try again in a moment.",
   loginFailed: "Login failed. Try again.",
   offline: "You're offline. Showing your last saved data.",
+  offlineNoData: "You're offline. This isn't saved on your device yet.",
   backOnline: "You're back online.",
 } as const;
 
