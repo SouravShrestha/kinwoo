@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.2.0](https://github.com/SouravShrestha/kinwoo/compare/v1.1.0...v1.2.0) (2026-10-30)
+
+
+### Features
+
+* **audit:ponytail:** add advisory locks for house limit, cap avatar uploads, refactor auth verification ([c674be7](https://github.com/SouravShrestha/kinwoo/commit/c674be76d6949e46ed96868ac202df063f4eb88c))
+* **offline,sheets:** add offline support with service worker warming and sheet callback handling ([6ec0974](https://github.com/SouravShrestha/kinwoo/commit/6ec097402d23985eca220be24b424be22bd8e658))
+
 ## [1.1.0](https://github.com/SouravShrestha/kinwoo/compare/v1.0.1...v1.1.0) (2026-10-29)
 
 
