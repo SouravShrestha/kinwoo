@@ -39,6 +39,8 @@ export function blockOfflineNavigation(href: string): boolean {
     return false;
   }
   if (savedPaths.has(url.pathname)) return false;
+  // Navigation is not blocked because the service worker will handle it by redirecting to home.
+  // Show the toast immediately so the user sees it before the redirect happens.
   toast.warning(TOAST_MESSAGES.offlineNoData);
   return true;
 }
