@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.3.0](https://github.com/SouravShrestha/kinwoo/compare/v1.2.0...v1.3.0) (2026-10-31)
+
+
+### Features
+
+* **avatars,security,infra:** restrict avatar uploads and upgrade Next.js to v16 ([31bf3f2](https://github.com/SouravShrestha/kinwoo/commit/31bf3f21b4fa983ae92e55d7ec2f8757a9c095e7))
+* **offline,mobile,web:** add offline load failure detection and messaging ([f2ddff8](https://github.com/SouravShrestha/kinwoo/commit/f2ddff8de3b0e0c5e4217f3eae3d1c452d075911))
+
+
+### Bug Fixes
+
+* **offline,web:** improve offline fallback by redirecting to home with toast ([6aec7e6](https://github.com/SouravShrestha/kinwoo/commit/6aec7e62d6e169c007099b98cd2697e00588615f))
+
 ## [1.2.0](https://github.com/SouravShrestha/kinwoo/compare/v1.1.0...v1.2.0) (2026-10-30)
 
 
