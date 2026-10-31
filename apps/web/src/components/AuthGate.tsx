@@ -3,7 +3,7 @@
 import { gateDecision, useAuth } from "@kinwoo/client/auth";
 import { useProfile } from "@kinwoo/client/profile";
 import { isPublicRoute } from "@kinwoo/core/auth";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/lib/router";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 

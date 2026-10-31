@@ -8,6 +8,7 @@ import {
   validateDisplayName,
 } from "@kinwoo/core/auth";
 import { CONFIRM_COPY } from "@kinwoo/core/confirm";
+import { LOAD_FAILED_MESSAGE } from "@kinwoo/core/app";
 import { TOAST_MESSAGES } from "@kinwoo/core/toast";
 import {
   ArrowRightIcon,
@@ -67,7 +68,7 @@ function IconButton({
 
 export default function PersonalInformationScreen() {
   const { user, canSignInWithGoogle, linkGoogle, unlinkGoogle } = useAuth();
-  const { profile, setDisplayName } = useProfile();
+  const { profile, error: profileError, setDisplayName } = useProfile();
   const { resolvedTheme } = useTheme();
   const palette = colors[resolvedTheme];
   const insets = useSafeAreaInsets();
@@ -185,7 +186,9 @@ export default function PersonalInformationScreen() {
         </Pressable>
       </View>
 
-      {!profile ? (
+      {!profile && profileError ? (
+        <Text className="mt-8 text-base text-muted-foreground">{LOAD_FAILED_MESSAGE}</Text>
+      ) : !profile ? (
         <FieldSkeleton className="mt-8" />
       ) : (
         <View className="mt-8 flex-row items-start gap-3">

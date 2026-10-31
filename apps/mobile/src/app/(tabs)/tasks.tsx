@@ -10,6 +10,7 @@ import {
 } from "@kinwoo/client/grocery";
 import { useActiveHouse, useHouseMembers } from "@kinwoo/client/houses";
 import { toast } from "@kinwoo/client/toast";
+import { LOAD_FAILED_MESSAGE } from "@kinwoo/core/app";
 import { CONFIRM_COPY } from "@kinwoo/core/confirm";
 import {
   countSelected,
@@ -98,7 +99,11 @@ function TasksScreen({ view }: { view: TasksView | null }) {
   const { activeHouse, ready } = useActiveHouse();
   const houseId = activeHouse?.house.id ?? "";
 
-  const { data: lists, isLoading: listsLoading } = useGroceryLists(houseId || null);
+  const {
+    data: lists,
+    isLoading: listsLoading,
+    isError: listsError,
+  } = useGroceryLists(houseId || null);
 
   const listStorage = useMemo(() => createListStorage(houseStorage), []);
   const [selectedListId, setSelectedListId] = useState<string | null>(null);
@@ -173,6 +178,7 @@ function TasksScreen({ view }: { view: TasksView | null }) {
   );
 
   const itemsLoaded = items !== undefined;
+  const loadFailed = (listsError && !lists) || history.loadFailed;
   const filtering = countSelected(filters) > 0;
   const listEmpty = (items ?? []).length === 0;
 
@@ -388,7 +394,7 @@ function TasksScreen({ view }: { view: TasksView | null }) {
               contentContainerStyle={{
                 flexGrow: 1,
                 paddingBottom:
-                  itemsLoaded && visibleByTab[key].length === 0
+                  (itemsLoaded && visibleByTab[key].length === 0) || loadFailed
                     ? filtersHeight + FILTERS_TOP_MARGIN
                     : key === "pending" && selection.count > 0
                       ? pendingSelectionBarHeight(currentList?.visibility === "private") + 16
@@ -397,7 +403,9 @@ function TasksScreen({ view }: { view: TasksView | null }) {
                         : insets.bottom + 88,
               }}
             >
-              {!itemsLoaded ? (
+              {!itemsLoaded && loadFailed ? (
+                <EmptyItems image={emptyList} title={LOAD_FAILED_MESSAGE} />
+              ) : !itemsLoaded ? (
                 <ItemGridSkeleton />
               ) : visibleByTab[key].length === 0 ? (
                 <EmptyItems

@@ -4,6 +4,7 @@ import { useActiveHouse } from "@kinwoo/client/houses";
 import { useProfile } from "@kinwoo/client/profile";
 import { toast } from "@kinwoo/client/toast";
 import { SETTING_EVENTS, withPushType, type SettingType } from "@kinwoo/core/push";
+import { LOAD_FAILED_MESSAGE } from "@kinwoo/core/app";
 import { TOAST_MESSAGES } from "@kinwoo/core/toast";
 import { CheckIcon } from "@kinwoo/icons";
 import { useRef, useState } from "react";
@@ -24,19 +25,23 @@ function hintFor(state: BrowserPushState, iosNeedsInstall: boolean): string | nu
     : "This browser doesn't support push notifications.";
 }
 
-export function NotificationSettingsLoading() {
+export function NotificationSettingsLoading({ failed = false }: { failed?: boolean }) {
   return (
     <main className="px-6 pb-[calc(2.5rem+env(safe-area-inset-bottom))] pt-[calc(0.75rem+env(safe-area-inset-top))]">
       <BackButton />
       <h1 className="mt-6 font-display text-2xl font-medium">Notification settings</h1>
       <p className="mt-6 text-sm text-muted-foreground">{PUSH_NOTE}</p>
-      <NotificationSettingsSkeleton />
+      {failed ? (
+        <p className="mt-6 text-base text-muted-foreground">{LOAD_FAILED_MESSAGE}</p>
+      ) : (
+        <NotificationSettingsSkeleton />
+      )}
     </main>
   );
 }
 
 export function NotificationSettingsScreen() {
-  const { profile, setPreferences } = useProfile();
+  const { profile, error: profileError, setPreferences } = useProfile();
   const { activeHouse } = useActiveHouse();
   const pushState = useBrowserPushState();
   const iosNeedsInstall = useInstallKind() === "ios";
@@ -45,7 +50,7 @@ export function NotificationSettingsScreen() {
   // Saves run one after another so the last tap is the last write.
   const saves = useRef(Promise.resolve());
 
-  if (!profile) return <NotificationSettingsLoading />;
+  if (!profile) return <NotificationSettingsLoading failed={profileError !== null} />;
 
   const unsupported = pushState === "unsupported";
   const enabled = shown.enabled ?? (profile.notificationsEnabled && pushState === "granted");

@@ -3,7 +3,8 @@
 import { useBusyWhile } from "@kinwoo/client/activity";
 import { useAuth } from "@kinwoo/client/auth";
 import { savePendingInvite } from "@kinwoo/client/houses";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
+import { useRouter } from "@/lib/router";
 import { useEffect } from "react";
 
 import { houseStorage } from "@/lib/house-storage";

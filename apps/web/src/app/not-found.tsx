@@ -1,7 +1,7 @@
 "use client";
 
 import { NOT_FOUND_COPY } from "@kinwoo/core/app";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/lib/router";
 
 import { Button } from "@/components/Button";
 

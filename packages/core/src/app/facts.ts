@@ -27,6 +27,8 @@ export const FOOTER_COPY = {
   version: (version: string) => `App version ${version}`,
 } as const;
 
+// Shown in place of content whose first load failed, e.g. offline with nothing saved.
+export const LOAD_FAILED_MESSAGE = "Couldn't load this right now.";
 export const NOT_FOUND_COPY = {
   code: "404",
   title: "Page not found",

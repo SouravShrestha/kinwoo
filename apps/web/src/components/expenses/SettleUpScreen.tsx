@@ -1,5 +1,6 @@
 "use client";
 
+import { LOAD_FAILED_MESSAGE } from "@kinwoo/core/app";
 import { useAuth } from "@kinwoo/client/auth";
 import { useHouseBalances } from "@kinwoo/client/expenses";
 import { useActiveHouse, useHouseMembers } from "@kinwoo/client/houses";
@@ -20,10 +21,16 @@ import { cn } from "@/lib/utils";
 
 function Balances({ houseId, simplifyDebts }: { houseId: string; simplifyDebts: boolean }) {
   const { user } = useAuth();
-  const { data: balances } = useHouseBalances(houseId, simplifyDebts);
+  const { data: balances, isError } = useHouseBalances(houseId, simplifyDebts);
   const { data: members } = useHouseMembers(houseId);
   if (!balances || !user) {
-    return <SettleUpSkeleton />;
+    return isError ? (
+      <div className="flex flex-1 flex-col">
+        <EmptyItems image="expense" title={LOAD_FAILED_MESSAGE} />
+      </div>
+    ) : (
+      <SettleUpSkeleton />
+    );
   }
   const pairs = unsettledPairs(balances);
   if (pairs.length === 0) {

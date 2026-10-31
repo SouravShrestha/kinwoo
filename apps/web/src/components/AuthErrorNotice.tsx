@@ -2,7 +2,8 @@
 
 import { toast } from "@kinwoo/client/toast";
 import { authErrorToastMessage } from "@kinwoo/core/toast";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
+import { useRouter } from "@/lib/router";
 import { useEffect, useRef } from "react";
 
 export function AuthErrorNotice() {

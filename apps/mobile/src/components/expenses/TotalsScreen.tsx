@@ -1,4 +1,6 @@
 import { useExpenseTotals } from "@kinwoo/client/expenses";
+import { LOAD_FAILED_MESSAGE } from "@kinwoo/core/app";
+import { TOAST_MESSAGES } from "@kinwoo/core/toast";
 import {
   currentMonthKey,
   shiftMonth,
@@ -161,7 +163,7 @@ export function TotalsScreen({ houseId }: { houseId: string }) {
   const insets = useSafeAreaInsets();
   const { resolvedTheme } = useTheme();
   const palette = colors[resolvedTheme];
-  const { data: months } = useExpenseTotals(houseId);
+  const { data: months, isError } = useExpenseTotals(houseId);
   const { pan, scrollGesture, onScroll, sheetStyle } = useSwipeDownToDismiss(goBack);
   const [current] = useState(currentMonthKey);
   const [month, setMonth] = useState(current);
@@ -234,6 +236,10 @@ export function TotalsScreen({ houseId }: { houseId: string }) {
                 </View>
               </View>
             </>
+          ) : isError ? (
+            <Text className="pt-16 text-center font-display-normal text-base text-muted-foreground">
+              {LOAD_FAILED_MESSAGE}
+            </Text>
           ) : (
             <TotalsSkeleton />
           )}

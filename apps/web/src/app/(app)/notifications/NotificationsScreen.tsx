@@ -20,7 +20,7 @@ import {
   type GroceryActivityEntry,
 } from "@kinwoo/core/grocery";
 import { TOAST_MESSAGES } from "@kinwoo/core/toast";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/lib/router";
 import { useCallback } from "react";
 
 import { ActivityList } from "@/components/activity/ActivityList";

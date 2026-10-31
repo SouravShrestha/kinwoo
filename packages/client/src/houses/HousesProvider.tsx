@@ -10,6 +10,7 @@ import { OfflineLoadGuard } from "../activity/offline-guard";
 import { useAuth } from "../auth/use-auth";
 import { ActiveHouseProvider } from "./active-house-provider";
 import { NotificationsRealtime } from "../notifications/NotificationsRealtime";
+import { ProfileProvider } from "../profile/use-profile";
 import { HousesRealtime } from "./HousesRealtime";
 import { PendingInviteResume } from "./PendingInviteResume";
 import { CACHE_MAX_AGE_MS, createAppQueryClient } from "./query-client";
@@ -67,12 +68,15 @@ export function HousesProvider({
     <PersistQueryClientProvider client={queryClient} persistOptions={persistOptions}>
       <ClearCacheOnUserChange persister={persistOptions.persister} />
       <OfflineLoadGuard />
-      <ActiveHouseProvider storage={storage}>
-        {realtimeClient ? <HousesRealtime client={realtimeClient} /> : null}
-        {realtimeClient ? <NotificationsRealtime client={realtimeClient} /> : null}
-        <PendingInviteResume storage={storage} onResume={onPendingInvite} />
-        {children}
-      </ActiveHouseProvider>
+      {/* The profile is a cached query, and PendingInviteResume reads it. */}
+      <ProfileProvider>
+        <ActiveHouseProvider storage={storage}>
+          {realtimeClient ? <HousesRealtime client={realtimeClient} /> : null}
+          {realtimeClient ? <NotificationsRealtime client={realtimeClient} /> : null}
+          <PendingInviteResume storage={storage} onResume={onPendingInvite} />
+          {children}
+        </ActiveHouseProvider>
+      </ProfileProvider>
     </PersistQueryClientProvider>
   );
 }

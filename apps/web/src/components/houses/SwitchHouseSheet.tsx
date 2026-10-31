@@ -9,7 +9,7 @@ import {
   canAddHouse,
   unreadCountByHouse,
 } from "@kinwoo/core/houses";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/lib/router";
 import { useState } from "react";
 
 import { cn } from "@/lib/utils";

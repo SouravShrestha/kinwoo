@@ -67,6 +67,7 @@ export function useBatchMarkBoughtForm({
   const itemsQuery = useGroceryItems(houseId || null, listId || null);
   const markItemsBought = useMarkItemsBought(houseId, listId, currentUserId, currentUserName);
   const [items, setItems] = useState<GroceryItem[] | null>(null);
+  const loadFailed = itemsQuery.isError && items === null;
   const [total, setTotalText] = useState("");
   const [name, setNameText] = useState("");
   const [amounts, setAmounts] = useState<Record<string, string>>({});
@@ -146,6 +147,7 @@ export function useBatchMarkBoughtForm({
     items: list,
     ready,
     unavailable,
+    loadFailed,
     total,
     name,
     totalError,

@@ -7,7 +7,7 @@ import { useRecentActivity } from "@kinwoo/client/grocery";
 import { useActiveHouse, useHouseMembers } from "@kinwoo/client/houses";
 import { countSelected, EMPTY_FILTER_SELECTION, type FilterSelection } from "@kinwoo/core/filters";
 import { ACTIVITY_EMPTY_HINT, activityFilterGroups, filterActivity } from "@kinwoo/core/grocery";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/lib/router";
 import { useCallback, useDeferredValue, useMemo, useState } from "react";
 
 import { ActivityList } from "@/components/activity/ActivityList";

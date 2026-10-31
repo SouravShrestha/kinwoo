@@ -43,6 +43,24 @@ export default tseslint.config(
     },
   },
   {
+    files: ["apps/web/src/**/*.{ts,tsx}"],
+    ignores: ["apps/web/src/lib/router.ts", "apps/web/src/**/*.test.{ts,tsx}"],
+    rules: {
+      "no-restricted-imports": [
+        "error",
+        {
+          paths: [
+            {
+              name: "next/navigation",
+              importNames: ["useRouter"],
+              message: "Use useRouter from @/lib/router, which handles offline navigation.",
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
     extends: [js.configs.recommended, ...tseslint.configs.recommended],
     files: ["**/*.{ts,tsx}"],
     languageOptions: {

@@ -1,3 +1,4 @@
+import { LOAD_FAILED_MESSAGE } from "@kinwoo/core/app";
 import { useAuth } from "@kinwoo/client/auth";
 import { useHouseBalances } from "@kinwoo/client/expenses";
 import { useHouseMembers } from "@kinwoo/client/houses";
@@ -33,7 +34,7 @@ export function SettleUpScreen({
   const { resolvedTheme } = useTheme();
   const palette = colors[resolvedTheme];
   const { user } = useAuth();
-  const { data: balances } = useHouseBalances(houseId, simplifyDebts);
+  const { data: balances, isError } = useHouseBalances(houseId, simplifyDebts);
   const { data: members } = useHouseMembers(houseId);
   const { pan, scrollGesture, onScroll, sheetStyle } = useSwipeDownToDismiss(goBack);
   const pairs = balances ? unsettledPairs(balances) : [];
@@ -130,6 +131,10 @@ export function SettleUpScreen({
                 })}
               </View>
             </>
+          ) : isError ? (
+            <View className="flex-1">
+              <EmptyItems image={noExpense} title={LOAD_FAILED_MESSAGE} />
+            </View>
           ) : (
             <SettleUpSkeleton />
           )}

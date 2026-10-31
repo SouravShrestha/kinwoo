@@ -12,11 +12,12 @@ export default function EditExpenseRoute() {
   const { activeHouse, ready } = useActiveHouse();
   const houseId = activeHouse?.house.id ?? null;
   const { data: expense, isError } = useExpense(houseId, expenseId ?? null);
-  const { data: members } = useHouseMembers(houseId);
+  const { data: members, isError: membersError } = useHouseMembers(houseId);
+  const loadFailed = isError || (membersError && !members);
 
   useEffect(() => {
-    if ((ready && !activeHouse) || !expenseId || isError) goHome();
-  }, [ready, activeHouse, expenseId, isError]);
+    if ((ready && !activeHouse) || !expenseId || loadFailed) goHome();
+  }, [ready, activeHouse, expenseId, loadFailed]);
 
   // The form seeds its payer and split state on mount, so it waits for both.
   if (!houseId || !expense || !members) return <ExpenseFormPageSkeleton title="Edit expense" />;

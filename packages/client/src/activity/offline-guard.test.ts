@@ -45,7 +45,7 @@ describe("guardOfflineLoads", () => {
 });
 
 describe("offline list paging and refreshes", () => {
-  it("reports a next page requested offline without cancelling it", async () => {
+  it("cancels a next page requested offline and keeps the saved pages", async () => {
     const client = new QueryClient();
     const options = {
       queryKey: ["pages"],
@@ -63,7 +63,9 @@ describe("offline list paging and refreshes", () => {
     await new Promise((resolve) => setTimeout(resolve, 5));
 
     expect(onBlocked).toHaveBeenCalledWith("more");
-    expect(client.getQueryState(["pages"])?.fetchStatus).toBe("paused");
+    expect(client.getQueryState(["pages"])?.fetchStatus).toBe("idle");
+    expect(client.getQueryState(["pages"])?.status).toBe("error");
+    expect(client.getQueryData<{ pages: string[][] }>(["pages"])?.pages).toEqual([["p"]]);
     stop();
   });
 

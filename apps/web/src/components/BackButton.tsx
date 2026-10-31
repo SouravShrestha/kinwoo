@@ -2,7 +2,8 @@
 
 import { EMBED_QUERY } from "@kinwoo/core/app";
 import { ArrowRightIcon } from "@kinwoo/icons";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
+import { useRouter } from "@/lib/router";
 import { Suspense } from "react";
 
 import { useHouseNavigation } from "@/lib/house-navigation";

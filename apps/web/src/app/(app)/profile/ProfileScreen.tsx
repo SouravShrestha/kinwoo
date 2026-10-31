@@ -51,7 +51,7 @@ const THEME_LABELS: Record<string, string> = {
 
 export function ProfileScreen() {
   const { user, signOut } = useAuth();
-  const { profile } = useProfile();
+  const { profile, error: profileError } = useProfile();
   const { theme } = useTheme();
   const [appearanceOpen, setAppearanceOpen] = useState(false);
   const [avatarOpen, setAvatarOpen] = useState(false);
@@ -101,9 +101,11 @@ export function ProfileScreen() {
         </button>
 
         <div className="ml-4 min-w-0">
-          {profile ? (
+          {profile || profileError ? (
             <>
-              <p className="font-medium truncate text-xl tracking-tight">{profile.displayName}</p>
+              {profile ? (
+                <p className="font-medium truncate text-xl tracking-tight">{profile.displayName}</p>
+              ) : null}
               <p className="mt-0.5 truncate text-sm text-muted-foreground">{user?.email ?? ""}</p>
             </>
           ) : (

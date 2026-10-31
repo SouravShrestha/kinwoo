@@ -1,5 +1,6 @@
 "use client";
 
+import { LOAD_FAILED_MESSAGE } from "@kinwoo/core/app";
 import { useExpenseTotals } from "@kinwoo/client/expenses";
 import { useActiveHouse } from "@kinwoo/client/houses";
 import {
@@ -154,7 +155,7 @@ function Stat({
 }
 
 function TotalsBody({ houseId }: { houseId: string }) {
-  const { data: months } = useExpenseTotals(houseId);
+  const { data: months, isError } = useExpenseTotals(houseId);
   const [current] = useState(currentMonthKey);
   const [month, setMonth] = useState(current);
   const [allTime, setAllTime] = useState(false);
@@ -197,6 +198,10 @@ function TotalsBody({ houseId }: { houseId: string }) {
             </div>
           </div>
         </>
+      ) : isError ? (
+        <p className="pt-16 text-center font-display text-base text-muted-foreground">
+          {LOAD_FAILED_MESSAGE}
+        </p>
       ) : (
         <TotalsSkeleton />
       )}

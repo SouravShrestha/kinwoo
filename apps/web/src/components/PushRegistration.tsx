@@ -5,7 +5,7 @@ import { useActiveHouse, useSwitchToHouse } from "@kinwoo/client/houses";
 import { useMarkNotificationRead } from "@kinwoo/client/notifications";
 import { useProfile } from "@kinwoo/client/profile";
 import { notificationHouseId, notificationInboxId, notificationTarget } from "@kinwoo/core/push";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/lib/router";
 import { useEffect } from "react";
 import { registerBrowser } from "@/lib/push";
 

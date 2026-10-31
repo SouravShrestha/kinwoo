@@ -5,7 +5,7 @@ import { APP_NAME, LEGAL_URLS } from "@kinwoo/core/app";
 import { GoogleIcon } from "@kinwoo/icons";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/lib/router";
 import { useEffect, useState } from "react";
 
 import { AndroidInstallBanner } from "@/components/AndroidInstallBanner";

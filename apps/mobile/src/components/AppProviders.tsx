@@ -3,7 +3,6 @@ import { configureApiClient } from "@kinwoo/client/api";
 import { AuthProvider } from "@kinwoo/client/auth";
 import { useOfflineToast } from "@kinwoo/client/activity";
 import { HousesProvider } from "@kinwoo/client/houses";
-import { ProfileProvider } from "@kinwoo/client/profile";
 import { router } from "expo-router";
 import { useEffect, type ReactNode } from "react";
 
@@ -55,26 +54,24 @@ export function AppProviders({ children }: { children: ReactNode }) {
 
   return (
     <AuthProvider adapter={nativeAuthAdapter}>
-      <ProfileProvider>
-        <HousesProvider
-          storage={houseStorage}
-          realtimeClient={supabase}
-          onPendingInvite={resumeInvite}
-        >
-          {/* Modal content renders in this provider's portal host, so it must sit inside the
-              data providers or sheet contents cannot reach their contexts. */}
-          <BottomSheetModalProvider>
-            {children}
-            <AuthGate />
-            <HouseGate />
-            <SplashGate />
-            <TopLoader />
-            <ToastHost />
-            <GroceryRealtimeGate />
-            <PushRegistration />
-          </BottomSheetModalProvider>
-        </HousesProvider>
-      </ProfileProvider>
+      <HousesProvider
+        storage={houseStorage}
+        realtimeClient={supabase}
+        onPendingInvite={resumeInvite}
+      >
+        {/* Modal content renders in this provider's portal host, so it must sit inside the
+            data providers or sheet contents cannot reach their contexts. */}
+        <BottomSheetModalProvider>
+          {children}
+          <AuthGate />
+          <HouseGate />
+          <SplashGate />
+          <TopLoader />
+          <ToastHost />
+          <GroceryRealtimeGate />
+          <PushRegistration />
+        </BottomSheetModalProvider>
+      </HousesProvider>
     </AuthProvider>
   );
 }
