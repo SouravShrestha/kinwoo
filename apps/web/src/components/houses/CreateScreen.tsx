@@ -8,7 +8,7 @@ import {
   HOUSE_SCREEN_TITLES,
 } from "@kinwoo/core/houses";
 import { HousePinIcon } from "@kinwoo/icons";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/lib/router";
 
 import { Button } from "../Button";
 import { Field } from "./Field";

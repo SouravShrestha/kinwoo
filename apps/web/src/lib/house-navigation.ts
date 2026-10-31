@@ -1,4 +1,4 @@
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/lib/router";
 import { useMemo } from "react";
 
 export function markBoughtPath(listId: string, itemId: string) {

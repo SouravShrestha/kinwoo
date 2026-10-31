@@ -53,6 +53,23 @@ const ILLUSTRATIONS = [
 
 const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 const DESCRIPTION = "Everything shared. Nothing forgotten.";
+const THEME_BOOTSTRAP = `
+  (() => {
+    try {
+      const stored = localStorage.getItem("theme");
+      const theme =
+        stored === "light" || stored === "dark"
+          ? stored
+          : window.matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+      const root = document.documentElement;
+      root.classList.toggle("dark", theme === "dark");
+      root.classList.toggle("light", theme === "light");
+      root.style.colorScheme = theme;
+    } catch {}
+  })();
+`;
 
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),
@@ -92,6 +109,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
   return (
     <html lang="en" suppressHydrationWarning className={`${inter.variable} ${poppins.variable}`}>
+      <head>
+        <script nonce={nonce} dangerouslySetInnerHTML={{ __html: THEME_BOOTSTRAP }} />
+      </head>
       <body suppressHydrationWarning>
         {/* iOS 27 adds a progressive blur to the status bar unless a fixed element sits at the top; bg-clip-text keeps it invisible (opacity/visibility would defeat the check). */}
         <div

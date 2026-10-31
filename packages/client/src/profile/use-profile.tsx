@@ -1,14 +1,7 @@
 "use client";
 
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-  type ReactNode,
-} from "react";
+import { createContext, useCallback, useContext, useMemo, type ReactNode } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { useAuth } from "../auth/use-auth";
 import { ownUploadPath, pruneAvatars, putAvatar } from "./avatar-upload";
@@ -35,86 +28,57 @@ export interface ProfileContextValue {
 
 const ProfileContext = createContext<ProfileContextValue | null>(null);
 
-interface LoadedState {
-  // Ties loaded data to its owner so another user's profile is never shown.
-  userId: string | null;
-  profile: Profile | null;
-  error: string | null;
-}
-
-const EMPTY: LoadedState = { userId: null, profile: null, error: null };
+export const profileKey = (userId: string) => ["profile", userId] as const;
 
 const messageFor = (cause: unknown) =>
   cause instanceof Error ? cause.message : "Could not load your profile.";
 
 export function ProfileProvider({ children }: { children: ReactNode }) {
   const { client, user, isLoggedIn, ready: authReady } = useAuth();
-  const [loaded, setLoaded] = useState<LoadedState>(EMPTY);
+  const queryClient = useQueryClient();
 
   const userId = user?.id ?? null;
+  const profileQuery = useQuery({
+    queryKey: profileKey(userId ?? ""),
+    queryFn: fetchProfile,
+    enabled: authReady && userId !== null,
+  });
 
-  useEffect(() => {
-    if (!authReady || !userId) return;
+  const profile = isLoggedIn ? (profileQuery.data ?? null) : null;
+  const error = isLoggedIn && profileQuery.error ? messageFor(profileQuery.error) : null;
+  const ready = isLoggedIn ? authReady && !profileQuery.isPending : authReady;
 
-    // Ignores a response that lands after the user changed or the provider unmounted.
-    let active = true;
-
-    void fetchProfile().then(
-      (profile) => {
-        if (active) setLoaded({ userId, profile, error: null });
-      },
-      (cause: unknown) => {
-        if (active) setLoaded({ userId, profile: null, error: messageFor(cause) });
-      },
-    );
-
-    return () => {
-      active = false;
-    };
-  }, [authReady, userId]);
-
-  // Derived rather than reset in an effect, so a user switch cannot briefly show
-  // the previous user's data.
-  const matchesCurrentUser = isLoggedIn && userId !== null && loaded.userId === userId;
-
-  const profile = matchesCurrentUser ? loaded.profile : null;
-  const error = matchesCurrentUser ? loaded.error : null;
-  const ready = isLoggedIn ? matchesCurrentUser : authReady;
-
+  const { refetch } = profileQuery;
   const refresh = useCallback(async () => {
     if (!userId) return;
-    try {
-      setLoaded({ userId, profile: await fetchProfile(), error: null });
-    } catch (cause) {
-      setLoaded({ userId, profile: null, error: messageFor(cause) });
-    }
-  }, [userId]);
+    await refetch();
+  }, [refetch, userId]);
 
   const setDisplayName = useCallback(
     async (value: string) => {
       const updated = await patchDisplayName(value);
-      setLoaded({ userId, profile: updated, error: null });
+      if (userId) queryClient.setQueryData(profileKey(userId), updated);
     },
-    [userId],
+    [queryClient, userId],
   );
 
   const setPreferences = useCallback(
     async (preferences: ProfilePreferences) => {
       const updated = await patchPreferences(preferences);
-      setLoaded({ userId, profile: updated, error: null });
+      if (userId) queryClient.setQueryData(profileKey(userId), updated);
     },
-    [userId],
+    [queryClient, userId],
   );
 
   const setAvatar = useCallback(
     async (avatarUrl: string) => {
       const updated = await patchAvatar(avatarUrl);
-      setLoaded({ userId, profile: updated, error: null });
+      if (userId) queryClient.setQueryData(profileKey(userId), updated);
       if (userId) {
         void pruneAvatars(client, userId, ownUploadPath(updated.avatarUrl, userId));
       }
     },
-    [client, userId],
+    [client, queryClient, userId],
   );
 
   const uploadAvatar = useCallback(
@@ -122,7 +86,7 @@ export function ProfileProvider({ children }: { children: ReactNode }) {
       if (!userId) throw new Error("Not signed in.");
       const uploaded = await putAvatar(client, userId, file, id);
       try {
-        await setAvatar(uploaded.url);
+        await setAvatar(uploaded.path);
       } catch (cause) {
         void pruneAvatars(client, userId, ownUploadPath(profile?.avatarUrl ?? null, userId));
         throw cause;

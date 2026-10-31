@@ -1,5 +1,6 @@
 "use client";
 
+import { LOAD_FAILED_MESSAGE } from "@kinwoo/core/app";
 import { useAuth } from "@kinwoo/client/auth";
 import { useBusyWhile } from "@kinwoo/client/activity";
 import {
@@ -66,7 +67,7 @@ import { ItemGridSkeleton } from "@/components/skeleton/skeletons";
 import { batchMarkBoughtPath, markBoughtPath } from "@/lib/house-navigation";
 import { houseStorage } from "@/lib/house-storage";
 import { cn } from "@/lib/utils";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/lib/router";
 
 // Opening a transaction leaves this page; remembering the tab lets going back land on it again.
 let lastTab: GroceryTabKey = DEFAULT_GROCERY_TAB;
@@ -82,7 +83,7 @@ export function TasksScreen({ view }: { view: TasksView | null }) {
   const houseId = activeHouse?.house.id ?? "";
   const isAdmin = activeHouse?.role === "admin";
 
-  const { data: lists } = useGroceryLists(houseId || null);
+  const { data: lists, isError: listsError } = useGroceryLists(houseId || null);
 
   const listStorage = useMemo(() => createListStorage(houseStorage), []);
   const [selectedListId, setSelectedListId] = useState<string | null>(null);
@@ -155,6 +156,7 @@ export function TasksScreen({ view }: { view: TasksView | null }) {
   );
 
   const itemsLoaded = ready && items !== undefined;
+  const loadFailed = (listsError && !lists) || history.loadFailed;
   const filtering = countSelected(filters) > 0;
   const listEmpty = (items ?? []).length === 0;
 
@@ -307,7 +309,7 @@ export function TasksScreen({ view }: { view: TasksView | null }) {
           ) : null}
           <span className="truncate font-display text-xl font-medium">
             {activeList?.name ??
-              (lists ? "Groceries" : <SkeletonText size="xl" className="w-32" />)}
+              (lists || loadFailed ? "Groceries" : <SkeletonText size="xl" className="w-32" />)}
           </span>
           <CaretDownIcon size={9} className="shrink-0" />
         </button>
@@ -327,7 +329,7 @@ export function TasksScreen({ view }: { view: TasksView | null }) {
       <GroceryTabView
         value={tab}
         onChange={handleTabChange}
-        fillActive={itemsLoaded && visibleByTab[tab].length === 0}
+        fillActive={(itemsLoaded && visibleByTab[tab].length === 0) || loadFailed}
         between={
           <Filters
             groups={filterGroups}
@@ -343,7 +345,13 @@ export function TasksScreen({ view }: { view: TasksView | null }) {
           />
         }
         renderPage={(key) => {
-          if (!itemsLoaded) return <ItemGridSkeleton />;
+          if (!itemsLoaded) {
+            return loadFailed ? (
+              <EmptyItems image="list" title={LOAD_FAILED_MESSAGE} />
+            ) : (
+              <ItemGridSkeleton />
+            );
+          }
           const pageItems = visibleByTab[key];
           if (pageItems.length === 0) {
             const empty = (

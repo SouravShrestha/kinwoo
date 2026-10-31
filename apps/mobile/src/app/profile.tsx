@@ -42,7 +42,7 @@ const THEME_LABELS = { light: "Light", dark: "Dark", system: "System" } as const
 
 export default function ProfileScreen() {
   const { user, signOut } = useAuth();
-  const { profile } = useProfile();
+  const { profile, error: profileError } = useProfile();
   const { theme, resolvedTheme } = useTheme();
   const palette = colors[resolvedTheme];
   const insets = useSafeAreaInsets();
@@ -115,11 +115,13 @@ export default function ProfileScreen() {
         </Pressable>
 
         <View className="ml-4 flex-1">
-          {profile ? (
+          {profile || profileError ? (
             <>
-              <Text className="font-display text-xl text-foreground font-medium tracking-tight">
-                {profile.displayName}
-              </Text>
+              {profile ? (
+                <Text className="font-display text-xl text-foreground font-medium tracking-tight">
+                  {profile.displayName}
+                </Text>
+              ) : null}
               <Text className="mt-0.5 text-sm text-muted-foreground">{user?.email ?? ""}</Text>
             </>
           ) : (

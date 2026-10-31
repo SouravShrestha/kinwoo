@@ -8,6 +8,7 @@ const pkg = JSON.parse(readFileSync(path.join(__dirname, "../../package.json"), 
 
 const nextConfig: NextConfig = {
   devIndicators: false,
+  allowedDevOrigins: ["192.168.29.175"],
   // iOS reads apple-touch-startup-image from <head> when the app is added to the home screen;
   // streamed metadata lands in <body>, so every user agent gets blocking metadata instead.
   htmlLimitedBots: /.*/,
@@ -23,9 +24,6 @@ const nextConfig: NextConfig = {
   // Pages are thin wrappers around client screens that load their data through React Query, so
   // reusing a visited page's RSC payload is safe and saves a Worker round trip per tab switch.
   experimental: { staleTimes: { dynamic: 300 } },
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
   // The Content-Security-Policy is set per request in middleware.ts, since it carries a nonce.
   async headers() {
     return [

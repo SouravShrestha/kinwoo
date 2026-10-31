@@ -2,6 +2,7 @@ import { useActiveHouse } from "@kinwoo/client/houses";
 import { useProfile } from "@kinwoo/client/profile";
 import { toast } from "@kinwoo/client/toast";
 import { SETTING_EVENTS, withPushType, type SettingType } from "@kinwoo/core/push";
+import { LOAD_FAILED_MESSAGE } from "@kinwoo/core/app";
 import { TOAST_MESSAGES } from "@kinwoo/core/toast";
 import { ArrowRightIcon, CheckIcon } from "@kinwoo/icons/native";
 import { colors } from "@kinwoo/tokens/native";
@@ -23,7 +24,7 @@ export const unstable_settings = { title: "Notifications" };
 const PUSH_NOTE =
   "These settings only control push notifications. Everything still appears in your in-app notifications.";
 export default function NotificationsScreen() {
-  const { profile, setPreferences } = useProfile();
+  const { profile, error: profileError, setPreferences } = useProfile();
   const { activeHouse } = useActiveHouse();
   const { resolvedTheme } = useTheme();
   const palette = colors[resolvedTheme];
@@ -34,15 +35,32 @@ export default function NotificationsScreen() {
   // Saves run one after another so the last tap is the last write.
   const saves = useRef(Promise.resolve());
 
+  const backButton = (
+    <Pressable
+      accessibilityRole="button"
+      accessibilityLabel="Back"
+      onPress={goBack}
+      hitSlop={12}
+      className="size-10 items-start justify-center"
+    >
+      <View style={{ transform: [{ rotate: "180deg" }] }}>
+        <ArrowRightIcon size={28} color={palette.foreground} />
+      </View>
+    </Pressable>
+  );
   if (!profile) {
     return (
       <View className="flex-1 bg-background px-6" style={{ paddingTop: insets.top + 20 }}>
-        <Skeleton className="size-10 rounded-lg" />
+        {profileError ? backButton : <Skeleton className="size-10 rounded-lg" />}
         <Text className="mt-6 font-display-medium text-2xl text-foreground">
           Notification settings
         </Text>
         <Text className="mt-6 text-sm text-muted-foreground">{PUSH_NOTE}</Text>
-        <NotificationSettingsSkeleton />
+        {profileError ? (
+          <Text className="mt-6 text-base text-muted-foreground">{LOAD_FAILED_MESSAGE}</Text>
+        ) : (
+          <NotificationSettingsSkeleton />
+        )}
       </View>
     );
   }
@@ -104,17 +122,7 @@ export default function NotificationsScreen() {
         paddingBottom: insets.bottom + 40,
       }}
     >
-      <Pressable
-        accessibilityRole="button"
-        accessibilityLabel="Back"
-        onPress={goBack}
-        hitSlop={12}
-        className="size-10 items-start justify-center"
-      >
-        <View style={{ transform: [{ rotate: "180deg" }] }}>
-          <ArrowRightIcon size={28} color={palette.foreground} />
-        </View>
-      </Pressable>
+      {backButton}
       <Text className="mt-6 font-display-medium text-2xl text-foreground">
         Notification settings
       </Text>

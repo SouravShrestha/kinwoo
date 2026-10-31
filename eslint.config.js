@@ -25,6 +25,7 @@ export default tseslint.config(
       "**/next-env.d.ts",
       "**/android/**",
       "**/ios/**",
+      "brag-output/**",
       "packages/tokens/generated/**",
       "packages/core/src/database.generated.ts",
     ],
@@ -39,6 +40,24 @@ export default tseslint.config(
       next: {
         rootDir: "apps/web",
       },
+    },
+  },
+  {
+    files: ["apps/web/src/**/*.{ts,tsx}"],
+    ignores: ["apps/web/src/lib/router.ts", "apps/web/src/**/*.test.{ts,tsx}"],
+    rules: {
+      "no-restricted-imports": [
+        "error",
+        {
+          paths: [
+            {
+              name: "next/navigation",
+              importNames: ["useRouter"],
+              message: "Use useRouter from @/lib/router, which handles offline navigation.",
+            },
+          ],
+        },
+      ],
     },
   },
   {

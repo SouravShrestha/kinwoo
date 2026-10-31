@@ -7,7 +7,7 @@ import { useActiveHouse, useHouseMembers } from "@kinwoo/client/houses";
 import { useProfile } from "@kinwoo/client/profile";
 import type { GroceryOverviewItem } from "@kinwoo/core/grocery";
 import { homeGreeting } from "@kinwoo/core/houses";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/lib/router";
 import { useState } from "react";
 
 import { AndroidInstallBanner } from "@/components/AndroidInstallBanner";

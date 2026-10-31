@@ -5,9 +5,8 @@ import { useOfflineToast } from "@kinwoo/client/activity";
 import { AuthProvider } from "@kinwoo/client/auth";
 import { GroceryRealtime } from "@kinwoo/client/grocery";
 import { HousesProvider, useActiveHouse } from "@kinwoo/client/houses";
-import { ProfileProvider } from "@kinwoo/client/profile";
 import { onlineManager } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/lib/router";
 import type { ReactNode } from "react";
 
 import { AuthGate } from "./AuthGate";
@@ -16,6 +15,7 @@ import { DoubleClickGuard } from "./DoubleClickGuard";
 import { FontScale } from "./FontScale";
 import { HouseGate } from "./HouseGate";
 import { InstallPromoSheet } from "./InstallPromoSheet";
+import { OfflineNavigationGuard } from "./OfflineNavigationGuard";
 import { PushPromoSheet } from "./PushPromoSheet";
 import { PushRegistration } from "./PushRegistration";
 import { Toaster } from "./Toaster";
@@ -51,28 +51,27 @@ export function AppProviders({ children }: { children: ReactNode }) {
 
   return (
     <AuthProvider adapter={webAuthAdapter}>
-      <ProfileProvider>
-        <HousesProvider
-          storage={houseStorage}
-          realtimeClient={supabase}
-          onPendingInvite={(code) =>
-            router.push(`/house/join?code=${encodeURIComponent(code)}&confirm=1`)
-          }
-        >
-          <GroceryRealtimeGate />
-          <TopLoader />
-          <Toaster />
-          <DoubleClickGuard />
-          <FontScale />
-          {children}
-          <AuthGate />
-          <HouseGate />
-          <InstallPromoSheet />
-          <PushPromoSheet />
-          <PushRegistration />
-          <CookieNotice />
-        </HousesProvider>
-      </ProfileProvider>
+      <HousesProvider
+        storage={houseStorage}
+        realtimeClient={supabase}
+        onPendingInvite={(code) =>
+          router.push(`/house/join?code=${encodeURIComponent(code)}&confirm=1`)
+        }
+      >
+        <GroceryRealtimeGate />
+        <TopLoader />
+        <Toaster />
+        <OfflineNavigationGuard />
+        <DoubleClickGuard />
+        <FontScale />
+        {children}
+        <AuthGate />
+        <HouseGate />
+        <InstallPromoSheet />
+        <PushPromoSheet />
+        <PushRegistration />
+        <CookieNotice />
+      </HousesProvider>
     </AuthProvider>
   );
 }

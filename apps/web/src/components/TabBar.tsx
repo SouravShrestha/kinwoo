@@ -14,7 +14,8 @@ import {
 } from "@kinwoo/icons";
 import { rejectHouseRequired, useHouseAccess } from "@kinwoo/client/houses";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
+import { useRouter } from "@/lib/router";
 import { useState, type ComponentType } from "react";
 
 import { cn } from "@/lib/utils";

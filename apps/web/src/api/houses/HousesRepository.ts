@@ -7,7 +7,7 @@ import {
 } from "@kinwoo/core/houses";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
-import { toPublicAvatarUrl } from "../avatars/avatarUrls";
+import { toAvatarUrl } from "../avatars/avatarUrls";
 import {
   HouseRepositoryError,
   type House,
@@ -132,21 +132,23 @@ export class HousesRepository implements IHousesRepository {
 
     const emailByUser = new Map(emails.data.map((row) => [row.user_id, row.email]));
 
-    return (data ?? []).map((row) => {
-      const profile = row.profiles as unknown as {
-        display_name: string | null;
-        avatar_url: string | null;
-      } | null;
+    return Promise.all(
+      (data ?? []).map(async (row) => {
+        const profile = row.profiles as unknown as {
+          display_name: string | null;
+          avatar_url: string | null;
+        } | null;
 
-      return {
-        userId: row.user_id,
-        displayName: profile?.display_name ?? null,
-        avatarUrl: toPublicAvatarUrl(this.client, profile?.avatar_url),
-        email: emailByUser.get(row.user_id) ?? null,
-        role: row.role,
-        joinedAt: row.joined_at,
-      };
-    });
+        return {
+          userId: row.user_id,
+          displayName: profile?.display_name ?? null,
+          avatarUrl: await toAvatarUrl(this.client, profile?.avatar_url),
+          email: emailByUser.get(row.user_id) ?? null,
+          role: row.role,
+          joinedAt: row.joined_at,
+        };
+      }),
+    );
   }
 
   async setMemberRole(houseId: string, userId: string, role: HouseRole): Promise<void> {
@@ -226,11 +228,13 @@ export class HousesRepository implements IHousesRepository {
 
     return {
       ...preview,
-      invitedByAvatarUrl: toPublicAvatarUrl(this.client, preview.invitedByAvatarUrl),
-      members: preview.members.map((member) => ({
-        ...member,
-        avatarUrl: toPublicAvatarUrl(this.client, member.avatarUrl),
-      })),
+      invitedByAvatarUrl: await toAvatarUrl(this.client, preview.invitedByAvatarUrl),
+      members: await Promise.all(
+        preview.members.map(async (member) => ({
+          ...member,
+          avatarUrl: await toAvatarUrl(this.client, member.avatarUrl),
+        })),
+      ),
     };
   }
 

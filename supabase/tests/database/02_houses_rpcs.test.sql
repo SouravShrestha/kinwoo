@@ -26,6 +26,8 @@ begin
   reset role;
 end $$;
 
+grant execute on all functions in schema tests to public;
+
 select tests.create_user('00000000-0000-4000-8000-0000000000d1', 'admin@test.local');
 select tests.create_user('00000000-0000-4000-8000-0000000000d2', 'member@test.local');
 select tests.create_user('00000000-0000-4000-8000-0000000000d3', 'third@test.local');

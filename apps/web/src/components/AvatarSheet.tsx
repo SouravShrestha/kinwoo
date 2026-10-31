@@ -4,6 +4,7 @@ import { useBusyWhile } from "@kinwoo/client/activity";
 import { avatarChoices, useAvatars, useProfile } from "@kinwoo/client/profile";
 import { toast } from "@kinwoo/client/toast";
 import { UploadPhotoIcon } from "@kinwoo/icons";
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
 import { cn } from "@/lib/utils";
@@ -130,13 +131,17 @@ export function AvatarSheet({ open, onClose }: { open: boolean; onClose: () => v
                       selected ? "border-3 border-accent" : "border border-border",
                     )}
                   >
-                    {}
-                    {/* Absolute so the image's own proportions cannot stretch the square button. */}
-                    <img
-                      src={url}
-                      alt=""
-                      className="absolute inset-2 h-[calc(100%-1rem)] w-[calc(100%-1rem)] rounded-full object-cover"
-                    />
+                    <span className="absolute inset-2">
+                      <Image
+                        src={url}
+                        alt=""
+                        fill
+                        unoptimized
+                        sizes="(max-width: 640px) 25vw, 160px"
+                        loader={({ src }) => src}
+                        className="rounded-full object-cover"
+                      />
+                    </span>
                   </button>
                 </div>
               );

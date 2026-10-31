@@ -1,3 +1,4 @@
+import { LOAD_FAILED_MESSAGE } from "@kinwoo/core/app";
 import { usePrivatePurchases } from "@kinwoo/client/grocery";
 import {
   findBoughtGroup,
@@ -35,7 +36,7 @@ export function PrivateSpending({ houseId }: { houseId: string }) {
   const insets = useSafeAreaInsets();
   const { resolvedTheme } = useTheme();
   const palette = colors[resolvedTheme];
-  const { data: items } = usePrivatePurchases(houseId);
+  const { data: items, isError } = usePrivatePurchases(houseId);
   const spending = useMemo(() => summarizePrivateSpending(items ?? []), [items]);
   const entries = useMemo(() => spending.months.flatMap((month) => month.entries), [spending]);
 
@@ -57,6 +58,7 @@ export function PrivateSpending({ houseId }: { houseId: string }) {
   };
 
   const loaded = items !== undefined;
+  const loadFailed = isError && !loaded;
   const { pan, scrollGesture, onScroll, sheetStyle } = useSwipeDownToDismiss(goBack);
 
   return (
@@ -83,7 +85,7 @@ export function PrivateSpending({ houseId }: { houseId: string }) {
                 <ArrowRightIcon size={28} color={palette.foreground} />
               </View>
             </Pressable>
-            {loaded ? (
+            {loaded || loadFailed ? (
               <View className="mt-2">
                 <Text
                   accessibilityRole="header"
@@ -93,15 +95,21 @@ export function PrivateSpending({ houseId }: { houseId: string }) {
                   <Text className="font-display-medium">{formatPaise(spending.totalPaise)}</Text>{" "}
                   privately
                 </Text>
-                <Text className="mt-2 font-display-normal text-sm text-muted-foreground">
-                  {PRIVATE_SPENDING_NOTE}
-                </Text>
+                {loaded ? (
+                  <Text className="mt-2 font-display-normal text-sm text-muted-foreground">
+                    {PRIVATE_SPENDING_NOTE}
+                  </Text>
+                ) : null}
               </View>
             ) : (
               <PrivateSpendingHeaderSkeleton />
             )}
           </View>
-          {loaded && entries.length === 0 ? (
+          {loadFailed ? (
+            <View className="flex-1">
+              <EmptyItems image={noExpense} title={LOAD_FAILED_MESSAGE} />
+            </View>
+          ) : loaded && entries.length === 0 ? (
             <View className="flex-1">
               <EmptyItems
                 image={noExpense}

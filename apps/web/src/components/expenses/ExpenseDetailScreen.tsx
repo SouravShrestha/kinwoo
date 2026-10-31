@@ -10,7 +10,7 @@ import { formatFullDate, formatPaise } from "@kinwoo/core/grocery";
 import { memberDisplayName } from "@kinwoo/core/houses";
 import { ArrowRightIcon, EditIcon, NoteIcon, TrashIcon } from "@kinwoo/icons";
 import { ExpenseCategoryImage } from "@/components/CategoryImages";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/lib/router";
 import { useEffect, useRef, useState, type AnimationEvent } from "react";
 
 import { ConfirmDialog } from "@/components/ConfirmDialog";

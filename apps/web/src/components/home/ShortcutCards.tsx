@@ -1,7 +1,7 @@
 "use client";
 
 import { BagDollarIcon, BalancesIcon, PendingActiveIcon, SettleUpIcon } from "@kinwoo/icons";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/lib/router";
 import type { ReactNode } from "react";
 
 import { BALANCES_PATH, NEW_EXPENSE_PATH, SETTLE_UP_PATH } from "@/lib/house-navigation";

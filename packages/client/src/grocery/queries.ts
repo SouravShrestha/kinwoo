@@ -81,6 +81,8 @@ export type ListItemsWithHistory = {
   // True until the history has been read to the end.
   hasOlder: boolean;
   loadingOlder: boolean;
+  // The first load of the items failed, so there is nothing to show.
+  loadFailed: boolean;
   loadOlder: () => void;
   refetch: () => Promise<unknown>;
 };
@@ -90,7 +92,7 @@ export function useListItemsWithHistory(
   houseId: string | null,
   listId: string | null,
 ): ListItemsWithHistory {
-  const { data: items, refetch: refetchItems } = useGroceryItems(houseId, listId);
+  const { data: items, isError, refetch: refetchItems } = useGroceryItems(houseId, listId);
   const [requestedFor, setRequestedFor] = useState<string | null>(null);
   const requested = listId !== null && requestedFor === listId;
   const history = useBoughtHistory(houseId, listId, requested);
@@ -105,6 +107,7 @@ export function useListItemsWithHistory(
     hasOlder:
       !requested || ((history.hasNextPage || history.isPending) && !history.isFetchNextPageError),
     loadingOlder: requested && (history.isFetching || history.isPending),
+    loadFailed: isError && items === undefined,
     loadOlder: () => {
       if (!requested) setRequestedFor(listId);
       else if (history.hasNextPage && !history.isFetchingNextPage) void history.fetchNextPage();

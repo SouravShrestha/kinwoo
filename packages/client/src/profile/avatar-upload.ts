@@ -7,11 +7,9 @@ export const AVATAR_UPLOAD_QUALITY = 0.85;
 
 export interface UploadedAvatar {
   path: string;
-  url: string;
 }
 
-// `id` must be a lowercase UUID: the storage policy only accepts `<user id>/<uuid>.jpg`, and the
-// random name keeps the public URL unguessable. It is passed in because Hermes has no crypto.
+// `id` must be a lowercase UUID: the storage policy only accepts `<user id>/<uuid>.jpg`.
 export async function putAvatar(
   client: SupabaseClient,
   userId: string,
@@ -22,7 +20,7 @@ export async function putAvatar(
   const bucket = client.storage.from(BUCKET);
   const { error } = await bucket.upload(path, file, { contentType: "image/jpeg", upsert: false });
   if (error) throw new Error(error.message);
-  return { path, url: bucket.getPublicUrl(path).data.publicUrl };
+  return { path };
 }
 
 // Keeps one file per user: removes everything in the user's folder except `keep`. Best effort,
@@ -54,9 +52,9 @@ export function avatarChoices(
 
 // The bucket path of an avatar URL when it is one of the user's own uploads, else null.
 export function ownUploadPath(url: string | null, userId: string): string | null {
+  if (!url) return null;
   const marker = `/${BUCKET}/`;
-  const at = url ? url.indexOf(marker) : -1;
-  if (!url || at < 0) return null;
-  const path = url.slice(at + marker.length);
+  const at = url.indexOf(marker);
+  const path = at >= 0 ? url.slice(at + marker.length).split(/[?#]/, 1)[0] : url;
   return path.startsWith(`${userId}/`) ? path : null;
 }

@@ -5,6 +5,20 @@
 
 @custom-variant dark (&:is(.dark *));
 
+html {
+  background: #fefefe;
+}
+
+html.dark {
+  background: #0e0e0e;
+}
+
+@media (prefers-color-scheme: dark) {
+  html:not(.light) {
+    background: #0e0e0e;
+  }
+}
+
 @theme inline {
   --radius-sm: calc(var(--radius) - 2px);
   --radius-md: var(--radius);

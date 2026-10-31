@@ -10,6 +10,7 @@ import {
   validateDisplayName,
 } from "@kinwoo/core/auth";
 import { CONFIRM_COPY } from "@kinwoo/core/confirm";
+import { LOAD_FAILED_MESSAGE } from "@kinwoo/core/app";
 import { TOAST_MESSAGES } from "@kinwoo/core/toast";
 import { CheckIcon, EditIcon, GoogleIcon, LinkIcon, UnlinkIcon } from "@kinwoo/icons";
 import { useState, type ReactNode } from "react";
@@ -55,7 +56,7 @@ function IconButton({
 
 export function PersonalInformationScreen() {
   const { user, canSignInWithGoogle, linkGoogle, unlinkGoogle } = useAuth();
-  const { profile, setDisplayName } = useProfile();
+  const { profile, error: profileError, setDisplayName } = useProfile();
 
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState("");
@@ -152,7 +153,9 @@ export function PersonalInformationScreen() {
         </button>
       </div>
 
-      {!profile ? (
+      {!profile && profileError ? (
+        <p className="mt-8 text-base text-muted-foreground">{LOAD_FAILED_MESSAGE}</p>
+      ) : !profile ? (
         <FieldSkeleton className="mt-8" />
       ) : (
         <form

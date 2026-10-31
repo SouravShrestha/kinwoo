@@ -13,7 +13,7 @@ import { useActiveHouse } from "@kinwoo/client/houses";
 import { toast } from "@kinwoo/client/toast";
 import { expenseFeed } from "@kinwoo/core/expenses";
 import { MoreVerticalIcon, PlusCircleIcon } from "@kinwoo/icons";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/lib/router";
 import { useMemo, useState } from "react";
 
 import { Button } from "@/components/Button";

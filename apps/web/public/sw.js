@@ -84,8 +84,11 @@ async function networkFirst(request, event) {
     // shortcut: a query string the page reads on the server (e.g. ?listId=) is lost in this
     // fallback; upgrade if an offline screen needs one.
     const base = await caches.match(request, { ignoreVary: true, ignoreSearch: true });
+    if (base) return base;
+    // No cached copy: send the user home with a toast flag so the app shows the offline message.
+    const home = await caches.match("/", { ignoreVary: true });
     return (
-      base ??
+      home ??
       new Response(OFFLINE_PAGE, {
         status: 503,
         headers: { "Content-Type": "text/html; charset=utf-8" },

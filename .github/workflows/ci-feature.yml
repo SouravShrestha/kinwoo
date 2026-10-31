@@ -49,7 +49,7 @@ jobs:
           NEXT_PUBLIC_VAPID_PUBLIC_KEY: ${{ secrets.NEXT_PUBLIC_VAPID_PUBLIC_KEY || vars.NEXT_PUBLIC_VAPID_PUBLIC_KEY }}
 
       - name: Build for Cloudflare Workers (OpenNext)
-        run: npx opennextjs-cloudflare build --dangerouslyUseUnsupportedNextVersion
+        run: npx opennextjs-cloudflare build
         working-directory: apps/web
         env:
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL || vars.NEXT_PUBLIC_SUPABASE_URL }}

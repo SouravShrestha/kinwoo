@@ -2,7 +2,7 @@ import type { Database } from "@kinwoo/core/db";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { describe, expect, it } from "vitest";
 
-import { toPublicAvatarUrl, toStoredAvatar } from "./avatarUrls";
+import { toAvatarUrl, toStoredAvatar } from "./avatarUrls";
 
 const client = {
   storage: {
@@ -10,35 +10,44 @@ const client = {
       getPublicUrl: (path: string) => ({
         data: { publicUrl: `https://db.test/storage/v1/object/public/${bucket}/${path}` },
       }),
+      createSignedUrl: async (path: string) => ({
+        data: {
+          signedUrl: `https://db.test/storage/v1/object/sign/${bucket}/${path}?token=test`,
+        },
+        error: null,
+      }),
     }),
   },
 } as unknown as SupabaseClient<Database>;
 
-describe("toPublicAvatarUrl", () => {
-  it("resolves a preset path against the avatars bucket", () => {
-    expect(toPublicAvatarUrl(client, "avatar-01.png")).toBe(
+describe("toAvatarUrl", () => {
+  it("resolves a preset path against the public avatars bucket", async () => {
+    await expect(toAvatarUrl(client, "avatar-01.png")).resolves.toBe(
       "https://db.test/storage/v1/object/public/avatars/avatar-01.png",
     );
   });
 
-  it("resolves an upload path against the uploaded_avatars bucket", () => {
-    expect(toPublicAvatarUrl(client, "user-1/abc.jpg")).toBe(
-      "https://db.test/storage/v1/object/public/uploaded_avatars/user-1/abc.jpg",
+  it("resolves an upload path to a signed URL", async () => {
+    await expect(toAvatarUrl(client, "user-1/abc.jpg")).resolves.toBe(
+      "https://db.test/storage/v1/object/sign/uploaded_avatars/user-1/abc.jpg?token=test",
     );
   });
 
-  it("drops an absolute URL", () => {
-    expect(toPublicAvatarUrl(client, "https://evil.test/pixel.png")).toBeNull();
+  it("drops an absolute URL", async () => {
+    await expect(toAvatarUrl(client, "https://evil.test/pixel.png")).resolves.toBeNull();
   });
 });
 
 describe("toStoredAvatar", () => {
-  it("turns a public URL from either bucket back into its path", () => {
+  it("turns public and signed URLs back into their paths", () => {
     expect(
       toStoredAvatar(client, "https://db.test/storage/v1/object/public/avatars/avatar-01.png"),
     ).toBe("avatar-01.png");
     expect(
-      toStoredAvatar(client, "https://db.test/storage/v1/object/public/uploaded_avatars/u/a.jpg"),
+      toStoredAvatar(
+        client,
+        "https://db.test/storage/v1/object/sign/uploaded_avatars/u/a.jpg?token=test",
+      ),
     ).toBe("u/a.jpg");
   });
 

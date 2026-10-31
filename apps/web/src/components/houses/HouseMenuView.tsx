@@ -18,7 +18,7 @@ import {
   MemberIcon,
   SwitchHouseIcon,
 } from "@kinwoo/icons";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/lib/router";
 
 import { Skeleton } from "@/components/skeleton/Skeleton";
 import { AvatarStack } from "./AvatarStack";

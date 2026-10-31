@@ -4,15 +4,15 @@ import { TOAST_MESSAGES } from "@kinwoo/core/toast";
 import { onlineManager, useQueryClient, type QueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
 
-import { closeAll } from "../sheets";
 import { toast } from "../toast";
 
 export type OfflineBlock = "unsaved" | "more";
 
 /**
  * Offline, a first load with nothing saved would sit on its skeleton forever, so it ends as an
- * error ("unsaved"). Asking for another page of a list that cannot load ("more") is left waiting
- * for the connection. `onBlocked` runs once per burst, with "unsaved" taking priority.
+ * error ("unsaved"). Asking for another page of a list that cannot load ("more") is cancelled
+ * while the already cached page remains visible. `onBlocked` runs once per burst, with "unsaved"
+ * taking priority.
  */
 export function guardOfflineLoads(
   queryClient: QueryClient,
@@ -28,6 +28,7 @@ export function guardOfflineLoads(
       query.cancel();
       block = "unsaved";
     } else if (query.state.fetchMeta?.fetchMore) {
+      query.cancel();
       block = "more";
     } else {
       return;
@@ -44,7 +45,7 @@ export function guardOfflineLoads(
   });
 }
 
-/** Offline with nothing saved to show: stops the load, says so, and closes any open sheet. */
+/** Offline with nothing saved to show: stops the load and explains why no data is shown. */
 export function OfflineLoadGuard(): null {
   const queryClient = useQueryClient();
   useEffect(
@@ -52,7 +53,6 @@ export function OfflineLoadGuard(): null {
       guardOfflineLoads(queryClient, (block) => {
         if (block === "more") return toast.warning(TOAST_MESSAGES.offline);
         toast.warning(TOAST_MESSAGES.offlineNoData);
-        closeAll();
       }),
     [queryClient],
   );

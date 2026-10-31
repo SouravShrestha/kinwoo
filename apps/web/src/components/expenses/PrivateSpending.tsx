@@ -1,5 +1,6 @@
 "use client";
 
+import { LOAD_FAILED_MESSAGE } from "@kinwoo/core/app";
 import { usePrivatePurchases } from "@kinwoo/client/grocery";
 import {
   findBoughtGroup,
@@ -22,7 +23,7 @@ import {
 import { PrivatePurchaseRow } from "./PrivatePurchaseRow";
 
 export function PrivateSpending({ houseId }: { houseId: string }) {
-  const { data: items } = usePrivatePurchases(houseId);
+  const { data: items, isError } = usePrivatePurchases(houseId);
   const spending = useMemo(() => summarizePrivateSpending(items ?? []), [items]);
   const entries = useMemo(() => spending.months.flatMap((month) => month.entries), [spending]);
 
@@ -44,7 +45,11 @@ export function PrivateSpending({ houseId }: { houseId: string }) {
   };
 
   if (items === undefined) {
-    return (
+    return isError ? (
+      <div className="flex flex-1 flex-col">
+        <EmptyItems image="expense" title={LOAD_FAILED_MESSAGE} />
+      </div>
+    ) : (
       <>
         <PrivateSpendingHeaderSkeleton />
         <ExpenseRowsSkeleton count={4} />

@@ -10,7 +10,7 @@ import {
 import { useActiveHouse } from "@kinwoo/client/houses";
 import { toast } from "@kinwoo/client/toast";
 import { CONFIRM_COPY } from "@kinwoo/core/confirm";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/lib/router";
 import { useState } from "react";
 
 import { BottomSheet } from "@/components/BottomSheet";

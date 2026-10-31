@@ -1,7 +1,7 @@
 import type { Database, ProfileRow, ProfileUpdate } from "@kinwoo/core/db";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
-import { AVATAR_BUCKET, toPublicAvatarUrl, toStoredAvatar } from "../avatars/avatarUrls";
+import { AVATAR_BUCKET, toAvatarUrl, toStoredAvatar } from "../avatars/avatarUrls";
 import type { IProfileRepository, Profile, ProfilePreferences } from "./IProfileRepository";
 
 const COLUMNS =
@@ -14,11 +14,11 @@ const IMAGE_FILE = /\.(png|jpe?g|webp)$/i;
 export class ProfileRepository implements IProfileRepository {
   constructor(private readonly client: SupabaseClient<Database>) {}
 
-  private toProfile(row: ProfileRow): Profile {
+  private async toProfile(row: ProfileRow): Promise<Profile> {
     return {
       id: row.id,
       displayName: row.display_name,
-      avatarUrl: toPublicAvatarUrl(this.client, row.avatar_url),
+      avatarUrl: await toAvatarUrl(this.client, row.avatar_url),
       locale: row.locale,
       theme: row.theme,
       notificationsEnabled: row.notifications_enabled,

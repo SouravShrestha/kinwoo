@@ -9,7 +9,7 @@ import {
 } from "@kinwoo/core/grocery";
 import { ArchiveIcon, TransactionIcon } from "@kinwoo/icons";
 import { ItemCategoryImage } from "@/components/CategoryImages";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/lib/router";
 
 import { Button } from "@/components/Button";
 import { expensePath } from "@/lib/house-navigation";
