@@ -37,32 +37,42 @@ export function itemBuyer(item: GroceryItem): ItemAssignee | null {
 
 export type GroceryEmptyCopy = { title: string; hint: string | null };
 
-const EMPTY_TAB_TITLE: Record<GroceryTabKey, string> = {
-  pending: "No pending items on this list yet",
-  assigned: "Nothing claimed or assigned",
-  bought: "Nothing bought yet",
+const EMPTY_TAB_COPY: Record<GroceryTabKey, GroceryEmptyCopy> = {
+  pending: {
+    title: "Nothing pending. Suspiciously calm.",
+    hint: "Tap “+” below and give the list something to do",
+  },
+  assigned: {
+    title: "Nobody’s called dibs yet",
+    hint: "Claim an item or hand one off, and it’ll land here",
+  },
+  bought: {
+    title: "The cart’s feeling lonely",
+    hint: "Mark items as bought and they’ll show up here",
+  },
 };
 
-const ADD_ITEMS_HINT = "Tap “+” below to add items";
-
-const EMPTY_TAB_HINT: Record<GroceryTabKey, string> = {
-  pending: ADD_ITEMS_HINT,
-  assigned: "Items you claim or that get assigned to someone show up here",
-  bought: "Items marked as bought show up here",
+const EMPTY_LIST_COPY: Record<GroceryTabKey, GroceryEmptyCopy> = {
+  pending: {
+    title: "Nothing here but good intentions",
+    hint: "Tap “+” below to add your first item",
+  },
+  assigned: {
+    title: "This list is a blank canvas",
+    hint: "Tap “+” below and start adding items",
+  },
+  bought: {
+    title: "This list is a blank canvas",
+    hint: "Tap “+” below and start adding items",
+  },
 };
 
 export function groceryEmptyCopy(
   tab: GroceryTabKey,
   state: { filtering: boolean; listEmpty: boolean },
 ): GroceryEmptyCopy {
-  if (state.filtering) return { title: "No items match these filters", hint: null };
-  if (state.listEmpty) {
-    return {
-      title: tab === "pending" ? EMPTY_TAB_TITLE.pending : "No items on this list yet",
-      hint: ADD_ITEMS_HINT,
-    };
-  }
-  return { title: EMPTY_TAB_TITLE[tab], hint: EMPTY_TAB_HINT[tab] };
+  if (state.filtering) return { title: "Your filters came up empty-handed", hint: null };
+  return (state.listEmpty ? EMPTY_LIST_COPY : EMPTY_TAB_COPY)[tab];
 }
 
 export function groceryItemsByTab(

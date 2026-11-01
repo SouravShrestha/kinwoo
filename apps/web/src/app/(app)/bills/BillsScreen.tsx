@@ -16,7 +16,7 @@ import { MoreVerticalIcon, PlusCircleIcon } from "@kinwoo/icons";
 import { useRouter } from "@/lib/router";
 import { useMemo, useState } from "react";
 
-import { Button } from "@/components/Button";
+import { FixedLayer } from "@/components/FixedLayer";
 import { LoadMoreSentinel } from "@/components/LoadMoreSentinel";
 import { BalanceSummary } from "@/components/expenses/BalanceSummary";
 import { ExpenseActions } from "@/components/expenses/ExpenseActions";
@@ -115,22 +115,16 @@ export function BillsScreen() {
         </div>
       ) : null}
 
-      <div className="mt-4">
+      <div className="mt-4 flex flex-1 flex-col">
         {!ready || isLoading ? (
           <ExpenseRowsSkeleton />
         ) : empty ? (
-          <div className="py-12">
+          <div className="flex flex-1 flex-col">
             <EmptyItems
-              image="expense"
-              title="Nothing to see here"
-              hint="Add rent, bills or anything you share. Split grocery purchases show up here too."
-            >
-              <Button
-                label="Add expense"
-                className="w-auto"
-                onClick={() => router.push(NEW_EXPENSE_PATH)}
-              />
-            </EmptyItems>
+              icon="expense"
+              title="No bills, no drama (yet)"
+              hint="Add rent, utilities, or anything you split. Shared grocery purchases land here too."
+            />
           </div>
         ) : (
           <div className="-mx-4">
@@ -159,8 +153,8 @@ export function BillsScreen() {
         )}
       </div>
 
-      {empty ? null : (
-        <div className="pointer-events-none fixed bottom-[calc(5.625rem+env(safe-area-inset-bottom))] left-1/2 w-full max-w-md -translate-x-1/2 px-4">
+      <FixedLayer>
+        <div className="pointer-events-none fixed bottom-[calc(5.625rem+env(safe-area-inset-bottom))] left-1/2 z-30 w-full max-w-md -translate-x-1/2 px-4">
           <button
             type="button"
             onClick={() => router.push(NEW_EXPENSE_PATH)}
@@ -171,7 +165,7 @@ export function BillsScreen() {
             <PlusCircleIcon size={48} className="relative" />
           </button>
         </div>
-      )}
+      </FixedLayer>
 
       <ExpensesMenuSheet
         open={menuOpen}

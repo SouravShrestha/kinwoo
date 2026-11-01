@@ -1,4 +1,5 @@
 import { useExpense } from "@kinwoo/client/expenses";
+import { usePrivateExpense } from "@kinwoo/client/grocery";
 import { useActiveHouse, useHouseMembers } from "@kinwoo/client/houses";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect } from "react";
@@ -8,10 +9,17 @@ import { ExpenseFormPageSkeleton } from "@/components/skeleton/skeletons";
 import { goHome } from "@/lib/house-navigation";
 
 export default function EditExpenseRoute() {
-  const { expenseId } = useLocalSearchParams<{ expenseId?: string }>();
+  const { expenseId, private: privateParam } = useLocalSearchParams<{
+    expenseId?: string;
+    private?: string;
+  }>();
+  const isPrivate = privateParam === "1";
   const { activeHouse, ready } = useActiveHouse();
   const houseId = activeHouse?.house.id ?? null;
-  const { data: expense, isError } = useExpense(houseId, expenseId ?? null);
+  const shared = useExpense(houseId, isPrivate ? null : (expenseId ?? null));
+  const own = usePrivateExpense(isPrivate ? houseId : null, isPrivate ? (expenseId ?? null) : null);
+  const expense = isPrivate ? own.expense : shared.data;
+  const isError = isPrivate ? own.isError : shared.isError;
   const { data: members, isError: membersError } = useHouseMembers(houseId);
   const loadFailed = isError || (membersError && !members);
 
@@ -21,5 +29,7 @@ export default function EditExpenseRoute() {
 
   // The form seeds its payer and split state on mount, so it waits for both.
   if (!houseId || !expense || !members) return <ExpenseFormPageSkeleton title="Edit expense" />;
-  return <ExpenseFormScreen houseId={houseId} expense={expense} />;
+  return (
+    <ExpenseFormScreen houseId={houseId} expense={expense} privatePurchase={own.transaction} />
+  );
 }

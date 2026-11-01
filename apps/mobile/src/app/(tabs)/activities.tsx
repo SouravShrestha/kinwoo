@@ -14,7 +14,6 @@ import { Filters } from "@/components/Filters";
 import { EmptyItems } from "@/components/grocery/EmptyItems";
 import { ActivityRowsSkeleton } from "@/components/skeleton/skeletons";
 import { openExpense as openExpenseScreen, openPayment } from "@/lib/house-navigation";
-import { noActivity } from "@/lib/images";
 import { usePullToRefresh } from "@/lib/use-pull-to-refresh";
 
 export default function ActivitiesScreen() {
@@ -91,8 +90,10 @@ export default function ActivitiesScreen() {
         </View>
       ) : showEmpty ? (
         <EmptyItems
-          image={noActivity}
-          title={hasActiveFilters ? "No activity matches these filters" : "No activity yet"}
+          icon={hasActiveFilters ? "filter" : "activity"}
+          title={
+            hasActiveFilters ? "No gossip matches these filters" : "Nothing to gossip about yet"
+          }
           hint={hasActiveFilters ? null : ACTIVITY_EMPTY_HINT}
         />
       ) : null,

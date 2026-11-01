@@ -772,6 +772,12 @@ isOneToOne: false
 "normalize_expense_title":
 { Args: { "p_title": string }; Returns: string
                            },
+"own_avatar_upload_count":
+{ Args: Record<PropertyKey, never>; Returns: number
+                           },
+"push_token_platform":
+{ Args: { "p_token": string }; Returns: string
+                           },
 "record_settlement":
 { Args: { "p_amount_paise": number,"p_house_id": string,"p_payee_id": string,"p_payer_id": string }; Returns: string
                            },
@@ -869,6 +875,9 @@ isOneToOne: false
         isOneToOne: true
         isSetofReturn: false
       } },
+"update_private_purchase":
+{ Args: { "p_bought_at": string,"p_item_id": string,"p_price_paise": number,"p_store": string }; Returns: undefined
+                           },
 "update_settlement":
 { Args: { "p_amount_paise": number,"p_settlement_id": string }; Returns: undefined
                            },

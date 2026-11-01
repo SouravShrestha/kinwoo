@@ -1,7 +1,7 @@
-import { LOAD_FAILED_MESSAGE } from "@kinwoo/core/app";
 import { useAuth } from "@kinwoo/client/auth";
 import { useHouseBalances } from "@kinwoo/client/expenses";
 import { useHouseMembers } from "@kinwoo/client/houses";
+import { useToastOnLoadFailure } from "@kinwoo/client/toast";
 import { SETTLED_UP_HINT, unsettledPairs } from "@kinwoo/core/expenses";
 import { formatPaise } from "@kinwoo/core/grocery";
 import { memberDisplayName } from "@kinwoo/core/houses";
@@ -19,7 +19,6 @@ import { Pressable } from "@/components/Pressable";
 import { SettleUpSkeleton } from "@/components/skeleton/skeletons";
 import { SwipeDownScreen } from "@/components/SwipeDownScreen";
 import { goBack, openRecordPayment } from "@/lib/house-navigation";
-import { noExpense } from "@/lib/images";
 import { useSwipeDownToDismiss } from "@/lib/use-swipe-down-to-dismiss";
 import { useTheme } from "@/theme/ThemeProvider";
 
@@ -36,6 +35,7 @@ export function SettleUpScreen({
   const { user } = useAuth();
   const { data: balances, isError } = useHouseBalances(houseId, simplifyDebts);
   const { data: members } = useHouseMembers(houseId);
+  useToastOnLoadFailure(isError && !balances);
   const { pan, scrollGesture, onScroll, sheetStyle } = useSwipeDownToDismiss(goBack);
   const pairs = balances ? unsettledPairs(balances) : [];
 
@@ -67,7 +67,11 @@ export function SettleUpScreen({
 
           {balances && user && pairs.length === 0 ? (
             <View className="flex-1">
-              <EmptyItems image={noExpense} title="You are settled up" hint={SETTLED_UP_HINT} />
+              <EmptyItems
+                icon="settled"
+                title="Zero balance, zero awkwardness"
+                hint={SETTLED_UP_HINT}
+              />
             </View>
           ) : balances && user ? (
             <>
@@ -131,10 +135,6 @@ export function SettleUpScreen({
                 })}
               </View>
             </>
-          ) : isError ? (
-            <View className="flex-1">
-              <EmptyItems image={noExpense} title={LOAD_FAILED_MESSAGE} />
-            </View>
           ) : (
             <SettleUpSkeleton />
           )}

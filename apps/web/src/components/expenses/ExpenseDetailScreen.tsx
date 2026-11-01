@@ -2,6 +2,7 @@
 
 import { useAuth } from "@kinwoo/client/auth";
 import { expenseErrorFromCause, useDeleteExpense, useExpense } from "@kinwoo/client/expenses";
+import { usePrivateExpense } from "@kinwoo/client/grocery";
 import { useActiveHouse, useHouseMembers } from "@kinwoo/client/houses";
 import { toast } from "@kinwoo/client/toast";
 import { CONFIRM_COPY } from "@kinwoo/core/confirm";
@@ -138,10 +139,12 @@ function ExpenseDetails({
   expense,
   currentUserId,
   avatars,
+  isPrivate,
 }: {
   expense: Expense;
   currentUserId: string | null;
   avatars: Avatars;
+  isPrivate: boolean;
 }) {
   return (
     <div className="flex flex-col gap-7">
@@ -188,40 +191,50 @@ function ExpenseDetails({
         ) : null}
       </div>
 
-      <div className="my-1 h-px bg-border" />
+      {isPrivate ? null : (
+        <>
+          <div className="my-1 h-px bg-border" />
 
-      <div>
-        {expense.payers.map((payer, index) => (
-          <div key={payer.userId}>
-            {index > 0 ? (
-              <div
-                className="flex flex-col py-2"
-                style={{ height: PAYER_LINK_HEIGHT, marginLeft: ROOT_AVATAR / 2 }}
-                aria-hidden
-              >
-                <div className="w-px flex-1 bg-border" />
+          <div>
+            {expense.payers.map((payer, index) => (
+              <div key={payer.userId}>
+                {index > 0 ? (
+                  <div
+                    className="flex flex-col py-2"
+                    style={{ height: PAYER_LINK_HEIGHT, marginLeft: ROOT_AVATAR / 2 }}
+                    aria-hidden
+                  >
+                    <div className="w-px flex-1 bg-border" />
+                  </div>
+                ) : null}
+                <div className="flex">
+                  <PersonLine
+                    {...payer}
+                    currentUserId={currentUserId}
+                    avatarUrl={avatars.get(payer.userId) ?? null}
+                    verb={["paid", "paid"]}
+                    size={ROOT_AVATAR}
+                  />
+                </div>
               </div>
-            ) : null}
-            <div className="flex">
-              <PersonLine
-                {...payer}
-                currentUserId={currentUserId}
-                avatarUrl={avatars.get(payer.userId) ?? null}
-                verb={["paid", "paid"]}
-                size={ROOT_AVATAR}
-              />
+            ))}
+            <div className="mt-2">
+              <ShareTree expense={expense} currentUserId={currentUserId} avatars={avatars} />
             </div>
           </div>
-        ))}
-        <div className="mt-2">
-          <ShareTree expense={expense} currentUserId={currentUserId} avatars={avatars} />
-        </div>
-      </div>
+        </>
+      )}
     </div>
   );
 }
 
-export function ExpenseDetailScreen({ expenseId }: { expenseId: string | null }) {
+export function ExpenseDetailScreen({
+  expenseId,
+  isPrivate = false,
+}: {
+  expenseId: string | null;
+  isPrivate?: boolean;
+}) {
   const router = useRouter();
   const { user } = useAuth();
   const currentUserId = user?.id ?? null;
@@ -233,7 +246,10 @@ export function ExpenseDetailScreen({ expenseId }: { expenseId: string | null })
   useSwipeToClose(screenRef, !closing, () => setClosing(true));
   const [confirmDelete, setConfirmDelete] = useState(false);
 
-  const { data: expense, isError } = useExpense(houseId, expenseId);
+  const shared = useExpense(houseId, isPrivate ? null : expenseId);
+  const own = usePrivateExpense(isPrivate ? houseId : null, isPrivate ? expenseId : null);
+  const expense = isPrivate ? own.expense : shared.data;
+  const isError = isPrivate ? own.isError : shared.isError;
   const { data: members } = useHouseMembers(houseId);
   const deleteExpense = useDeleteExpense(houseId ?? "");
 
@@ -289,26 +305,33 @@ export function ExpenseDetailScreen({ expenseId }: { expenseId: string | null })
                 type="button"
                 aria-label="Edit expense"
                 disabled={closing}
-                onClick={() => router.push(editExpensePath(expense.id))}
+                onClick={() => router.push(editExpensePath(expense.id, isPrivate))}
                 className={cn(ICON_BUTTON, FOCUS_RING)}
               >
                 <EditIcon size={16} />
               </button>
-              <button
-                type="button"
-                aria-label="Delete expense"
-                disabled={closing}
-                onClick={() => setConfirmDelete(true)}
-                className={cn(ICON_BUTTON, FOCUS_RING)}
-              >
-                <TrashIcon size={16} />
-              </button>
+              {isPrivate ? null : (
+                <button
+                  type="button"
+                  aria-label="Delete expense"
+                  disabled={closing}
+                  onClick={() => setConfirmDelete(true)}
+                  className={cn(ICON_BUTTON, FOCUS_RING)}
+                >
+                  <TrashIcon size={16} />
+                </button>
+              )}
             </div>
           ) : null}
         </header>
 
         {expense ? (
-          <ExpenseDetails expense={expense} currentUserId={currentUserId} avatars={avatars} />
+          <ExpenseDetails
+            expense={expense}
+            currentUserId={currentUserId}
+            avatars={avatars}
+            isPrivate={isPrivate}
+          />
         ) : isError ? (
           <p className="pt-16 text-center font-display text-base text-muted-foreground">
             We couldn&apos;t find that expense. It may have been deleted.

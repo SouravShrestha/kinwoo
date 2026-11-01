@@ -7,10 +7,19 @@ import {
   type Expense,
   type ExpenseCategory,
 } from "@kinwoo/core/expenses";
+import {
+  amountErrorMessage,
+  boughtAtForDate,
+  isSameLocalDay,
+  parseRupeesToPaise,
+  type PrivateTransaction,
+} from "@kinwoo/core/grocery";
 import { useMemo, useState } from "react";
 
+import { useUpdatePrivatePurchase } from "../grocery/mutations";
 import { useHouseMembers } from "../houses/queries";
 import { toast } from "../toast";
+import { groceryErrorFromCause } from "../grocery/errors";
 import { expenseErrorFromCause } from "./errors";
 import { useExpenseSplit } from "./expense-split";
 import { expenseInputFromForm, expensePartsFromForms, type ExpenseFormField } from "./form-input";
@@ -23,11 +32,14 @@ export function useExpenseForm({
   houseId,
   currentUserId,
   expense,
+  privatePurchase = null,
   onSaved,
 }: {
   houseId: string;
   currentUserId: string | null;
   expense?: Expense | null;
+  // Edits a private list's purchase through this form: only amount and date can change.
+  privatePurchase?: PrivateTransaction | null;
   onSaved: (expense: Expense) => void;
 }) {
   const members = useHouseMembers(houseId || null);
@@ -67,10 +79,38 @@ export function useExpenseForm({
 
   const create = useCreateExpense(houseId);
   const update = useUpdateExpense(houseId, expense?.id ?? "");
-  const submitting = create.isPending || update.isPending;
+  const updatePrivate = useUpdatePrivatePurchase(houseId, privatePurchase?.listId ?? "");
+  const submitting = create.isPending || update.isPending || updatePrivate.isPending;
+
+  const submitPrivate = async (purchase: PrivateTransaction) => {
+    const parsed = parseRupeesToPaise(amount);
+    if (!parsed.ok) {
+      setError({ field: "amount", message: amountErrorMessage(parsed.error) });
+      return;
+    }
+    if (parsed.value === null && purchase.lines.length > 0) {
+      setError({ field: "amount", message: "Enter the total amount." });
+      return;
+    }
+    const boughtAt = isSameLocalDay(date, new Date(purchase.boughtAt))
+      ? purchase.boughtAt
+      : (boughtAtForDate(date) ?? new Date().toISOString());
+
+    try {
+      await updatePrivate.mutateAsync({
+        itemId: purchase.itemId,
+        input: { pricePaise: parsed.value, store: purchase.store, boughtAt },
+      });
+      toast.success("Expense updated");
+      if (expense) onSaved(expense);
+    } catch (cause) {
+      toast.error(groceryErrorFromCause(cause, "Couldn't save that expense. Try again."));
+    }
+  };
 
   const submit = async () => {
     if (submitting) return;
+    if (privatePurchase) return submitPrivate(privatePurchase);
     const result = expenseInputFromForm({
       title,
       amount,
@@ -102,6 +142,7 @@ export function useExpenseForm({
 
   return {
     isEditing: !!expense,
+    isPrivate: privatePurchase !== null,
     title,
     amount,
     category,
@@ -113,7 +154,8 @@ export function useExpenseForm({
     amountError: errorFor("amount"),
     noteError: errorFor("note"),
     submitting,
-    canSubmit: !submitting && payers.totalPaise > 0 && title.trim() !== "",
+    canSubmit:
+      !submitting && title.trim() !== "" && (privatePurchase !== null || payers.totalPaise > 0),
     setTitle: (value: string) => {
       setTitleText(value);
       clearError("title");

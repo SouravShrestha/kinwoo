@@ -10,7 +10,7 @@ import {
   type Expense,
   type ExpenseCategory,
 } from "@kinwoo/core/expenses";
-import { formatPickedDate } from "@kinwoo/core/grocery";
+import { formatPickedDate, type PrivateTransaction } from "@kinwoo/core/grocery";
 import { ArrowRightIcon, CalendarIcon, CheckCircleIcon, RupeeIcon } from "@kinwoo/icons";
 import { ExpenseCategoryImage } from "@/components/CategoryImages";
 import { useRef, useState, type AnimationEvent } from "react";
@@ -36,9 +36,11 @@ const CHIP =
 export function ExpenseFormScreen({
   houseId,
   expense,
+  privatePurchase,
 }: {
   houseId: string;
   expense?: Expense | null;
+  privatePurchase?: PrivateTransaction | null;
 }) {
   const { user } = useAuth();
   const { goBack } = useHouseNavigation();
@@ -50,6 +52,7 @@ export function ExpenseFormScreen({
     houseId,
     currentUserId: user?.id ?? null,
     expense,
+    privatePurchase,
     onSaved: () => setClosing(true),
   });
   const { payers, split } = form;
@@ -115,6 +118,7 @@ export function ExpenseFormScreen({
                 type="button"
                 aria-haspopup="dialog"
                 aria-label={`Category: ${EXPENSE_CATEGORY_LABELS[form.category]}. Change category`}
+                disabled={form.isPrivate}
                 onClick={() => setPicker("category")}
                 className={cn(
                   "flex size-12 shrink-0 items-center justify-center rounded-xl bg-muted text-foreground transition-opacity hover:cursor-pointer hover:opacity-80",
@@ -130,6 +134,7 @@ export function ExpenseFormScreen({
                 id="expense-title"
                 type="text"
                 autoFocus={!form.isEditing}
+                readOnly={form.isPrivate}
                 autoComplete="off"
                 enterKeyHint="next"
                 maxLength={EXPENSE_TITLE_MAX}
@@ -194,7 +199,7 @@ export function ExpenseFormScreen({
               onClick={() => setPicker("date")}
               className={cn(
                 FIELD,
-                "w-36 shrink-0 gap-2 px-3.5 transition-opacity hover:cursor-pointer hover:opacity-80",
+                "shrink-0 gap-2 whitespace-nowrap px-3.5 transition-opacity hover:cursor-pointer hover:opacity-80",
                 FOCUS_RING,
               )}
             >
@@ -203,78 +208,82 @@ export function ExpenseFormScreen({
             </button>
           </div>
 
-          <div className="flex flex-wrap items-center gap-x-2 gap-y-3 font-display text-base">
-            <span className="text-muted-foreground">Paid by</span>
-            <button
-              type="button"
-              aria-haspopup="dialog"
-              aria-label={`Paid by ${payers.label}. Change who paid`}
-              onClick={() => setPicker("payers")}
-              className={cn(CHIP, FOCUS_RING)}
-            >
-              {payers.label}
-            </button>
-            <span className="text-muted-foreground">and split</span>
-            <button
-              type="button"
-              aria-haspopup="dialog"
-              aria-label={`Split ${split.label.toLowerCase()}. Change how it is split`}
-              onClick={() => setPicker("split")}
-              className={cn(CHIP, FOCUS_RING)}
-            >
-              {split.label}
-            </button>
-          </div>
-
-          <div>
-            <button
-              type="button"
-              aria-expanded={noteOpen}
-              aria-controls="expense-note"
-              onClick={() => setNoteOpen((open) => !open)}
-              className={cn(
-                "mt-1 flex w-fit items-center gap-2 py-1 font-display text-base text-muted-foreground transition-opacity hover:cursor-pointer hover:opacity-80",
-                FOCUS_RING,
-              )}
-            >
-              <ArrowRightIcon size={18} className={noteOpen ? "rotate-90" : undefined} />
-              {form.note && !noteOpen ? "Note added" : "Add a note"}
-            </button>
-            <label htmlFor="expense-note" className="sr-only">
-              Note
-            </label>
-            <div
-              inert={!noteOpen}
-              className={cn(
-                "grid transition-[grid-template-rows,opacity] duration-200 ease-out motion-reduce:transition-none",
-                noteOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0",
-              )}
-            >
-              {/* Padding keeps the focus outline from being clipped by the collapse. */}
-              <div className="-m-1 min-h-0 overflow-hidden p-1">
-                <textarea
-                  id="expense-note"
-                  rows={2}
-                  maxLength={EXPENSE_NOTE_MAX}
-                  placeholder="e.g. Electricity bill for March, paid via UPI"
-                  value={form.note}
-                  onChange={(event) => form.setNote(event.target.value)}
-                  aria-invalid={form.noteError ? true : undefined}
-                  aria-describedby={form.noteError ? "expense-note-hint" : undefined}
-                  className="mt-2 block w-full resize-none rounded-xl bg-muted px-5 py-3 font-display text-base text-foreground outline-none placeholder:text-muted-foreground focus-visible:outline-2 focus-visible:outline-foreground"
-                />
+          {form.isPrivate ? null : (
+            <>
+              <div className="flex flex-wrap items-center gap-x-2 gap-y-3 font-display text-base">
+                <span className="text-muted-foreground">Paid by</span>
+                <button
+                  type="button"
+                  aria-haspopup="dialog"
+                  aria-label={`Paid by ${payers.label}. Change who paid`}
+                  onClick={() => setPicker("payers")}
+                  className={cn(CHIP, FOCUS_RING)}
+                >
+                  {payers.label}
+                </button>
+                <span className="text-muted-foreground">and split</span>
+                <button
+                  type="button"
+                  aria-haspopup="dialog"
+                  aria-label={`Split ${split.label.toLowerCase()}. Change how it is split`}
+                  onClick={() => setPicker("split")}
+                  className={cn(CHIP, FOCUS_RING)}
+                >
+                  {split.label}
+                </button>
               </div>
-            </div>
-            {form.noteError ? (
-              <p
-                id="expense-note-hint"
-                role="alert"
-                className="mt-2 font-display text-sm text-destructive"
-              >
-                {form.noteError}
-              </p>
-            ) : null}
-          </div>
+
+              <div>
+                <button
+                  type="button"
+                  aria-expanded={noteOpen}
+                  aria-controls="expense-note"
+                  onClick={() => setNoteOpen((open) => !open)}
+                  className={cn(
+                    "mt-1 flex w-fit items-center gap-2 py-1 font-display text-base text-muted-foreground transition-opacity hover:cursor-pointer hover:opacity-80",
+                    FOCUS_RING,
+                  )}
+                >
+                  <ArrowRightIcon size={18} className={noteOpen ? "rotate-90" : undefined} />
+                  {form.note && !noteOpen ? "Note added" : "Add a note"}
+                </button>
+                <label htmlFor="expense-note" className="sr-only">
+                  Note
+                </label>
+                <div
+                  inert={!noteOpen}
+                  className={cn(
+                    "grid transition-[grid-template-rows,opacity] duration-200 ease-out motion-reduce:transition-none",
+                    noteOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0",
+                  )}
+                >
+                  {/* Padding keeps the focus outline from being clipped by the collapse. */}
+                  <div className="-m-1 min-h-0 overflow-hidden p-1">
+                    <textarea
+                      id="expense-note"
+                      rows={2}
+                      maxLength={EXPENSE_NOTE_MAX}
+                      placeholder="e.g. Electricity bill for March, paid via UPI"
+                      value={form.note}
+                      onChange={(event) => form.setNote(event.target.value)}
+                      aria-invalid={form.noteError ? true : undefined}
+                      aria-describedby={form.noteError ? "expense-note-hint" : undefined}
+                      className="mt-2 block w-full resize-none rounded-xl bg-muted px-5 py-3 font-display text-base text-foreground outline-none placeholder:text-muted-foreground focus-visible:outline-2 focus-visible:outline-foreground"
+                    />
+                  </div>
+                </div>
+                {form.noteError ? (
+                  <p
+                    id="expense-note-hint"
+                    role="alert"
+                    className="mt-2 font-display text-sm text-destructive"
+                  >
+                    {form.noteError}
+                  </p>
+                ) : null}
+              </div>
+            </>
+          )}
         </div>
       </form>
 

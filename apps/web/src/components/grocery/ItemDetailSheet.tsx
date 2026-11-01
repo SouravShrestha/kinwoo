@@ -116,6 +116,7 @@ export function ItemDetailSheet({
             houseId={houseId}
             listId={listId}
             canArchive={canManage}
+            isPrivateList={isPrivateList}
             onArchive={() => setConfirmDelete(true)}
             onClose={onClose}
           />

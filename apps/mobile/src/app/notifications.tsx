@@ -35,7 +35,6 @@ import {
   openExpense as openExpenseScreen,
   openPayment,
 } from "@/lib/house-navigation";
-import { noNotifications } from "@/lib/images";
 import { usePullToRefresh } from "@/lib/use-pull-to-refresh";
 import { useTheme } from "@/theme/ThemeProvider";
 
@@ -127,9 +126,9 @@ export default function NotificationsScreen() {
         </View>
       ) : (
         <EmptyItems
-          image={noNotifications}
-          title="No notification yet"
-          hint="You've got a blank slate (for now). We'll let you know when updates arrive."
+          icon="notifications"
+          title="All quiet on the notification front"
+          hint="Enjoy the peace. We’ll ping you when something’s up."
         />
       ),
     [isLoading],

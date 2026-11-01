@@ -46,8 +46,9 @@ export function PullToRefresh({ children }: { children: ReactNode }) {
       return false;
     };
 
-    // Any non-"none" translate makes the wrapper the containing block of fixed children (the add
-    // button), so they scroll with the page. It must be cleared whenever no transition will end.
+    // Any non-"none" translate makes the wrapper the containing block of fixed children, so they
+    // move with the pull unless rendered through FixedLayer. It must be cleared whenever no
+    // transition will end.
     const reset = () => {
       el.style.translate = "";
       setLoader("hidden");

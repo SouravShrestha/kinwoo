@@ -1,3 +1,4 @@
+import { useGroceryLists } from "@kinwoo/client/grocery";
 import { toast } from "@kinwoo/client/toast";
 import {
   formatPaise,
@@ -7,7 +8,9 @@ import {
 } from "@kinwoo/core/grocery";
 import { ArchiveIcon, TransactionIcon } from "@kinwoo/icons/native";
 import { colors } from "@kinwoo/tokens/native";
-import { ScrollView, Text, View } from "react-native";
+import { Text, View } from "react-native";
+// Gesture-handler's ScrollView, so the sheet's pan gesture doesn't swallow horizontal drags on Android.
+import { ScrollView } from "react-native-gesture-handler";
 
 import { BottomSheet } from "@/components/BottomSheet";
 import { Button } from "@/components/Button";
@@ -40,8 +43,16 @@ export function BoughtGroupSheet({
   const { resolvedTheme } = useTheme();
   const palette = colors[resolvedTheme];
   const lead = group?.items[0];
+  const { data: lists } = useGroceryLists(houseId);
+  const isPrivateList = lists?.find((list) => list.id === lead?.listId)?.visibility === "private";
 
   const viewTransaction = () => {
+    // Private lists never produce expenses; the expense screens show the purchase instead.
+    if (isPrivateList && lead) {
+      onClose();
+      openExpense(lead.id, true);
+      return;
+    }
     const expenseId = lead?.purchase?.expenseId;
     if (!expenseId) return toast.error(TRANSACTION_UNAVAILABLE);
     onClose();
@@ -84,7 +95,7 @@ export function BoughtGroupSheet({
             nestedScrollEnabled
             showsHorizontalScrollIndicator={false}
             accessibilityRole="list"
-            contentContainerClassName="gap-1 px-4"
+            contentContainerStyle={{ gap: 4, paddingHorizontal: 16 }}
           >
             {group.items.map((item) => {
               const amountLabel = formatPaise(item.purchase?.pricePaise ?? 0);

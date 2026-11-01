@@ -16,12 +16,19 @@ export function openNewExpense() {
   router.push("/expense/new");
 }
 
-export function openExpense(expenseId: string) {
-  router.push({ pathname: "/expense/[expenseId]", params: { expenseId } });
+// A private purchase has no expense; the same screens show it, keyed by its item id.
+export function openExpense(expenseId: string, isPrivate = false) {
+  router.push({
+    pathname: "/expense/[expenseId]",
+    params: isPrivate ? { expenseId, private: "1" } : { expenseId },
+  });
 }
 
-export function openEditExpense(expenseId: string) {
-  router.push({ pathname: "/expense/edit", params: { expenseId } });
+export function openEditExpense(expenseId: string, isPrivate = false) {
+  router.push({
+    pathname: "/expense/edit",
+    params: isPrivate ? { expenseId, private: "1" } : { expenseId },
+  });
 }
 
 export function openPrivateSpending() {

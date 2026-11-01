@@ -18,6 +18,7 @@ import type {
   MarkItemsBoughtInput,
   UpdateItemInput,
   UpdateListInput,
+  UpdatePrivatePurchaseInput,
 } from "@kinwoo/core/grocery";
 
 export type {
@@ -37,6 +38,7 @@ export type {
   MarkItemsBoughtInput,
   UpdateItemInput,
   UpdateListInput,
+  UpdatePrivatePurchaseInput,
 };
 
 export class GroceryRepositoryError extends Error {
@@ -84,6 +86,7 @@ export interface IGroceryRepository {
   /** Claims for the caller; returns how many were still pending and got claimed. */
   claimItems(listId: string, itemIds: string[]): Promise<number>;
   markBought(itemId: string, input: MarkBoughtInput): Promise<void>;
+  updatePrivatePurchase(itemId: string, input: UpdatePrivatePurchaseInput): Promise<void>;
   /** Buys every item or none; returns the new batch id. */
   markItemsBought(listId: string, input: MarkItemsBoughtInput): Promise<string>;
 

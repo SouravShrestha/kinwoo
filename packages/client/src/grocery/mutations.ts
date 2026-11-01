@@ -9,6 +9,7 @@ import {
   type MarkItemsBoughtInput,
   type UpdateItemInput,
   type UpdateListInput,
+  type UpdatePrivatePurchaseInput,
 } from "@kinwoo/core/grocery";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
@@ -27,6 +28,7 @@ import {
   unassignItem,
   updateItem,
   updateList,
+  updatePrivatePurchase,
 } from "./api";
 import { expenseKeys } from "../expenses/keys";
 import { groceryKeys } from "./keys";
@@ -371,6 +373,21 @@ export function useMarkBought(houseId: string, listId: string) {
       if (variables.input.expense) {
         void queryClient.invalidateQueries({ queryKey: expenseKeys.all(houseId) });
       }
+    },
+  });
+}
+
+export function useUpdatePrivatePurchase(houseId: string, listId: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ itemId, input }: { itemId: string; input: UpdatePrivatePurchaseInput }) =>
+      updatePrivatePurchase(houseId, listId, itemId, input),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: groceryKeys.items(houseId, listId) });
+      void queryClient.invalidateQueries({ queryKey: groceryKeys.boughtHistory(houseId, listId) });
+      void queryClient.invalidateQueries({ queryKey: groceryKeys.privatePurchases(houseId) });
+      void queryClient.invalidateQueries({ queryKey: groceryKeys.overview(houseId) });
     },
   });
 }

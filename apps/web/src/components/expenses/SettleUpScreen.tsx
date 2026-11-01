@@ -1,9 +1,9 @@
 "use client";
 
-import { LOAD_FAILED_MESSAGE } from "@kinwoo/core/app";
 import { useAuth } from "@kinwoo/client/auth";
 import { useHouseBalances } from "@kinwoo/client/expenses";
 import { useActiveHouse, useHouseMembers } from "@kinwoo/client/houses";
+import { useToastOnLoadFailure } from "@kinwoo/client/toast";
 import { SETTLED_UP_HINT, unsettledPairs } from "@kinwoo/core/expenses";
 import { formatPaise } from "@kinwoo/core/grocery";
 import { memberDisplayName } from "@kinwoo/core/houses";
@@ -23,20 +23,13 @@ function Balances({ houseId, simplifyDebts }: { houseId: string; simplifyDebts: 
   const { user } = useAuth();
   const { data: balances, isError } = useHouseBalances(houseId, simplifyDebts);
   const { data: members } = useHouseMembers(houseId);
-  if (!balances || !user) {
-    return isError ? (
-      <div className="flex flex-1 flex-col">
-        <EmptyItems image="expense" title={LOAD_FAILED_MESSAGE} />
-      </div>
-    ) : (
-      <SettleUpSkeleton />
-    );
-  }
+  useToastOnLoadFailure(isError && !balances);
+  if (!balances || !user) return <SettleUpSkeleton />;
   const pairs = unsettledPairs(balances);
   if (pairs.length === 0) {
     return (
       <div className="flex flex-1 flex-col">
-        <EmptyItems image="expense" title="You are settled up" hint={SETTLED_UP_HINT} />
+        <EmptyItems icon="settled" title="Zero balance, zero awkwardness" hint={SETTLED_UP_HINT} />
       </div>
     );
   }

@@ -14,7 +14,8 @@ export function Fab({ label, onPress }: { label: string; onPress: () => void }) 
       accessibilityRole="button"
       accessibilityLabel={label}
       onPress={onPress}
-      hitSlop={16}
+      // No hitSlop: the FAB floats over the tab pager, and any touch area past the 48pt disc
+      // swallows swipes that start next to it.
       pressRetentionOffset={32}
       className="absolute bottom-6 right-4 size-12 items-center justify-center active:opacity-80"
     >

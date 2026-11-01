@@ -92,9 +92,9 @@ export function NotificationsScreen() {
           <ActivityRowsSkeleton />
         ) : !entries?.length ? (
           <EmptyItems
-            image="notifications"
-            title="No notification yet"
-            hint="You've got a blank slate (for now). We'll let you know when updates arrive."
+            icon="notifications"
+            title="All quiet on the notification front"
+            hint="Enjoy the peace. We’ll ping you when something’s up."
           />
         ) : (
           <ActivityList

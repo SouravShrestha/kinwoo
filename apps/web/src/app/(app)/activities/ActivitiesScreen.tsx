@@ -92,11 +92,11 @@ export function ActivitiesScreen() {
           <ActivityRowsSkeleton />
         ) : filteredEntries.length === 0 && !moreToFetch ? (
           <EmptyItems
-            image="activity"
+            icon={countSelected(deferredFilters) > 0 ? "filter" : "activity"}
             title={
               countSelected(deferredFilters) > 0
-                ? "No activity matches these filters"
-                : "No activity yet"
+                ? "No gossip matches these filters"
+                : "Nothing to gossip about yet"
             }
             hint={countSelected(deferredFilters) > 0 ? null : ACTIVITY_EMPTY_HINT}
           />

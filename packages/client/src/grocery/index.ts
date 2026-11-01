@@ -7,6 +7,7 @@ export * from "./GroceryRealtime";
 export * from "./keys";
 export * from "./mark-bought-form";
 export * from "./mutations";
+export * from "./private-expense";
 export * from "./queries";
 export * from "./realtime";
 export * from "./selection";

@@ -16,7 +16,6 @@ import { useCallback, useMemo, useState } from "react";
 import { FlatList, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { Button } from "@/components/Button";
 import { BalanceSummary } from "@/components/expenses/BalanceSummary";
 import { ExpenseActions } from "@/components/expenses/ExpenseActions";
 import { ExpenseRow } from "@/components/expenses/ExpenseRow";
@@ -36,7 +35,6 @@ import {
   openPayment,
   openPrivateSpending,
 } from "@/lib/house-navigation";
-import { noExpense } from "@/lib/images";
 import { usePullToRefresh } from "@/lib/use-pull-to-refresh";
 import { useTheme } from "@/theme/ThemeProvider";
 
@@ -121,7 +119,7 @@ export default function BillsScreen() {
         refreshControl={refreshControl}
         onEndReached={loadMore}
         onEndReachedThreshold={0.5}
-        contentContainerStyle={{ paddingBottom: 96 }}
+        contentContainerStyle={{ flexGrow: 1, paddingBottom: 96 }}
         ListHeaderComponent={
           <View className="pt-3">
             <View className="pb-4">
@@ -167,20 +165,18 @@ export default function BillsScreen() {
           loading ? (
             <ExpenseRowsSkeleton />
           ) : empty ? (
-            <View className="py-12">
+            <View className="flex-1">
               <EmptyItems
-                image={noExpense}
-                title="Nothing to see here"
-                hint="Add rent, bills or anything you share. Split grocery purchases show up here too."
-              >
-                <Button label="Add expense" onPress={openNewExpense} className="px-8" />
-              </EmptyItems>
+                icon="expense"
+                title="No bills, no drama (yet)"
+                hint="Add rent, utilities, or anything you split. Shared grocery purchases land here too."
+              />
             </View>
           ) : null
         }
       />
 
-      {empty ? null : <Fab label="Add expense" onPress={openNewExpense} />}
+      <Fab label="Add expense" onPress={openNewExpense} />
 
       <ExpensesMenuSheet
         open={menuOpen}
