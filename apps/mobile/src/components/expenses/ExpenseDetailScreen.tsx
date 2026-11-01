@@ -1,5 +1,6 @@
 import { useAuth } from "@kinwoo/client/auth";
 import { expenseErrorFromCause, useDeleteExpense, useExpense } from "@kinwoo/client/expenses";
+import { usePrivateExpense } from "@kinwoo/client/grocery";
 import { useActiveHouse, useHouseMembers } from "@kinwoo/client/houses";
 import { toast } from "@kinwoo/client/toast";
 import { CONFIRM_COPY } from "@kinwoo/core/confirm";
@@ -144,11 +145,13 @@ function ExpenseDetails({
   currentUserId,
   avatars,
   mutedColor,
+  isPrivate,
 }: {
   expense: Expense;
   currentUserId: string | null;
   avatars: ReadonlyMap<string, string | null>;
   mutedColor: string;
+  isPrivate: boolean;
 }) {
   return (
     <View className="gap-7">
@@ -197,39 +200,49 @@ function ExpenseDetails({
         ) : null}
       </View>
 
-      <View className="my-1 h-px bg-border" />
+      {isPrivate ? null : (
+        <>
+          <View className="my-1 h-px bg-border" />
 
-      <View>
-        {expense.payers.map((payer, index) => (
-          <View key={payer.userId}>
-            {index > 0 ? (
-              <View
-                className="py-2"
-                style={{ height: PAYER_LINK_HEIGHT, marginLeft: ROOT_AVATAR / 2 }}
-              >
-                <View className="w-px flex-1 bg-border" />
+          <View>
+            {expense.payers.map((payer, index) => (
+              <View key={payer.userId}>
+                {index > 0 ? (
+                  <View
+                    className="py-2"
+                    style={{ height: PAYER_LINK_HEIGHT, marginLeft: ROOT_AVATAR / 2 }}
+                  >
+                    <View className="w-px flex-1 bg-border" />
+                  </View>
+                ) : null}
+                <View className="flex-row">
+                  <PersonLine
+                    {...payer}
+                    currentUserId={currentUserId}
+                    avatarUrl={avatars.get(payer.userId) ?? null}
+                    verb={["paid", "paid"]}
+                    size={ROOT_AVATAR}
+                  />
+                </View>
               </View>
-            ) : null}
-            <View className="flex-row">
-              <PersonLine
-                {...payer}
-                currentUserId={currentUserId}
-                avatarUrl={avatars.get(payer.userId) ?? null}
-                verb={["paid", "paid"]}
-                size={ROOT_AVATAR}
-              />
+            ))}
+            <View className="mt-2">
+              <ShareTree expense={expense} currentUserId={currentUserId} avatars={avatars} />
             </View>
           </View>
-        ))}
-        <View className="mt-2">
-          <ShareTree expense={expense} currentUserId={currentUserId} avatars={avatars} />
-        </View>
-      </View>
+        </>
+      )}
     </View>
   );
 }
 
-export function ExpenseDetailScreen({ expenseId }: { expenseId: string | null }) {
+export function ExpenseDetailScreen({
+  expenseId,
+  isPrivate = false,
+}: {
+  expenseId: string | null;
+  isPrivate?: boolean;
+}) {
   const insets = useSafeAreaInsets();
   const { resolvedTheme } = useTheme();
   const palette = colors[resolvedTheme];
@@ -239,7 +252,10 @@ export function ExpenseDetailScreen({ expenseId }: { expenseId: string | null })
   const houseId = activeHouse?.house.id ?? null;
   const [confirmDelete, setConfirmDelete] = useState(false);
 
-  const { data: expense, isError } = useExpense(houseId, expenseId);
+  const shared = useExpense(houseId, isPrivate ? null : expenseId);
+  const own = usePrivateExpense(isPrivate ? houseId : null, isPrivate ? expenseId : null);
+  const expense = isPrivate ? own.expense : shared.data;
+  const isError = isPrivate ? own.isError : shared.isError;
   const { data: members } = useHouseMembers(houseId);
   const deleteExpense = useDeleteExpense(houseId ?? "");
 
@@ -297,21 +313,23 @@ export function ExpenseDetailScreen({ expenseId }: { expenseId: string | null })
                 <Pressable
                   accessibilityRole="button"
                   accessibilityLabel="Edit expense"
-                  onPress={() => openEditExpense(expense.id)}
+                  onPress={() => openEditExpense(expense.id, isPrivate)}
                   hitSlop={6}
                   className="size-9 items-center justify-center rounded-lg bg-muted active:opacity-80"
                 >
                   <EditIcon size={16} color={palette.foreground} />
                 </Pressable>
-                <Pressable
-                  accessibilityRole="button"
-                  accessibilityLabel="Delete expense"
-                  onPress={() => setConfirmDelete(true)}
-                  hitSlop={6}
-                  className="size-9 items-center justify-center rounded-lg bg-muted active:opacity-80"
-                >
-                  <TrashIcon size={16} color={palette.foreground} />
-                </Pressable>
+                {isPrivate ? null : (
+                  <Pressable
+                    accessibilityRole="button"
+                    accessibilityLabel="Delete expense"
+                    onPress={() => setConfirmDelete(true)}
+                    hitSlop={6}
+                    className="size-9 items-center justify-center rounded-lg bg-muted active:opacity-80"
+                  >
+                    <TrashIcon size={16} color={palette.foreground} />
+                  </Pressable>
+                )}
               </View>
             ) : null}
           </View>
@@ -323,6 +341,7 @@ export function ExpenseDetailScreen({ expenseId }: { expenseId: string | null })
                 currentUserId={currentUserId}
                 avatars={avatars}
                 mutedColor={palette.mutedForeground}
+                isPrivate={isPrivate}
               />
             </>
           ) : isError ? (

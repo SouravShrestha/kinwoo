@@ -5,6 +5,7 @@ import {
   itemCountLabel,
   SHORT_MONTHS,
   type BoughtEntry,
+  type BoughtGroup,
 } from "./bought-groups";
 import { monthLabel } from "./purchase-date";
 import type { GroceryItem, GroceryOverviewItem } from "./types";
@@ -130,3 +131,61 @@ export function privateSpendAccessibleLabel(entry: PrivateSpendEntry, now: numbe
 
 export const PRIVATE_SPENDING_NOTE =
   "Only you can see this. It isn't split or counted in balances.";
+
+export type PrivateTransaction = {
+  // Any item of the purchase; editing a batch goes through one of its items.
+  itemId: string;
+  listId: string;
+  title: string;
+  categoryName: string | null;
+  amountPaise: number | null;
+  store: string | null;
+  boughtAt: string;
+  lines: { id: string; name: string; pricePaise: number | null }[];
+};
+
+export function privateTransactionOfItem(item: GroceryItem): PrivateTransaction {
+  return {
+    itemId: item.id,
+    listId: item.listId,
+    title: item.name,
+    categoryName: item.categoryName,
+    amountPaise: item.purchase?.pricePaise ?? null,
+    store: item.purchase?.store ?? null,
+    boughtAt: boughtAtOf(item),
+    lines: [],
+  };
+}
+
+export function privateTransactionOfGroup(group: BoughtGroup): PrivateTransaction {
+  return {
+    itemId: group.items[0]?.id ?? "",
+    listId: group.items[0]?.listId ?? "",
+    title: group.label,
+    categoryName: group.items[0]?.categoryName ?? null,
+    amountPaise: group.totalPaise,
+    store: group.store,
+    boughtAt: group.boughtAt,
+    lines: group.items.map((item) => ({
+      id: item.id,
+      name: item.name,
+      pricePaise: item.purchase?.pricePaise ?? null,
+    })),
+  };
+}
+
+export function findPrivateTransaction(
+  items: readonly GroceryOverviewItem[],
+  itemId: string,
+): PrivateTransaction | null {
+  const bought = items.filter((item) => item.status === "bought");
+  const entry = groupBoughtItems(bought, bought).find((candidate) =>
+    candidate.kind === "group"
+      ? candidate.items.some((item) => item.id === itemId)
+      : candidate.item.id === itemId,
+  );
+  if (!entry) return null;
+  return entry.kind === "group"
+    ? privateTransactionOfGroup(entry)
+    : privateTransactionOfItem(entry.item);
+}

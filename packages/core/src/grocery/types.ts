@@ -123,6 +123,12 @@ export type MarkBoughtInput = {
   expense?: LinkedExpenseInput | null;
 };
 
+export type UpdatePrivatePurchaseInput = {
+  pricePaise: number | null;
+  store: string | null;
+  boughtAt: string;
+};
+
 export type MarkItemsBoughtInput = {
   itemIds: string[];
   totalPaise: number;

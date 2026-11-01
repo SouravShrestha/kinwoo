@@ -39,6 +39,7 @@ import {
   type MarkItemsBoughtInput,
   type UpdateItemInput,
   type UpdateListInput,
+  type UpdatePrivatePurchaseInput,
 } from "./IGroceryRepository";
 import type { GroceryResult, GroceryServiceErrorCode, IGroceryService } from "./IGroceryService";
 
@@ -221,6 +222,16 @@ export class GroceryService implements IGroceryService {
     }
     return run(async () => {
       await this.repository.markBought(itemId, input);
+      return null;
+    });
+  }
+
+  async updatePrivatePurchase(
+    itemId: string,
+    input: UpdatePrivatePurchaseInput,
+  ): Promise<GroceryResult<null>> {
+    return run(async () => {
+      await this.repository.updatePrivatePurchase(itemId, input);
       return null;
     });
   }

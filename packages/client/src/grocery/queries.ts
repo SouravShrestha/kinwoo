@@ -106,7 +106,8 @@ export function useListItemsWithHistory(
     items: merged,
     hasOlder:
       !requested || ((history.hasNextPage || history.isPending) && !history.isFetchNextPageError),
-    loadingOlder: requested && (history.isFetching || history.isPending),
+    // Not isFetching: a background refetch of loaded pages would put a skeleton under real items.
+    loadingOlder: requested && (history.isPending || history.isFetchingNextPage),
     loadFailed: isError && items === undefined,
     loadOlder: () => {
       if (!requested) setRequestedFor(listId);

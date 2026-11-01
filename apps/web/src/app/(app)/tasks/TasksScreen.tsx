@@ -1,6 +1,5 @@
 "use client";
 
-import { LOAD_FAILED_MESSAGE } from "@kinwoo/core/app";
 import { useAuth } from "@kinwoo/client/auth";
 import { useBusyWhile } from "@kinwoo/client/activity";
 import {
@@ -12,7 +11,7 @@ import {
   useItemSelection,
 } from "@kinwoo/client/grocery";
 import { useActiveHouse, useHouseMembers } from "@kinwoo/client/houses";
-import { toast } from "@kinwoo/client/toast";
+import { toast, useToastOnLoadFailure } from "@kinwoo/client/toast";
 import { CONFIRM_COPY } from "@kinwoo/core/confirm";
 import {
   countSelected,
@@ -54,6 +53,7 @@ import { AssignedSelectionBar } from "@/components/grocery/AssignedSelectionBar"
 import { BoughtGroupCard } from "@/components/grocery/BoughtGroupCard";
 import { BoughtGroupSheet } from "@/components/grocery/BoughtGroupSheet";
 import { EmptyItems } from "@/components/grocery/EmptyItems";
+import { FixedLayer } from "@/components/FixedLayer";
 import { LoadMoreSentinel } from "@/components/LoadMoreSentinel";
 import { GroceryTabView } from "@/components/grocery/GroceryTabView";
 import { ItemDetailSheet } from "@/components/grocery/ItemDetailSheet";
@@ -157,6 +157,7 @@ export function TasksScreen({ view }: { view: TasksView | null }) {
 
   const itemsLoaded = ready && items !== undefined;
   const loadFailed = (listsError && !lists) || history.loadFailed;
+  useToastOnLoadFailure(loadFailed);
   const filtering = countSelected(filters) > 0;
   const listEmpty = (items ?? []).length === 0;
 
@@ -291,8 +292,8 @@ export function TasksScreen({ view }: { view: TasksView | null }) {
   return (
     <main
       className={cn(
-        "flex min-h-[calc(100dvh-4rem)] flex-col px-6 pt-[calc(0.75rem+env(safe-area-inset-top))]",
-        selecting ? (tab === "pending" ? "pb-60" : "pb-44") : "pb-24",
+        "flex min-h-[calc(100dvh-4rem-env(safe-area-inset-bottom))] flex-col px-6 pt-[calc(0.75rem+env(safe-area-inset-top))]",
+        selecting && (tab === "pending" ? "pb-36" : "pb-20"),
       )}
     >
       <div className="flex items-center justify-between pb-3">
@@ -329,7 +330,6 @@ export function TasksScreen({ view }: { view: TasksView | null }) {
       <GroceryTabView
         value={tab}
         onChange={handleTabChange}
-        fillActive={(itemsLoaded && visibleByTab[tab].length === 0) || loadFailed}
         between={
           <Filters
             groups={filterGroups}
@@ -345,17 +345,16 @@ export function TasksScreen({ view }: { view: TasksView | null }) {
           />
         }
         renderPage={(key) => {
-          if (!itemsLoaded) {
-            return loadFailed ? (
-              <EmptyItems image="list" title={LOAD_FAILED_MESSAGE} />
-            ) : (
-              <ItemGridSkeleton />
-            );
-          }
+          if (!itemsLoaded) return <ItemGridSkeleton />;
           const pageItems = visibleByTab[key];
           if (pageItems.length === 0) {
             const empty = (
-              <EmptyItems image="list" {...groceryEmptyCopy(key, { filtering, listEmpty })} />
+              <div className="h-full pb-24">
+                <EmptyItems
+                  icon={filtering ? "filter" : key}
+                  {...groceryEmptyCopy(key, { filtering, listEmpty })}
+                />
+              </div>
             );
             if (key !== "bought") return empty;
             return (
@@ -367,7 +366,7 @@ export function TasksScreen({ view }: { view: TasksView | null }) {
           }
           if (key === "pending") {
             return (
-              <>
+              <div className="flex h-full flex-col pb-24">
                 <div className="mb-3 flex min-h-8 items-center justify-between gap-3">
                   <span
                     aria-live="polite"
@@ -406,12 +405,12 @@ export function TasksScreen({ view }: { view: TasksView | null }) {
                   onAssigned={selection.clear}
                   onAssignToMe={handleAssignSelectionToMe}
                 />
-              </>
+              </div>
             );
           }
           if (key === "assigned") {
             return (
-              <>
+              <div className="flex h-full flex-col pb-24">
                 <div className="mb-3 flex min-h-8 items-center justify-between gap-3">
                   <span
                     aria-live="polite"
@@ -460,11 +459,11 @@ export function TasksScreen({ view }: { view: TasksView | null }) {
                   onDelete={() => setConfirmDelete(true)}
                   onMarkBought={handleMarkAssignedSelectionBought}
                 />
-              </>
+              </div>
             );
           }
           return (
-            <>
+            <div className="flex h-full flex-col pb-24">
               <ul className="grid grid-cols-2 gap-3">
                 {boughtEntries.map((entry) => {
                   const buyer = entry.kind === "group" ? entry.buyer : itemBuyer(entry.item);
@@ -504,29 +503,31 @@ export function TasksScreen({ view }: { view: TasksView | null }) {
                 </div>
               ) : null}
               {olderSentinel}
-            </>
+            </div>
           );
         }}
       />
 
-      <div
-        hidden={selecting}
-        className="fixed bottom-[calc(5.625rem+env(safe-area-inset-bottom))] left-1/2 -translate-x-1/2 w-full max-w-md px-4 pointer-events-none"
-      >
-        <button
-          type="button"
-          onClick={() =>
-            router.push(
-              activeList ? `/item/new?listId=${encodeURIComponent(activeList.id)}` : "/item/new",
-            )
-          }
-          className="pointer-events-auto relative ml-auto flex size-12 items-center justify-center text-primary transition-opacity hover:opacity-90 hover:cursor-pointer"
-          aria-label="Add item"
+      <FixedLayer>
+        <div
+          hidden={selecting}
+          className="pointer-events-none fixed bottom-[calc(5.625rem+env(safe-area-inset-bottom))] left-1/2 z-30 w-full max-w-md -translate-x-1/2 px-4"
         >
-          <span className="absolute inset-2.5 rounded-full bg-primary-foreground" />
-          <PlusCircleIcon size={48} className="relative" />
-        </button>
-      </div>
+          <button
+            type="button"
+            onClick={() =>
+              router.push(
+                activeList ? `/item/new?listId=${encodeURIComponent(activeList.id)}` : "/item/new",
+              )
+            }
+            className="pointer-events-auto relative ml-auto flex size-12 items-center justify-center text-primary transition-opacity hover:opacity-90 hover:cursor-pointer"
+            aria-label="Add item"
+          >
+            <span className="absolute inset-2.5 rounded-full bg-primary-foreground" />
+            <PlusCircleIcon size={48} className="relative" />
+          </button>
+        </div>
+      </FixedLayer>
 
       <ListSwitcherSheet
         open={switcherOpen}

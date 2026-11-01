@@ -1,7 +1,9 @@
 "use client";
 
+import { LOAD_FAILED_MESSAGE } from "@kinwoo/core/app";
 import { TOAST_VISIBLE_MS, type ToastVariant } from "@kinwoo/core/toast";
-import { useSyncExternalStore } from "react";
+import { onlineManager } from "@tanstack/react-query";
+import { useEffect, useSyncExternalStore } from "react";
 
 export type ToastState = {
   id: number;
@@ -52,6 +54,16 @@ export const toast = {
   info: (message: string) => show(message, "info"),
   dismiss,
 };
+
+/**
+ * Toasts once when a screen's first load fails, leaving the screen as it is. Offline is skipped:
+ * OfflineLoadGuard already explains it.
+ */
+export function useToastOnLoadFailure(failed: boolean): void {
+  useEffect(() => {
+    if (failed && onlineManager.isOnline()) toast.error(LOAD_FAILED_MESSAGE);
+  }, [failed]);
+}
 
 /** The toast to render now, or null. Each host decides how to animate in and out. */
 export function useToast(): ToastState | null {

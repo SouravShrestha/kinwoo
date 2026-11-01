@@ -11,20 +11,8 @@ export const logoTypedWhite = require("../../assets/images/logo-typed-white.png"
 export const inviteFriends = require("../../assets/images/invite.webp") as number;
 
 export const sharedBill = require("../../assets/images/shared-bill.webp") as number;
-export const emptyList = require("../../assets/images/empty-list.webp") as number;
-export const noExpense = require("../../assets/images/no-expense.webp") as number;
-export const noActivity = require("../../assets/images/no-activity.webp") as number;
 
-export const noNotifications = require("../../assets/images/no-notifications.webp") as number;
-
-export const illustrationModules = [
-  inviteFriends,
-  sharedBill,
-  emptyList,
-  noExpense,
-  noActivity,
-  noNotifications,
-];
+export const illustrationModules = [inviteFriends, sharedBill];
 
 export const profileImage = require("../../assets/images/profile-image.png") as number;
 

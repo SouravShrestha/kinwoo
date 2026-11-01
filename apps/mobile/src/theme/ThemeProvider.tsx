@@ -1,6 +1,8 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { colors, cssVarNames, type ColorName } from "@kinwoo/tokens/native";
+import { DarkTheme, DefaultTheme, ThemeProvider as NavigationThemeProvider } from "expo-router";
 import { StatusBar } from "expo-status-bar";
+import * as SystemUI from "expo-system-ui";
 import { vars } from "nativewind";
 import {
   createContext,
@@ -65,14 +67,40 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     [theme, resolvedTheme, setTheme],
   );
 
+  const navigationTheme = useMemo(() => {
+    const base = resolvedTheme === "dark" ? DarkTheme : DefaultTheme;
+    const palette = colors[resolvedTheme];
+    return {
+      ...base,
+      colors: {
+        ...base.colors,
+        background: palette.background,
+        card: palette.background,
+        border: palette.border,
+        text: palette.foreground,
+      },
+    };
+  }, [resolvedTheme]);
+
+  // Navigators paint screens and the native window paints behind them during transitions; both
+  // default to light, which flashes white in dark mode.
+  useEffect(() => {
+    void SystemUI.setBackgroundColorAsync(colors[resolvedTheme].background);
+  }, [resolvedTheme]);
+
   // CSS variables come from React state so className colours switch in the same render as the
   // JS palette. Never override Appearance: useColorScheme() would then hide the device setting.
   return (
     <ThemeContext.Provider value={value}>
-      <View className="flex-1" style={value.themeStyle}>
-        <StatusBar style={resolvedTheme === "dark" ? "light" : "dark"} />
-        {children}
-      </View>
+      <NavigationThemeProvider value={navigationTheme}>
+        <View
+          className="flex-1"
+          style={[value.themeStyle, { backgroundColor: colors[resolvedTheme].background }]}
+        >
+          <StatusBar style={resolvedTheme === "dark" ? "light" : "dark"} />
+          {children}
+        </View>
+      </NavigationThemeProvider>
     </ThemeContext.Provider>
   );
 }

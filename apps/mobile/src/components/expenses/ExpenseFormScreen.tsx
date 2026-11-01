@@ -8,7 +8,7 @@ import {
   type Expense,
   type ExpenseCategory,
 } from "@kinwoo/core/expenses";
-import { formatPickedDate } from "@kinwoo/core/grocery";
+import { formatPickedDate, type PrivateTransaction } from "@kinwoo/core/grocery";
 import { ArrowRightIcon, CalendarIcon, CheckCircleIcon, RupeeIcon } from "@kinwoo/icons/native";
 import { colors } from "@kinwoo/tokens/native";
 import { useState } from "react";
@@ -40,9 +40,11 @@ const NOTE_EXITING = FadeOutUp.duration(160).reduceMotion(ReduceMotion.System);
 export function ExpenseFormScreen({
   houseId,
   expense,
+  privatePurchase,
 }: {
   houseId: string;
   expense?: Expense | null;
+  privatePurchase?: PrivateTransaction | null;
 }) {
   const insets = useSafeAreaInsets();
   const { resolvedTheme } = useTheme();
@@ -53,6 +55,7 @@ export function ExpenseFormScreen({
     houseId,
     currentUserId: user?.id ?? null,
     expense,
+    privatePurchase,
     onSaved: goBack,
   });
   const { payers, split } = form;
@@ -130,6 +133,7 @@ export function ExpenseFormScreen({
                 <Pressable
                   accessibilityRole="button"
                   accessibilityLabel={`Category: ${EXPENSE_CATEGORY_LABELS[form.category]}. Change category`}
+                  disabled={form.isPrivate}
                   onPress={() => openPicker("category")}
                   allowDoublePress
                   className="size-12 items-center justify-center rounded-xl bg-muted active:opacity-80"
@@ -138,6 +142,7 @@ export function ExpenseFormScreen({
                 </Pressable>
                 <TextInput
                   autoFocus={!form.isEditing}
+                  editable={!form.isPrivate}
                   accessibilityLabel="Title"
                   accessibilityHint={form.titleError ?? undefined}
                   autoCapitalize="sentences"
@@ -194,79 +199,91 @@ export function ExpenseFormScreen({
                 accessibilityLabel={`Date: ${dateLabel}. Change date`}
                 onPress={() => openPicker("date")}
                 allowDoublePress
-                className="h-12 w-36 flex-row items-center gap-2 rounded-xl bg-muted px-3.5 active:opacity-80"
+                className="h-12 shrink-0 flex-row items-center gap-2 rounded-xl bg-muted px-3.5 active:opacity-80"
               >
                 <CalendarIcon size={16} color={palette.foreground} />
-                <Text className="font-display-normal text-base text-foreground">{dateLabel}</Text>
-              </Pressable>
-            </View>
-
-            <View className="flex-row flex-wrap items-center gap-x-2 gap-y-3">
-              <Text className="font-display-normal text-base text-muted-foreground">Paid by</Text>
-              <Pressable
-                accessibilityRole="button"
-                accessibilityLabel={`Paid by ${payers.label}. Change who paid`}
-                onPress={() => openPicker("payers")}
-                allowDoublePress
-                className="rounded-lg bg-muted px-3.5 py-1.5 active:opacity-80"
-              >
-                <Text className="font-display-medium text-base text-foreground">
-                  {payers.label}
+                <Text numberOfLines={1} className="font-display-normal text-base text-foreground">
+                  {dateLabel}
                 </Text>
               </Pressable>
-              <Text className="font-display-normal text-base text-muted-foreground">and split</Text>
-              <Pressable
-                accessibilityRole="button"
-                accessibilityLabel={`Split ${split.label.toLowerCase()}. Change how it is split`}
-                onPress={() => openPicker("split")}
-                allowDoublePress
-                className="rounded-lg bg-muted px-3.5 py-1.5 active:opacity-80"
-              >
-                <Text className="font-display-medium text-base text-foreground">{split.label}</Text>
-              </Pressable>
             </View>
 
-            <View>
-              <Pressable
-                accessibilityRole="button"
-                accessibilityState={{ expanded: noteOpen }}
-                onPress={() => setNoteOpen((open) => !open)}
-                allowDoublePress
-                className="flex-row items-center gap-2 self-start py-1 mt-1 active:opacity-80"
-              >
-                <View style={{ transform: [{ rotate: noteOpen ? "90deg" : "0deg" }] }}>
-                  <ArrowRightIcon size={18} color={palette.mutedForeground} />
+            {form.isPrivate ? null : (
+              <>
+                <View className="flex-row flex-wrap items-center gap-x-2 gap-y-3">
+                  <Text className="font-display-normal text-base text-muted-foreground">
+                    Paid by
+                  </Text>
+                  <Pressable
+                    accessibilityRole="button"
+                    accessibilityLabel={`Paid by ${payers.label}. Change who paid`}
+                    onPress={() => openPicker("payers")}
+                    allowDoublePress
+                    className="rounded-lg bg-muted px-3.5 py-1.5 active:opacity-80"
+                  >
+                    <Text className="font-display-medium text-base text-foreground">
+                      {payers.label}
+                    </Text>
+                  </Pressable>
+                  <Text className="font-display-normal text-base text-muted-foreground">
+                    and split
+                  </Text>
+                  <Pressable
+                    accessibilityRole="button"
+                    accessibilityLabel={`Split ${split.label.toLowerCase()}. Change how it is split`}
+                    onPress={() => openPicker("split")}
+                    allowDoublePress
+                    className="rounded-lg bg-muted px-3.5 py-1.5 active:opacity-80"
+                  >
+                    <Text className="font-display-medium text-base text-foreground">
+                      {split.label}
+                    </Text>
+                  </Pressable>
                 </View>
-                <Text className="font-display-normal text-base text-muted-foreground">
-                  {form.note && !noteOpen ? "Note added" : "Add a note"}
-                </Text>
-              </Pressable>
-              {noteOpen ? (
-                <Animated.View entering={NOTE_ENTERING} exiting={NOTE_EXITING}>
-                  <TextInput
-                    accessibilityLabel="Note"
-                    accessibilityHint={form.noteError ?? undefined}
-                    multiline
-                    maxLength={EXPENSE_NOTE_MAX}
-                    placeholder="e.g. Electricity bill for March, paid via UPI"
-                    placeholderTextColor={palette.mutedForeground}
-                    onFocus={revealFocusedInput}
-                    value={form.note}
-                    onChangeText={form.setNote}
-                    className="mt-2 min-h-20 rounded-xl bg-muted px-5 py-3 font-display-normal text-foreground"
-                    style={{ fontSize: 16, textAlignVertical: "top" }}
-                  />
-                </Animated.View>
-              ) : null}
-              {form.noteError ? (
-                <Text
-                  accessibilityLiveRegion="polite"
-                  className="mt-2 font-display-normal text-sm text-destructive"
-                >
-                  {form.noteError}
-                </Text>
-              ) : null}
-            </View>
+
+                <View>
+                  <Pressable
+                    accessibilityRole="button"
+                    accessibilityState={{ expanded: noteOpen }}
+                    onPress={() => setNoteOpen((open) => !open)}
+                    allowDoublePress
+                    className="flex-row items-center gap-2 self-start py-1 mt-1 active:opacity-80"
+                  >
+                    <View style={{ transform: [{ rotate: noteOpen ? "90deg" : "0deg" }] }}>
+                      <ArrowRightIcon size={18} color={palette.mutedForeground} />
+                    </View>
+                    <Text className="font-display-normal text-base text-muted-foreground">
+                      {form.note && !noteOpen ? "Note added" : "Add a note"}
+                    </Text>
+                  </Pressable>
+                  {noteOpen ? (
+                    <Animated.View entering={NOTE_ENTERING} exiting={NOTE_EXITING}>
+                      <TextInput
+                        accessibilityLabel="Note"
+                        accessibilityHint={form.noteError ?? undefined}
+                        multiline
+                        maxLength={EXPENSE_NOTE_MAX}
+                        placeholder="e.g. Electricity bill for March, paid via UPI"
+                        placeholderTextColor={palette.mutedForeground}
+                        onFocus={revealFocusedInput}
+                        value={form.note}
+                        onChangeText={form.setNote}
+                        className="mt-2 min-h-20 rounded-xl bg-muted px-5 py-3 font-display-normal text-foreground"
+                        style={{ fontSize: 16, textAlignVertical: "top" }}
+                      />
+                    </Animated.View>
+                  ) : null}
+                  {form.noteError ? (
+                    <Text
+                      accessibilityLiveRegion="polite"
+                      className="mt-2 font-display-normal text-sm text-destructive"
+                    >
+                      {form.noteError}
+                    </Text>
+                  ) : null}
+                </View>
+              </>
+            )}
           </Animated.ScrollView>
         </GestureDetector>
       </KeyboardAvoidingView>

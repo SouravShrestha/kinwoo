@@ -1,5 +1,5 @@
-import { LOAD_FAILED_MESSAGE } from "@kinwoo/core/app";
 import { usePrivatePurchases } from "@kinwoo/client/grocery";
+import { useToastOnLoadFailure } from "@kinwoo/client/toast";
 import {
   findBoughtGroup,
   formatPaise,
@@ -26,7 +26,6 @@ import {
 } from "@/components/skeleton/skeletons";
 import { SwipeDownScreen } from "@/components/SwipeDownScreen";
 import { goBack } from "@/lib/house-navigation";
-import { noExpense } from "@/lib/images";
 import { useSwipeDownToDismiss } from "@/lib/use-swipe-down-to-dismiss";
 import { useTheme } from "@/theme/ThemeProvider";
 
@@ -58,7 +57,7 @@ export function PrivateSpending({ houseId }: { houseId: string }) {
   };
 
   const loaded = items !== undefined;
-  const loadFailed = isError && !loaded;
+  useToastOnLoadFailure(isError && !loaded);
   const { pan, scrollGesture, onScroll, sheetStyle } = useSwipeDownToDismiss(goBack);
 
   return (
@@ -85,7 +84,7 @@ export function PrivateSpending({ houseId }: { houseId: string }) {
                 <ArrowRightIcon size={28} color={palette.foreground} />
               </View>
             </Pressable>
-            {loaded || loadFailed ? (
+            {loaded ? (
               <View className="mt-2">
                 <Text
                   accessibilityRole="header"
@@ -95,26 +94,20 @@ export function PrivateSpending({ houseId }: { houseId: string }) {
                   <Text className="font-display-medium">{formatPaise(spending.totalPaise)}</Text>{" "}
                   privately
                 </Text>
-                {loaded ? (
-                  <Text className="mt-2 font-display-normal text-sm text-muted-foreground">
-                    {PRIVATE_SPENDING_NOTE}
-                  </Text>
-                ) : null}
+                <Text className="mt-2 font-display-normal text-sm text-muted-foreground">
+                  {PRIVATE_SPENDING_NOTE}
+                </Text>
               </View>
             ) : (
               <PrivateSpendingHeaderSkeleton />
             )}
           </View>
-          {loadFailed ? (
-            <View className="flex-1">
-              <EmptyItems image={noExpense} title={LOAD_FAILED_MESSAGE} />
-            </View>
-          ) : loaded && entries.length === 0 ? (
+          {loaded && entries.length === 0 ? (
             <View className="flex-1">
               <EmptyItems
-                image={noExpense}
-                title="No private purchases yet"
-                hint="Things you buy from your private lists show up here."
+                icon="private"
+                title="Your secret stash is empty"
+                hint="Anything you buy from your private lists will show up here"
               />
             </View>
           ) : null}

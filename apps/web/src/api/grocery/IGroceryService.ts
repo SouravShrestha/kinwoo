@@ -22,6 +22,7 @@ import type {
   MarkItemsBoughtInput,
   UpdateItemInput,
   UpdateListInput,
+  UpdatePrivatePurchaseInput,
 } from "./IGroceryRepository";
 import type { ServiceResult } from "../_shared/result";
 
@@ -53,6 +54,10 @@ export interface IGroceryService {
   ): Promise<GroceryResult<AssignItemsResult>>;
   claimItems(listId: string, itemIds: string[]): Promise<GroceryResult<AssignItemsResult>>;
   markBought(itemId: string, input: MarkBoughtInput): Promise<GroceryResult<null>>;
+  updatePrivatePurchase(
+    itemId: string,
+    input: UpdatePrivatePurchaseInput,
+  ): Promise<GroceryResult<null>>;
   markItemsBought(
     listId: string,
     input: MarkItemsBoughtInput,

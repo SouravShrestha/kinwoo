@@ -2,7 +2,9 @@ import { useGroceryItemActivity } from "@kinwoo/client/grocery";
 import { useHouseMembers } from "@kinwoo/client/houses";
 import { boughtItemTimeline, formatTimelineTime, type GroceryItem } from "@kinwoo/core/grocery";
 import { colors } from "@kinwoo/tokens/native";
-import { ScrollView, Text, View } from "react-native";
+import { Text, View } from "react-native";
+// Gesture-handler's ScrollView, so the sheet's pan gesture doesn't swallow horizontal drags on Android.
+import { ScrollView } from "react-native-gesture-handler";
 
 import { Avatar } from "@/components/houses/Avatar";
 import { useTheme } from "@/theme/ThemeProvider";
@@ -31,7 +33,7 @@ export function BoughtTimeline({
       nestedScrollEnabled
       showsHorizontalScrollIndicator={false}
       accessibilityRole="list"
-      className="pl-7"
+      style={{ paddingLeft: 28 }}
     >
       {steps.map((step, index) => {
         const member = members?.find((m) => m.userId === step.userId);

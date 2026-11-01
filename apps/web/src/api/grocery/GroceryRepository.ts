@@ -24,6 +24,7 @@ import {
   type MarkItemsBoughtInput,
   type UpdateItemInput,
   type UpdateListInput,
+  type UpdatePrivatePurchaseInput,
 } from "./IGroceryRepository";
 
 const LIST_COLUMNS =
@@ -416,6 +417,18 @@ export class GroceryRepository implements IGroceryRepository {
       p_store: input.store ?? undefined,
       p_bought_at: input.boughtAt ?? undefined,
       p_expense: linkedExpenseArg(input.expense),
+    });
+
+    if (error) fail(error);
+  }
+
+  async updatePrivatePurchase(itemId: string, input: UpdatePrivatePurchaseInput): Promise<void> {
+    const { error } = await this.client.rpc("update_private_purchase", {
+      p_item_id: itemId,
+      // The generated type has no null; the function reads null as "no price" for a single item.
+      p_price_paise: input.pricePaise as number,
+      p_store: input.store as string,
+      p_bought_at: input.boughtAt,
     });
 
     if (error) fail(error);

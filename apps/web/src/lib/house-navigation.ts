@@ -28,12 +28,13 @@ export function recordPaymentPath(payerId: string, payeeId: string, amountPaise:
   return `/expenses/record-payment/${encodeURIComponent(payerId)}/${encodeURIComponent(payeeId)}?amountPaise=${amountPaise}`;
 }
 
-export function expensePath(expenseId: string) {
-  return `/expense/${encodeURIComponent(expenseId)}`;
+// A private purchase has no expense; the same screens show it, keyed by its item id.
+export function expensePath(expenseId: string, isPrivate = false) {
+  return `/expense/${encodeURIComponent(expenseId)}${isPrivate ? "?private=1" : ""}`;
 }
 
-export function editExpensePath(expenseId: string) {
-  return `${expensePath(expenseId)}/edit`;
+export function editExpensePath(expenseId: string, isPrivate = false) {
+  return `/expense/${encodeURIComponent(expenseId)}/edit${isPrivate ? "?private=1" : ""}`;
 }
 
 export function useHouseNavigation() {

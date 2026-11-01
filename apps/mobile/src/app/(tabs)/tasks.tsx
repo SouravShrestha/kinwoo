@@ -9,8 +9,7 @@ import {
   useItemSelection,
 } from "@kinwoo/client/grocery";
 import { useActiveHouse, useHouseMembers } from "@kinwoo/client/houses";
-import { toast } from "@kinwoo/client/toast";
-import { LOAD_FAILED_MESSAGE } from "@kinwoo/core/app";
+import { toast, useToastOnLoadFailure } from "@kinwoo/client/toast";
 import { CONFIRM_COPY } from "@kinwoo/core/confirm";
 import {
   countSelected,
@@ -77,7 +76,6 @@ import { SkeletonText } from "@/components/skeleton/Skeleton";
 import { ItemGridSkeleton } from "@/components/skeleton/skeletons";
 import { openBatchMarkBought, openMarkBought } from "@/lib/house-navigation";
 import { houseStorage } from "@/lib/house-storage";
-import { emptyList } from "@/lib/images";
 import { usePullToRefresh } from "@/lib/use-pull-to-refresh";
 import { useTheme } from "@/theme/ThemeProvider";
 
@@ -179,6 +177,7 @@ function TasksScreen({ view }: { view: TasksView | null }) {
 
   const itemsLoaded = items !== undefined;
   const loadFailed = (listsError && !lists) || history.loadFailed;
+  useToastOnLoadFailure(loadFailed);
   const filtering = countSelected(filters) > 0;
   const listEmpty = (items ?? []).length === 0;
 
@@ -394,7 +393,7 @@ function TasksScreen({ view }: { view: TasksView | null }) {
               contentContainerStyle={{
                 flexGrow: 1,
                 paddingBottom:
-                  (itemsLoaded && visibleByTab[key].length === 0) || loadFailed
+                  itemsLoaded && visibleByTab[key].length === 0
                     ? filtersHeight + FILTERS_TOP_MARGIN
                     : key === "pending" && selection.count > 0
                       ? pendingSelectionBarHeight(currentList?.visibility === "private") + 16
@@ -403,15 +402,15 @@ function TasksScreen({ view }: { view: TasksView | null }) {
                         : insets.bottom + 88,
               }}
             >
-              {!itemsLoaded && loadFailed ? (
-                <EmptyItems image={emptyList} title={LOAD_FAILED_MESSAGE} />
-              ) : !itemsLoaded ? (
+              {!itemsLoaded ? (
                 <ItemGridSkeleton />
               ) : visibleByTab[key].length === 0 ? (
-                <EmptyItems
-                  image={emptyList}
-                  {...groceryEmptyCopy(key, { filtering, listEmpty })}
-                />
+                <View className="flex-1 pb-24">
+                  <EmptyItems
+                    icon={filtering ? "filter" : key}
+                    {...groceryEmptyCopy(key, { filtering, listEmpty })}
+                  />
+                </View>
               ) : key === "pending" ? (
                 <View style={{ paddingHorizontal: SCREEN_PADDING, paddingTop: 8 }}>
                   <View className="mb-3 min-h-8 flex-row items-center justify-between gap-3">

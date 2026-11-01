@@ -22,6 +22,7 @@ export function BoughtItemDetails({
   houseId,
   listId,
   canArchive,
+  isPrivateList,
   onArchive,
   onClose,
 }: {
@@ -29,6 +30,7 @@ export function BoughtItemDetails({
   houseId: string;
   listId: string;
   canArchive: boolean;
+  isPrivateList: boolean;
   onArchive: () => void;
   onClose: () => void;
 }) {
@@ -36,6 +38,12 @@ export function BoughtItemDetails({
   const palette = colors[resolvedTheme];
 
   const viewTransaction = () => {
+    // Private lists never produce expenses; the expense screens show the purchase instead.
+    if (isPrivateList) {
+      onClose();
+      openExpense(item.id, true);
+      return;
+    }
     const expenseId = item.purchase?.expenseId;
     if (!expenseId) return toast.error(TRANSACTION_UNAVAILABLE);
     onClose();

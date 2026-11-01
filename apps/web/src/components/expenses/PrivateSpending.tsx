@@ -1,7 +1,7 @@
 "use client";
 
-import { LOAD_FAILED_MESSAGE } from "@kinwoo/core/app";
 import { usePrivatePurchases } from "@kinwoo/client/grocery";
+import { useToastOnLoadFailure } from "@kinwoo/client/toast";
 import {
   findBoughtGroup,
   formatPaise,
@@ -24,6 +24,7 @@ import { PrivatePurchaseRow } from "./PrivatePurchaseRow";
 
 export function PrivateSpending({ houseId }: { houseId: string }) {
   const { data: items, isError } = usePrivatePurchases(houseId);
+  useToastOnLoadFailure(isError && items === undefined);
   const spending = useMemo(() => summarizePrivateSpending(items ?? []), [items]);
   const entries = useMemo(() => spending.months.flatMap((month) => month.entries), [spending]);
 
@@ -45,11 +46,7 @@ export function PrivateSpending({ houseId }: { houseId: string }) {
   };
 
   if (items === undefined) {
-    return isError ? (
-      <div className="flex flex-1 flex-col">
-        <EmptyItems image="expense" title={LOAD_FAILED_MESSAGE} />
-      </div>
-    ) : (
+    return (
       <>
         <PrivateSpendingHeaderSkeleton />
         <ExpenseRowsSkeleton count={4} />
@@ -74,9 +71,9 @@ export function PrivateSpending({ houseId }: { houseId: string }) {
         {entries.length === 0 ? (
           <div className="flex flex-1 flex-col">
             <EmptyItems
-              image="expense"
-              title="No private purchases yet"
-              hint="Things you buy from your private lists show up here."
+              icon="private"
+              title="Your secret stash is empty"
+              hint="Anything you buy from your private lists will show up here"
             />
           </div>
         ) : (

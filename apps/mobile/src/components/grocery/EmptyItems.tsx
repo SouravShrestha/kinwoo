@@ -1,29 +1,50 @@
 import type { GroceryEmptyCopy } from "@kinwoo/core/grocery";
-import { Image } from "expo-image";
+import {
+  NoAssignedIcon,
+  NoActivityIcon,
+  NoBoughtIcon,
+  NoExpenseIcon,
+  NoFilterMatchIcon,
+  NoNotificationsIcon,
+  NoPendingIcon,
+  NoPrivateIcon,
+  NoSettledIcon,
+} from "@kinwoo/icons/native";
+import { colors } from "@kinwoo/tokens/native";
 import type { ReactNode } from "react";
 import { Text, View } from "react-native";
+import { useTheme } from "@/theme/ThemeProvider";
 
-const IMAGE_SIZE = 160;
+const ICON_SIZE = 52;
+
+const EMPTY_ICONS = {
+  pending: NoPendingIcon,
+  assigned: NoAssignedIcon,
+  bought: NoBoughtIcon,
+  expense: NoExpenseIcon,
+  settled: NoSettledIcon,
+  private: NoPrivateIcon,
+  activity: NoActivityIcon,
+  notifications: NoNotificationsIcon,
+  filter: NoFilterMatchIcon,
+};
 
 export function EmptyItems({
-  image,
+  icon,
   title,
   hint,
   children,
 }: Omit<GroceryEmptyCopy, "hint"> & {
   hint?: string | null;
-  image: number;
+  icon: keyof typeof EMPTY_ICONS;
   children?: ReactNode;
 }) {
+  const { resolvedTheme } = useTheme();
+  const Icon = EMPTY_ICONS[icon];
   return (
     <View className="flex-1 items-center justify-center px-6">
-      <Image
-        source={image}
-        accessibilityIgnoresInvertColors
-        contentFit="contain"
-        style={{ width: IMAGE_SIZE, height: IMAGE_SIZE }}
-      />
-      <Text className="text-center text-base text-foreground font-display-normal mt-3">
+      <Icon size={ICON_SIZE} color={colors[resolvedTheme].foreground} />
+      <Text className="text-center text-base text-foreground font-display-normal mt-5">
         {title}
       </Text>
       {hint ? (

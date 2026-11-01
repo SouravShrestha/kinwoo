@@ -47,13 +47,11 @@ export function GroceryTabView({
   value,
   onChange,
   between,
-  fillActive = false,
   renderPage,
 }: {
   value: GroceryTabKey;
   onChange: (value: GroceryTabKey) => void;
   between?: ReactNode;
-  fillActive?: boolean;
   renderPage: (key: GroceryTabKey) => ReactNode;
 }) {
   const index = tabIndex(value);
@@ -74,7 +72,6 @@ export function GroceryTabView({
   const pagerRef = useRef<HTMLDivElement>(null);
   const indicatorRef = useRef<HTMLSpanElement>(null);
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
-  const pageRefs = useRef<(HTMLDivElement | null)[]>([]);
   // Set while a tab press scrolls the pager, so the pages it passes over don't become active.
   const targetRef = useRef<number | null>(null);
 
@@ -108,24 +105,6 @@ export function GroceryTabView({
     for (const tab of tabRefs.current) if (tab) observer.observe(tab);
     return () => observer.disconnect();
   }, [placeIndicator]);
-
-  // Inactive pages may be taller; clip the pager to the active page so the screen doesn't
-  // scroll into empty space below a short tab. flex-1 still lets it grow to fill the screen.
-  // An active page that wants to fill (the empty state) takes the free space through the
-  // pager's style prop, so server-rendered markup is already centred before hydration.
-  useLayoutEffect(() => {
-    const pager = pagerRef.current;
-    const page = pageRefs.current[index];
-    if (!pager || !page) return;
-    if (fillActive) return;
-    const sync = () => {
-      pager.style.height = `${page.offsetHeight}px`;
-    };
-    sync();
-    const observer = new ResizeObserver(sync);
-    observer.observe(page);
-    return () => observer.disconnect();
-  }, [index, fillActive]);
 
   const select = (key: GroceryTabKey) => {
     onChange(key);
@@ -238,24 +217,22 @@ export function GroceryTabView({
 
       <div
         ref={pagerRef}
-        style={fillActive ? { flex: "1 1 0px", alignItems: "stretch" } : undefined}
+        // The grid row is as tall as the active page (inactive pages are size-contained, so a
+        // taller one can't stretch it) and grows with flex-1 to fill the screen.
         onScroll={onScroll}
         onPointerDown={releaseTarget}
         onTouchStart={releaseTarget}
         onWheel={releaseTarget}
-        className="-mx-6 flex flex-1 snap-x snap-mandatory items-start overflow-x-auto overflow-y-hidden overscroll-x-contain [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        className="-mx-6 grid flex-1 snap-x snap-mandatory auto-cols-[100%] grid-flow-col overflow-x-auto overflow-y-hidden overscroll-x-contain [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       >
         {GROCERY_TABS.map((tab, i) => (
           <div
             key={tab.key}
-            ref={(node) => {
-              pageRefs.current[i] = node;
-            }}
             role="tabpanel"
             id={panelId(tab.key)}
             aria-labelledby={tabId(tab.key)}
             inert={i !== index}
-            className="w-full shrink-0 snap-start snap-always px-4 pt-2"
+            className={cn("snap-start snap-always px-4 pt-2", i !== index && "[contain:size]")}
           >
             {renderPage(tab.key)}
           </div>

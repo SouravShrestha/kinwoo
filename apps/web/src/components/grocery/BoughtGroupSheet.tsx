@@ -1,5 +1,6 @@
 "use client";
 
+import { useGroceryLists } from "@kinwoo/client/grocery";
 import { toast } from "@kinwoo/client/toast";
 import {
   formatPaise,
@@ -38,8 +39,16 @@ export function BoughtGroupSheet({
 }) {
   const router = useRouter();
   const lead = group?.items[0];
+  const { data: lists } = useGroceryLists(houseId);
+  const isPrivateList = lists?.find((list) => list.id === lead?.listId)?.visibility === "private";
 
   const viewTransaction = () => {
+    // Private lists never produce expenses; the expense screens show the purchase instead.
+    if (isPrivateList && lead) {
+      onClose();
+      router.push(expensePath(lead.id, true));
+      return;
+    }
     const expenseId = lead?.purchase?.expenseId;
     if (!expenseId) return toast.error(TRANSACTION_UNAVAILABLE);
     onClose();

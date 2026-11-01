@@ -17,6 +17,7 @@ import type {
   MarkItemsBoughtResult,
   UpdateItemInput,
   UpdateListInput,
+  UpdatePrivatePurchaseInput,
 } from "@kinwoo/core/grocery";
 
 import { apiRequest } from "../api/request";
@@ -179,6 +180,18 @@ export async function markBought(
 ): Promise<void> {
   await apiRequest(`${itemBase(houseId, listId, itemId)}/buy`, {
     method: "POST",
+    body: input,
+  });
+}
+
+export async function updatePrivatePurchase(
+  houseId: string,
+  listId: string,
+  itemId: string,
+  input: UpdatePrivatePurchaseInput,
+): Promise<void> {
+  await apiRequest(`${itemBase(houseId, listId, itemId)}/purchase`, {
+    method: "PATCH",
     body: input,
   });
 }
