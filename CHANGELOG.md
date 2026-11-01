@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.0](https://github.com/SouravShrestha/kinwoo/compare/v1.3.0...v1.4.0) (2026-11-01)
+
+
+### Features
+
+* **grocery,expenses:** add private spending feature with icon-based empty states ([8ae808a](https://github.com/SouravShrestha/kinwoo/commit/8ae808a4037a88c21e6982e26ac04f734283ccb0))
+
 ## [1.3.0](https://github.com/SouravShrestha/kinwoo/compare/v1.2.0...v1.3.0) (2026-10-31)
 
 
