@@ -10,7 +10,7 @@ export interface Token {
   value: TokenValue;
 }
 
-export const RADIUS_REM = 0.6;
+export const RADIUS_REM = 0.75;
 
 export const TOKENS: Token[] = [
   { name: "background", value: { light: "#fefefe", dark: "#0e0e0e" } },
@@ -26,7 +26,7 @@ export const TOKENS: Token[] = [
   { name: "border", value: { light: "#e5e5e5", dark: "#262626" } },
   { name: "primary", value: { light: "#0e0e0e", dark: "#fefefe" } },
   { name: "primary-foreground", value: { light: "#fefefe", dark: "#0e0e0e" } },
-  { name: "accent", value: { light: "#4e8e60", dark: "#5ea771" } },
+  { name: "accent", value: { light: "#448056", dark: "#66b07a" } },
   { name: "accent-foreground", value: { light: "#fefefe", dark: "#0e0e0e" } },
   { name: "destructive", value: { light: "#c0392b", dark: "#e06a5c" } },
   { name: "destructive-foreground", value: { light: "#fefefe", dark: "#0e0e0e" } },

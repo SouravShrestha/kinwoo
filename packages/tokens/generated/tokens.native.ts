@@ -21,7 +21,7 @@ export const lightColors = {
   "border": "#e5e5e5",
   "primary": "#0e0e0e",
   "primaryForeground": "#fefefe",
-  "accent": "#4e8e60",
+  "accent": "#448056",
   "accentForeground": "#fefefe",
   "destructive": "#c0392b",
   "destructiveForeground": "#fefefe",
@@ -45,7 +45,7 @@ export const darkColors = {
   "border": "#262626",
   "primary": "#fefefe",
   "primaryForeground": "#0e0e0e",
-  "accent": "#5ea771",
+  "accent": "#66b07a",
   "accentForeground": "#0e0e0e",
   "destructive": "#e06a5c",
   "destructiveForeground": "#0e0e0e",
@@ -83,14 +83,14 @@ export const cssVarNames = {
   "infoForeground": "--info-foreground",
 } as const satisfies Record<ColorName, string>;
 
-export const RADIUS_BASE_PX = 9.6;
+export const RADIUS_BASE_PX = 12;
 
 export const radius = {
-  "sm": 7.6,
-  "md": 9.6,
-  "lg": 11.6,
-  "xl": 13.6,
-  "2xl": 15.6,
-  "3xl": 17.6,
-  "4xl": 19.6,
+  "sm": 10,
+  "md": 12,
+  "lg": 14,
+  "xl": 16,
+  "2xl": 18,
+  "3xl": 20,
+  "4xl": 22,
 } as const;
