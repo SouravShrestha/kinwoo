@@ -114,9 +114,15 @@ export function refreshAfterSubscribe(
   queryKey: QueryKey,
   openedAt: number | null,
 ): void {
-  void queryClient.invalidateQueries({
-    queryKey,
-    predicate: (query) =>
-      openedAt === null || (query.state.dataUpdatedAt > 0 && query.state.dataUpdatedAt < openedAt),
-  });
+  // ponytail: an in-flight fetch is kept rather than restarted, so a write landing between its
+  // server read and SUBSCRIBED is missed until the next refetch; restart it if that shows up.
+  void queryClient.invalidateQueries(
+    {
+      queryKey,
+      predicate: (query) =>
+        openedAt === null ||
+        (query.state.dataUpdatedAt > 0 && query.state.dataUpdatedAt < openedAt),
+    },
+    { cancelRefetch: false },
+  );
 }

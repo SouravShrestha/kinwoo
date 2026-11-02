@@ -25,7 +25,7 @@ export function useExpenses(houseId: string | null) {
     initialPageParam: null as string | null,
     getNextPageParam: (lastPage) => lastPage.nextCursor,
     select: (data) => data.pages.flatMap((page) => page.expenses),
-    enabled: houseId !== null,
+    enabled: !!houseId,
   });
 }
 
@@ -33,7 +33,7 @@ export function useExpense(houseId: string | null, expenseId: string | null) {
   return useQuery({
     queryKey: expenseKeys.detail(houseId ?? "", expenseId ?? ""),
     queryFn: () => fetchExpense(houseId as string, expenseId as string),
-    enabled: houseId !== null && expenseId !== null,
+    enabled: !!houseId && !!expenseId,
   });
 }
 
@@ -122,7 +122,7 @@ export function useMemberBalances(houseId: string | null) {
     queryKey: expenseKeys.memberNets(houseId ?? ""),
     queryFn: () => fetchMemberNets(houseId as string),
     select: memberBalanceRows,
-    enabled: houseId !== null,
+    enabled: !!houseId,
   });
 }
 
@@ -130,7 +130,7 @@ export function useSettlements(houseId: string | null) {
   return useQuery({
     queryKey: expenseKeys.settlements(houseId ?? ""),
     queryFn: () => fetchSettlements(houseId as string),
-    enabled: houseId !== null,
+    enabled: !!houseId,
   });
 }
 
@@ -138,7 +138,7 @@ export function useExpenseTotals(houseId: string | null) {
   return useQuery({
     queryKey: expenseKeys.totals(houseId ?? ""),
     queryFn: () => fetchExpenseTotals(houseId as string),
-    enabled: houseId !== null,
+    enabled: !!houseId,
   });
 }
 
@@ -146,7 +146,7 @@ export function useHouseBalances(houseId: string | null, simplify = false) {
   return useQuery({
     queryKey: expenseKeys.balancesView(houseId ?? "", simplify),
     queryFn: () => fetchBalances(houseId as string, simplify),
-    enabled: houseId !== null,
+    enabled: !!houseId,
     // Toggling simplify keeps the other view on screen until it loads, but never across houses.
     placeholderData: (previous, previousQuery) =>
       previousQuery?.queryKey[1] === houseId ? previous : undefined,

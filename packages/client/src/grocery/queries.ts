@@ -27,7 +27,7 @@ export function useGroceryLists(houseId: string | null) {
   return useQuery({
     queryKey: groceryKeys.lists(houseId ?? ""),
     queryFn: () => fetchLists(houseId as string),
-    enabled: houseId !== null,
+    enabled: !!houseId,
   });
 }
 
@@ -35,7 +35,7 @@ export function useGroceryList(houseId: string | null, listId: string | null) {
   return useQuery({
     queryKey: groceryKeys.list(houseId ?? "", listId ?? ""),
     queryFn: () => fetchList(houseId as string, listId as string),
-    enabled: houseId !== null && listId !== null,
+    enabled: !!houseId && !!listId,
   });
 }
 
@@ -45,7 +45,7 @@ export function useGroceryItems(houseId: string | null, listId: string | null) {
     queryKey: groceryKeys.items(houseId ?? "", listId ?? ""),
     queryFn: () =>
       fetchItems(houseId as string, listId as string, { boughtSince: recentBoughtSince() }),
-    enabled: houseId !== null && listId !== null,
+    enabled: !!houseId && !!listId,
   });
 }
 
@@ -56,7 +56,7 @@ export function useBoughtHistory(houseId: string | null, listId: string | null, 
     // Starts at the items query's cutoff; any overlap is removed when the pages are merged.
     initialPageParam: recentBoughtSince(),
     getNextPageParam: (lastPage) => lastPage.nextCursor,
-    enabled: enabled && houseId !== null && listId !== null,
+    enabled: enabled && !!houseId && !!listId,
   });
 }
 
@@ -125,7 +125,7 @@ export function useGroceryItem(
   return useQuery({
     queryKey: groceryKeys.item(houseId ?? "", listId ?? "", itemId ?? ""),
     queryFn: () => fetchItem(houseId as string, listId as string, itemId as string),
-    enabled: houseId !== null && listId !== null && itemId !== null,
+    enabled: !!houseId && !!listId && !!itemId,
   });
 }
 
@@ -133,7 +133,7 @@ export function useGroceryCategories(houseId: string | null) {
   return useQuery({
     queryKey: groceryKeys.categories(houseId ?? ""),
     queryFn: () => fetchCategories(houseId as string),
-    enabled: houseId !== null,
+    enabled: !!houseId,
     staleTime: 5 * 60 * 1000, // categories don't change often
   });
 }
@@ -142,7 +142,7 @@ export function useGroceryOverview(houseId: string | null) {
   return useQuery({
     queryKey: groceryKeys.overview(houseId ?? ""),
     queryFn: () => fetchOverview(houseId as string),
-    enabled: houseId !== null,
+    enabled: !!houseId,
   });
 }
 
@@ -150,7 +150,7 @@ export function usePrivatePurchases(houseId: string | null) {
   return useQuery({
     queryKey: groceryKeys.privatePurchases(houseId ?? ""),
     queryFn: () => fetchPrivatePurchases(houseId as string),
-    enabled: houseId !== null,
+    enabled: !!houseId,
   });
 }
 
@@ -166,7 +166,7 @@ export function useRecentActivity(houseId: string | null) {
     initialPageParam: null as string | null,
     getNextPageParam: (lastPage) => lastPage.nextCursor,
     select: selectActivityEntries,
-    enabled: houseId !== null,
+    enabled: !!houseId,
   });
 }
 
@@ -178,6 +178,6 @@ export function useGroceryItemActivity(
   return useQuery({
     queryKey: groceryKeys.activity(houseId ?? "", listId ?? "", itemId ?? ""),
     queryFn: () => fetchItemActivity(houseId as string, listId as string, itemId as string),
-    enabled: houseId !== null && listId !== null && itemId !== null,
+    enabled: !!houseId && !!listId && !!itemId,
   });
 }
