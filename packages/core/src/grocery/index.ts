@@ -18,3 +18,4 @@ export * from "./tabs";
 export * from "./tasks-view";
 export * from "./types";
 export * from "./validation";
+export * from "./activity-timeline";

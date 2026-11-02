@@ -33,7 +33,8 @@ export function BoughtTimeline({
       nestedScrollEnabled
       showsHorizontalScrollIndicator={false}
       accessibilityRole="list"
-      style={{ paddingLeft: 28 }}
+      // Padding on the ScrollView's own style shortens the scroll range on Android and clips the end.
+      contentContainerStyle={{ paddingHorizontal: 28 }}
     >
       {steps.map((step, index) => {
         const member = members?.find((m) => m.userId === step.userId);
@@ -46,7 +47,6 @@ export function BoughtTimeline({
             key={step.label}
             accessible
             accessibilityLabel={[step.label, name, time].filter(Boolean).join(", ")}
-            className={isLast ? "pr-2" : undefined}
             style={isLast ? { maxWidth: STEP_WIDTH } : { width: STEP_WIDTH }}
           >
             <View className="flex-row items-center mt-2">
