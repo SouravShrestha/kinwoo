@@ -1,0 +1,225 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-02T17:10:00+05:30",
+  "title": "Design System: Kinwoo",
+  "extensions": {
+    "colorMeta": {
+      "ink": {
+        "role": "primary",
+        "displayName": "Ink",
+        "canonical": "#0e0e0e",
+        "tonalRamp": [
+          "#0e0e0e",
+          "#262626",
+          "#3f3f3f",
+          "#6b6b6b",
+          "#9a9a9a",
+          "#dcdcdc",
+          "#f1f1f1",
+          "#fefefe"
+        ]
+      },
+      "sage": {
+        "role": "secondary",
+        "displayName": "Sage",
+        "canonical": "#4e8e60",
+        "tonalRamp": [
+          "#1d3a27",
+          "#2b5238",
+          "#3a6e4b",
+          "#4e8e60",
+          "#6faa80",
+          "#98c4a5",
+          "#c4dfcd",
+          "#e9f3ec"
+        ]
+      },
+      "paper": {
+        "role": "neutral",
+        "displayName": "Paper",
+        "canonical": "#fefefe",
+        "tonalRamp": [
+          "#0e0e0e",
+          "#1a1a1a",
+          "#262626",
+          "#6b6b6b",
+          "#9a9a9a",
+          "#dcdcdc",
+          "#f1f1f1",
+          "#fefefe"
+        ]
+      },
+      "brick": {
+        "role": "status",
+        "displayName": "Brick",
+        "canonical": "#c0392b",
+        "tonalRamp": [
+          "#4a140e",
+          "#762119",
+          "#9c2d21",
+          "#c0392b",
+          "#d36a5e",
+          "#e29a91",
+          "#f0c6c1",
+          "#fae9e7"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display / Button",
+        "purpose": "Button labels and headings in Poppins."
+      },
+      "wordmark": {
+        "displayName": "Wordmark",
+        "purpose": "Footer sign-off, uppercase, in Rule color."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Lists, descriptions and amounts in Inter at medium weight."
+      },
+      "field": { "displayName": "Field", "purpose": "Email and name inputs." },
+      "code": { "displayName": "Code", "purpose": "Six-digit OTP entry with wide letter-spacing." }
+    },
+    "shadows": [],
+    "motion": [
+      {
+        "name": "press",
+        "value": "opacity: 0.7 while :active",
+        "purpose": "Native-like press feedback on buttons and links."
+      },
+      {
+        "name": "state-transition",
+        "value": "200ms",
+        "purpose": "Hover and state changes (duration-200)."
+      },
+      {
+        "name": "sheet-slide",
+        "value": "kinwoo-slide-up / kinwoo-slide-down",
+        "purpose": "Bottom sheet enter and exit, with fade on the backdrop."
+      }
+    ],
+    "breakpoints": [
+      { "name": "lg", "value": "1024px" },
+      { "name": "column", "value": "448px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Default full-width action.",
+      "html": "<button class=\"ds-btn-primary\">Add expense</button>",
+      "css": ".ds-btn-primary { display:flex; align-items:center; justify-content:center; gap:10px; width:100%; min-height:56px; padding:12px 20px; border:0; border-radius:13.6px; background:#0e0e0e; color:#fefefe; font-family:Poppins,system-ui,sans-serif; font-size:1rem; font-weight:500; cursor:pointer; } .ds-btn-primary:hover { opacity:.9; } .ds-btn-primary:active { opacity:.7; } .ds-btn-primary:focus-visible { outline:2px solid #0e0e0e; outline-offset:2px; }"
+    },
+    {
+      "name": "Accent Button",
+      "kind": "button",
+      "refersTo": "button-accent",
+      "description": "Confirming action in sage.",
+      "html": "<button class=\"ds-btn-accent\">Mark as settled</button>",
+      "css": ".ds-btn-accent { display:flex; align-items:center; justify-content:center; width:100%; min-height:56px; padding:12px 20px; border:0; border-radius:13.6px; background:#4e8e60; color:#fefefe; font-family:Poppins,system-ui,sans-serif; font-size:1rem; font-weight:500; cursor:pointer; } .ds-btn-accent:hover { opacity:.9; } .ds-btn-accent:active { opacity:.7; } .ds-btn-accent:focus-visible { outline:2px solid #0e0e0e; outline-offset:2px; }"
+    },
+    {
+      "name": "Outline Button",
+      "kind": "button",
+      "refersTo": "button-outline",
+      "description": "Secondary action that takes on its surface.",
+      "html": "<button class=\"ds-btn-outline\">Cancel</button>",
+      "css": ".ds-btn-outline { display:flex; align-items:center; justify-content:center; width:100%; min-height:56px; padding:12px 20px; border:1px solid #e5e5e5; border-radius:13.6px; background:transparent; color:#0e0e0e; font-family:Poppins,system-ui,sans-serif; font-size:1rem; font-weight:500; cursor:pointer; } .ds-btn-outline:hover { background:#f1f1f1; } .ds-btn-outline:focus-visible { outline:2px solid #0e0e0e; outline-offset:2px; }"
+    },
+    {
+      "name": "Destructive Button",
+      "kind": "button",
+      "refersTo": "button-destructive",
+      "description": "Transparent with a brick border.",
+      "html": "<button class=\"ds-btn-destructive\">Leave house</button>",
+      "css": ".ds-btn-destructive { display:flex; align-items:center; justify-content:center; width:100%; min-height:56px; padding:12px 20px; border:1px solid #c0392b; border-radius:13.6px; background:transparent; color:#c0392b; font-family:Poppins,system-ui,sans-serif; font-size:1rem; font-weight:500; cursor:pointer; } .ds-btn-destructive:hover { background:#f1f1f1; } .ds-btn-destructive:focus-visible { outline:2px solid #0e0e0e; outline-offset:2px; }"
+    },
+    {
+      "name": "Text Field",
+      "kind": "input",
+      "refersTo": "text-field",
+      "description": "54px muted field with a hairline border.",
+      "html": "<input class=\"ds-input\" type=\"email\" placeholder=\"you@example.com\" aria-label=\"Email address\">",
+      "css": ".ds-input { width:100%; height:54px; padding:0 16px; border:1px solid #e5e5e5; border-radius:15.6px; background:#f1f1f1; color:#0e0e0e; font-family:Inter,system-ui,sans-serif; font-size:1.125rem; font-weight:500; box-sizing:border-box; } .ds-input::placeholder { color:#6b6b6b; } .ds-input:focus-visible { outline:2px solid #0e0e0e; outline-offset:2px; }"
+    },
+    {
+      "name": "Bottom Sheet",
+      "kind": "card",
+      "refersTo": "sheet",
+      "description": "Bottom-anchored panel with a drag handle.",
+      "html": "<div class=\"ds-sheet\"><div class=\"ds-handle\"></div><p class=\"ds-sheet-title\">Add item</p></div>",
+      "css": ".ds-sheet { max-width:448px; padding:12px 24px 32px; border-radius:15.6px 15.6px 0 0; background:#fefefe; border:1px solid #e5e5e5; } .ds-handle { width:40px; height:4px; margin:0 auto 14px; border-radius:9999px; background:rgba(107,107,107,.3); } .ds-sheet-title { margin:0; font-family:Poppins,system-ui,sans-serif; font-size:1.25rem; font-weight:500; color:#0e0e0e; }"
+    },
+    {
+      "name": "Tab Bar",
+      "kind": "nav",
+      "refersTo": "tab-bar",
+      "description": "Fixed 64px bottom tabs, active in ink.",
+      "html": "<nav class=\"ds-tabs\"><a class=\"ds-tab is-active\">Home</a><a class=\"ds-tab\">List</a><a class=\"ds-tab\">Expenses</a></nav>",
+      "css": ".ds-tabs { display:flex; height:64px; max-width:448px; border-top:1px solid #e5e5e5; background:#fefefe; } .ds-tab { flex:1; display:flex; align-items:center; justify-content:center; font-family:Inter,system-ui,sans-serif; font-size:.875rem; font-weight:500; color:#6b6b6b; cursor:pointer; } .ds-tab.is-active { color:#0e0e0e; } .ds-tab:active { opacity:.7; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Shared Ledger",
+    "overview": "Kinwoo looks like a household account book: ink on paper, ruled lines, plain figures. Almost everything is black and white. One sage green marks the moments that matter, such as confirming, being owed, or being settled. The interface never performs. It records who paid, what is needed and what is owed, and then gets out of the way so a housemate can log a purchase one-handed in a shop.",
+    "keyCharacteristics": [
+      "Near-monochrome: ink, paper, and one sage accent.",
+      "Flat, ruled, tonal: no shadows, hairline borders, muted fills.",
+      "Large tap targets, rounded corners (about 14-16px on controls).",
+      "Phone-width column (max 448px) on every screen size; sheets slide up from the bottom.",
+      "Press feedback by fading to 70% opacity, matching native.",
+      "Identical token set on web and mobile."
+    ],
+    "rules": [
+      {
+        "name": "The One Tick Rule",
+        "body": "Sage appears on a small share of any screen. It signals a positive outcome, never decoration.",
+        "section": "colors"
+      },
+      {
+        "name": "The Same Ink Rule",
+        "body": "Every color comes from the token set in packages/tokens; neither app defines its own.",
+        "section": "colors"
+      },
+      {
+        "name": "The Scale Rule",
+        "body": "Type sizes are expressed through the theme text scale so the user's font-size setting applies everywhere.",
+        "section": "typography"
+      },
+      {
+        "name": "The Weight Pairing Rule (mobile)",
+        "body": "Pick a weight utility that also sets the family; never combine font-display with font-bold.",
+        "section": "typography"
+      },
+      {
+        "name": "The Flat-By-Default Rule",
+        "body": "Surfaces are flat at rest and stay flat. Separate with a rule or a tonal step; do not add a shadow.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Uncut Ring Rule",
+        "body": "A keyboard focus ring is never clipped. The default ring is 2px ink with a 2px offset, so it needs 4px of free space on every side. Inside a scroller (overflow-x-auto clips the other axis too), give the scroller 6px of padding and cancel it with a matching negative margin so layout does not move. Where a neighbour paints over the ring, such as full-width list rows under sticky headings, draw the ring inside the element with a negative offset (-outline-offset-2) and give the row a little horizontal padding and rounded corners for it.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do take every color from the token set; use bg-primary, text-muted-foreground, border-border and friends, never raw hex.",
+      "Do keep sage for positive outcomes (settled, bought, owed to you) and let ink carry the rest.",
+      "Do make every tap target at least 54px tall, and keep primary actions full width.",
+      "Do show keyboard focus with the 2px ink outline offset 2px, and check it is not clipped by a scroller or covered by a sticky header (see The Uncut Ring Rule).",
+      "Do keep web and mobile visually equivalent; change tokens once and regenerate.",
+      "Do set type through the text scale so the font-size setting works."
+    ],
+    "donts": [
+      "Don't add shadows or decorative gradients; separate surfaces with rules and tonal steps.",
+      "Don't introduce a second accent color or use sage for decoration.",
+      "Don't hand-edit packages/tokens/generated/*.",
+      "Don't fix a layout to pixel widths beyond the 448px column; the app stays phone-width everywhere.",
+      "Don't combine font-display with font-bold on mobile.",
+      "Don't let text be selectable outside inputs; the app behaves like a native one."
+    ]
+  }
+}
