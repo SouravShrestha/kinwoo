@@ -1,6 +1,6 @@
 ---
 name: pr
-description: Open a GitHub pull request with a release-please compatible title and a description that follows the repo PR template. Use when the user asks to open or create a PR. Always previews and asks for confirmation before creating.
+description: Open a GitHub pull request with a release-please compatible title and a description that follows the repo PR template. Use when the user asks to open or create a PR. Always previews short message and asks for confirmation before creating.
 ---
 
 # Open a PR
@@ -15,7 +15,7 @@ description: Open a GitHub pull request with a release-please compatible title a
    - How was this tested: the commands actually run and their results. Do not claim checks that were not run.
    - Checklist: tick only items you verified.
    - Screenshots: only for UI changes, otherwise remove the section.
-   Remove HTML comments from the final body.
+     Remove HTML comments from the final body.
 5. Preview, then ask for confirmation before creating. Show the title, base and head branches, and the full body.
 6. After a yes, write the body to a temp file and run `gh pr create --base main --title "<title>" --body-file <file>`. Delete the temp file. Add `--draft` if the user asked.
 7. Return the PR URL.
