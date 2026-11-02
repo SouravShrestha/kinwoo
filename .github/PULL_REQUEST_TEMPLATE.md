@@ -24,7 +24,6 @@ anything server-side or Cloudflare-Workers-specific enough to need
 
 ## Checklist
 
-- [ ] I read [CONTRIBUTING.md](../CONTRIBUTING.md), including the [architecture rules](../CONTRIBUTING.md#architecture-rules-that-matter)
 - [ ] `npm run typecheck`, `npm test`, and `npm run lint` all pass locally
 - [ ] `npm run format` was run and the diff is limited to files this PR actually touches
 - [ ] Commit messages follow [Conventional Commits](https://www.conventionalcommits.org/) (`feat:`, `fix:`, `docs:`, etc.) since release-please reads them
