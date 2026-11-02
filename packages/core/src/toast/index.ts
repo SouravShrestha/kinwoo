@@ -43,6 +43,7 @@ export const TOAST_MESSAGES = {
   offline: "You're offline. Showing your last saved data.",
   offlineNoData: "You're offline. This isn't saved on your device yet.",
   backOnline: "You're back online.",
+  loadSlow: "Still loading. Your connection looks slow.",
 } as const;
 
 export type ToastMessageKey = keyof typeof TOAST_MESSAGES;
