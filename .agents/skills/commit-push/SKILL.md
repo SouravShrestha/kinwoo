@@ -15,9 +15,6 @@ description: Commit and push the current changes with a release-please compatibl
    - Breaking change: `!` after the type/scope and a `BREAKING CHANGE:` footer.
    - One logical change per commit. Split unrelated changes.
 5. Commit with `git commit`.
-6. Preview, then ask for confirmation before pushing. Show:
-   - branch and remote
-   - `git log --stat origin/<branch>..HEAD` (or `main..HEAD` for a new branch)
-   - the exact command: `git push -u origin <branch>`
+6. Preview in chat text, not in the question: branch, `git log --oneline origin/<branch>..HEAD` (or `main..HEAD` for a new branch), and the push command. Then ask a one-line confirmation, e.g. `Push 2 commits to origin/<branch>?` Never put the preview or a file list in the question.
 7. Push only after the user says yes. Never force push. Never use `--no-verify`.
 8. Report the branch name and commit SHA.

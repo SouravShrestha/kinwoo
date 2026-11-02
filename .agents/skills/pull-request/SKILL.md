@@ -16,6 +16,6 @@ description: Open a GitHub pull request with a release-please compatible title a
    - Checklist: tick only items you verified.
    - Screenshots: only for UI changes, otherwise remove the section.
      Remove HTML comments from the final body.
-5. Preview, then ask for confirmation before creating. Show the title, base and head branches, and the full body.
+5. Preview in chat text, not in the question: title, base and head branches, and the full body. Then ask a one-line confirmation, e.g. `Create this PR into main?` Never put the body in the question.
 6. After a yes, write the body to a temp file and run `gh pr create --base main --title "<title>" --body-file <file>`. Delete the temp file. Add `--draft` if the user asked.
 7. Return the PR URL.
