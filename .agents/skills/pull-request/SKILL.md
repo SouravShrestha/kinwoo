@@ -1,5 +1,5 @@
 ---
-name: pr
+name: pull-request
 description: Open a GitHub pull request with a release-please compatible title and a description that follows the repo PR template. Use when the user asks to open or create a PR. Always previews short message and asks for confirmation before creating.
 ---
 
