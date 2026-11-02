@@ -106,7 +106,7 @@ export function useListItemsWithHistory(
     items: merged,
     hasOlder:
       !requested || ((history.hasNextPage || history.isPending) && !history.isFetchNextPageError),
-    // Not isFetching: a background refetch of loaded pages would put a skeleton under real items.
+    // Not isFetching: a background refetch of loaded pages must not show the busy bar.
     loadingOlder: requested && (history.isPending || history.isFetchingNextPage),
     loadFailed: isError && items === undefined,
     loadOlder: () => {

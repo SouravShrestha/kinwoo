@@ -26,7 +26,8 @@
     "db:reset": "supabase db reset",
     "db:test": "supabase test db",
     "db:types": "node scripts/gen-db-types.mjs",
-    "splash:generate": "node scripts/gen-splash.mjs"
+    "splash:generate": "node scripts/gen-splash.mjs",
+    "format:check": "prettier --check ."
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.6",

@@ -30,24 +30,16 @@ export function ItemCardSkeleton({ width }: { width?: number }) {
   );
 }
 
-export function ItemGridSkeleton({
-  count = 6,
-  withHeader = true,
-}: {
-  count?: number;
-  withHeader?: boolean;
-}) {
+export function ItemGridSkeleton() {
   const { width } = useWindowDimensions();
   const cardWidth = (width - SCREEN_PADDING * 2 - CARD_GAP) / 2;
   return (
     <SkeletonRegion className="px-6 pt-2">
-      {withHeader ? (
-        <View className="mb-3 min-h-8 justify-center">
-          <SkeletonText size="sm" className="w-24" />
-        </View>
-      ) : null}
+      <View className="mb-3 min-h-8 justify-center">
+        <SkeletonText size="sm" className="w-24" />
+      </View>
       <View className="flex-row flex-wrap" style={{ gap: CARD_GAP }}>
-        {times(count).map((index) => (
+        {times(6).map((index) => (
           <ItemCardSkeleton key={index} width={cardWidth} />
         ))}
       </View>

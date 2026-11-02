@@ -1,0 +1,1 @@
+../../.kiro/steering/ponytail.md

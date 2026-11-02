@@ -1,13 +1,12 @@
 import { describe, expect, it } from "vitest";
 
+import { filterActivity, formatActivityParts } from "./activity";
 import {
   activityIconName,
-  filterActivity,
-  formatActivityParts,
   formatActivityTimestamp,
   formatTimelineTime,
   withHouseName,
-} from "./activity";
+} from "./activity-timeline";
 import type { GroceryActivityEntry } from "./types";
 
 function batchEntry(payload: Record<string, unknown>): GroceryActivityEntry {

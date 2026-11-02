@@ -29,22 +29,14 @@ export function ItemCardSkeleton({ className }: { className?: string }) {
   );
 }
 
-export function ItemGridSkeleton({
-  count = 6,
-  withHeader = true,
-}: {
-  count?: number;
-  withHeader?: boolean;
-}) {
+export function ItemGridSkeleton() {
   return (
     <SkeletonRegion>
-      {withHeader ? (
-        <div className="mb-3 flex min-h-8 items-center">
-          <SkeletonText size="sm" className="w-24" />
-        </div>
-      ) : null}
+      <div className="mb-3 flex min-h-8 items-center">
+        <SkeletonText size="sm" className="w-24" />
+      </div>
       <ul className="grid grid-cols-2 gap-3">
-        {times(count).map((index) => (
+        {times(6).map((index) => (
           <li key={index}>
             <ItemCardSkeleton />
           </li>

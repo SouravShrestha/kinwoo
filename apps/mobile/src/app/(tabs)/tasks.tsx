@@ -1,15 +1,4 @@
-import { useAuth } from "@kinwoo/client/auth";
-import { useBusyWhile } from "@kinwoo/client/activity";
-import {
-  createListStorage,
-  useClaimItems,
-  useDeleteItems,
-  useListItemsWithHistory,
-  useGroceryLists,
-  useItemSelection,
-} from "@kinwoo/client/grocery";
-import { useActiveHouse, useHouseMembers } from "@kinwoo/client/houses";
-import { toast, useToastOnLoadFailure } from "@kinwoo/client/toast";
+import { createListStorage, useTasksScreen } from "@kinwoo/client/grocery";
 import { CONFIRM_COPY } from "@kinwoo/core/confirm";
 import {
   countSelected,
@@ -84,126 +73,63 @@ const PENDING_COLUMNS = 2;
 const PENDING_CARD_GAP = 12;
 const FILTERS_TOP_MARGIN = 8;
 
+const listStorage = createListStorage(houseStorage);
+
 function TasksScreen({ view }: { view: TasksView | null }) {
-  const initial = view ? TASKS_VIEWS[view] : null;
   const insets = useSafeAreaInsets();
   const { width: windowWidth } = useWindowDimensions();
   const { resolvedTheme } = useTheme();
   const palette = colors[resolvedTheme];
-  const { user } = useAuth();
-  const currentUserId = user?.id ?? "";
-  const currentUserName = user?.user_metadata?.displayName ?? user?.email ?? null;
-
-  const { activeHouse, ready } = useActiveHouse();
-  const houseId = activeHouse?.house.id ?? "";
-
   const {
-    data: lists,
-    isLoading: listsLoading,
-    isError: listsError,
-  } = useGroceryLists(houseId || null);
-
-  const listStorage = useMemo(() => createListStorage(houseStorage), []);
-  const [selectedListId, setSelectedListId] = useState<string | null>(null);
-
-  const [filters, setFilters] = useState<FilterSelection>(
-    initial?.filters ?? EMPTY_FILTER_SELECTION,
-  );
-  const [sortId, setSortId] = useState(DEFAULT_GROCERY_SORT);
-  const [tab, setTab] = useState<GroceryTabKey>(initial?.tab ?? DEFAULT_GROCERY_TAB);
+    currentUserId,
+    activeHouse,
+    ready,
+    houseId,
+    isAdmin,
+    lists,
+    listsLoading,
+    filters,
+    setFilters,
+    sortId,
+    setSortId,
+    tab,
+    activeList: currentList,
+    activeListId: activeSelectedListId,
+    canManageList,
+    history,
+    items,
+    filterGroups,
+    visibleByTab,
+    boughtEntries,
+    loadFailed,
+    filtering,
+    listEmpty,
+    selection,
+    assignedSelection,
+    selecting,
+    memberById,
+    confirmDelete,
+    setConfirmDelete,
+    deleting,
+    activeGroup,
+    openGroup,
+    groupSheetOpen,
+    setGroupSheetOpen,
+    confirmArchiveGroup,
+    setConfirmArchiveGroup,
+    canArchiveGroup,
+    handleArchiveGroup,
+    handleDeleteAssignedSelection,
+    handleAssignSelectionToMe,
+    handleTabChange,
+    handleSelectList,
+  } = useTasksScreen({ view, listStorage });
   const [filtersHeight, setFiltersHeight] = useState(0);
   const [switcherOpen, setSwitcherOpen] = useState(false);
   const [manageOpen, setManageOpen] = useState(false);
   const [activeItem, setActiveItem] = useState<{ id: string; listId: string } | null>(null);
   const openItem = (item: GroceryItem) => setActiveItem({ id: item.id, listId: item.listId });
-
-  // Restore/persist selected list
-  useEffect(() => {
-    if (!houseId || !lists || lists.length === 0) return;
-
-    let active = true;
-    void listStorage.loadSelectedList(houseId).then((storedId) => {
-      if (!active) return;
-      if (storedId && lists.some((l) => l.id === storedId)) {
-        setSelectedListId(storedId);
-      } else {
-        const defaultList = lists.find((l) => l.isDefault) ?? lists[0];
-        if (defaultList) {
-          setSelectedListId(defaultList.id);
-          void listStorage.persistSelectedList(houseId, defaultList.id);
-        }
-      }
-    });
-
-    return () => {
-      active = false;
-    };
-  }, [houseId, lists, listStorage]);
-
-  const defaultList = useMemo(() => lists?.find((l) => l.isDefault) ?? lists?.[0] ?? null, [lists]);
-
-  const currentList = useMemo(() => {
-    if (!selectedListId) return defaultList;
-    const found = lists?.find((l) => l.id === selectedListId);
-    return found ?? defaultList;
-  }, [lists, selectedListId, defaultList]);
-
-  const activeSelectedListId = currentList?.id ?? null;
-  const isAdmin = activeHouse?.role === "admin";
-  const canManageList = !!currentList && (isAdmin || currentList.createdBy === currentUserId);
-
-  const history = useListItemsWithHistory(houseId || null, activeSelectedListId);
-  const items = history.items;
-
-  const itemsByTab = useMemo(() => groceryItemsByTab(items ?? []), [items]);
-
-  const filterGroups = useMemo(
-    () => groceryFilterGroups(tab, itemsByTab[tab], currentUserId, items ?? []),
-    [itemsByTab, tab, currentUserId, items],
-  );
-
-  const visibleByTab = useMemo(
-    () =>
-      groceryItemsByTab(
-        sortGroceryItems(filterGroceryItems(items ?? [], filters, currentUserId), sortId),
-      ),
-    [items, filters, currentUserId, sortId],
-  );
-
-  const boughtEntries = useMemo(
-    () => groupBoughtItems(visibleByTab.bought, items ?? []),
-    [visibleByTab, items],
-  );
-
   const itemsLoaded = items !== undefined;
-  const loadFailed = (listsError && !lists) || history.loadFailed;
-  useToastOnLoadFailure(loadFailed);
-  const filtering = countSelected(filters) > 0;
-  const listEmpty = (items ?? []).length === 0;
-
-  const pendingIds = useMemo(() => visibleByTab.pending.map((item) => item.id), [visibleByTab]);
-  const selection = useItemSelection(pendingIds);
-  const assignedIds = useMemo(() => visibleByTab.assigned.map((item) => item.id), [visibleByTab]);
-  const assignedSelection = useItemSelection(assignedIds);
-  const selecting =
-    (selection.count > 0 && tab === "pending") ||
-    (assignedSelection.count > 0 && tab === "assigned");
-
-  const { data: members } = useHouseMembers(houseId || null);
-  const memberById = useMemo(() => new Map((members ?? []).map((m) => [m.userId, m])), [members]);
-
-  const claimItems = useClaimItems(
-    houseId,
-    activeSelectedListId ?? "",
-    currentUserId,
-    currentUserName,
-  );
-  const deleteItems = useDeleteItems(houseId, activeSelectedListId ?? "");
-  const [confirmDelete, setConfirmDelete] = useState(false);
-  const [deleting, setDeleting] = useState(false);
-  const [activeBatchId, setActiveBatchId] = useState<string | null>(null);
-  const [groupSheetOpen, setGroupSheetOpen] = useState(false);
-  useBusyWhile(deleting || history.loadingOlder);
   const loadOlderProps = useLoadOlderOnScroll(history, tab === "bought");
   const refreshControl = usePullToRefresh(history.refetch);
 
@@ -212,93 +138,6 @@ function TasksScreen({ view }: { view: TasksView | null }) {
     if (!activeSelectedListId || selectedIds.length === 0) return;
     if (selectedIds.length === 1) openMarkBought(activeSelectedListId, selectedIds[0]);
     else openBatchMarkBought(activeSelectedListId, selectedIds);
-  };
-
-  const activeGroup = useMemo(
-    () => (activeBatchId ? findBoughtGroup(items ?? [], activeBatchId) : null),
-    [activeBatchId, items],
-  );
-  const openGroup = (batchId: string) => {
-    setActiveBatchId(batchId);
-    setGroupSheetOpen(true);
-  };
-
-  const [confirmArchiveGroup, setConfirmArchiveGroup] = useState(false);
-  const canArchiveGroup =
-    !!activeGroup &&
-    (isAdmin || activeGroup.items.every((item) => item.createdBy === currentUserId));
-
-  const handleArchiveGroup = async () => {
-    const itemIds = activeGroup?.items.map((item) => item.id) ?? [];
-    if (itemIds.length === 0) return;
-    setDeleting(true);
-    // Failures count as nothing archived, matching bulkArchiveOutcome's error case.
-    const archived = await deleteItems.mutateAsync(itemIds).then(
-      (result) => result.deleted,
-      () => 0,
-    );
-    setDeleting(false);
-    setConfirmArchiveGroup(false);
-    const outcome = bulkArchiveOutcome(archived, itemIds.length);
-    if (outcome.tone === "error") toast.error(outcome.message);
-    else {
-      toast.success(outcome.message);
-      setGroupSheetOpen(false);
-    }
-  };
-
-  const handleDeleteAssignedSelection = async () => {
-    const itemIds = assignedSelection.selectedIds;
-    if (itemIds.length === 0) return;
-    setDeleting(true);
-    // Failures count as nothing deleted, matching bulkDeleteOutcome's error case.
-    const deleted = await deleteItems.mutateAsync(itemIds).then(
-      (result) => result.deleted,
-      () => 0,
-    );
-    setDeleting(false);
-    setConfirmDelete(false);
-    const outcome = bulkDeleteOutcome(deleted, itemIds.length);
-    if (outcome.tone === "error") toast.error(outcome.message);
-    else toast.success(outcome.message);
-    assignedSelection.clear();
-  };
-
-  const handleAssignSelectionToMe = () => {
-    const itemIds = selection.selectedIds;
-    if (itemIds.length === 0) return;
-    claimItems.mutate(itemIds, {
-      onSuccess: (result) => {
-        const outcome = bulkClaimOutcome(result);
-        if (outcome.tone === "error") toast.error(outcome.message);
-        else toast.success(outcome.message);
-      },
-      onError: () => toast.error("Couldn't assign those items to you. Try again."),
-    });
-    selection.clear();
-  };
-
-  const handleTabChange = (key: GroceryTabKey) => {
-    setTab(key);
-    setFilters((current) =>
-      pruneSelection(
-        current,
-        groceryFilterGroups(key, itemsByTab[key], currentUserId, items ?? []),
-      ),
-    );
-    if (key !== "pending") selection.clear();
-    if (key !== "assigned") assignedSelection.clear();
-  };
-
-  const handleSelectList = (listId: string) => {
-    selection.clear();
-    assignedSelection.clear();
-    setSelectedListId(listId);
-    setFilters(EMPTY_FILTER_SELECTION);
-    setSortId(DEFAULT_GROCERY_SORT);
-    if (houseId) {
-      void listStorage.persistSelectedList(houseId, listId);
-    }
   };
 
   const pendingCardWidth =
@@ -537,7 +376,6 @@ function TasksScreen({ view }: { view: TasksView | null }) {
                       );
                     })}
                   </View>
-                  {history.loadingOlder ? <ItemGridSkeleton count={2} withHeader={false} /> : null}
                 </>
               )}
             </ScrollView>

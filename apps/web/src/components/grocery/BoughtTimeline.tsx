@@ -22,17 +22,14 @@ export function BoughtTimeline({
   const steps = boughtItemTimeline(item, activity);
 
   return (
-    <ol className="flex overflow-x-auto scrollbar-none [&::-webkit-scrollbar]:hidden pl-7">
+    <ol className="flex overflow-x-auto scrollbar-none [&::-webkit-scrollbar]:hidden px-7">
       {steps.map((step, index) => {
         const member = members?.find((m) => m.userId === step.userId);
         const name = member?.displayName ?? step.name ?? "A housemate";
         const isLast = index === steps.length - 1;
 
         return (
-          <li
-            key={step.label}
-            className={isLast ? "max-w-[175px] shrink-0 pr-2" : "w-[175px] shrink-0"}
-          >
+          <li key={step.label} className={isLast ? "max-w-[175px] shrink-0" : "w-[175px] shrink-0"}>
             <div className="mt-2 flex items-center">
               <Avatar name={name} url={member?.avatarUrl ?? null} size={STEP_AVATAR_SIZE} />
               {isLast ? null : (
