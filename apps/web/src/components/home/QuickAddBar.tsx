@@ -39,7 +39,7 @@ export function QuickAddBar({
       onClick={() => {
         if (targetList) onPress(targetList.id);
       }}
-      className="flex w-full items-center gap-2.5 rounded-full border border-border bg-muted/60 px-4 py-3.5 text-left transition-colors hover:bg-muted hover:cursor-pointer mt-4"
+      className="flex w-full items-center gap-2.5 rounded-full border border-border bg-muted/60 px-4 py-3.5 text-left transition-colors hover:bg-muted hover:cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground mt-4"
     >
       <PlusCircleOutlineIcon size={24} className="shrink-0 text-muted-foreground" />
       <span className="font-display text-base font-normal text-muted-foreground">

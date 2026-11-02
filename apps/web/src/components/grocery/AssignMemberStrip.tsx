@@ -65,6 +65,7 @@ export function AssignMemberStrip({
                       className={cn(
                         "flex w-18 flex-col items-center gap-2 rounded-xl transition-opacity",
                         "hover:cursor-pointer hover:opacity-80 disabled:cursor-not-allowed disabled:opacity-50",
+                        "focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-foreground",
                         assigningId === m.userId && "opacity-50",
                       )}
                     >

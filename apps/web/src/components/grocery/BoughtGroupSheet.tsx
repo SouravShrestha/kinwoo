@@ -83,7 +83,7 @@ export function BoughtGroupSheet({
             </div>
           </div>
 
-          <ul className="flex gap-1 overflow-x-auto px-4 scrollbar-none [&::-webkit-scrollbar]:hidden">
+          <ul className="-my-1.5 flex gap-1 overflow-x-auto px-4 py-1.5 scrollbar-none [&::-webkit-scrollbar]:hidden">
             {group.items.map((item) => {
               return (
                 <li key={item.id} className="w-22 shrink-0">

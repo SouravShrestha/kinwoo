@@ -104,7 +104,7 @@ export default function ProfileScreen() {
             source={profile?.avatarUrl ? { uri: profile.avatarUrl } : profileImage}
             accessibilityIgnoresInvertColors
             resizeMode="cover"
-            className="size-16"
+            className="size-16 bg-muted"
           />
           <View
             pointerEvents="none"

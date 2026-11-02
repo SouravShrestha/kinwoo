@@ -1,8 +1,14 @@
-import { InfiniteQueryObserver, onlineManager, QueryClient } from "@tanstack/react-query";
+import {
+  InfiniteQueryObserver,
+  onlineManager,
+  QueryClient,
+  QueryObserver,
+} from "@tanstack/react-query";
+import { ApiRequestError } from "../api/request";
 import { invalidateWhileOnline } from "../houses/query-client";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { guardOfflineLoads } from "./offline-guard";
+import { guardOfflineLoads, SLOW_LOAD_MS, watchLoadStatus } from "./offline-guard";
 
 afterEach(() => onlineManager.setOnline(true));
 
@@ -76,5 +82,33 @@ describe("offline list paging and refreshes", () => {
     client.setQueryData(["a"], "saved");
     void client.fetchQuery({ queryKey: ["a"], queryFn, staleTime: 0 });
     await expect(invalidateWhileOnline(client, { queryKey: ["a"] })).resolves.toBeUndefined();
+  });
+});
+
+describe("watchLoadStatus", () => {
+  it("reports a failed first load and a slow one", async () => {
+    vi.useFakeTimers();
+    const client = new QueryClient();
+    const report = vi.fn();
+    const stop = watchLoadStatus(client, report);
+    const watch = (key: string, error: Error) =>
+      new QueryObserver(client, {
+        queryKey: [key],
+        queryFn: () => Promise.reject(error),
+        retry: false,
+      }).subscribe(() => {});
+    watch("fail", new Error("x"));
+    // Neither leaves anything missing on screen: a 4xx is handled by its screen, and an
+    // unobserved fetch renders nowhere.
+    watch("forbidden", new ApiRequestError("no", 403));
+    void client
+      .fetchQuery({ queryKey: ["bg"], queryFn: () => Promise.reject(new Error("x")), retry: false })
+      .catch(() => undefined);
+    await vi.advanceTimersByTimeAsync(0);
+    void client.fetchQuery({ queryKey: ["slow"], queryFn: () => new Promise(() => {}) });
+    await vi.advanceTimersByTimeAsync(SLOW_LOAD_MS + 1);
+    expect(report.mock.calls).toEqual([["failed"], ["slow"]]);
+    stop();
+    vi.useRealTimers();
   });
 });

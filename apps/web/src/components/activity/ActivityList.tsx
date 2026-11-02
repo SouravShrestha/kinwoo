@@ -148,7 +148,8 @@ export const ActivityList = memo(function ActivityList({
                   : settlementId
                     ? () => onOpenPayment?.(settlementId)
                     : null;
-              const className = "flex w-full items-start py-6 text-left";
+              const className =
+                "-mx-2 flex w-[calc(100%+1rem)] items-start rounded-lg px-2 py-6 text-left";
               const content = (
                 <>
                   <ActivityIcon entry={entry} actor={membersById.get(entry.actorId ?? "")} />
@@ -182,7 +183,7 @@ export const ActivityList = memo(function ActivityList({
                     <button
                       type="button"
                       onClick={open}
-                      className={`${className} hover:cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground`}
+                      className={`${className} hover:cursor-pointer focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-foreground`}
                     >
                       {content}
                     </button>

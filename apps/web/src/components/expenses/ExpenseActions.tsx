@@ -12,7 +12,7 @@ const ACTIONS = [
 
 export function ExpenseActions() {
   return (
-    <div className="-mx-4 flex gap-2 overflow-x-auto px-6">
+    <div className="-mx-4 -my-1.5 flex gap-2 overflow-x-auto px-6 py-1.5">
       {ACTIONS.map((action) => {
         const { label, primary, Icon, iconSize } = action;
         const className = cn(

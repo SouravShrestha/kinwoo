@@ -183,7 +183,7 @@ export function TasksScreen({ view }: { view: TasksView | null }) {
               defaultValue: DEFAULT_GROCERY_SORT,
               onChange: setSortId,
             }}
-            className="-mx-6 mb-5 mt-5 px-5"
+            className="-mx-6 mb-3.5 mt-3.5 px-5"
           />
         }
         renderPage={(key) => {

@@ -1,5 +1,5 @@
 import type { GroceryItem } from "@kinwoo/core/grocery";
-import { QueryClient } from "@tanstack/react-query";
+import { QueryClient, QueryObserver } from "@tanstack/react-query";
 import { describe, expect, it } from "vitest";
 
 import { createMemoryStorage } from "../houses/storage";
@@ -130,6 +130,28 @@ describe("grocery realtime", () => {
 
     refreshAfterSubscribe(queryClient, groceryKeys.all("h1"), null);
     expect(queryClient.getQueryState(groceryKeys.items("h1", "fresh"))?.isInvalidated).toBe(true);
+  });
+
+  it("keeps a fetch already in flight instead of sending it again on subscribe", async () => {
+    const queryClient = new QueryClient();
+    const key = groceryKeys.items("h1", "l1");
+    queryClient.setQueryData(key, [], { updatedAt: 1_000 });
+    let calls = 0;
+    const observer = new QueryObserver(queryClient, {
+      queryKey: key,
+      queryFn: () => {
+        calls += 1;
+        return new Promise<never[]>(() => {});
+      },
+      staleTime: 0,
+    });
+    const stop = observer.subscribe(() => {});
+    expect(calls).toBe(1);
+
+    refreshAfterSubscribe(queryClient, groceryKeys.all("h1"), 2_000);
+    await Promise.resolve();
+    expect(calls).toBe(1);
+    stop();
   });
 
   it("applies realtime actions to queryClient", () => {

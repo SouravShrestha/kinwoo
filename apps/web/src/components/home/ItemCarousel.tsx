@@ -75,7 +75,7 @@ export function ItemCarousel({
       <ul
         ref={scrollerRef}
         onScroll={sync}
-        className="-mx-6 flex snap-x snap-proximity scroll-px-6 gap-3 overflow-x-auto overscroll-x-contain px-6"
+        className="-mx-6 -my-1.5 flex snap-x snap-proximity scroll-px-6 gap-3 overflow-x-auto overscroll-x-contain px-6 py-1.5"
       >
         {items.slice(0, MAX_CARDS).map((item) => {
           const assignee = itemAssignee(item);

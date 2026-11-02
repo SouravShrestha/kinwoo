@@ -30,7 +30,7 @@ export function useHouseMembers(houseId: string | null, enabled = true) {
   return useQuery({
     queryKey: houseKeys.members(houseId ?? ""),
     queryFn: () => fetchMembers(houseId as string),
-    enabled: houseId !== null && enabled,
+    enabled: !!houseId && enabled,
   });
 }
 
@@ -38,7 +38,7 @@ export function useHouseInvite(houseId: string | null, enabled = true) {
   return useQuery({
     queryKey: houseKeys.invite(houseId ?? ""),
     queryFn: () => fetchInvite(houseId as string),
-    enabled: houseId !== null && enabled,
+    enabled: !!houseId && enabled,
   });
 }
 
@@ -46,7 +46,7 @@ export function useInvitedEmails(houseId: string | null, enabled = true) {
   return useQuery({
     queryKey: houseKeys.invitedEmails(houseId ?? ""),
     queryFn: () => fetchInvitedEmails(houseId as string),
-    enabled: houseId !== null && enabled,
+    enabled: !!houseId && enabled,
   });
 }
 

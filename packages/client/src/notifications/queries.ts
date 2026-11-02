@@ -10,9 +10,9 @@ export function useNotifications(userId: string | null) {
   return useQuery({
     queryKey: notificationsKey(userId ?? ""),
     queryFn: fetchNotifications,
+    // No refetchOnMount "always": a reopened app restores this as stale and refetches anyway, and
+    // NotificationsRealtime invalidates on each insert while open.
     enabled: userId !== null,
-    // New ones arrive while the app is closed, so every visit starts from the server.
-    refetchOnMount: "always",
   });
 }
 

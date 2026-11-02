@@ -207,7 +207,7 @@ export function AddItemScreen({ listId }: { listId: string | null }) {
 
             {form.suggestions.length > 0 ? (
               <div className="mt-4">
-                <div className="-mx-6 flex gap-2 overflow-x-auto px-6 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden [&>:first-child]:ml-auto">
+                <div className="-mx-6 -my-1.5 flex gap-2 overflow-x-auto px-6 py-1.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden [&>:first-child]:ml-auto">
                   {form.suggestions.map((suggestion) => (
                     <button
                       key={suggestion.name}
