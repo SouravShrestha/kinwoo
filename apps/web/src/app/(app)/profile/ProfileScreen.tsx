@@ -90,7 +90,7 @@ export function ProfileScreen() {
             alt=""
             width={64}
             height={64}
-            className="size-16 rounded-full object-cover"
+            className="size-16 rounded-full bg-muted object-cover"
           />
           <span
             aria-hidden

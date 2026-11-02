@@ -111,7 +111,7 @@ export function Filters({
         ref={toolbarRef}
         role="toolbar"
         aria-label="Filters"
-        className={cn("flex gap-2 overflow-x-auto scrollbar-none", className)}
+        className={cn("flex gap-2 overflow-x-auto py-1.5 scrollbar-none", className)}
       >
         <Chip active={total > 0}>
           <button
@@ -252,7 +252,7 @@ function FilterSheet({
       <SheetHeader title="Filters and sorting" />
 
       {selected.length > 0 ? (
-        <div className="-mx-6 mt-4 flex gap-2 overflow-x-auto px-6 [scrollbar-width:none]">
+        <div className="-mx-6 mt-2.5 -mb-1.5 flex gap-2 overflow-x-auto px-6 py-1.5 [scrollbar-width:none]">
           {selected.map(({ group, option }) => (
             <button
               key={`${group.id}:${option.id}`}

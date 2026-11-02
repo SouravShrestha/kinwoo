@@ -84,7 +84,7 @@ export function ActivitiesScreen() {
         groups={filterGroups}
         value={filters}
         onChange={setFilters}
-        className="-mx-4 mb-6 mt-2 px-5"
+        className="-mx-4 mb-[18px] mt-0.5 px-5"
       />
 
       <div className="flex flex-1 flex-col">

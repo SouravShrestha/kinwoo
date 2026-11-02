@@ -139,7 +139,7 @@ export function AvatarSheet({ open, onClose }: { open: boolean; onClose: () => v
                         unoptimized
                         sizes="(max-width: 640px) 25vw, 160px"
                         loader={({ src }) => src}
-                        className="rounded-full object-cover"
+                        className="rounded-full bg-muted object-cover"
                       />
                     </span>
                   </button>

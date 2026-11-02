@@ -121,7 +121,7 @@ function AvatarSheetContent({ open, onClose }: { open: boolean; onClose: () => v
                   source={{ uri: url }}
                   accessibilityIgnoresInvertColors
                   resizeMode="cover"
-                  className="size-full rounded-full"
+                  className="size-full rounded-full bg-muted"
                 />
               </Pressable>
             </View>

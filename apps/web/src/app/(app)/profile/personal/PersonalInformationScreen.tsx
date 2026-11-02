@@ -142,7 +142,7 @@ export function PersonalInformationScreen() {
             alt=""
             width={80}
             height={80}
-            className="size-20 rounded-full object-cover"
+            className="size-20 rounded-full bg-muted object-cover"
           />
           <span
             aria-hidden
