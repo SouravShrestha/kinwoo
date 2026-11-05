@@ -10,7 +10,7 @@ type InviteFriendsCardProps = {
   onReplay?: () => void;
 };
 
-const TEXT = "flex flex-col items-end gap-1.5 text-right font-display font-medium";
+const TEXT = "flex flex-col items-center gap-1.5 text-center font-display font-medium";
 
 export function InviteFriendsCard({ canInvite, onPress, onReplay }: InviteFriendsCardProps) {
   const content = (
