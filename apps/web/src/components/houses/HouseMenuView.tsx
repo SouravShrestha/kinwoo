@@ -44,7 +44,7 @@ export function HouseMenuView({
     <div>
       <h2 className="pr-10 font-display text-xl font-medium">
         <span className="flex items-center gap-1.5">
-          <HousePinIcon size={20} className="shrink-0" />
+          <HousePinIcon size={20} className="shrink-0 text-primary" />
           <span className="truncate">{house.name}</span>
         </span>
         {house.address ? (
