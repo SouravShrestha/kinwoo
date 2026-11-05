@@ -1,6 +1,5 @@
 import { boughtGroupAccessibleLabel, itemCountLabel, type BoughtGroup } from "@kinwoo/core/grocery";
 import { ArrowRightIcon } from "@kinwoo/icons/native";
-import { colors } from "@kinwoo/tokens/native";
 import { Text, View } from "react-native";
 
 import { Avatar } from "@/components/houses/Avatar";
@@ -21,7 +20,7 @@ export function BoughtGroupCard({
   width: number;
   onOpen: () => void;
 }) {
-  const { resolvedTheme } = useTheme();
+  const { resolvedTheme, colors } = useTheme();
   const palette = colors[resolvedTheme];
   const lead = group.items[0];
 
@@ -40,7 +39,7 @@ export function BoughtGroupCard({
           </View>
           <View className="size-7 items-center justify-center rounded-full border border-dialog-border">
             <View style={{ transform: [{ rotate: "-90deg" }] }}>
-              <ArrowRightIcon size={16} color={palette.foreground} />
+              <ArrowRightIcon size={16} color={palette.mutedForeground} />
             </View>
           </View>
         </View>

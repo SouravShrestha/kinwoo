@@ -65,8 +65,8 @@ function ActivityDetail({
   const color = entry.readAt
     ? "text-muted-foreground"
     : detail.tone === "lent"
-      ? "text-accent"
-      : "text-destructive";
+      ? "text-positive"
+      : "text-negative";
 
   return (
     <p
@@ -178,12 +178,12 @@ export const ActivityList = memo(function ActivityList({
               );
 
               return (
-                <li key={entry.id} className={index > 0 ? "border-t border-border" : ""}>
+                <li key={entry.id}>
                   {open ? (
                     <button
                       type="button"
                       onClick={open}
-                      className={`${className} hover:cursor-pointer focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-foreground`}
+                      className={`${className} hover:cursor-pointer focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-primary`}
                     >
                       {content}
                     </button>

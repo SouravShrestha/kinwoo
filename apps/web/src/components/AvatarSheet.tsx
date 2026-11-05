@@ -127,7 +127,7 @@ export function AvatarSheet({ open, onClose }: { open: boolean; onClose: () => v
                     disabled={saving}
                     onClick={() => void choose(url)}
                     className={cn(
-                      "relative block aspect-square w-full overflow-hidden rounded-full bg-muted hover:cursor-pointer hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground disabled:cursor-default disabled:opacity-50",
+                      "relative block aspect-square w-full overflow-hidden rounded-full bg-muted hover:cursor-pointer hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-default disabled:opacity-50",
                       selected ? "border-3 border-accent" : "border border-border",
                     )}
                   >

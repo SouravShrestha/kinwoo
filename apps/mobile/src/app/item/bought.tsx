@@ -17,7 +17,6 @@ import {
   CheckIcon,
   RupeeIcon,
 } from "@kinwoo/icons/native";
-import { colors } from "@kinwoo/tokens/native";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import {
@@ -55,7 +54,7 @@ const FIELD = "h-12 flex-row items-center rounded-xl bg-muted";
 
 export default function MarkBoughtScreen() {
   const insets = useSafeAreaInsets();
-  const { resolvedTheme } = useTheme();
+  const { resolvedTheme, colors } = useTheme();
   const palette = colors[resolvedTheme];
   const { listId, itemId } = useLocalSearchParams<{ listId?: string; itemId?: string }>();
   const { user } = useAuth();
@@ -174,6 +173,7 @@ export default function MarkBoughtScreen() {
                     maxLength={ITEM_NAME_MAX_LENGTH}
                     placeholder="Item name"
                     placeholderTextColor={palette.mutedForeground}
+                    selectionColor={palette.primary}
                     value={form.name}
                     onChangeText={form.setName}
                     // No `text-*` size class: its lineHeight misaligns iOS text and caret.
@@ -198,6 +198,7 @@ export default function MarkBoughtScreen() {
                   maxLength={ITEM_QUANTITY_MAX_LENGTH}
                   placeholder="Qty"
                   placeholderTextColor={palette.mutedForeground}
+                  selectionColor={palette.primary}
                   value={form.quantity}
                   onChangeText={form.setQuantity}
                   className="h-12 w-20 rounded-xl bg-muted text-center font-display-normal text-foreground"
@@ -241,6 +242,7 @@ export default function MarkBoughtScreen() {
                     keyboardType="decimal-pad"
                     placeholder="0.00"
                     placeholderTextColor={palette.mutedForeground}
+                    selectionColor={palette.primary}
                     value={form.price}
                     onChangeText={form.setPrice}
                     className="h-14 min-w-0 flex-1 font-display-medium text-foreground"
@@ -269,10 +271,10 @@ export default function MarkBoughtScreen() {
                   >
                     <View
                       className={`size-5 items-center justify-center rounded-md ${
-                        split ? "bg-foreground" : "border border-border"
+                        split ? "bg-primary" : "border border-border"
                       }`}
                     >
-                      {split ? <CheckIcon size={10} color={palette.background} /> : null}
+                      {split ? <CheckIcon size={10} color={palette.primaryForeground} /> : null}
                     </View>
                     <Text className="font-display-normal text-base text-foreground">
                       I want to split expenses

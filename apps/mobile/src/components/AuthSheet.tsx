@@ -2,6 +2,7 @@ import { useBusyWhile } from "@kinwoo/client/activity";
 import {
   CODE_LENGTH,
   INITIAL_OTP_STATE,
+  OTP_SUCCESS_HOLD_MS,
   canResend,
   isValidEmail,
   normaliseEmail,
@@ -17,6 +18,7 @@ import { Pressable } from "@/components/Pressable";
 
 import { BottomSheet } from "./BottomSheet";
 import { Button } from "./Button";
+import { OtpInput } from "./OtpInput";
 import { TextField } from "./TextField";
 
 const RESEND_COOLDOWN_MS = resendCooldownMsFrom(
@@ -41,8 +43,11 @@ export function AuthSheet({ open, onClose }: { open: boolean; onClose: () => voi
     if (!open) dispatch({ type: "reset" });
   }, [open]);
 
+  const [verified, setVerified] = useState(false);
+  if (!open && verified) setVerified(false);
+
   const busy = state.phase === "sending" || state.phase === "verifying";
-  useBusyWhile(busy);
+  useBusyWhile(busy && !verified);
 
   const send = async () => {
     dispatch({ type: "submit-email", now: Date.now() });
@@ -56,14 +61,17 @@ export function AuthSheet({ open, onClose }: { open: boolean; onClose: () => voi
     }
   };
 
-  const verify = async () => {
+  // Takes the code directly: onComplete fires before the edit-code dispatch reaches `state`.
+  const verify = async (code: string) => {
     dispatch({ type: "submit-code" });
-    if (state.code.length !== CODE_LENGTH) return;
+    if (code.length !== CODE_LENGTH) return;
 
     try {
-      await verifyEmailCode(state.email, state.code);
-      // Close straight away so the display-name sheet does not stack on top of this one.
-      onClose();
+      await verifyEmailCode(state.email, code);
+      // Show success before closing. AuthGate waits this long too, so the display-name sheet
+      // does not stack on top of this one.
+      setVerified(true);
+      setTimeout(onClose, OTP_SUCCESS_HOLD_MS);
     } catch (error) {
       dispatch({ type: "verify-failed", message: messageFor(error) });
     }
@@ -78,32 +86,35 @@ export function AuthSheet({ open, onClose }: { open: boolean; onClose: () => voi
           </Text>
           <Text className="mt-2 text-muted-foreground">Your code has landed at {state.email}</Text>
 
-          <TextField
-            kind="code"
+          <OtpInput
+            autoFocus
+            length={CODE_LENGTH}
             value={state.code}
             onChangeText={(value) => dispatch({ type: "edit-code", value })}
-            disabled={busy}
-            className="mt-6 font-bold"
+            onComplete={(code) => void verify(code)}
+            error={!!state.error}
+            verifying={state.phase === "verifying" && !verified}
+            success={verified}
+            className="mt-10"
           />
 
-          {state.error ? (
-            <Text accessibilityLiveRegion="polite" className="mt-3 text-sm text-destructive">
+          {verified ? (
+            <Text
+              accessibilityLiveRegion="polite"
+              className="mt-3 text-center text-sm font-normal text-positive"
+            >
+              Verified
+            </Text>
+          ) : state.error ? (
+            <Text
+              accessibilityLiveRegion="polite"
+              className="mt-3 text-center text-sm font-normal text-destructive"
+            >
               {state.error}
             </Text>
           ) : null}
 
-          <Pressable
-            accessibilityRole="button"
-            disabled={busy}
-            onPress={verify}
-            className={`mt-5 h-14 flex-row items-center justify-center rounded-3xl bg-primary ${busy ? "opacity-50" : "active:opacity-80"}`}
-          >
-            <Text className="font-semibold text-base text-primary-foreground">
-              {busy ? "Checking…" : "Continue"}
-            </Text>
-          </Pressable>
-
-          <View className="mt-4 flex-row items-center justify-between px-1">
+          <View className="mt-10 flex-row items-center justify-between px-1">
             <Pressable
               accessibilityRole="button"
               onPress={() => dispatch({ type: "back-to-email" })}
@@ -144,6 +155,7 @@ export function AuthSheet({ open, onClose }: { open: boolean; onClose: () => voi
 
           <TextField
             kind="email"
+            autoFocus
             value={state.email}
             onChangeText={(value) => dispatch({ type: "edit-email", value })}
             disabled={busy}

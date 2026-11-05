@@ -3,15 +3,14 @@ import {
   INVITE_CARD_SCAN_HINT,
   INVITE_CARD_TAGLINE,
 } from "@kinwoo/core/houses";
-import { colors } from "@kinwoo/tokens/native";
 import type { Ref } from "react";
 import { Text, View } from "react-native";
+
+import { useTheme } from "@/theme/ThemeProvider";
 
 import { QrCode } from "./QrCode";
 
 export const INVITE_CARD_WIDTH = 320;
-
-const palette = colors.light;
 
 export function InviteCard({
   ref,
@@ -24,6 +23,8 @@ export function InviteCard({
   code: string;
   url: string;
 }) {
+  // Shared as an image, so always the light variant of the active palette.
+  const palette = useTheme().colors.light;
   return (
     <View
       ref={ref}

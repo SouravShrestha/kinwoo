@@ -9,7 +9,6 @@ import {
 import { formatPaise } from "@kinwoo/core/grocery";
 import { memberDisplayName, shortMemberName } from "@kinwoo/core/houses";
 import { ArrowRightIcon } from "@kinwoo/icons/native";
-import { colors } from "@kinwoo/tokens/native";
 import { useState } from "react";
 import { Share, Text, View } from "react-native";
 import { GestureDetector } from "react-native-gesture-handler";
@@ -42,7 +41,7 @@ const MEMBER_AVATAR = 44;
 const BRANCH_ROW = 48;
 
 function MemberRow({ row, houseName }: { row: MemberBalanceRow; houseName: string }) {
-  const { resolvedTheme } = useTheme();
+  const { resolvedTheme, colors } = useTheme();
   const palette = colors[resolvedTheme];
   const { member, settlements } = row;
   const [open, setOpen] = useState(member.isSelf);
@@ -89,7 +88,7 @@ function MemberRow({ row, houseName }: { row: MemberBalanceRow; houseName: strin
                 : member.isSelf
                   ? " get back "
                   : " gets back "}
-              <Text className={`font-display-medium ${owes ? "text-destructive" : "text-accent"}`}>
+              <Text className={`font-display-medium ${owes ? "text-negative" : "text-positive"}`}>
                 {formatPaise(Math.abs(member.netPaise))}
               </Text>
               {" in total"}
@@ -135,7 +134,7 @@ function MemberRow({ row, houseName }: { row: MemberBalanceRow; houseName: strin
                           {settlement.from.isSelf
                             ? "You owe"
                             : `${shortMemberName(settlement.from.name)} owes`}{" "}
-                          <Text className="font-display-medium text-destructive">
+                          <Text className="font-display-medium text-negative">
                             {formatPaise(settlement.amountPaise)}
                           </Text>{" "}
                           to {settlement.to.isSelf ? "you" : shortMemberName(settlement.to.name)}
@@ -185,7 +184,7 @@ function MemberRow({ row, houseName }: { row: MemberBalanceRow; houseName: strin
 
 export function MemberBalances({ houseId }: { houseId: string }) {
   const insets = useSafeAreaInsets();
-  const { resolvedTheme } = useTheme();
+  const { resolvedTheme, colors } = useTheme();
   const palette = colors[resolvedTheme];
   const { data: rows } = useMemberBalances(houseId);
   const { activeHouse } = useActiveHouse();

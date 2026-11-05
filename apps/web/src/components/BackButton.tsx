@@ -32,7 +32,7 @@ export function BackButton({ href }: { href?: string }) {
       type="button"
       aria-label="Back"
       onClick={href ? () => router.replace(href) : goBack}
-      className="-mx-2 flex size-9 items-center justify-start hover:cursor-pointer hover:opacity-70 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
+      className="-mx-2 flex size-9 items-center justify-start hover:cursor-pointer hover:opacity-70 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
     >
       <ArrowRightIcon size={24} className="rotate-180" />
     </button>

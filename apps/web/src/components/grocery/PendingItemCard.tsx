@@ -8,7 +8,7 @@ import { Avatar } from "@/components/houses/Avatar";
 import { cn } from "@/lib/utils";
 
 const FOCUS_RING =
-  "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground";
+  "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary";
 
 const ASSIGNEE_AVATAR_SIZE = 24;
 
@@ -38,10 +38,10 @@ export function PendingItemCard({
   return (
     <div
       className={cn(
-        "relative rounded-2xl border transition-colors",
+        "group relative rounded-2xl border transition-colors",
         selected
-          ? "border-foreground bg-muted"
-          : "border-border bg-card hover:border-foreground/30",
+          ? "border-primary bg-muted"
+          : "border-card-border bg-card hover:border-foreground/30",
       )}
     >
       <button
@@ -56,12 +56,12 @@ export function PendingItemCard({
         )}
       >
         <span className="flex items-center justify-between">
-          <span className="relative flex size-8 shrink-0 items-center justify-center text-foreground">
-            <ItemCategoryImage name={item.categoryName ?? undefined} size={32} />
+          <span className="relative flex size-10 shrink-0 items-center justify-center text-foreground">
+            <ItemCategoryImage name={item.categoryName ?? undefined} size={40} />
             {selected ? (
               <span
                 aria-hidden
-                className="absolute -right-1 -top-1 flex size-4 items-center justify-center rounded-full bg-foreground text-background"
+                className="absolute -right-1 -top-1 flex size-4 items-center justify-center rounded-full bg-primary text-primary-foreground"
               >
                 <TickIcon size={7} />
               </span>
@@ -89,7 +89,7 @@ export function PendingItemCard({
               </span>
             ) : null}
           </span>
-          <span className="block min-h-4 truncate font-display text-xs font-normal text-muted-foreground">
+          <span className="block min-h-4 truncate font-display text-xs font-medium text-muted-foreground">
             {quantityUnit}
           </span>
         </span>
@@ -112,7 +112,7 @@ export function PendingItemCard({
         aria-haspopup="dialog"
         onClick={onOpen}
         className={cn(
-          "absolute right-3 top-3 flex size-7 items-center justify-center rounded-full border border-dialog-border text-foreground transition-colors hover:cursor-pointer hover:border-foreground",
+          "absolute right-3 top-[18px] flex size-7 items-center justify-center rounded-full border border-dialog-border text-muted-foreground transition-colors hover:cursor-pointer group-hover:border-foreground/30",
           FOCUS_RING,
         )}
       >

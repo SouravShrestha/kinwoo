@@ -29,7 +29,6 @@ import {
 import { toast } from "@kinwoo/client/toast";
 import { CONFIRM_COPY } from "@kinwoo/core/confirm";
 import { TOAST_MESSAGES } from "@kinwoo/core/toast";
-import { colors } from "@kinwoo/tokens/native";
 import * as Clipboard from "expo-clipboard";
 import { useRef, useState } from "react";
 import { Modal, Text, View } from "react-native";
@@ -65,7 +64,7 @@ export default function InviteScreen() {
 function InviteManager({ membership }: { membership: HouseMembership }) {
   const house = membership.house;
   const manager = useInviteManager({ house, origin: siteOrigin() });
-  const { resolvedTheme } = useTheme();
+  const { resolvedTheme, colors } = useTheme();
   const palette = colors[resolvedTheme];
   const [sharing, setSharing] = useState(false);
   const [confirmRotate, setConfirmRotate] = useState(false);
@@ -234,7 +233,7 @@ function InviteManager({ membership }: { membership: HouseMembership }) {
 
 function PeopleWithAccess({ manager }: { manager: InviteManagerState }) {
   const { user } = useAuth();
-  const { resolvedTheme } = useTheme();
+  const { resolvedTheme, colors } = useTheme();
   const palette = colors[resolvedTheme];
   const [selected, setSelected] = useState<string | null>(null);
   const [sheetOpen, setSheetOpen] = useState(false);
@@ -304,7 +303,7 @@ function JoinModeMenu({
   value: HouseJoinMode;
   onChange: (mode: HouseJoinMode) => void;
 }) {
-  const { resolvedTheme } = useTheme();
+  const { resolvedTheme, colors } = useTheme();
   const palette = colors[resolvedTheme];
   const triggerRef = useRef<View>(null);
   const [anchor, setAnchor] = useState<Anchor | null>(null);

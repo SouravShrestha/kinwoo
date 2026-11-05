@@ -48,7 +48,7 @@ import { ExpandableQrCode } from "./ExpandableQrCode";
 import { ListRow } from "./Rows";
 
 const FOCUS =
-  "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground";
+  "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary";
 
 export function InviteScreen() {
   const { goHome } = useHouseNavigation();

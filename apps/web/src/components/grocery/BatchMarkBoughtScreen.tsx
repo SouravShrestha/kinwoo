@@ -21,9 +21,9 @@ import { cn } from "@/lib/utils";
 type Picker = "payers" | "split";
 
 const FIELD =
-  "flex h-12 items-center rounded-xl bg-muted font-display text-base font-normal text-foreground focus-within:outline-2 focus-within:outline-foreground";
+  "flex h-12 items-center rounded-xl bg-muted font-display text-base font-normal text-foreground focus-within:outline-2 focus-within:outline-primary";
 const FOCUS_RING =
-  "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground";
+  "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary";
 
 function quantityUnit(item: GroceryItem): string {
   return [item.quantity != null ? String(item.quantity) : "", item.unit ?? ""]
@@ -222,7 +222,7 @@ export function BatchMarkBoughtScreen({
                     aria-hidden
                     className={cn(
                       "flex size-5 items-center justify-center rounded-[6px]",
-                      split ? "bg-foreground text-background" : "border border-border",
+                      split ? "bg-primary text-primary-foreground" : "border border-border",
                     )}
                   >
                     {split ? <CheckIcon size={10} /> : null}

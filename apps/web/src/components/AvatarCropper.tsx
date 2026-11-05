@@ -108,7 +108,7 @@ export function AvatarCropper({
         onPointerUp={() => (drag.current = null)}
         onPointerCancel={() => (drag.current = null)}
         style={{ width: CROP_VIEW, height: CROP_VIEW }}
-        className="relative cursor-grab touch-none select-none overflow-hidden rounded-xl bg-muted active:cursor-grabbing focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
+        className="relative cursor-grab touch-none select-none overflow-hidden rounded-xl bg-muted active:cursor-grabbing focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
       >
         {src ? (
           // eslint-disable-next-line @next/next/no-img-element

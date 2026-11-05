@@ -20,9 +20,21 @@ export function LoginScreen() {
   const [googleBusy, setGoogleBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Waits for the email sheet to close, so its success state is seen before the route changes.
   useEffect(() => {
-    if (ready && isLoggedIn) router.replace("/");
-  }, [ready, isLoggedIn, router]);
+    if (ready && isLoggedIn && !emailOpen) router.replace("/");
+  }, [ready, isLoggedIn, emailOpen, router]);
+
+  // Trap browser back, hardware back and edge swipes: each pop lands on a duplicate entry
+  // and is immediately re-pushed.
+  // ponytail: Chrome may skip entries pushed before any user gesture, so the very first back
+  // can still escape; re-push on first pointerdown if that matters.
+  useEffect(() => {
+    const trap = () => window.history.pushState(null, "", window.location.href);
+    trap();
+    window.addEventListener("popstate", trap);
+    return () => window.removeEventListener("popstate", trap);
+  }, []);
 
   const google = async () => {
     setGoogleBusy(true);

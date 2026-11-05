@@ -32,7 +32,7 @@ const SLIDE_MS = 260;
 const SLIDE_EASING = "cubic-bezier(0.22, 1, 0.36, 1)";
 
 const FOCUS_RING =
-  "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground";
+  "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary";
 const TEXT_BUTTON =
   "px-4 py-2 font-display text-base font-medium text-foreground hover:cursor-pointer";
 
@@ -84,7 +84,7 @@ function MonthPane({
                 "flex size-11 items-center justify-center rounded-full font-display text-base font-normal transition-colors hover:cursor-pointer disabled:cursor-not-allowed disabled:opacity-30",
                 FOCUS_RING,
                 selected
-                  ? "bg-foreground text-background"
+                  ? "bg-primary text-primary-foreground"
                   : cn(
                       "text-foreground",
                       isToday ? "border border-border" : "enabled:hover:bg-muted",

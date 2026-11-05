@@ -61,6 +61,7 @@ export default function RootLayout() {
         <ThemeProvider>
           <AppProviders>
             <Stack screenOptions={{ headerShown: false }}>
+              <Stack.Screen name="login" options={{ gestureEnabled: false }} />
               <Stack.Screen name="house/invite" options={SWIPE_DOWN_SHEET} />
               <Stack.Screen name="profile" options={{ animation: "slide_from_right" }} />
               <Stack.Screen name="notifications" options={{ animation: "slide_from_right" }} />

@@ -70,13 +70,13 @@ export function OptionSheet({
                 aria-selected={selected}
                 onClick={() => onSelect(option.id)}
                 className={cn(
-                  "w-full rounded-xl font-display text-base transition-colors hover:cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground",
+                  "w-full rounded-xl font-display text-base transition-colors hover:cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary",
                   chip
                     ? cn(
                         "flex min-h-14 flex-col items-center justify-center px-1 py-2 text-base leading-[calc(1.5rem*var(--font-scale,1))]",
                         columns > 2 && "aspect-[5/4]",
                         selected
-                          ? "bg-foreground text-background"
+                          ? "bg-primary text-primary-foreground"
                           : "bg-muted text-muted-foreground",
                       )
                     : cn(
@@ -95,7 +95,7 @@ export function OptionSheet({
                       option.dashed
                         ? "border border-dashed border-muted-foreground text-foreground"
                         : grid && selected
-                          ? "bg-foreground text-background"
+                          ? "bg-primary text-primary-foreground"
                           : "bg-muted text-foreground",
                     )}
                   >

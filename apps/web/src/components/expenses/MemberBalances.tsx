@@ -18,7 +18,7 @@ import { shareOrCopy } from "@/lib/share-text";
 import { cn } from "@/lib/utils";
 
 const PILL =
-  "rounded-xl border border-border bg-card px-5 py-2 font-display text-sm font-medium text-foreground transition-opacity hover:cursor-pointer hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground";
+  "rounded-xl border border-border bg-card px-5 py-2 font-display text-sm font-medium text-foreground transition-opacity hover:cursor-pointer hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary";
 
 const MEMBER_AVATAR = 44;
 const BRANCH_ROW = 48;
@@ -41,7 +41,7 @@ function MemberRow({ row, houseName }: { row: MemberBalanceRow; houseName: strin
             : undefined
         }
         onClick={() => setOpen((value) => !value)}
-        className="flex w-full items-center gap-3 text-left enabled:hover:cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
+        className="flex w-full items-center gap-3 text-left enabled:hover:cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
       >
         <Avatar name={member.name} url={member.avatarUrl} size={MEMBER_AVATAR} />
         <span className="block min-w-0 flex-1 font-display text-base text-foreground">
@@ -61,7 +61,7 @@ function MemberRow({ row, houseName }: { row: MemberBalanceRow; houseName: strin
                 : member.isSelf
                   ? " get back "
                   : " gets back "}
-              <span className={cn("font-medium", owes ? "text-destructive" : "text-accent")}>
+              <span className={cn("font-medium", owes ? "text-negative" : "text-positive")}>
                 {formatPaise(Math.abs(member.netPaise))}
               </span>
               {" in total"}
@@ -117,7 +117,7 @@ function MemberRow({ row, houseName }: { row: MemberBalanceRow; houseName: strin
                           {settlement.from.isSelf
                             ? "You owe"
                             : `${shortMemberName(settlement.from.name)} owes`}{" "}
-                          <span className="font-medium text-destructive">
+                          <span className="font-medium text-negative">
                             {formatPaise(settlement.amountPaise)}
                           </span>{" "}
                           to {settlement.to.isSelf ? "you" : shortMemberName(settlement.to.name)}

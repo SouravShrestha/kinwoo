@@ -8,7 +8,7 @@ import {
   UserCircleIcon,
   type IconProps,
 } from "@kinwoo/icons/native";
-import { colors } from "@kinwoo/tokens/native";
+import type { ColorName } from "@kinwoo/tokens/native";
 import { useEffect, useRef, useState, type ComponentType, type ReactNode } from "react";
 import { StyleSheet, Text, useWindowDimensions, View } from "react-native";
 import Animated, {
@@ -30,7 +30,7 @@ import Animated, {
 import { Pressable } from "@/components/Pressable";
 import { useTheme } from "@/theme/ThemeProvider";
 
-type Palette = (typeof colors)[keyof typeof colors];
+type Palette = Record<ColorName, string>;
 type TabLayout = { x: number; width: number };
 
 const TAB_ICONS: Record<
@@ -62,7 +62,7 @@ export function GroceryTabView({
   between?: ReactNode;
   renderPage: (key: GroceryTabKey) => ReactNode;
 }) {
-  const { resolvedTheme } = useTheme();
+  const { resolvedTheme, colors } = useTheme();
   const palette = colors[resolvedTheme];
   const { width } = useWindowDimensions();
   const reducedMotion = useReducedMotion();
@@ -158,7 +158,7 @@ export function GroceryTabView({
               left: 0,
               bottom: -INDICATOR_HEIGHT,
               height: INDICATOR_HEIGHT,
-              backgroundColor: palette.foreground,
+              backgroundColor: palette.primary,
             },
             indicatorStyle,
           ]}
@@ -281,7 +281,7 @@ function TabButton({
         {content(palette.mutedForeground, "font-display-normal")}
       </Animated.View>
       <Animated.View pointerEvents="none" style={[styles.layer, activeLayerStyle]}>
-        {content(palette.foreground, "font-display-medium")}
+        {content(palette.primary, "font-display-medium")}
       </Animated.View>
     </Pressable>
   );

@@ -121,7 +121,7 @@ export function InstallPromoSheet() {
             <button
               type="button"
               onClick={dismiss}
-              className="h-14 px-6 text-sm text-muted-foreground hover:cursor-pointer hover:opacity-70 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground rounded-full"
+              className="h-14 px-6 text-sm text-muted-foreground hover:cursor-pointer hover:opacity-70 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary rounded-full"
             >
               Maybe later
             </button>

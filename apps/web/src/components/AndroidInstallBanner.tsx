@@ -35,7 +35,7 @@ export function AndroidInstallBanner({
     <div className={cn("flex items-center border-b border-border bg-background", className)}>
       <a
         href={PLAY_STORE_URL}
-        className="flex min-w-0 flex-1 items-center gap-3 px-6 py-3 text-sm font-medium hover:cursor-pointer hover:opacity-70 focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-foreground"
+        className="flex min-w-0 flex-1 items-center gap-3 px-6 py-3 text-sm font-medium hover:cursor-pointer hover:opacity-70 focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-primary"
       >
         {/* Toggled with CSS rather than useTheme so the right image renders on first paint. */}
         <Image
@@ -63,7 +63,7 @@ export function AndroidInstallBanner({
             setDismissed(true);
             void houseStorage.setItem(DISMISSED_KEY, "1");
           }}
-          className="mr-3 flex size-9 shrink-0 items-center justify-center rounded-full hover:cursor-pointer hover:opacity-70 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
+          className="mr-3 flex size-9 shrink-0 items-center justify-center rounded-full hover:cursor-pointer hover:opacity-70 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
         >
           <CloseIcon size={20} />
         </button>

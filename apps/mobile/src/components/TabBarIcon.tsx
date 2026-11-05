@@ -1,4 +1,3 @@
-import { useIsFocused } from "expo-router";
 import { useEffect, useRef, type ComponentType } from "react";
 import Animated, {
   Easing,
@@ -19,19 +18,15 @@ type TabBarIconProps = {
   Inactive: ComponentType<IconProps>;
 };
 
-// The tab bar renders each icon twice, once with focused=true and once with
-// focused=false, and cross-fades them. The `focused` prop therefore never
-// changes on an instance, so the animation is driven by the route's real focus.
 export function TabBarIcon({ focused, color, size, Active, Inactive }: TabBarIconProps) {
   const scale = useSharedValue(1);
-  const routeFocused = useIsFocused();
-  const wasRouteFocused = useRef(routeFocused);
+  const wasFocused = useRef(focused);
 
   useEffect(() => {
-    if (wasRouteFocused.current === routeFocused) return;
-    wasRouteFocused.current = routeFocused;
+    if (wasFocused.current === focused) return;
+    wasFocused.current = focused;
 
-    if (routeFocused && focused) {
+    if (focused) {
       scale.value = 0.8;
       scale.value = withSpring(1, {
         damping: 7,
@@ -39,7 +34,7 @@ export function TabBarIcon({ focused, color, size, Active, Inactive }: TabBarIco
         mass: 0.6,
         reduceMotion: ReduceMotion.System,
       });
-    } else if (!routeFocused && !focused) {
+    } else {
       scale.value = 1.1;
       scale.value = withTiming(1, {
         duration: 200,
@@ -47,7 +42,7 @@ export function TabBarIcon({ focused, color, size, Active, Inactive }: TabBarIco
         reduceMotion: ReduceMotion.System,
       });
     }
-  }, [routeFocused, focused, scale]);
+  }, [focused, scale]);
 
   const style = useAnimatedStyle(() => ({ transform: [{ scale: scale.value }] }));
   const Icon = focused ? Active : Inactive;

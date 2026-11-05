@@ -8,7 +8,7 @@ import { useSwipeToClose } from "@/lib/use-swipe-to-close";
 import { cn } from "@/lib/utils";
 
 const ICON_BUTTON =
-  "flex size-9 shrink-0 items-center justify-start hover:cursor-pointer hover:opacity-70 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground";
+  "flex size-9 shrink-0 items-center justify-start hover:cursor-pointer hover:opacity-70 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary";
 
 export function HouseScreen({
   title,

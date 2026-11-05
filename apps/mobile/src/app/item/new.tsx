@@ -16,7 +16,6 @@ import {
   ClockIcon,
   PlusCircleIcon,
 } from "@kinwoo/icons/native";
-import { colors } from "@kinwoo/tokens/native";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import {
@@ -51,7 +50,7 @@ const FIELD = "h-12 flex-row items-center rounded-xl bg-muted";
 
 export default function AddItemScreen() {
   const insets = useSafeAreaInsets();
-  const { resolvedTheme } = useTheme();
+  const { resolvedTheme, colors } = useTheme();
   const palette = colors[resolvedTheme];
   const { listId } = useLocalSearchParams<{ listId?: string }>();
   const { activeHouse, ready } = useActiveHouse();
@@ -161,7 +160,7 @@ export default function AddItemScreen() {
                 hitSlop={12}
                 className={`size-10 items-end justify-center ${submitDisabled ? "opacity-40" : ""}`}
               >
-                <CheckCircleIcon size={26} color={palette.foreground} />
+                <CheckCircleIcon size={26} color={palette.primary} />
               </Pressable>
             </View>
 
@@ -190,6 +189,7 @@ export default function AddItemScreen() {
                     maxLength={ITEM_NAME_MAX_LENGTH}
                     placeholder="What do you wanna buy?"
                     placeholderTextColor={palette.mutedForeground}
+                    selectionColor={palette.primary}
                     value={form.name}
                     onChangeText={form.setName}
                     // No `text-*` size class: its lineHeight misaligns iOS text and caret.
@@ -259,6 +259,7 @@ export default function AddItemScreen() {
                   maxLength={ITEM_QUANTITY_MAX_LENGTH}
                   placeholder="Qty"
                   placeholderTextColor={palette.mutedForeground}
+                  selectionColor={palette.primary}
                   value={form.quantity}
                   onChangeText={form.setQuantity}
                   className="h-12 w-20 rounded-xl bg-muted text-center font-display-normal text-foreground"
@@ -301,6 +302,7 @@ export default function AddItemScreen() {
                 maxLength={ITEM_NOTE_MAX_LENGTH}
                 placeholder="(optional) brand, size, anything"
                 placeholderTextColor={palette.mutedForeground}
+                selectionColor={palette.primary}
                 value={form.note}
                 onChangeText={form.setNote}
                 className="h-12 rounded-xl bg-muted px-5 font-display-normal text-foreground"
@@ -320,10 +322,10 @@ export default function AddItemScreen() {
                 </Text>
                 <View
                   className={`size-5 items-center justify-center rounded-md ${
-                    addAnother ? "bg-foreground" : "border border-border"
+                    addAnother ? "bg-primary" : "border border-border"
                   }`}
                 >
-                  {addAnother ? <CheckIcon size={10} color={palette.background} /> : null}
+                  {addAnother ? <CheckIcon size={10} color={palette.primaryForeground} /> : null}
                 </View>
               </Pressable>
             </View>

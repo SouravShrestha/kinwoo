@@ -2,7 +2,6 @@ import { useUnassignItem, type EditItemForm } from "@kinwoo/client/grocery";
 import { toast } from "@kinwoo/client/toast";
 import type { GroceryItem } from "@kinwoo/core/grocery";
 import { VerifiedIcon, TrashIcon } from "@kinwoo/icons/native";
-import { colors } from "@kinwoo/tokens/native";
 import { View } from "react-native";
 
 import { Button } from "@/components/Button";
@@ -47,7 +46,7 @@ export function AssignedItemDetails({
   onMarkBought: () => void;
   onClose: () => void;
 }) {
-  const { resolvedTheme } = useTheme();
+  const { resolvedTheme, colors } = useTheme();
   const palette = colors[resolvedTheme];
   const unassignItem = useUnassignItem(houseId, listId);
 

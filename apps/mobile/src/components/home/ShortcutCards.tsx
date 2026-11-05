@@ -1,5 +1,4 @@
 import { BagDollarIcon, BalancesIcon, PendingActiveIcon, SettleUpIcon } from "@kinwoo/icons/native";
-import { colors } from "@kinwoo/tokens/native";
 import { router } from "expo-router";
 import type { ReactNode } from "react";
 import { Text, View } from "react-native";
@@ -9,35 +8,37 @@ import { openBalances, openNewExpense, openSettleUp } from "@/lib/house-navigati
 import { useTheme } from "@/theme/ThemeProvider";
 
 export function ShortcutCards() {
-  const { resolvedTheme } = useTheme();
-  const color = colors[resolvedTheme].foreground;
+  const { resolvedTheme, colors } = useTheme();
+  const palette = colors[resolvedTheme];
+  const color = palette.primary;
+  const shadow = { boxShadow: `0 2px 8px ${palette.shadow}` };
 
   return (
-    <View className="gap-4">
-      <View className="flex-row gap-4">
-        <ShortcutCard
-          icon={<SettleUpIcon size={16} color={color} />}
-          title="Settle up"
-          onPress={openSettleUp}
-        />
-        <ShortcutCard
-          icon={<BagDollarIcon size={12.5} color={color} />}
-          title="New expense"
-          onPress={openNewExpense}
-        />
-      </View>
-      <View className="flex-row gap-4">
-        <ShortcutCard
-          icon={<PendingActiveIcon size={16} color={color} />}
-          title="Pending"
-          onPress={() => router.push("/tasks")}
-        />
-        <ShortcutCard
-          icon={<BalancesIcon size={16} color={color} />}
-          title="Balances"
-          onPress={openBalances}
-        />
-      </View>
+    <View className="flex-row gap-2.5">
+      <ShortcutCard
+        icon={<SettleUpIcon size={20} color={color} />}
+        title={"Settle\nup"}
+        shadow={shadow}
+        onPress={openSettleUp}
+      />
+      <ShortcutCard
+        icon={<BagDollarIcon size={16} color={color} />}
+        title={"Add\nexpense"}
+        shadow={shadow}
+        onPress={openNewExpense}
+      />
+      <ShortcutCard
+        icon={<PendingActiveIcon size={20} color={color} />}
+        title={"Pending\nitems"}
+        shadow={shadow}
+        onPress={() => router.push("/tasks")}
+      />
+      <ShortcutCard
+        icon={<BalancesIcon size={20} color={color} />}
+        title={"Balance\nsummary"}
+        shadow={shadow}
+        onPress={openBalances}
+      />
     </View>
   );
 }
@@ -45,21 +46,25 @@ export function ShortcutCards() {
 function ShortcutCard({
   icon,
   title,
+  shadow,
   onPress,
 }: {
   icon: ReactNode;
   title: string;
+  shadow: { boxShadow: string };
   onPress: () => void;
 }) {
   return (
     <Pressable
       accessibilityRole="button"
-      accessibilityLabel={title}
+      accessibilityLabel={title.replace("\n", " ")}
       onPress={onPress}
-      className="flex-1 flex-row items-center gap-3.5 rounded-lg border border-border bg-card px-4 py-4 active:opacity-80"
+      className="min-w-0 flex-1 items-center gap-2.5 py-1 active:opacity-80"
     >
-      {icon}
-      <Text numberOfLines={1} className="shrink text-sm text-foreground font-display-normal">
+      <View className="size-[60px] items-center justify-center rounded-full bg-card" style={shadow}>
+        {icon}
+      </View>
+      <Text className="text-center font-display-medium text-xs leading-tight text-foreground">
         {title}
       </Text>
     </Pressable>

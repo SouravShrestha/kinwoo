@@ -1,4 +1,3 @@
-import { colors } from "@kinwoo/tokens/native";
 import type { ComponentProps, ReactNode } from "react";
 import { Text, TextInput, View } from "react-native";
 
@@ -44,7 +43,7 @@ export function Field({
   | "returnKeyType"
   | "onSubmitEditing"
 >) {
-  const { resolvedTheme } = useTheme();
+  const { resolvedTheme, colors } = useTheme();
   // Inside a sheet the input must be gorhom's, or the sheet cannot lift above the keyboard.
   const Input = (inSheet ? SheetTextInput : TextInput) as typeof TextInput;
   // iOS draws a Poppins placeholder below centre in a fixed-height input, so single-line fields
@@ -63,6 +62,7 @@ export function Field({
           multiline={multiline}
           submitBehavior={multiline ? "blurAndSubmit" : undefined}
           placeholderTextColor={colors[resolvedTheme].mutedForeground}
+          selectionColor={colors[resolvedTheme].primary}
           // The input itself carries the border and fill, with icon and action overlaid, so iOS
           // centres its text in a fixed-height box instead of inside a flex row. No `text-*` size
           // class: its lineHeight misaligns iOS text and caret. Multiline sets an explicit

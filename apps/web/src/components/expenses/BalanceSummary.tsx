@@ -12,8 +12,8 @@ import { Avatar } from "@/components/houses/Avatar";
 import { cn } from "@/lib/utils";
 
 const AMOUNT_TONE = {
-  owed: "text-accent",
-  owe: "text-destructive",
+  owed: "text-positive",
+  owe: "text-negative",
   neutral: "text-foreground",
 } as const;
 

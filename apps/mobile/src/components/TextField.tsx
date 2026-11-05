@@ -1,15 +1,13 @@
-import { CODE_LENGTH } from "@kinwoo/client/auth";
 import { DISPLAY_NAME_MAX_LENGTH } from "@kinwoo/core/auth";
-import { colors } from "@kinwoo/tokens/native";
-import type { ComponentProps } from "react";
+import { useEffect, useRef, type ComponentProps, type ComponentRef } from "react";
 
 import { useTheme } from "@/theme/ThemeProvider";
 
-import { SheetTextInput } from "./BottomSheet";
+import { SheetTextInput, useSheetPresented } from "./BottomSheet";
 
 type InputProps = ComponentProps<typeof SheetTextInput>;
 
-export type TextFieldKind = "email" | "code" | "name";
+export type TextFieldKind = "email" | "name";
 
 const BASE = "rounded-2xl border border-border bg-muted px-4 text-foreground";
 
@@ -27,16 +25,6 @@ const PRESETS: Record<TextFieldKind, InputProps> = {
     className: BASE,
     style: { fontSize: 18, height: 54, paddingVertical: 0, letterSpacing: 0 },
   },
-  code: {
-    keyboardType: "number-pad",
-    textContentType: "oneTimeCode",
-    autoComplete: "sms-otp",
-    maxLength: CODE_LENGTH,
-    accessibilityLabel: `${CODE_LENGTH}-digit code`,
-    placeholder: "123456",
-    className: `${BASE} text-center tracking-[8px]`,
-    style: { fontSize: 16, height: 54, paddingVertical: 0 },
-  },
   name: {
     maxLength: DISPLAY_NAME_MAX_LENGTH,
     autoCapitalize: "words",
@@ -53,6 +41,9 @@ type TextFieldProps = {
   value: string;
   onChangeText: (value: string) => void;
   disabled?: boolean;
+  autoFocus?: boolean;
+  /** Focus once presented and take focus back whenever it leaves. */
+  keepFocus?: boolean;
   className?: string;
 };
 
@@ -61,18 +52,30 @@ export function TextField({
   value,
   onChangeText,
   disabled = false,
+  autoFocus,
+  keepFocus = false,
   className,
 }: TextFieldProps) {
   const preset = PRESETS[kind];
-  const { resolvedTheme } = useTheme();
+  const { resolvedTheme, colors } = useTheme();
+  const inputRef = useRef<ComponentRef<typeof SheetTextInput>>(null);
+  const presented = useSheetPresented();
+
+  const wantsFocus = presented && (autoFocus || (keepFocus && !disabled));
+  useEffect(() => {
+    if (wantsFocus) inputRef.current?.focus();
+  }, [wantsFocus]);
 
   return (
     <SheetTextInput
+      ref={inputRef}
       {...preset}
       // No className hook for the placeholder; the native default ignores the in-app theme.
       placeholderTextColor={colors[resolvedTheme].mutedForeground}
+      selectionColor={colors[resolvedTheme].primary}
       value={value}
       onChangeText={onChangeText}
+      onBlur={keepFocus ? () => inputRef.current?.focus() : undefined}
       editable={!disabled}
       className={className ? `${preset.className} ${className}` : preset.className}
     />

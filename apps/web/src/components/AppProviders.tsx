@@ -15,10 +15,12 @@ import { DoubleClickGuard } from "./DoubleClickGuard";
 import { FontScale } from "./FontScale";
 import { HouseGate } from "./HouseGate";
 import { InstallPromoSheet } from "./InstallPromoSheet";
+import { KeyboardDismiss } from "./KeyboardDismiss";
 import { OfflineNavigationGuard } from "./OfflineNavigationGuard";
 import { PushPromoSheet } from "./PushPromoSheet";
 import { PushRegistration } from "./PushRegistration";
 import { Toaster } from "./Toaster";
+import { ThemePrompt } from "./AppearanceSheet";
 import { TopLoader } from "./TopLoader";
 import { webAuthAdapter } from "@/lib/auth-adapter";
 import { houseStorage } from "@/lib/house-storage";
@@ -64,6 +66,7 @@ export function AppProviders({ children }: { children: ReactNode }) {
         <OfflineNavigationGuard />
         <DoubleClickGuard />
         <FontScale />
+        <KeyboardDismiss />
         {children}
         <AuthGate />
         <HouseGate />
@@ -71,6 +74,7 @@ export function AppProviders({ children }: { children: ReactNode }) {
         <PushPromoSheet />
         <PushRegistration />
         <CookieNotice />
+        <ThemePrompt />
       </HousesProvider>
     </AuthProvider>
   );

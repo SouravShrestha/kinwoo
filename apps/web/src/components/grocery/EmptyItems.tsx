@@ -37,7 +37,7 @@ export function EmptyItems({
   const Icon = EMPTY_ICONS[icon];
   return (
     <div className="flex h-full flex-1 flex-col items-center justify-center px-6 text-center font-display font-normal">
-      <Icon size={52} className="text-foreground" />
+      <Icon size={52} className="text-muted-foreground" />
       <p className="mt-5 text-base text-foreground">{title}</p>
       {hint ? <p className="mt-2 text-base text-muted-foreground">{hint}</p> : null}
       {children ? <div className="mt-6">{children}</div> : null}

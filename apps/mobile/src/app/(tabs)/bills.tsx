@@ -11,7 +11,6 @@ import { useActiveHouse } from "@kinwoo/client/houses";
 import { toast } from "@kinwoo/client/toast";
 import { expenseFeed } from "@kinwoo/core/expenses";
 import { MoreVerticalIcon } from "@kinwoo/icons/native";
-import { colors } from "@kinwoo/tokens/native";
 import { useCallback, useMemo, useState } from "react";
 import { FlatList, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -21,7 +20,6 @@ import { ExpenseActions } from "@/components/expenses/ExpenseActions";
 import { ExpenseRow } from "@/components/expenses/ExpenseRow";
 import { ExpensesMenuSheet } from "@/components/expenses/ExpensesMenuSheet";
 import { PaymentRow } from "@/components/expenses/PaymentRow";
-import { Fab } from "@/components/Fab";
 import { EmptyItems } from "@/components/grocery/EmptyItems";
 import { Pressable } from "@/components/Pressable";
 import {
@@ -29,18 +27,15 @@ import {
   ExpenseActionsSkeleton,
   ExpenseRowsSkeleton,
 } from "@/components/skeleton/skeletons";
-import {
-  openExpense,
-  openNewExpense,
-  openPayment,
-  openPrivateSpending,
-} from "@/lib/house-navigation";
+import { openExpense, openPayment, openPrivateSpending } from "@/lib/house-navigation";
+import { useTabBarSpace } from "@/lib/tab-bar";
 import { usePullToRefresh } from "@/lib/use-pull-to-refresh";
 import { useTheme } from "@/theme/ThemeProvider";
 
 export default function BillsScreen() {
   const insets = useSafeAreaInsets();
-  const { resolvedTheme } = useTheme();
+  const tabBarSpace = useTabBarSpace();
+  const { resolvedTheme, colors } = useTheme();
   const palette = colors[resolvedTheme];
   const { activeHouse, ready } = useActiveHouse();
   const houseId = activeHouse?.house.id ?? null;
@@ -119,7 +114,7 @@ export default function BillsScreen() {
         refreshControl={refreshControl}
         onEndReached={loadMore}
         onEndReachedThreshold={0.5}
-        contentContainerStyle={{ flexGrow: 1, paddingBottom: 96 }}
+        contentContainerStyle={{ flexGrow: 1, paddingBottom: tabBarSpace + 24 }}
         ListHeaderComponent={
           <View className="pt-3">
             <View className="pb-4">
@@ -175,8 +170,6 @@ export default function BillsScreen() {
           ) : null
         }
       />
-
-      <Fab label="Add expense" onPress={openNewExpense} />
 
       <ExpensesMenuSheet
         open={menuOpen}

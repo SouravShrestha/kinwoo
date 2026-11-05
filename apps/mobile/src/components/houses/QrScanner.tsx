@@ -1,5 +1,4 @@
 import { CameraIcon, SettingsIcon } from "@kinwoo/icons/native";
-import { colors } from "@kinwoo/tokens/native";
 import { CameraView, useCameraPermissions } from "expo-camera";
 import { useEffect, useRef, useState } from "react";
 import { Linking, Text, View } from "react-native";
@@ -24,7 +23,7 @@ const CORNERS = [
 ];
 
 export function QrScanner({ onScan }: { onScan: (value: string) => void }) {
-  const { resolvedTheme } = useTheme();
+  const { resolvedTheme, colors } = useTheme();
   const [permission, requestPermission] = useCameraPermissions();
   const last = useRef<{ value: string; at: number } | null>(null);
   const [zoom, setZoom] = useState(ZOOM_LEVELS[0]!.zoom);

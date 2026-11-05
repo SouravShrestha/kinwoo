@@ -2,7 +2,6 @@ import { useBusyWhile } from "@kinwoo/client/activity";
 import { avatarChoices, useAvatars, useProfile } from "@kinwoo/client/profile";
 import { toast } from "@kinwoo/client/toast";
 import { UploadPhotoIcon } from "@kinwoo/icons/native";
-import { colors } from "@kinwoo/tokens/native";
 import { randomUUID } from "expo-crypto";
 import { useEffect, useRef, useState } from "react";
 import { Image, Text, View } from "react-native";
@@ -33,7 +32,7 @@ function AvatarSheetContent({ open, onClose }: { open: boolean; onClose: () => v
   const { profile, setAvatar, uploadAvatar } = useProfile();
   const scrollTo = useSheetScrollTo();
   const selectedTile = useRef<View>(null);
-  const { resolvedTheme } = useTheme();
+  const { resolvedTheme, colors } = useTheme();
   const palette = colors[resolvedTheme];
   const { data: avatars, isError } = useAvatars(open);
   const [saving, setSaving] = useState(false);

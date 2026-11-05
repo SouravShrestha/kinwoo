@@ -33,7 +33,7 @@ export function ListIconPicker({
               >
                 <View
                   className={`size-16 items-center justify-center rounded-xl border-2 bg-muted ${
-                    isSelected ? "border-foreground" : "border-transparent"
+                    isSelected ? "border-primary" : "border-transparent"
                   }`}
                 >
                   <ListIconImage label={option.label} size={48} />

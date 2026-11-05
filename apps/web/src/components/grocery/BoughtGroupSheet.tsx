@@ -91,7 +91,7 @@ export function BoughtGroupSheet({
                     type="button"
                     aria-haspopup="dialog"
                     onClick={() => onOpenItem(item.id)}
-                    className="flex w-full flex-col items-center gap-2 rounded-xl p-1 text-center hover:cursor-pointer hover:bg-muted/60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
+                    className="flex w-full flex-col items-center gap-2 rounded-xl p-1 text-center hover:cursor-pointer hover:bg-muted/60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
                   >
                     <span className="flex size-10 items-center justify-center rounded-xl bg-muted text-foreground">
                       <ItemCategoryImage name={item.categoryName ?? undefined} size={32} />

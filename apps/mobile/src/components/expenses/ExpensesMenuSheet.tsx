@@ -1,5 +1,4 @@
 import { ArrowRightIcon, CloudLockFilledIcon, SimplifyIcon } from "@kinwoo/icons/native";
-import { colors } from "@kinwoo/tokens/native";
 import { Text, View } from "react-native";
 
 import { BottomSheet } from "@/components/BottomSheet";
@@ -21,7 +20,7 @@ export function ExpensesMenuSheet({
   onSimplifyDebtsChange: (next: boolean) => void;
   onViewPrivate: () => void;
 }) {
-  const { resolvedTheme } = useTheme();
+  const { resolvedTheme, colors } = useTheme();
   const palette = colors[resolvedTheme];
   return (
     <BottomSheet open={open} onClose={onClose} label="Expense options" showClose>

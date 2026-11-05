@@ -13,14 +13,14 @@ export function HouseHeader({ name, address, onPressHouse }: HouseHeaderProps) {
         type="button"
         aria-haspopup="dialog"
         onClick={onPressHouse}
-        className="block w-full min-w-0 text-left hover:cursor-pointer hover:opacity-70 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
+        className="block w-full min-w-0 text-left hover:cursor-pointer hover:opacity-70 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
       >
         <span className="-ml-1 flex items-center gap-1.5">
-          {name ? <HousePinIcon size={18} className="shrink-0" /> : null}
-          <span className="truncate font-display font-medium">{name ?? ""}</span>
+          {name ? <HousePinIcon size={18} className="shrink-0 text-primary" /> : null}
+          <span className="truncate font-display font-medium tracking-[-0.02em]">{name ?? ""}</span>
         </span>
         {address ? (
-          <span className="mt-0.5 block truncate text-xs font-display font-normal text-muted-foreground">
+          <span className="mt-0.5 block truncate text-xs font-display font-medium text-muted-foreground">
             {address}
           </span>
         ) : null}

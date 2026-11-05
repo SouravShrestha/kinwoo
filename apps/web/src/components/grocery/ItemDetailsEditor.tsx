@@ -35,11 +35,11 @@ const STORE_LOGOS: Record<StoreId, string> = {
 };
 
 const FIELD =
-  "flex h-12 items-center rounded-xl bg-muted font-display text-base font-normal text-foreground focus-within:outline-2 focus-within:outline-foreground";
+  "flex h-12 items-center rounded-xl bg-muted font-display text-base font-normal text-foreground focus-within:outline-2 focus-within:outline-primary";
 const FIELD_BUTTON =
-  "gap-2 px-3.5 transition-opacity enabled:hover:cursor-pointer enabled:hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground";
+  "gap-2 px-3.5 transition-opacity enabled:hover:cursor-pointer enabled:hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary";
 export const FOCUS_RING =
-  "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground";
+  "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary";
 export const ICON_BUTTON =
   "flex size-12 shrink-0 items-center justify-center rounded-xl border border-border text-foreground transition-colors hover:cursor-pointer hover:bg-muted disabled:cursor-not-allowed disabled:opacity-50";
 
@@ -135,7 +135,7 @@ export function ItemDetailsEditor({
               aria-label="Save changes"
               disabled={!form.dirty || form.saving}
               className={cn(
-                "flex size-10 items-center justify-end text-foreground transition-opacity hover:cursor-pointer disabled:cursor-not-allowed disabled:opacity-40",
+                "flex size-10 items-center justify-end text-primary transition-opacity hover:cursor-pointer disabled:cursor-not-allowed disabled:opacity-40",
                 FOCUS_RING,
               )}
             >

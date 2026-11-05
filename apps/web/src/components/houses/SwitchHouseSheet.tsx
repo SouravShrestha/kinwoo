@@ -30,8 +30,10 @@ export function SwitchHouseSheet({ open, onClose }: { open: boolean; onClose: ()
 function Radio({ checked }: { checked: boolean }) {
   return (
     <span aria-hidden className="flex size-7 items-center justify-center">
-      <span className="flex size-5 items-center justify-center rounded-full border border-foreground">
-        {checked ? <span className="size-2.5 rounded-full bg-foreground" /> : null}
+      <span
+        className={`flex size-5 items-center justify-center rounded-full border ${checked ? "border-primary" : "border-foreground"}`}
+      >
+        {checked ? <span className="size-2.5 rounded-full bg-primary" /> : null}
       </span>
     </span>
   );

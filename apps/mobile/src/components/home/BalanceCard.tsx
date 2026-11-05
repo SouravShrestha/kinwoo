@@ -1,63 +1,78 @@
 import { balanceHeadline, balanceHeadlineParts, type HouseBalances } from "@kinwoo/core/expenses";
 import { Image } from "expo-image";
 import { router } from "expo-router";
+import { useEffect, useState, type ReactNode } from "react";
 import { Text, View } from "react-native";
 
-import { BalanceLine } from "@/components/expenses/BalanceSummary";
 import { Pressable } from "@/components/Pressable";
-import { sharedBill } from "@/lib/images";
+import { santa } from "@/lib/images";
 
-const IMAGE_STYLE = {
-  width: "45%",
-  aspectRatio: 600 / 318,
-  alignSelf: "flex-end",
-  marginLeft: -8,
-  marginBottom: -8,
-} as const;
+// Autoplay once per app open; later mounts show a still frame until tapped.
+let autoplayed = false;
 
-const LEAD = {
-  owed: "Across all your shared bills, you're owed",
-  owe: "Across all your shared bills, you owe",
-} as const;
+const LEAD = { owed: "You're owed", owe: "You owe" } as const;
 
-export function BalanceCard({ balances }: { balances: HouseBalances }) {
-  const text = balanceHeadlineParts(balances);
-  const lead = text.tone === "neutral" ? text.before.trim() : LEAD[text.tone];
+export function HeroCard({ onReplay, children }: { onReplay?: () => void; children: ReactNode }) {
+  // Remounting the image restarts its two-loop animation.
+  const [plays, setPlays] = useState(0);
+  const [still] = useState(autoplayed);
+  useEffect(() => {
+    autoplayed = true;
+  }, []);
 
   return (
-    <Pressable
-      accessibilityRole="button"
-      accessibilityLabel={`${balanceHeadline(balances)}. Open bills`}
-      onPress={() => router.push("/bills")}
-      className="w-full flex-row items-stretch overflow-hidden rounded-lg border border-border bg-card active:opacity-80"
-    >
-      <Image
-        source={sharedBill}
-        accessibilityIgnoresInvertColors
-        contentFit="contain"
-        style={IMAGE_STYLE}
-      />
-      <View className="flex-1 justify-between -ml-12 gap-4 py-6 pl-2 pr-5">
-        {/* Two lead lines and an amount row are always reserved, so a settled card keeps the
-            height of one with a balance. */}
-        <Text className="min-h-10 font-display-normal text-sm text-right text-muted-foreground">
-          {lead}
+    <View className="w-full flex-row items-center justify-between gap-5 px-3 py-8">
+      <Pressable
+        accessibilityRole="button"
+        accessibilityLabel="Replay animation"
+        allowDoublePress
+        onPress={() => {
+          setPlays((n) => n + 1);
+          onReplay?.();
+        }}
+        className="active:opacity-100"
+      >
+        <Image
+          key={plays}
+          source={santa}
+          autoplay={!still || plays > 0}
+          accessibilityIgnoresInvertColors
+          style={{ width: 100, height: 100 }}
+        />
+      </Pressable>
+      {children}
+    </View>
+  );
+}
+
+export function BalanceCard({
+  balances,
+  onReplay,
+}: {
+  balances: HouseBalances;
+  onReplay?: () => void;
+}) {
+  const text = balanceHeadlineParts(balances);
+  return (
+    <HeroCard onReplay={onReplay}>
+      <Pressable
+        accessibilityRole="button"
+        accessibilityLabel={`${balanceHeadline(balances)}. Open bills`}
+        onPress={() => router.push("/bills")}
+        className="shrink items-end gap-0.5 active:opacity-80"
+      >
+        <Text className="text-right font-display-medium text-sm leading-[18px] text-foreground">
+          {text.tone === "neutral" ? text.before.trim() : LEAD[text.tone]}
         </Text>
         {text.amount ? (
-          <BalanceLine
-            text={{ ...text, before: "", after: "" }}
-            className="font-display-normal text-xl text-right text-foreground"
-          />
-        ) : (
-          <Text
-            importantForAccessibility="no-hide-descendants"
-            accessibilityElementsHidden
-            className="font-display-normal text-xl opacity-0"
-          >
-            {" "}
+          <Text className="font-display-medium text-[26px] leading-10 tracking-[-0.52px] text-foreground">
+            {text.amount}
           </Text>
-        )}
-      </View>
-    </Pressable>
+        ) : null}
+        <Text className="font-display-medium text-xs text-muted-foreground">
+          Across all your shared bills
+        </Text>
+      </Pressable>
+    </HeroCard>
   );
 }

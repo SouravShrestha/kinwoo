@@ -135,7 +135,10 @@ export function PullToRefresh({ children }: { children: ReactNode }) {
   return (
     <div ref={rootRef} className="relative">
       {loader !== "hidden" ? (
-        <div aria-hidden className="absolute inset-x-0 top-0 flex h-14 items-center justify-center">
+        <div
+          aria-hidden
+          className="absolute inset-x-0 top-0 z-10 flex h-14 items-center justify-center"
+        >
           <div className={loader === "spinning" ? "pull-loader pull-loader-spin" : "pull-loader"} />
         </div>
       ) : null}

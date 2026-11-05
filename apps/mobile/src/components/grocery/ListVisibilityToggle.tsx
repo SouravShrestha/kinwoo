@@ -1,6 +1,5 @@
 import type { ListVisibility } from "@kinwoo/core/grocery";
 import { GlobeFilledIcon, LockFilledIcon } from "@kinwoo/icons/native";
-import { colors } from "@kinwoo/tokens/native";
 import { useEffect } from "react";
 import { View } from "react-native";
 import Animated, {
@@ -25,7 +24,7 @@ export function ListVisibilityToggle({
   onChange: (visibility: ListVisibility) => void;
   disabled?: boolean;
 }) {
-  const { resolvedTheme } = useTheme();
+  const { resolvedTheme, colors } = useTheme();
   const palette = colors[resolvedTheme];
   const isPublic = value === "shared";
 
@@ -57,13 +56,19 @@ export function ListVisibilityToggle({
       <Animated.View
         pointerEvents="none"
         className="absolute left-1 top-1 h-10 w-14 rounded-lg"
-        style={[{ backgroundColor: palette.foreground }, pillStyle]}
+        style={[{ backgroundColor: palette.primary }, pillStyle]}
       />
       <View className="h-10 w-14 items-center justify-center">
-        <LockFilledIcon size={16} color={isPublic ? palette.foreground : palette.background} />
+        <LockFilledIcon
+          size={16}
+          color={isPublic ? palette.foreground : palette.primaryForeground}
+        />
       </View>
       <View className="h-10 w-14 items-center justify-center">
-        <GlobeFilledIcon size={16} color={isPublic ? palette.background : palette.foreground} />
+        <GlobeFilledIcon
+          size={16}
+          color={isPublic ? palette.primaryForeground : palette.foreground}
+        />
       </View>
     </Pressable>
   );

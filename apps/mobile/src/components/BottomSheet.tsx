@@ -11,7 +11,7 @@ import {
   useBottomSheetTimingConfigs,
 } from "@gorhom/bottom-sheet";
 import { CloseIcon } from "@kinwoo/icons/native";
-import { colors, radius } from "@kinwoo/tokens/native";
+import { radius } from "@kinwoo/tokens/native";
 import { cssInterop } from "nativewind";
 import {
   createContext,
@@ -37,6 +37,11 @@ import { useKeyboardVisible } from "@/lib/use-keyboard-visible";
 import { useTheme } from "@/theme/ThemeProvider";
 
 const SheetScrollContext = createContext<(target: View | null) => void>(() => {});
+const SheetPresentedContext = createContext(true);
+
+// False while the sheet animates in. Focusing a field before then opens the keyboard before
+// gorhom can track it, leaving the field behind the keyboard.
+export const useSheetPresented = () => useContext(SheetPresentedContext);
 
 // Returns a function that scrolls the sheet's content so the given view is vertically centred.
 export const useSheetScrollTo = () => useContext(SheetScrollContext);
@@ -70,7 +75,7 @@ export function BottomSheet({
 }) {
   const insets = useSafeAreaInsets();
   const { height: screenHeight } = useWindowDimensions();
-  const { resolvedTheme } = useTheme();
+  const { resolvedTheme, colors, themeStyle } = useTheme();
   const palette = colors[resolvedTheme];
 
   useSheetStack(open, dismissable, onClose);
@@ -108,6 +113,7 @@ export function BottomSheet({
   const settled = useRef(0);
   const wanted = useRef(0);
   const [instance, setInstance] = useState(0);
+  const [presentedIndex, setPresentedIndex] = useState(-1);
 
   useEffect(() => {
     if (!open) return;
@@ -199,6 +205,8 @@ export function BottomSheet({
     [footerSlot, bottomPadding],
   );
 
+  // Content renders in gorhom's portal host, so className colours need the palette's variables
+  // set here or they fall back to the stylesheet's default (purple) tokens.
   const padding = {
     paddingHorizontal: 24,
     paddingTop: showHandle ? 14 : 12,
@@ -239,6 +247,7 @@ export function BottomSheet({
       enableContentPanningGesture={dismissable}
       enableHandlePanningGesture={dismissable}
       onDismiss={handleDismissed}
+      onChange={setPresentedIndex}
       keyboardBehavior="interactive"
       keyboardBlurBehavior="restore"
       // Otherwise the sheet can be dragged down behind a keyboard that stays up.
@@ -258,35 +267,39 @@ export function BottomSheet({
       animationConfigs={animationConfigs}
     >
       <CloseWatcher onClosed={handleDismissed} />
-      {scrollable ? (
-        <BottomSheetScrollView
-          ref={scrollRef}
-          onLayout={(event) => {
-            viewportHeight.current = event.nativeEvent.layout.height;
-          }}
-          showsVerticalScrollIndicator={false}
-          bounces={false}
-          overScrollMode="never"
-          keyboardShouldPersistTaps="handled"
-          {...a11y}
-        >
-          <View ref={contentRef} style={padding}>
-            {closeButton}
-            <SheetScrollContext.Provider value={scrollTo}>
+      <SheetPresentedContext.Provider value={presentedIndex >= 0}>
+        {scrollable ? (
+          <BottomSheetScrollView
+            ref={scrollRef}
+            onLayout={(event) => {
+              viewportHeight.current = event.nativeEvent.layout.height;
+            }}
+            showsVerticalScrollIndicator={false}
+            bounces={false}
+            overScrollMode="never"
+            keyboardShouldPersistTaps="handled"
+            {...a11y}
+          >
+            <View ref={contentRef} className="flex-none" style={[themeStyle, padding]}>
+              {closeButton}
+              <SheetScrollContext.Provider value={scrollTo}>
+                <SheetFooterContext.Provider value={footerSlot}>
+                  {children}
+                </SheetFooterContext.Provider>
+              </SheetScrollContext.Provider>
+            </View>
+          </BottomSheetScrollView>
+        ) : (
+          <BottomSheetView {...a11y}>
+            <View className="flex-none" style={[themeStyle, padding]}>
+              {closeButton}
               <SheetFooterContext.Provider value={footerSlot}>
                 {children}
               </SheetFooterContext.Provider>
-            </SheetScrollContext.Provider>
-          </View>
-        </BottomSheetScrollView>
-      ) : (
-        <BottomSheetView {...a11y}>
-          <View style={padding}>
-            {closeButton}
-            <SheetFooterContext.Provider value={footerSlot}>{children}</SheetFooterContext.Provider>
-          </View>
-        </BottomSheetView>
-      )}
+            </View>
+          </BottomSheetView>
+        )}
+      </SheetPresentedContext.Provider>
     </BottomSheetModal>
   );
 }
@@ -350,7 +363,7 @@ function FooterHost({
   bottomPadding,
 }: BottomSheetFooterProps & { slot: SheetFooterSlot; bottomPadding: number }) {
   const content = useSyncExternalStore(slot.subscribe, slot.get);
-  const { resolvedTheme } = useTheme();
+  const { resolvedTheme, colors, themeStyle } = useTheme();
   const keyboardVisible = useKeyboardVisible();
 
   if (!content || keyboardVisible) return null;
@@ -363,11 +376,15 @@ function FooterHost({
       >
         <View
           onLayout={(event) => slot.setHeight(event.nativeEvent.layout.height)}
-          style={{
-            paddingHorizontal: 24,
-            paddingBottom: bottomPadding,
-            backgroundColor: colors[resolvedTheme].sheet,
-          }}
+          className="flex-none"
+          style={[
+            themeStyle,
+            {
+              paddingHorizontal: 24,
+              paddingBottom: bottomPadding,
+              backgroundColor: colors[resolvedTheme].sheet,
+            },
+          ]}
         >
           {content.node}
         </View>

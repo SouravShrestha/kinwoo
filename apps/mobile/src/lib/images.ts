@@ -12,7 +12,18 @@ export const inviteFriends = require("../../assets/images/invite.webp") as numbe
 
 export const sharedBill = require("../../assets/images/shared-bill.webp") as number;
 
-export const illustrationModules = [inviteFriends, sharedBill];
+const santas = [
+  require("../../../../assets/gifs/santa_1.webp") as number,
+  require("../../../../assets/gifs/santa_2.webp") as number,
+  require("../../../../assets/gifs/santa_3.webp") as number,
+  require("../../../../assets/gifs/santa_4.webp") as number,
+  require("../../../../assets/gifs/santa_5.webp") as number,
+];
+
+// Picked once per JS process, so it changes each time the app is closed and reopened.
+export const santa = santas[Math.floor(Math.random() * santas.length)];
+
+export const illustrationModules = [inviteFriends, sharedBill, santa];
 
 export const profileImage = require("../../assets/images/profile-image.png") as number;
 

@@ -6,17 +6,17 @@ import { useProfile } from "@kinwoo/client/profile";
 import type { GroceryOverviewItem } from "@kinwoo/core/grocery";
 import { homeGreeting } from "@kinwoo/core/houses";
 import { router } from "expo-router";
-import { useState } from "react";
-import { ScrollView, View } from "react-native";
+import { useEffect, useState } from "react";
+import { ScrollView, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { ItemDetailSheet } from "@/components/grocery/ItemDetailSheet";
-import { BalanceCard } from "@/components/home/BalanceCard";
+import { BalanceCard, HeroCard } from "@/components/home/BalanceCard";
 import { HomeHeaderActions } from "@/components/home/HomeHeaderActions";
+import { HomeDecor } from "@/components/home/HomeDecor";
 import { HomeLoadError } from "@/components/home/HomeLoadError";
 import { HouseHeader } from "@/components/home/HouseHeader";
 import { MyToBuySection } from "@/components/home/MyToBuySection";
-import { QuickAddBar } from "@/components/home/QuickAddBar";
 import { ShortcutCards } from "@/components/home/ShortcutCards";
 import { TodayItemsSection } from "@/components/home/TodayItemsSection";
 import { WelcomeHeader } from "@/components/home/WelcomeHeader";
@@ -28,11 +28,21 @@ import {
   BalanceCardSkeleton,
   HouseHeaderSkeleton,
   ItemCarouselSkeleton,
-  QuickAddBarSkeleton,
 } from "@/components/skeleton/skeletons";
+import { useTabBarSpace } from "@/lib/tab-bar";
+
+// Decor falls in once per app open; later Home visits show it settled until the Santa is tapped.
+let decorSeen = false;
 
 export default function HomeScreen() {
   const insets = useSafeAreaInsets();
+  const tabBarSpace = useTabBarSpace();
+  // Bumped when the Santa is tapped; remounting HomeDecor replays its fall-in.
+  const [decorPlays, setDecorPlays] = useState(0);
+  const [decorStill] = useState(decorSeen);
+  useEffect(() => {
+    decorSeen = true;
+  }, []);
   const [menuOpen, setMenuOpen] = useState(false);
   const [switchOpen, setSwitchOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<GroceryOverviewItem | null>(null);
@@ -72,7 +82,7 @@ export default function HomeScreen() {
     house?.id ?? null,
     house?.simplifyDebts ?? false,
   );
-  const balanceLoading = members.isPending || (!isOnlyMember && balancesPending);
+  const balanceLoading = !!house && (members.isPending || (!isOnlyMember && balancesPending));
 
   useBusyWhile(!ready);
 
@@ -80,71 +90,91 @@ export default function HomeScreen() {
     <View className="flex-1 bg-background">
       <ScrollView
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ flexGrow: 1, paddingBottom: insets.bottom + 24 }}
+        contentContainerStyle={{ flexGrow: 1, paddingBottom: tabBarSpace + 24 }}
       >
+        {/* Fills the iOS overscroll gap above the page with the header colour. */}
+        <View pointerEvents="none" className="absolute inset-x-0 bottom-full h-[1000px] bg-muted" />
         <View
-          className="flex-row items-center justify-between px-6 pb-6"
+          className="overflow-hidden rounded-b-[28px] bg-muted px-6"
           style={{ paddingTop: insets.top + 12 }}
         >
-          {!ready ? (
-            <HouseHeaderSkeleton />
-          ) : showWelcome ? (
-            <WelcomeHeader salutation={greeting.salutation} message={greeting.message} />
-          ) : (
-            <HouseHeader
-              name={house?.name ?? null}
-              address={house?.address ?? null}
-              onPressHouse={() => setMenuOpen(true)}
-            />
-          )}
-          {ready ? <HomeHeaderActions showNotifications={!showWelcome} /> : null}
+          <HomeDecor key={decorPlays} animate={!decorStill || decorPlays > 0} />
+          <View className="flex-row items-center justify-between pb-1">
+            {!ready ? (
+              <HouseHeaderSkeleton />
+            ) : showWelcome ? (
+              <WelcomeHeader salutation={greeting.salutation} message={greeting.message} />
+            ) : (
+              <HouseHeader
+                name={house?.name ?? null}
+                address={house?.address ?? null}
+                onPressHouse={() => setMenuOpen(true)}
+              />
+            )}
+            {ready ? <HomeHeaderActions showNotifications={!showWelcome} /> : null}
+          </View>
+          <View className="mt-2">
+            {!ready || balanceLoading ? (
+              <BalanceCardSkeleton />
+            ) : house && !isOnlyMember && balances ? (
+              <BalanceCard balances={balances} onReplay={() => setDecorPlays((n) => n + 1)} />
+            ) : house && isOnlyMember ? (
+              <InviteFriendsCard
+                canInvite={isAdmin}
+                onPress={() => router.push("/house/invite")}
+                onReplay={() => setDecorPlays((n) => n + 1)}
+              />
+            ) : showWelcome ? (
+              <HeroCard onReplay={() => setDecorPlays((n) => n + 1)}>
+                <View className="shrink items-end gap-1.5">
+                  <Text
+                    numberOfLines={2}
+                    className="text-right font-display-medium text-base text-foreground"
+                  >
+                    {"Every home starts\nsomewhere"}
+                  </Text>
+                  <Text
+                    numberOfLines={1}
+                    className="text-right font-display-medium text-base text-muted-foreground"
+                  >
+                    Set yours up to share
+                  </Text>
+                </View>
+              </HeroCard>
+            ) : (
+              <View className="pb-6" />
+            )}
+          </View>
         </View>
 
         <View className="flex-1">
           {!ready ? (
-            <View className="gap-5 px-6 pt-4">
-              <BalanceCardSkeleton />
-              <ShortcutCards />
-              <QuickAddBarSkeleton />
-              <View className="mb-8 mt-3 gap-10">
+            <View className="gap-8 pt-8">
+              <View className="px-6">
+                <ShortcutCards />
+              </View>
+              <View className="gap-10 px-6">
                 <ItemCarouselSkeleton />
                 <ItemCarouselSkeleton />
               </View>
             </View>
           ) : hasLoadError ? (
-            <View className="flex-1 items-center px-6 pt-5">
+            <View className="flex-1 items-center px-6 pt-8">
               <HomeLoadError onRetry={() => void refetchHouses()} />
             </View>
           ) : !house ? (
-            <View className="flex-1 items-center px-6 pt-5">
+            <View className="flex-1 items-center px-6 pt-8">
               <SetupHousePrompt
                 onCreate={() => router.push("/house/create")}
                 onJoin={() => router.push("/house/join")}
               />
             </View>
           ) : (
-            <View className="gap-5 px-6 pt-4">
-              {isOnlyMember ? (
-                <InviteFriendsCard
-                  canInvite={isAdmin}
-                  onPress={() => router.push("/house/invite")}
-                />
-              ) : null}
-
-              {balanceLoading ? (
-                <BalanceCardSkeleton />
-              ) : !isOnlyMember && balances ? (
-                <BalanceCard balances={balances} />
-              ) : null}
-
-              <ShortcutCards />
-
-              <QuickAddBar
-                houseId={house.id}
-                onPress={(listId) => router.push({ pathname: "/item/new", params: { listId } })}
-              />
-
-              <View className="mb-8 mt-3 gap-10">
+            <View className="gap-8 pt-8">
+              <View className="gap-5 px-6">
+                <ShortcutCards />
+              </View>
+              <View className="gap-10 px-6">
                 {overviewPending ? (
                   <>
                     <ItemCarouselSkeleton />

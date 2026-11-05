@@ -22,7 +22,7 @@ import { Field, RequiredMark } from "@/components/houses/Field";
 
 const LABEL = "mb-3 block font-display text-sm font-normal text-foreground";
 const CONTROL =
-  "w-full rounded-2xl border border-border bg-muted px-4 font-display text-base font-normal text-foreground placeholder:text-muted-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground";
+  "w-full rounded-2xl border border-border bg-muted px-4 font-display text-base font-normal text-foreground placeholder:text-muted-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary";
 
 export function FeedbackScreen() {
   const { user } = useAuth();

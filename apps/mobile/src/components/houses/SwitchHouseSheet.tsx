@@ -31,8 +31,10 @@ function Radio({ checked }: { checked: boolean }) {
       importantForAccessibility="no-hide-descendants"
       className="size-7 items-center justify-center"
     >
-      <View className="size-5 items-center justify-center rounded-full border border-foreground">
-        {checked ? <View className="size-2.5 rounded-full bg-foreground" /> : null}
+      <View
+        className={`size-5 items-center justify-center rounded-full border ${checked ? "border-primary" : "border-foreground"}`}
+      >
+        {checked ? <View className="size-2.5 rounded-full bg-primary" /> : null}
       </View>
     </View>
   );

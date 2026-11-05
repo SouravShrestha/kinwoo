@@ -1,5 +1,4 @@
 import { BuildIcon, CodeIcon } from "@kinwoo/icons/native";
-import { colors } from "@kinwoo/tokens/native";
 import type { ReactNode } from "react";
 import { Text, View } from "react-native";
 
@@ -62,7 +61,7 @@ function ActionCard({
 }
 
 export function SetupHousePrompt({ onCreate, onJoin, level = false }: SetupHousePromptProps) {
-  const { resolvedTheme } = useTheme();
+  const { resolvedTheme, colors } = useTheme();
 
   return (
     <View className="w-full flex-1 justify-center">

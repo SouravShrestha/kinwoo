@@ -6,7 +6,6 @@ import {
   type Expense,
 } from "@kinwoo/core/expenses";
 import { formatPaise, formatPickedDate } from "@kinwoo/core/grocery";
-import { colors } from "@kinwoo/tokens/native";
 import { Text, View } from "react-native";
 
 import { Pressable } from "@/components/Pressable";
@@ -15,8 +14,8 @@ import { useTheme } from "@/theme/ThemeProvider";
 import { ExpenseCategoryImage } from "./ExpenseCategoryImage";
 
 const TONE_CLASS = {
-  lent: "text-accent",
-  borrowed: "text-destructive",
+  lent: "text-positive",
+  borrowed: "text-negative",
   neutral: "text-muted-foreground",
 } as const;
 
@@ -29,7 +28,7 @@ export function ExpenseRow({
   currentUserId: string | null;
   onOpen: () => void;
 }) {
-  const { resolvedTheme } = useTheme();
+  const { resolvedTheme, colors } = useTheme();
   const palette = colors[resolvedTheme];
   const share = expenseShareSummary(expense, currentUserId);
   const shareAmount = share.amountPaise === null ? null : formatPaise(share.amountPaise);

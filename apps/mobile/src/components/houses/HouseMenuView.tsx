@@ -16,7 +16,6 @@ import {
   MemberIcon,
   SwitchHouseIcon,
 } from "@kinwoo/icons/native";
-import { colors } from "@kinwoo/tokens/native";
 import { router } from "expo-router";
 import { Text, View } from "react-native";
 
@@ -36,8 +35,9 @@ export function HouseMenuView({
   onClose: () => void;
   onSwitch?: () => void;
 }) {
-  const { resolvedTheme } = useTheme();
+  const { resolvedTheme, colors } = useTheme();
   const palette = colors[resolvedTheme];
+  const tint = palette.primary;
   const { house } = membership;
   const members = useHouseMembers(house.id);
   const isAdmin = membership.role === "admin";
@@ -46,7 +46,7 @@ export function HouseMenuView({
     <View>
       <View accessibilityRole="header" className="pr-10">
         <View className="flex-row items-center gap-1.5">
-          <HousePinIcon size={20} color={palette.foreground} />
+          <HousePinIcon size={20} color={tint} />
           <Text numberOfLines={1} className="shrink font-display-medium text-xl text-foreground">
             {house.name}
           </Text>
@@ -63,7 +63,7 @@ export function HouseMenuView({
 
       <View className="mt-8 gap-3">
         <MenuCard
-          icon={<MemberIcon size={14} color={palette.foreground} />}
+          icon={<MemberIcon size={14} color={tint} />}
           stack={
             members.data ? (
               <AvatarStack
@@ -86,7 +86,7 @@ export function HouseMenuView({
         <View className="flex-row gap-3">
           <MenuCard
             size="tall"
-            icon={<InviteIcon size={14} color={palette.foreground} />}
+            icon={<InviteIcon size={14} color={tint} />}
             title={INVITE_ACTION_TITLE}
             onPress={() => {
               onClose();
@@ -97,14 +97,14 @@ export function HouseMenuView({
           <View className="flex-1 gap-3">
             <MenuCard
               size="half"
-              icon={<HouseSettingsIcon size={15} color={palette.foreground} />}
+              icon={<HouseSettingsIcon size={15} color={tint} />}
               title={SETTINGS_SHEET_TITLE}
               onPress={() => onNavigate({ name: "settings" })}
             />
             {onSwitch ? (
               <MenuCard
                 size="half"
-                icon={<SwitchHouseIcon size={15} color={palette.foreground} />}
+                icon={<SwitchHouseIcon size={15} color={tint} />}
                 title={SWITCH_HOUSE_TITLE.replace(" ", "\n")}
                 onPress={onSwitch}
               />

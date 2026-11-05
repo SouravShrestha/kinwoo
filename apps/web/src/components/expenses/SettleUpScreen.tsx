@@ -43,7 +43,7 @@ function Balances({ houseId, simplifyDebts }: { houseId: string; simplifyDebts: 
         {pairs.map((pair, index) => {
           const owes = pair.netPaise < 0;
           const email = members?.find((member) => member.userId === pair.userId)?.email;
-          const tone = owes ? "text-destructive" : "text-accent";
+          const tone = owes ? "text-negative" : "text-positive";
           return (
             <li
               key={pair.userId}
@@ -55,7 +55,7 @@ function Balances({ houseId, simplifyDebts }: { houseId: string; simplifyDebts: 
                   owes ? pair.userId : user.id,
                   Math.abs(pair.netPaise),
                 )}
-                className="flex w-full items-center gap-4 px-6 py-5 text-left transition-opacity hover:cursor-pointer hover:opacity-80 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-foreground"
+                className="flex w-full items-center gap-4 px-6 py-5 text-left transition-opacity hover:cursor-pointer hover:opacity-80 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-primary"
               >
                 <Avatar name={pair.name} url={pair.avatarUrl} size={48} />
                 <span className="min-w-0 flex-1">
@@ -115,7 +115,7 @@ export function SettleUpScreen() {
             aria-label="Back"
             disabled={closing}
             onClick={() => setClosing(true)}
-            className="flex size-10 items-center justify-start hover:cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
+            className="flex size-10 items-center justify-start hover:cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
           >
             <ArrowRightIcon size={28} className="rotate-90" />
           </button>

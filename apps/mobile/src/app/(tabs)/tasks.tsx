@@ -33,14 +33,12 @@ import {
   type TasksView,
 } from "@kinwoo/core/grocery";
 import { CaretDownIcon, MoreVerticalIcon } from "@kinwoo/icons/native";
-import { colors } from "@kinwoo/tokens/native";
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useMemo, useState } from "react";
 import { ScrollView, Text, useWindowDimensions, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { ConfirmDialog } from "@/components/ConfirmDialog";
-import { Fab } from "@/components/Fab";
 import { Filters } from "@/components/Filters";
 import {
   ASSIGNED_SELECTION_BAR_HEIGHT,
@@ -66,6 +64,7 @@ import { ItemGridSkeleton } from "@/components/skeleton/skeletons";
 import { openBatchMarkBought, openMarkBought } from "@/lib/house-navigation";
 import { houseStorage } from "@/lib/house-storage";
 import { usePullToRefresh } from "@/lib/use-pull-to-refresh";
+import { useTabBarSpace } from "@/lib/tab-bar";
 import { useTheme } from "@/theme/ThemeProvider";
 
 const SCREEN_PADDING = 16;
@@ -77,8 +76,9 @@ const listStorage = createListStorage(houseStorage);
 
 function TasksScreen({ view }: { view: TasksView | null }) {
   const insets = useSafeAreaInsets();
+  const tabBarSpace = useTabBarSpace();
   const { width: windowWidth } = useWindowDimensions();
-  const { resolvedTheme } = useTheme();
+  const { resolvedTheme, colors } = useTheme();
   const palette = colors[resolvedTheme];
   const {
     currentUserId,
@@ -235,10 +235,12 @@ function TasksScreen({ view }: { view: TasksView | null }) {
                   itemsLoaded && visibleByTab[key].length === 0
                     ? filtersHeight + FILTERS_TOP_MARGIN
                     : key === "pending" && selection.count > 0
-                      ? pendingSelectionBarHeight(currentList?.visibility === "private") + 16
+                      ? pendingSelectionBarHeight(currentList?.visibility === "private") +
+                        tabBarSpace +
+                        16
                       : key === "assigned" && assignedSelection.count > 0
-                        ? ASSIGNED_SELECTION_BAR_HEIGHT + 16
-                        : insets.bottom + 88,
+                        ? ASSIGNED_SELECTION_BAR_HEIGHT + tabBarSpace + 16
+                        : tabBarSpace + 24,
               }}
             >
               {!itemsLoaded ? (
@@ -400,15 +402,6 @@ function TasksScreen({ view }: { view: TasksView | null }) {
           </View>
         )}
       />
-
-      {selecting ? null : activeSelectedListId ? (
-        <Fab
-          label="Add item to list"
-          onPress={() =>
-            router.push({ pathname: "/item/new", params: { listId: activeSelectedListId } })
-          }
-        />
-      ) : null}
 
       <ConfirmDialog
         open={confirmDelete}

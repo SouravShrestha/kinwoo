@@ -1,13 +1,12 @@
 import { FOOTER_COPY } from "@kinwoo/core/app";
 import { HeartIcon } from "@kinwoo/icons/native";
-import { colors } from "@kinwoo/tokens/native";
 import Constants from "expo-constants";
 import { Text, View } from "react-native";
 
 import { useTheme } from "@/theme/ThemeProvider";
 
 export function AppFooter() {
-  const { resolvedTheme } = useTheme();
+  const { resolvedTheme, colors } = useTheme();
   const palette = colors[resolvedTheme];
 
   return (

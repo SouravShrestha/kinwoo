@@ -141,14 +141,19 @@ export function ConfirmDialog({
             type="button"
             disabled={isPending}
             onClick={onCancel}
-            className="flex h-14 flex-1 items-center justify-center font-display text-base font-medium text-foreground hover:cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground disabled:cursor-not-allowed disabled:opacity-50"
+            className="flex h-14 flex-1 items-center justify-center font-display text-base font-medium text-foreground hover:cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed disabled:opacity-50"
           >
             <span className="inline-block border-b-[1.4px] border-foreground">
               {CONFIRM_CANCEL_LABEL}
             </span>
           </button>
           <div className="flex-1">
-            <Button label={copy.confirmLabel} loading={isPending} onClick={onConfirm} />
+            <Button
+              variant="inverse"
+              label={copy.confirmLabel}
+              loading={isPending}
+              onClick={onConfirm}
+            />
           </div>
         </div>
       </div>

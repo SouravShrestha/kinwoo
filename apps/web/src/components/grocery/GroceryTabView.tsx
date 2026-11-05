@@ -176,8 +176,8 @@ export function GroceryTabView({
               tabIndex={active ? 0 : -1}
               onClick={() => select(tab.key)}
               className={cn(
-                "group flex items-center gap-2 px-3 py-3.5 font-display text-base transition-colors hover:cursor-pointer focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-foreground",
-                active ? "text-foreground" : "text-muted-foreground hover:text-foreground",
+                "group flex items-center gap-2 px-3 py-3.5 font-display text-base transition-colors hover:cursor-pointer focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-primary",
+                active ? "text-primary" : "text-muted-foreground hover:text-foreground",
               )}
             >
               <span
@@ -209,7 +209,7 @@ export function GroceryTabView({
         <span
           ref={indicatorRef}
           aria-hidden
-          className="pointer-events-none absolute -bottom-[1.6px] left-0 h-[1.6px] w-0 bg-foreground"
+          className="pointer-events-none absolute -bottom-[1.6px] left-0 h-[1.6px] w-0 bg-primary"
         />
       </div>
 

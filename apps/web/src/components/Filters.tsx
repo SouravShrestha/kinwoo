@@ -20,7 +20,7 @@ import { SheetHeader } from "./houses/SheetHeader";
 import { cn } from "@/lib/utils";
 
 const FOCUS_RING =
-  "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground";
+  "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary";
 
 const SORT_TAB_ID = "__sort__";
 
@@ -201,7 +201,7 @@ function Chip({ active, children }: { active: boolean; children: ReactNode }) {
     <div
       className={cn(
         "flex shrink-0 items-center rounded-xl border bg-card font-display text-sm font-medium text-foreground transition-colors",
-        active ? "border-foreground" : "border-border",
+        active ? "border-primary" : "border-border",
       )}
     >
       {children}
@@ -248,7 +248,13 @@ function FilterSheet({
   };
 
   return (
-    <BottomSheet open={open} onClose={onClose} label="Filters and sorting" showClose>
+    <BottomSheet
+      open={open}
+      onClose={onClose}
+      label="Filters and sorting"
+      showClose
+      className="pb-0"
+    >
       <SheetHeader title="Filters and sorting" />
 
       {selected.length > 0 ? (
@@ -260,12 +266,12 @@ function FilterSheet({
               aria-label={`Remove ${option.label}`}
               onClick={() => onDraftChange(toggleOption(draft, group.id, option.id))}
               className={cn(
-                "flex shrink-0 items-center gap-1.5 rounded-xl border border-foreground bg-card py-1.5 pl-3 pr-2 font-display text-sm font-medium text-foreground hover:cursor-pointer hover:opacity-70",
+                "flex shrink-0 items-center gap-1.5 rounded-xl border border-primary bg-card py-1.5 pl-3 pr-2 font-display text-sm font-medium text-foreground hover:cursor-pointer hover:opacity-70",
                 FOCUS_RING,
               )}
             >
               <span>{option.label}</span>
-              <span className="flex size-4 items-center justify-center rounded-full bg-foreground text-background">
+              <span className="flex size-4 items-center justify-center rounded-full bg-primary text-primary-foreground">
                 <CloseIcon size={10} />
               </span>
             </button>
@@ -320,7 +326,8 @@ function FilterSheet({
         </div>
       </div>
 
-      <div className="mt-5 flex items-center justify-between">
+      {/* Sticky so Clear all / Apply stay visible when a long list makes the sheet scroll. */}
+      <div className="sticky bottom-0 -mx-6 flex items-center justify-between bg-sheet px-6 pt-5 pb-[max(2rem,env(safe-area-inset-bottom))]">
         <div className="flex w-1/2 justify-start pl-8">
           <button
             type="button"
@@ -362,7 +369,7 @@ function TabButton({
         "relative block w-full px-4 py-3.5 text-left font-display text-sm hover:cursor-pointer",
         FOCUS_RING,
         active
-          ? "bg-foreground/12 font-semibold text-foreground"
+          ? "bg-primary/12 font-semibold text-primary"
           : "font-normal text-muted-foreground hover:text-foreground",
       )}
     >
@@ -370,7 +377,7 @@ function TabButton({
       {active ? (
         <span
           aria-hidden
-          className="absolute inset-y-0 right-0 w-[3px] rounded-l-full bg-foreground"
+          className="absolute inset-y-0 right-0 w-[3px] rounded-l-full bg-primary"
         />
       ) : null}
     </button>
@@ -408,9 +415,9 @@ function OptionRow({
       <span
         aria-hidden
         className={cn(
-          "flex size-5 shrink-0 items-center justify-center border border-foreground text-background",
+          "flex size-5 shrink-0 items-center justify-center border text-primary-foreground",
           role === "radio" ? "rounded-full" : "rounded-md",
-          checked && "bg-foreground",
+          checked ? "border-primary bg-primary" : "border-foreground",
         )}
       >
         {checked ? <TickIcon size={11} /> : null}

@@ -54,7 +54,7 @@ export function ItemCarousel({
   }, [items.length, sync]);
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-5">
       <SectionHeader
         title={title}
         count={items.length}
@@ -66,7 +66,7 @@ export function ItemCarousel({
           >
             <span
               ref={thumbRef}
-              className="block h-full rounded-full bg-muted-foreground"
+              className="block h-full rounded-full bg-foreground"
               style={{ width: THUMB_WIDTH }}
             />
           </span>
@@ -101,10 +101,10 @@ export function ItemCarousel({
           <Link
             href={`/tasks?view=${viewAll.view}`}
             aria-label={viewAll.label}
-            className="flex min-h-[108px] w-full flex-col justify-between gap-3 rounded-2xl border border-border bg-card p-3 text-left transition-colors hover:border-foreground/30 hover:cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
+            className="group flex min-h-[108px] w-full flex-col justify-between gap-3 rounded-2xl border border-card-border bg-card p-3 text-left transition-colors hover:border-foreground/30 hover:cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
           >
             <span className="flex justify-end">
-              <span className="flex size-7 items-center justify-center rounded-full border border-dialog-border text-foreground">
+              <span className="flex size-7 items-center justify-center rounded-full border border-dialog-border text-muted-foreground transition-colors group-hover:border-foreground/30">
                 <ArrowRightIcon size={16} />
               </span>
             </span>

@@ -2,7 +2,6 @@ import { useClaimItem, type EditItemForm } from "@kinwoo/client/grocery";
 import { toast } from "@kinwoo/client/toast";
 import type { GroceryItem } from "@kinwoo/core/grocery";
 import { TrashIcon } from "@kinwoo/icons/native";
-import { colors } from "@kinwoo/tokens/native";
 import { useState } from "react";
 import { View } from "react-native";
 
@@ -58,7 +57,7 @@ export function PendingItemDetails({
   onDelete: () => void;
   onClose: () => void;
 }) {
-  const { resolvedTheme } = useTheme();
+  const { resolvedTheme, colors } = useTheme();
   const palette = colors[resolvedTheme];
   const [expanded, setExpanded] = useState(false);
   const keyboardVisible = useKeyboardVisible();

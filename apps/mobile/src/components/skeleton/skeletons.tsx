@@ -1,5 +1,4 @@
 import { ArrowRightIcon, CheckCircleIcon } from "@kinwoo/icons/native";
-import { colors } from "@kinwoo/tokens/native";
 import { ScrollView, Text, useWindowDimensions, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -17,7 +16,7 @@ const times = (count: number) => Array.from({ length: count }, (_, index) => ind
 
 export function ItemCardSkeleton({ width }: { width?: number }) {
   return (
-    <View className="gap-3 rounded-2xl border border-border bg-card p-3" style={{ width }}>
+    <View className="gap-3 rounded-2xl border border-card-border bg-card p-3" style={{ width }}>
       <View className="flex-row items-center justify-between">
         <Skeleton className="size-8 rounded-lg" />
         <Skeleton className="size-7 rounded-full" />
@@ -50,7 +49,7 @@ export function ItemGridSkeleton() {
 export function ItemCarouselSkeleton() {
   const { width } = useWindowDimensions();
   return (
-    <SkeletonRegion className="gap-4">
+    <SkeletonRegion className="gap-5">
       <SkeletonText size="sm" className="w-36" />
       <ScrollView
         horizontal
@@ -67,10 +66,6 @@ export function ItemCarouselSkeleton() {
   );
 }
 
-export function QuickAddBarSkeleton() {
-  return <Skeleton className="h-[54px] w-full rounded-full" />;
-}
-
 export function HouseHeaderSkeleton() {
   return (
     <SkeletonRegion className="w-48">
@@ -84,13 +79,14 @@ export function HouseHeaderSkeleton() {
 
 export function BalanceCardSkeleton() {
   return (
-    <SkeletonRegion className="w-full flex-row items-stretch overflow-hidden rounded-lg border border-border bg-card">
-      <View className="flex-1 justify-between gap-4 py-6 pl-2 pr-5">
-        <View>
-          <SkeletonText size="sm" align="end" className="w-[90%]" />
-          <SkeletonText size="sm" align="end" className="w-3/5" />
+    <SkeletonRegion className="w-full flex-row items-center justify-between gap-5 px-3 py-8">
+      <Skeleton className="size-[58px] rounded-full" />
+      <View className="items-end gap-0.5">
+        <SkeletonText size="sm" align="end" className="w-24" />
+        <View className="h-10 justify-center">
+          <Skeleton className="h-6 w-32" />
         </View>
-        <SkeletonText size="xl" align="end" className="w-2/5" />
+        <SkeletonText size="xs" align="end" className="w-40" />
       </View>
     </SkeletonRegion>
   );
@@ -394,7 +390,7 @@ export function ExpenseFormSkeleton() {
 
 export function ExpenseFormPageSkeleton({ title = "Add expense" }: { title?: string }) {
   const insets = useSafeAreaInsets();
-  const { resolvedTheme } = useTheme();
+  const { resolvedTheme, colors } = useTheme();
   const foreground = colors[resolvedTheme].foreground;
   return (
     <View className="flex-1 bg-background px-6" style={{ paddingTop: insets.top + 20 }}>

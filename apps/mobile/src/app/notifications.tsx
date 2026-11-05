@@ -19,7 +19,6 @@ import {
 } from "@kinwoo/core/grocery";
 import { TOAST_MESSAGES } from "@kinwoo/core/toast";
 import { ArrowRightIcon } from "@kinwoo/icons/native";
-import { colors } from "@kinwoo/tokens/native";
 import { router } from "expo-router";
 import { useCallback, useMemo } from "react";
 import { Text, View } from "react-native";
@@ -40,7 +39,7 @@ import { useTheme } from "@/theme/ThemeProvider";
 
 export default function NotificationsScreen() {
   const insets = useSafeAreaInsets();
-  const { resolvedTheme } = useTheme();
+  const { resolvedTheme, colors } = useTheme();
   const { activeHouse } = useActiveHouse();
   const houseId = activeHouse?.house.id ?? null;
   const { user } = useAuth();
@@ -115,7 +114,7 @@ export default function NotificationsScreen() {
         </View>
       </View>
     ),
-    [hasUnread, markAllRead, resolvedTheme],
+    [hasUnread, markAllRead, resolvedTheme, colors],
   );
 
   const empty = useMemo(

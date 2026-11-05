@@ -35,11 +35,11 @@ const NO_UNIT = "__none__";
 const NEW_LIST = "__new_list__";
 
 const FIELD =
-  "flex h-12 items-center rounded-xl bg-muted font-display text-base font-normal text-foreground focus-within:outline-2 focus-within:outline-foreground";
+  "flex h-12 items-center rounded-xl bg-muted font-display text-base font-normal text-foreground focus-within:outline-2 focus-within:outline-primary";
 const FIELD_BUTTON =
-  "gap-2 px-3.5 transition-opacity hover:cursor-pointer hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground";
+  "gap-2 px-3.5 transition-opacity hover:cursor-pointer hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary";
 const FOCUS_RING =
-  "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground";
+  "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary";
 
 export function AddItemScreen({ listId }: { listId: string | null }) {
   const { activeHouse, ready } = useActiveHouse();
@@ -142,7 +142,7 @@ export function AddItemScreen({ listId }: { listId: string | null }) {
             aria-label={addAnother ? "Add item and keep adding" : "Add item"}
             disabled={!form.canSubmit || closing || form.pendingMode !== null}
             className={cn(
-              "flex size-10 items-center justify-end text-foreground transition-opacity hover:cursor-pointer disabled:cursor-not-allowed disabled:opacity-40",
+              "flex size-10 items-center justify-end text-primary transition-opacity hover:cursor-pointer disabled:cursor-not-allowed disabled:opacity-40",
               FOCUS_RING,
             )}
           >
@@ -304,7 +304,7 @@ export function AddItemScreen({ listId }: { listId: string | null }) {
               aria-hidden
               className={cn(
                 "flex size-5 items-center justify-center rounded-md",
-                addAnother ? "bg-foreground text-background" : "border border-border",
+                addAnother ? "bg-primary text-primary-foreground" : "border border-border",
               )}
             >
               {addAnother ? <CheckIcon size={10} /> : null}

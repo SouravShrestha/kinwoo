@@ -2,7 +2,6 @@ import type { ExpenseSplitForm, PayerMember } from "@kinwoo/client/expenses";
 import { SPLIT_METHOD_TITLES, SPLIT_METHODS, type SplitMethod } from "@kinwoo/core/expenses";
 import { formatPaise } from "@kinwoo/core/grocery";
 import { ArrowRightIcon, CheckCircleIcon, CheckIcon, SharesIcon } from "@kinwoo/icons/native";
-import { colors } from "@kinwoo/tokens/native";
 import { useEffect, useState } from "react";
 import { Keyboard, Text, useWindowDimensions, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
@@ -56,7 +55,7 @@ function Checkbox({ checked, checkColor }: { checked: boolean; checkColor: strin
   return (
     <View
       className={`size-5 items-center justify-center rounded-md ${
-        checked ? "bg-foreground" : "border border-border"
+        checked ? "bg-primary" : "border border-border"
       }`}
     >
       {checked ? <CheckIcon size={10} color={checkColor} /> : null}
@@ -73,7 +72,7 @@ export function SplitSheet({
   onClose: () => void;
   split: ExpenseSplitForm;
 }) {
-  const { resolvedTheme } = useTheme();
+  const { resolvedTheme, colors } = useTheme();
   const palette = colors[resolvedTheme];
   const { method } = split;
   const showsShare = method === "percent" || method === "shares";
@@ -174,7 +173,7 @@ export function SplitSheet({
           {tabsWidth > 0 ? (
             <Animated.View
               pointerEvents="none"
-              className="absolute left-0 top-0 h-9 rounded-xl bg-foreground"
+              className="absolute left-0 top-0 h-9 rounded-xl bg-primary"
               style={[{ width: tabWidth }, highlightStyle]}
             />
           ) : null}
@@ -182,7 +181,7 @@ export function SplitSheet({
         <View accessibilityRole="tablist" className="-mt-9 flex-row" style={{ gap: TAB_GAP }}>
           {SPLIT_METHODS.map((tab) => {
             const active = tab === method;
-            const tint = active ? palette.background : palette.foreground;
+            const tint = active ? palette.primaryForeground : palette.foreground;
             return (
               <Pressable
                 key={tab}
@@ -198,7 +197,7 @@ export function SplitSheet({
                 ) : (
                   <Text
                     className={`font-display-medium text-sm ${
-                      active ? "text-background" : "text-foreground"
+                      active ? "text-primary-foreground" : "text-foreground"
                     }`}
                   >
                     {TAB_TEXT[tab]}
@@ -251,7 +250,7 @@ export function SplitSheet({
               >
                 <Avatar name={member.name} url={member.avatarUrl} size={36} />
                 {name}
-                <Checkbox checked={included} checkColor={palette.background} />
+                <Checkbox checked={included} checkColor={palette.primaryForeground} />
               </Pressable>
             );
           }
@@ -272,6 +271,7 @@ export function SplitSheet({
                   keyboardType="decimal-pad"
                   placeholder="0"
                   placeholderTextColor={palette.mutedForeground}
+                  selectionColor={palette.primary}
                   value={split.valueText(member.userId)}
                   onChangeText={(text: string) => split.setValue(member.userId, text)}
                   className="min-w-0 flex-1 px-1 text-right font-display-normal text-foreground"
@@ -319,7 +319,7 @@ export function SplitSheet({
             className="flex-row items-center gap-3 self-stretch border-l border-border pl-4 active:opacity-70"
           >
             <Text className="font-display-normal text-sm text-foreground">All</Text>
-            <Checkbox checked={split.allIncluded} checkColor={palette.background} />
+            <Checkbox checked={split.allIncluded} checkColor={palette.primaryForeground} />
           </Pressable>
         ) : null}
       </View>

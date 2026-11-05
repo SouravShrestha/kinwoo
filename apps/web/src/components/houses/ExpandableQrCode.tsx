@@ -33,7 +33,7 @@ export function ExpandableQrCode({
         aria-haspopup="dialog"
         onClick={() => setOpen(true)}
         className={cn(
-          "block hover:cursor-pointer hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground",
+          "block hover:cursor-pointer hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary",
           className,
         )}
       >

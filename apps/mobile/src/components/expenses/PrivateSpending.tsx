@@ -8,7 +8,6 @@ import {
   type PrivateSpendEntry,
 } from "@kinwoo/core/grocery";
 import { ArrowRightIcon } from "@kinwoo/icons/native";
-import { colors } from "@kinwoo/tokens/native";
 import { useMemo, useState } from "react";
 import { Text, View } from "react-native";
 import { GestureDetector } from "react-native-gesture-handler";
@@ -33,7 +32,7 @@ import { PrivatePurchaseRow } from "./PrivatePurchaseRow";
 
 export function PrivateSpending({ houseId }: { houseId: string }) {
   const insets = useSafeAreaInsets();
-  const { resolvedTheme } = useTheme();
+  const { resolvedTheme, colors } = useTheme();
   const palette = colors[resolvedTheme];
   const { data: items, isError } = usePrivatePurchases(houseId);
   const spending = useMemo(() => summarizePrivateSpending(items ?? []), [items]);

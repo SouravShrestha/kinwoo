@@ -27,7 +27,7 @@ export function BoughtGroupCard({
         aria-haspopup="dialog"
         aria-label={boughtGroupAccessibleLabel(group, buyer?.name ?? null)}
         onClick={onOpen}
-        className="group flex w-full flex-col gap-3 rounded-2xl p-3 text-left hover:cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
+        className="group flex w-full flex-col gap-3 rounded-2xl p-3 text-left hover:cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
       >
         <span className="flex items-center justify-between">
           <span className="flex size-8 shrink-0 items-center justify-center text-foreground">
@@ -35,7 +35,7 @@ export function BoughtGroupCard({
           </span>
           <span
             aria-hidden
-            className="flex size-7 shrink-0 items-center justify-center rounded-full border border-dialog-border text-foreground transition-colors group-hover:border-foreground"
+            className="flex size-7 shrink-0 items-center justify-center rounded-full border border-dialog-border text-muted-foreground transition-colors group-hover:border-foreground/30"
           >
             <ArrowRightIcon size={16} className="-rotate-90" />
           </span>

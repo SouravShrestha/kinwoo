@@ -16,7 +16,6 @@ import {
   ProfileIcon,
   ShieldCheckOutlineIcon,
 } from "@kinwoo/icons/native";
-import { colors } from "@kinwoo/tokens/native";
 import { router } from "expo-router";
 import { useState } from "react";
 import { Image, Linking, ScrollView, Text, View } from "react-native";
@@ -43,7 +42,7 @@ const THEME_LABELS = { light: "Light", dark: "Dark", system: "System" } as const
 export default function ProfileScreen() {
   const { user, signOut } = useAuth();
   const { profile, error: profileError } = useProfile();
-  const { theme, resolvedTheme } = useTheme();
+  const { theme, resolvedTheme, colors } = useTheme();
   const palette = colors[resolvedTheme];
   const insets = useSafeAreaInsets();
 

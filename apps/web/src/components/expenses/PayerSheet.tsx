@@ -13,7 +13,7 @@ import { cn } from "@/lib/utils";
 const TITLE = "Who paid for the expense?";
 
 const FOCUS_RING =
-  "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground";
+  "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary";
 
 function nameLines(member: PayerMember): { first: string; rest: string } {
   return member.isYou ? { first: "You", rest: "" } : splitMemberName(member.name);
@@ -97,7 +97,7 @@ export function PayerSheet({
                     aria-hidden
                     className={cn(
                       "flex size-5 shrink-0 items-center justify-center rounded-[6px]",
-                      selected ? "bg-foreground text-background" : "border border-border",
+                      selected ? "bg-primary text-primary-foreground" : "border border-border",
                     )}
                   >
                     {selected ? <CheckIcon size={10} /> : null}
@@ -109,7 +109,7 @@ export function PayerSheet({
                   </span>
                 </button>
 
-                <label className="flex h-11 w-24 shrink-0 items-center rounded-xl bg-muted px-3 font-display text-base text-muted-foreground focus-within:outline-2 focus-within:outline-foreground">
+                <label className="flex h-11 w-24 shrink-0 items-center rounded-xl bg-muted px-3 font-display text-base text-muted-foreground focus-within:outline-2 focus-within:outline-primary">
                   ₹
                   <input
                     type="text"

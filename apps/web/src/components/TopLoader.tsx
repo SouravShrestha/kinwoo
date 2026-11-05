@@ -42,7 +42,7 @@ export function TopLoader() {
       aria-hidden
       className="pointer-events-none fixed left-1/2 top-0 z-[9999] h-1 w-full max-w-md -translate-x-1/2"
     >
-      <div className="h-full bg-foreground" style={STYLES[phase]} />
+      <div className="h-full bg-accent" style={STYLES[phase]} />
     </div>
   );
 }

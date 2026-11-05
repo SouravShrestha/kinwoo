@@ -27,7 +27,7 @@ function StepButton({
       aria-label={direction === "previous" ? "Previous month" : "Next month"}
       disabled={disabled}
       onClick={onClick}
-      className="flex size-10 items-center justify-center text-foreground enabled:hover:cursor-pointer disabled:opacity-30 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
+      className="flex size-10 items-center justify-center text-foreground enabled:hover:cursor-pointer disabled:opacity-30 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
     >
       <CaretDownIcon size={12} className={direction === "previous" ? "rotate-90" : "-rotate-90"} />
     </button>
@@ -50,9 +50,9 @@ export function PeriodFilter({
         aria-pressed={allTime}
         onClick={onToggleAllTime}
         className={cn(
-          "rounded-xl border px-4 py-2 font-display text-sm font-medium transition-opacity hover:cursor-pointer hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground",
+          "rounded-xl border px-4 py-2 font-display text-sm font-medium transition-opacity hover:cursor-pointer hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary",
           allTime
-            ? "border-foreground bg-foreground text-background"
+            ? "border-primary bg-primary text-primary-foreground"
             : "border-border bg-card text-foreground",
         )}
       >

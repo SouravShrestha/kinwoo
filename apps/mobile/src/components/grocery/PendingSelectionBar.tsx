@@ -1,10 +1,10 @@
-import { colors } from "@kinwoo/tokens/native";
 import { useState } from "react";
 import { View } from "react-native";
 import Animated, { Easing, FadeInDown, FadeOutDown, ReduceMotion } from "react-native-reanimated";
 
 import { Button } from "@/components/Button";
 import { Avatar } from "@/components/houses/Avatar";
+import { useTabBarSpace } from "@/lib/tab-bar";
 import { useTheme } from "@/theme/ThemeProvider";
 
 import {
@@ -15,7 +15,7 @@ import {
 } from "./AssignMemberStrip";
 import { useAssignToMember } from "./useAssignToMember";
 
-const BAR_ROW_HEIGHT = 92;
+const BAR_ROW_HEIGHT = 84;
 const BUTTON_AVATAR_SIZE = 24;
 
 const ENTERING = FadeInDown.duration(220)
@@ -42,8 +42,9 @@ export function PendingSelectionBar({
   onAssigned: () => void;
   onAssignToMe: () => void;
 }) {
-  const { resolvedTheme } = useTheme();
+  const { resolvedTheme, colors } = useTheme();
   const palette = colors[resolvedTheme];
+  const tabBarSpace = useTabBarSpace();
   const [expanded, setExpanded] = useState(false);
   const progress = useExpandProgress(expanded);
 
@@ -59,6 +60,8 @@ export function PendingSelectionBar({
       entering={ENTERING}
       exiting={EXITING}
       className="absolute inset-x-0 bottom-0 border-t border-border bg-background"
+      // Fills down to the screen edge behind the floating tab bar.
+      style={{ paddingBottom: tabBarSpace - 16 }}
     >
       {isPrivateList ? null : (
         <AssignMemberStrip
@@ -71,7 +74,7 @@ export function PendingSelectionBar({
         />
       )}
 
-      <View className="flex-row gap-3 px-5 pb-5 pt-5" style={{ height: BAR_ROW_HEIGHT }}>
+      <View className="flex-row gap-3 px-5 py-4" style={{ height: BAR_ROW_HEIGHT }}>
         {isPrivateList ? null : (
           <Button
             label="Someone else"

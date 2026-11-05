@@ -1,13 +1,13 @@
 import { TrashIcon, VerifiedIcon } from "@kinwoo/icons/native";
-import { colors } from "@kinwoo/tokens/native";
 import { View } from "react-native";
 import Animated, { Easing, FadeInDown, FadeOutDown, ReduceMotion } from "react-native-reanimated";
 
 import { Button } from "@/components/Button";
 import { Pressable } from "@/components/Pressable";
+import { useTabBarSpace } from "@/lib/tab-bar";
 import { useTheme } from "@/theme/ThemeProvider";
 
-export const ASSIGNED_SELECTION_BAR_HEIGHT = 92;
+export const ASSIGNED_SELECTION_BAR_HEIGHT = 84;
 
 const ENTERING = FadeInDown.duration(220)
   .easing(Easing.out(Easing.cubic))
@@ -28,17 +28,20 @@ export function AssignedSelectionBar({
   onDelete: () => void;
   onMarkBought: () => void;
 }) {
-  const { resolvedTheme } = useTheme();
+  const { resolvedTheme, colors } = useTheme();
   const palette = colors[resolvedTheme];
+  const tabBarSpace = useTabBarSpace();
 
   return (
     <Animated.View
       entering={ENTERING}
       exiting={EXITING}
       className="absolute inset-x-0 bottom-0 border-t border-border bg-background"
+      // Fills down to the screen edge behind the floating tab bar.
+      style={{ paddingBottom: tabBarSpace - 16 }}
     >
       <View
-        className="flex-row items-center gap-3 px-5 pb-5 pt-5"
+        className="flex-row items-center gap-3 px-5 py-4"
         style={{ height: ASSIGNED_SELECTION_BAR_HEIGHT }}
       >
         <Pressable

@@ -15,7 +15,7 @@ type BarProps = {
 };
 
 const ICON_BUTTON =
-  "flex size-12 shrink-0 items-center justify-center rounded-xl border border-border text-foreground transition-colors hover:cursor-pointer hover:bg-muted disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground";
+  "flex size-12 shrink-0 items-center justify-center rounded-xl border border-border text-foreground transition-colors hover:cursor-pointer hover:bg-muted disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary";
 
 // Stays mounted through the exit transition so it can fade out before unmounting.
 export function AssignedSelectionBar({ visible, ...props }: BarProps & { visible: boolean }) {
@@ -34,12 +34,12 @@ function Bar({
     <div
       inert={!shown}
       className={cn(
-        "fixed bottom-[calc(4rem+1px+env(safe-area-inset-bottom))] left-1/2 z-40 w-full max-w-md -translate-x-1/2 border-t border-border bg-background lg:border-x",
+        "fixed bottom-0 left-1/2 z-40 w-full max-w-md -translate-x-1/2 border-t border-border bg-background pb-[calc(max(1rem,calc(env(safe-area-inset-bottom)-0.5rem))+4rem)] lg:border-x",
         "transition-[translate,opacity] duration-200 ease-out motion-reduce:transition-none",
         shown ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0",
       )}
     >
-      <div className="flex items-center gap-3 px-5 pb-5 pt-5">
+      <div className="flex items-center gap-3 px-5 py-4">
         <button
           type="button"
           aria-label="Delete"

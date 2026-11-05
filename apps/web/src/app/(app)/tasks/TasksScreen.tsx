@@ -16,7 +16,7 @@ import {
   type GroceryTabKey,
   type TasksView,
 } from "@kinwoo/core/grocery";
-import { CaretDownIcon, MoreVerticalIcon, PlusCircleIcon } from "@kinwoo/icons";
+import { CaretDownIcon, MoreVerticalIcon } from "@kinwoo/icons";
 import { ListIconImage } from "@/components/CategoryImages";
 import { useState } from "react";
 
@@ -26,7 +26,6 @@ import { AssignedSelectionBar } from "@/components/grocery/AssignedSelectionBar"
 import { BoughtGroupCard } from "@/components/grocery/BoughtGroupCard";
 import { BoughtGroupSheet } from "@/components/grocery/BoughtGroupSheet";
 import { EmptyItems } from "@/components/grocery/EmptyItems";
-import { FixedLayer } from "@/components/FixedLayer";
 import { LoadMoreSentinel } from "@/components/LoadMoreSentinel";
 import { GroceryTabView } from "@/components/grocery/GroceryTabView";
 import { ItemDetailSheet } from "@/components/grocery/ItemDetailSheet";
@@ -344,27 +343,6 @@ export function TasksScreen({ view }: { view: TasksView | null }) {
           );
         }}
       />
-
-      <FixedLayer>
-        <div
-          hidden={selecting}
-          className="pointer-events-none fixed bottom-[calc(5.625rem+env(safe-area-inset-bottom))] left-1/2 z-30 w-full max-w-md -translate-x-1/2 px-4"
-        >
-          <button
-            type="button"
-            onClick={() =>
-              router.push(
-                activeList ? `/item/new?listId=${encodeURIComponent(activeList.id)}` : "/item/new",
-              )
-            }
-            className="pointer-events-auto relative ml-auto flex size-12 items-center justify-center text-primary transition-opacity hover:opacity-90 hover:cursor-pointer"
-            aria-label="Add item"
-          >
-            <span className="absolute inset-2.5 rounded-full bg-primary-foreground" />
-            <PlusCircleIcon size={48} className="relative" />
-          </button>
-        </div>
-      </FixedLayer>
 
       <ListSwitcherSheet
         open={switcherOpen}

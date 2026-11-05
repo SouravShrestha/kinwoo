@@ -22,7 +22,7 @@ import { ExpenseDetailSkeleton } from "@/components/skeleton/skeletons";
 import { cn } from "@/lib/utils";
 
 const FOCUS_RING =
-  "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground";
+  "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary";
 
 const ROOT_AVATAR = 36;
 const SHARE_ROW_HEIGHT = 48;

@@ -13,7 +13,6 @@ import {
   type StoreId,
 } from "@kinwoo/core/grocery";
 import { CaretDownIcon, CheckCircleIcon, ClockIcon, CloseIcon } from "@kinwoo/icons/native";
-import { colors } from "@kinwoo/tokens/native";
 import { useState, type ReactNode } from "react";
 import { Image, Keyboard, Text, View } from "react-native";
 
@@ -74,7 +73,7 @@ export function ItemDetailsEditor({
   onClose: () => void;
   footer: ReactNode;
 }) {
-  const { resolvedTheme } = useTheme();
+  const { resolvedTheme, colors } = useTheme();
   const palette = colors[resolvedTheme];
   const [picker, setPicker] = useState<Picker | null>(null);
   // While typing only the fields show, so the sheet sits compactly on the keyboard.
@@ -153,7 +152,7 @@ export function ItemDetailsEditor({
               hitSlop={12}
               className={`size-10 items-end justify-center ${saveDisabled ? "opacity-40" : ""}`}
             >
-              <CheckCircleIcon size={26} color={palette.foreground} />
+              <CheckCircleIcon size={26} color={palette.primary} />
             </Pressable>
           ) : null}
         </View>
@@ -181,6 +180,7 @@ export function ItemDetailsEditor({
               maxLength={ITEM_NAME_MAX_LENGTH}
               placeholder="What do you wanna buy?"
               placeholderTextColor={palette.mutedForeground}
+              selectionColor={palette.primary}
               value={draft.name}
               onChangeText={form.setName}
               className="h-12 min-w-0 flex-1 rounded-xl bg-muted px-5 font-display-normal text-foreground"
@@ -206,6 +206,7 @@ export function ItemDetailsEditor({
             maxLength={ITEM_QUANTITY_MAX_LENGTH}
             placeholder="Qty"
             placeholderTextColor={palette.mutedForeground}
+            selectionColor={palette.primary}
             value={draft.quantity}
             onChangeText={form.setQuantity}
             className="h-12 w-20 rounded-xl bg-muted text-center font-display-normal text-foreground"
@@ -253,6 +254,7 @@ export function ItemDetailsEditor({
           maxLength={ITEM_NOTE_MAX_LENGTH}
           placeholder={canEdit ? "(optional) brand, size, anything" : "No note"}
           placeholderTextColor={palette.mutedForeground}
+          selectionColor={palette.primary}
           value={draft.note}
           onChangeText={form.setNote}
           className="h-12 rounded-xl bg-muted px-5 font-display-normal text-foreground"

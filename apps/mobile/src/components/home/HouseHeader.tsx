@@ -1,5 +1,4 @@
 import { HousePinIcon } from "@kinwoo/icons/native";
-import { colors } from "@kinwoo/tokens/native";
 import { Text, View } from "react-native";
 
 import { Pressable } from "@/components/Pressable";
@@ -13,8 +12,8 @@ type HouseHeaderProps = {
 };
 
 export function HouseHeader({ name, address, onPressHouse }: HouseHeaderProps) {
-  const { resolvedTheme } = useTheme();
-  const foreground = colors[resolvedTheme].foreground;
+  const { resolvedTheme, colors } = useTheme();
+  const primary = colors[resolvedTheme].primary;
 
   return (
     <Pressable
@@ -24,15 +23,18 @@ export function HouseHeader({ name, address, onPressHouse }: HouseHeaderProps) {
       className="max-w-[70%] active:opacity-60"
     >
       <View className="flex-row items-center gap-1.5 -ml-1">
-        {name ? <HousePinIcon size={18} color={foreground} /> : null}
-        <Text numberOfLines={1} className="shrink font-display-medium text-lg text-foreground">
+        {name ? <HousePinIcon size={18} color={primary} /> : null}
+        <Text
+          numberOfLines={1}
+          className="shrink font-display-medium text-lg tracking-[-0.36px] text-foreground"
+        >
           {name ?? ""}
         </Text>
       </View>
       {address ? (
         <Text
           numberOfLines={1}
-          className="mt-0.5 text-xs text-muted-foreground font-display-normal"
+          className="mt-0.5 text-xs text-muted-foreground font-display-medium"
         >
           {address}
         </Text>

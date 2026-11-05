@@ -10,7 +10,6 @@ import {
 } from "@kinwoo/core/expenses";
 import { formatPickedDate, type PrivateTransaction } from "@kinwoo/core/grocery";
 import { ArrowRightIcon, CalendarIcon, CheckCircleIcon, RupeeIcon } from "@kinwoo/icons/native";
-import { colors } from "@kinwoo/tokens/native";
 import { useState } from "react";
 import { Keyboard, KeyboardAvoidingView, Platform, Text, TextInput, View } from "react-native";
 import { GestureDetector } from "react-native-gesture-handler";
@@ -47,7 +46,7 @@ export function ExpenseFormScreen({
   privatePurchase?: PrivateTransaction | null;
 }) {
   const insets = useSafeAreaInsets();
-  const { resolvedTheme } = useTheme();
+  const { resolvedTheme, colors } = useTheme();
   const palette = colors[resolvedTheme];
   const { user } = useAuth();
   const [picker, setPicker] = useState<Picker | null>(null);
@@ -124,7 +123,7 @@ export function ExpenseFormScreen({
                 hitSlop={12}
                 className={`size-10 items-end justify-center ${submitDisabled ? "opacity-40" : ""}`}
               >
-                <CheckCircleIcon size={26} color={palette.foreground} />
+                <CheckCircleIcon size={26} color={palette.primary} />
               </Pressable>
             </View>
 
@@ -150,6 +149,7 @@ export function ExpenseFormScreen({
                   maxLength={EXPENSE_TITLE_MAX}
                   placeholder="What was it for?"
                   placeholderTextColor={palette.mutedForeground}
+                  selectionColor={palette.primary}
                   onFocus={revealFocusedInput}
                   value={form.title}
                   onChangeText={form.setTitle}
@@ -178,6 +178,7 @@ export function ExpenseFormScreen({
                     keyboardType="decimal-pad"
                     placeholder="0.00"
                     placeholderTextColor={palette.mutedForeground}
+                    selectionColor={palette.primary}
                     onFocus={revealFocusedInput}
                     value={form.amount}
                     onChangeText={form.setAmount}
@@ -265,6 +266,7 @@ export function ExpenseFormScreen({
                         maxLength={EXPENSE_NOTE_MAX}
                         placeholder="e.g. Electricity bill for March, paid via UPI"
                         placeholderTextColor={palette.mutedForeground}
+                        selectionColor={palette.primary}
                         onFocus={revealFocusedInput}
                         value={form.note}
                         onChangeText={form.setNote}

@@ -43,7 +43,7 @@ export function TopLoader() {
       style={[StyleSheet.absoluteFill, { height: 4, top: insets.top, zIndex: 9999 }]}
       pointerEvents="none"
     >
-      <Animated.View className="h-full bg-foreground" style={animatedStyle} />
+      <Animated.View className="h-full bg-accent" style={animatedStyle} />
     </View>
   );
 }
