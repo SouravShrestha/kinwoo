@@ -1,5 +1,24 @@
 # Changelog
 
+## [1.5.0](https://github.com/SouravShrestha/kinwoo/compare/v1.4.0...v1.5.0) (2026-11-05)
+
+
+### Features
+
+* **client:** toast when a first load fails or runs slow ([bcefa36](https://github.com/SouravShrestha/kinwoo/commit/bcefa3610050d955d1684156e4ebe65cb12640fb))
+* **grocery:** extract tasks screen logic into composable hook ([ff09318](https://github.com/SouravShrestha/kinwoo/commit/ff09318c9dcc82078d0c3a10071ed55a797b766b))
+* **icons:** add plus, basket, bill and home decor art ([bc4f531](https://github.com/SouravShrestha/kinwoo/commit/bc4f531dbf6bffcea9aea3bfbfad8e2433c36c17))
+* **tokens:** add selectable colour palettes ([e3fd442](https://github.com/SouravShrestha/kinwoo/commit/e3fd442ae3a346a507a75816c41c033529c29d0f))
+* **tokens:** deepen sage accent and enlarge corner radius ([cb4693c](https://github.com/SouravShrestha/kinwoo/commit/cb4693cc4236395353ea0c384d1d415d5c69f5a1))
+* **web,mobile:** redesign home, tab bar and sign-in ([1d29754](https://github.com/SouravShrestha/kinwoo/commit/1d29754114f3c5ce9030301bd4678d3f72c64656))
+
+
+### Bug Fixes
+
+* **client:** drop duplicate and empty-id api requests ([f6c05e3](https://github.com/SouravShrestha/kinwoo/commit/f6c05e38be6d634daf8f4e0c2b76b30dbabdd493))
+* **web,mobile:** keep focus rings visible and polish spacing ([f2b697a](https://github.com/SouravShrestha/kinwoo/commit/f2b697a829f5072fc233ea2b02556d7b6692bd76))
+* **web:** declare image module types for clean typecheck ([dc960be](https://github.com/SouravShrestha/kinwoo/commit/dc960beeacc5d41fc9e41d5f417ede30376f7c82))
+
 ## [1.4.0](https://github.com/SouravShrestha/kinwoo/compare/v1.3.0...v1.4.0) (2026-11-01)
 
 
