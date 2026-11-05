@@ -31,12 +31,12 @@ export function ListIconPicker({
                 aria-selected={isSelected}
                 aria-label={option.label}
                 onClick={() => onSelect(option.value)}
-                className="flex w-full items-center justify-center rounded-xl px-1 py-3 hover:cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
+                className="flex w-full items-center justify-center rounded-xl px-1 py-3 hover:cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
               >
                 <span
                   className={cn(
                     "flex size-16 items-center justify-center rounded-xl border-2 bg-muted",
-                    isSelected ? "border-foreground" : "border-transparent",
+                    isSelected ? "border-primary" : "border-transparent",
                   )}
                 >
                   <ListIconImage label={option.label} size={48} />

@@ -1,51 +1,43 @@
+"use client";
+
 import { ArrowRightIcon } from "@kinwoo/icons";
-import Image from "next/image";
-import type { ReactNode } from "react";
+
+import { HeroCard } from "@/components/home/BalanceCard";
 
 type InviteFriendsCardProps = {
   canInvite: boolean;
   onPress: () => void;
+  onReplay?: () => void;
 };
 
-const CARD =
-  "flex w-full items-stretch overflow-hidden rounded-lg border border-border bg-card text-left";
+const TEXT = "flex flex-col items-end gap-1.5 text-right font-display font-medium";
 
-export function InviteFriendsCard({ canInvite, onPress }: InviteFriendsCardProps) {
-  const content: ReactNode = (
+export function InviteFriendsCard({ canInvite, onPress, onReplay }: InviteFriendsCardProps) {
+  const content = (
     <>
-      <Image
-        src="/images/invite.webp"
-        alt="Two friends high-fiving"
-        width={600}
-        height={300}
-        loading="eager"
-        className="h-auto w-[45%] shrink-0 self-end -mb-2 -ml-2"
-      />
-      {/* Same paddings and reserved line heights as BalanceCard, so both cards are one height. */}
-      <div className="flex flex-1 flex-col justify-between gap-4 py-6 pr-5 pl-2 -ml-12 text-right">
-        <p className="min-h-[2lh] font-display text-sm font-normal">
-          Solo mode is fine, but it&apos;s better with friends
-        </p>
-        <div className="flex min-h-[1lh] items-center justify-end gap-2 text-xl">
-          <span className="font-display text-base font-medium">Invite friends</span>
-          {canInvite ? <ArrowRightIcon size={16} /> : null}
-        </div>
-      </div>
+      <span className="text-sm leading-[18px]">Solo mode is fine,</span>
+      <span className="text-sm leading-[18px]">but it&apos;s better with friends</span>
+      <span className="mt-2 flex items-center gap-2 text-lg">
+        Invite friends
+        {canInvite ? <ArrowRightIcon size={16} /> : null}
+      </span>
     </>
   );
 
-  if (!canInvite) {
-    return <div className={CARD}>{content}</div>;
-  }
-
   return (
-    <button
-      type="button"
-      aria-label="Invite friends. Solo mode is fine, but it's better with friends"
-      onClick={onPress}
-      className={`${CARD} hover:cursor-pointer hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground`}
-    >
-      {content}
-    </button>
+    <HeroCard onReplay={onReplay}>
+      {canInvite ? (
+        <button
+          type="button"
+          aria-label="Invite friends. Solo mode is fine, but it's better with friends"
+          onClick={onPress}
+          className={`${TEXT} hover:cursor-pointer hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary`}
+        >
+          {content}
+        </button>
+      ) : (
+        <div className={TEXT}>{content}</div>
+      )}
+    </HeroCard>
   );
 }

@@ -16,9 +16,9 @@ export function ExpenseActions() {
       {ACTIONS.map((action) => {
         const { label, primary, Icon, iconSize } = action;
         const className = cn(
-          "flex min-w-28 shrink-0 items-center justify-center gap-2 rounded-xl border px-5 py-2 font-display text-sm font-medium transition-opacity hover:cursor-pointer hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground",
+          "flex min-w-28 shrink-0 items-center justify-center gap-2 rounded-xl border px-5 py-2 font-display text-sm font-medium transition-opacity hover:cursor-pointer hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary",
           primary
-            ? "border-foreground bg-foreground text-background"
+            ? "border-primary bg-primary text-primary-foreground"
             : "border-border bg-card text-foreground",
         );
         return (

@@ -7,7 +7,6 @@ import {
   type BoughtGroup,
 } from "@kinwoo/core/grocery";
 import { ArchiveIcon, TransactionIcon } from "@kinwoo/icons/native";
-import { colors } from "@kinwoo/tokens/native";
 import { Text, View } from "react-native";
 // Gesture-handler's ScrollView, so the sheet's pan gesture doesn't swallow horizontal drags on Android.
 import { ScrollView } from "react-native-gesture-handler";
@@ -40,7 +39,7 @@ export function BoughtGroupSheet({
   onOpenItem: (itemId: string, listId: string) => void;
   onArchive: () => void;
 }) {
-  const { resolvedTheme } = useTheme();
+  const { resolvedTheme, colors } = useTheme();
   const palette = colors[resolvedTheme];
   const lead = group?.items[0];
   const { data: lists } = useGroceryLists(houseId);

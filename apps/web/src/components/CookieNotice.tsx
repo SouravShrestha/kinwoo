@@ -42,7 +42,7 @@ export function CookieNotice() {
             href={LEGAL_URLS.privacy}
             target="_blank"
             rel="noopener noreferrer"
-            className="underline hover:cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
+            className="underline hover:cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
           >
             Privacy Policy
           </Link>

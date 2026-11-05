@@ -3,6 +3,7 @@ import { Inter, Poppins } from "next/font/google";
 import { headers } from "next/headers";
 import { ThemeProvider } from "next-themes";
 import { APP_NAME } from "@kinwoo/core/app";
+import { PALETTE_NAMES, resolve } from "@kinwoo/tokens";
 import { preload } from "react-dom";
 import { Suspense } from "react";
 
@@ -37,8 +38,8 @@ export const viewport: Viewport = {
   // Without it the canvas painted before the CSS loads is white, even when the system is dark.
   colorScheme: "light dark",
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#fefefe" },
-    { media: "(prefers-color-scheme: dark)", color: "#0e0e0e" },
+    { media: "(prefers-color-scheme: light)", color: resolve("background", "light") },
+    { media: "(prefers-color-scheme: dark)", color: resolve("background", "dark") },
   ],
 };
 
@@ -60,6 +61,10 @@ const THEME_BOOTSTRAP = `
       root.classList.toggle("dark", theme === "dark");
       root.classList.toggle("light", theme === "light");
       root.style.colorScheme = theme;
+      const palette = localStorage.getItem("palette");
+      // Mono until a signed-in user picks a palette; purple is the stylesheet's :root.
+      if (palette !== "purple")
+        root.dataset.palette = ${JSON.stringify(PALETTE_NAMES)}.includes(palette) ? palette : "mono";
     } catch {}
   })();
 `;
@@ -109,7 +114,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         {/* iOS 27 adds a progressive blur to the status bar unless a fixed element sits at the top; bg-clip-text keeps it invisible (opacity/visibility would defeat the check). */}
         <div
           aria-hidden="true"
-          className="pointer-events-none fixed inset-x-0 top-0 z-[2147483647] h-[11px] bg-background bg-clip-text"
+          className="status-bar-shim pointer-events-none fixed inset-x-0 top-0 z-[2147483647] h-[11px] bg-background bg-clip-text"
         />
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem nonce={nonce}>
           <AppProviders>

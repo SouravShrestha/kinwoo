@@ -3,7 +3,6 @@ import { payerRemainingLabel } from "@kinwoo/core/expenses";
 import { formatPaise } from "@kinwoo/core/grocery";
 import { splitMemberName } from "@kinwoo/core/houses";
 import { ArrowRightIcon, CheckCircleIcon, CheckIcon } from "@kinwoo/icons/native";
-import { colors } from "@kinwoo/tokens/native";
 import { useState } from "react";
 import { Keyboard, Text, useWindowDimensions, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
@@ -37,7 +36,7 @@ export function PayerSheet({
   onClose: () => void;
   payers: PayerSplitForm;
 }) {
-  const { resolvedTheme } = useTheme();
+  const { resolvedTheme, colors } = useTheme();
   const palette = colors[resolvedTheme];
   const { split } = payers;
   const { height: windowHeight } = useWindowDimensions();
@@ -140,10 +139,10 @@ export function PayerSheet({
               >
                 <View
                   className={`size-5 items-center justify-center rounded-md ${
-                    selected ? "bg-foreground" : "border border-border"
+                    selected ? "bg-primary" : "border border-border"
                   }`}
                 >
-                  {selected ? <CheckIcon size={10} color={palette.background} /> : null}
+                  {selected ? <CheckIcon size={10} color={palette.primaryForeground} /> : null}
                 </View>
                 <Avatar name={member.name} url={member.avatarUrl} size={36} />
                 <View className="min-w-0 flex-1">
@@ -168,6 +167,7 @@ export function PayerSheet({
                   keyboardType="decimal-pad"
                   placeholder="0"
                   placeholderTextColor={palette.mutedForeground}
+                  selectionColor={palette.primary}
                   value={payers.amountText(member.userId)}
                   onChangeText={(text: string) => payers.setAmount(member.userId, text)}
                   className="min-w-0 flex-1 pl-1 text-right font-display-normal text-foreground"

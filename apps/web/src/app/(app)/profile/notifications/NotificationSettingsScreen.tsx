@@ -127,7 +127,7 @@ export function NotificationSettingsScreen() {
           <button
             type="button"
             onClick={() => setAllowOpen(true)}
-            className="rounded-lg text-sm font-medium text-foreground underline hover:cursor-pointer hover:opacity-70 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
+            className="rounded-lg text-sm font-medium text-foreground underline hover:cursor-pointer hover:opacity-70 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
           >
             Allow
           </button>
@@ -158,14 +158,14 @@ export function NotificationSettingsScreen() {
                       aria-checked={checked}
                       disabled={!enabled}
                       onClick={() => toggleEvent(event.type, !checked)}
-                      className="flex min-h-14 w-full items-center gap-4 text-left hover:cursor-pointer hover:opacity-70 disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-foreground"
+                      className="flex min-h-14 w-full items-center gap-4 text-left hover:cursor-pointer hover:opacity-70 disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-primary"
                     >
                       <span className="flex-1 text-base">{event.label}</span>
                       <span
                         aria-hidden
                         className={cn(
                           "flex size-5 shrink-0 items-center justify-center rounded-[6px]",
-                          checked ? "bg-foreground text-background" : "border border-border",
+                          checked ? "bg-primary text-primary-foreground" : "border border-border",
                         )}
                       >
                         {checked ? <CheckIcon size={10} /> : null}

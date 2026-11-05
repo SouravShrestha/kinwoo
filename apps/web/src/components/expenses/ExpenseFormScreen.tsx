@@ -27,9 +27,9 @@ import { SplitSheet } from "./SplitSheet";
 type Picker = "category" | "date" | "payers" | "split";
 
 const FIELD =
-  "flex h-12 items-center rounded-xl bg-muted font-display text-base text-foreground focus-within:outline-2 focus-within:outline-foreground";
+  "flex h-12 items-center rounded-xl bg-muted font-display text-base text-foreground focus-within:outline-2 focus-within:outline-primary";
 const FOCUS_RING =
-  "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground";
+  "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary";
 const CHIP =
   "rounded-lg bg-muted px-3.5 py-1.5 font-medium text-foreground transition-opacity hover:cursor-pointer hover:opacity-80";
 
@@ -103,7 +103,7 @@ export function ExpenseFormScreen({
             aria-busy={form.submitting || undefined}
             disabled={!form.canSubmit || closing}
             className={cn(
-              "flex size-10 items-center justify-end text-foreground transition-opacity hover:cursor-pointer disabled:cursor-not-allowed disabled:opacity-40",
+              "flex size-10 items-center justify-end text-primary transition-opacity hover:cursor-pointer disabled:cursor-not-allowed disabled:opacity-40",
               FOCUS_RING,
             )}
           >
@@ -268,7 +268,7 @@ export function ExpenseFormScreen({
                       onChange={(event) => form.setNote(event.target.value)}
                       aria-invalid={form.noteError ? true : undefined}
                       aria-describedby={form.noteError ? "expense-note-hint" : undefined}
-                      className="mt-2 block w-full resize-none rounded-xl bg-muted px-5 py-3 font-display text-base text-foreground outline-none placeholder:text-muted-foreground focus-visible:outline-2 focus-visible:outline-foreground"
+                      className="mt-2 block w-full resize-none rounded-xl bg-muted px-5 py-3 font-display text-base text-foreground outline-none placeholder:text-muted-foreground focus-visible:outline-2 focus-visible:outline-primary"
                     />
                   </div>
                 </div>

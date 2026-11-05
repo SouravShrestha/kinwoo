@@ -6,7 +6,6 @@ import { SETTLED_UP_HINT, unsettledPairs } from "@kinwoo/core/expenses";
 import { formatPaise } from "@kinwoo/core/grocery";
 import { memberDisplayName } from "@kinwoo/core/houses";
 import { ArrowRightIcon } from "@kinwoo/icons/native";
-import { colors } from "@kinwoo/tokens/native";
 import { Text, View } from "react-native";
 import { GestureDetector } from "react-native-gesture-handler";
 import Animated from "react-native-reanimated";
@@ -30,7 +29,7 @@ export function SettleUpScreen({
   simplifyDebts: boolean;
 }) {
   const insets = useSafeAreaInsets();
-  const { resolvedTheme } = useTheme();
+  const { resolvedTheme, colors } = useTheme();
   const palette = colors[resolvedTheme];
   const { user } = useAuth();
   const { data: balances, isError } = useHouseBalances(houseId, simplifyDebts);
@@ -117,14 +116,14 @@ export function SettleUpScreen({
                       <View className="items-end">
                         <Text
                           className={`font-display-normal text-xs ${
-                            owes ? "text-destructive" : "text-accent"
+                            owes ? "text-negative" : "text-positive"
                           }`}
                         >
                           {owes ? "you owe" : "owes you"}
                         </Text>
                         <Text
                           className={`font-display-medium text-base ${
-                            owes ? "text-destructive" : "text-accent"
+                            owes ? "text-negative" : "text-positive"
                           }`}
                         >
                           {formatPaise(Math.abs(pair.netPaise))}

@@ -40,7 +40,7 @@ export type GroceryEmptyCopy = { title: string; hint: string | null };
 const EMPTY_TAB_COPY: Record<GroceryTabKey, GroceryEmptyCopy> = {
   pending: {
     title: "Nothing pending. Suspiciously calm.",
-    hint: "Tap “+” below and give the list something to do",
+    hint: "Add items to give the list something to do",
   },
   assigned: {
     title: "Nobody’s called dibs yet",
@@ -55,15 +55,15 @@ const EMPTY_TAB_COPY: Record<GroceryTabKey, GroceryEmptyCopy> = {
 const EMPTY_LIST_COPY: Record<GroceryTabKey, GroceryEmptyCopy> = {
   pending: {
     title: "Nothing here but good intentions",
-    hint: "Tap “+” below to add your first item",
+    hint: "Add items to get started",
   },
   assigned: {
     title: "This list is a blank canvas",
-    hint: "Tap “+” below and start adding items",
+    hint: "Add items to get started",
   },
   bought: {
     title: "This list is a blank canvas",
-    hint: "Tap “+” below and start adding items",
+    hint: "Add items to get started",
   },
 };
 

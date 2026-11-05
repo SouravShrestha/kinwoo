@@ -80,7 +80,7 @@ export function NotificationsScreen() {
           <button
             type="button"
             onClick={handleMarkAllRead}
-            className="flex h-10 items-center gap-1.5 font-display text-xs font-medium text-foreground hover:cursor-pointer hover:opacity-70 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
+            className="flex h-10 items-center gap-1.5 font-display text-xs font-medium text-foreground hover:cursor-pointer hover:opacity-70 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
           >
             Read all
           </button>

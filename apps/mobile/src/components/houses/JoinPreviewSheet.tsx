@@ -1,7 +1,6 @@
 import { useActiveHouse, useJoinFlow } from "@kinwoo/client/houses";
 import { inviteFailureCopy, memberCountLabel, memberDisplayName } from "@kinwoo/core/houses";
 import { HousePinIcon } from "@kinwoo/icons/native";
-import { colors } from "@kinwoo/tokens/native";
 import { useEffect, type ReactNode } from "react";
 import { Text, View } from "react-native";
 
@@ -50,7 +49,7 @@ function SheetBody({
   flow: ReturnType<typeof useJoinFlow>;
   onClose: () => void;
 }) {
-  const { resolvedTheme } = useTheme();
+  const { resolvedTheme, colors } = useTheme();
 
   if (flow.loading) return <JoinPreviewSkeleton />;
   if (flow.loadError) {

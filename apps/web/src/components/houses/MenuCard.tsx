@@ -32,7 +32,7 @@ export function MenuCard({
       className={cn(
         "flex rounded-lg border border-border bg-card text-left",
         "hover:cursor-pointer hover:opacity-80",
-        "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground",
+        "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary",
         size === "half" && "h-20 w-full items-center justify-between gap-2 pl-4 pr-3",
         size === "tall" && "min-h-40 w-[45%] min-w-36 shrink-0 flex-col justify-between p-5",
         size === "full" && "h-42 w-full flex-col justify-between p-5 pt-3",

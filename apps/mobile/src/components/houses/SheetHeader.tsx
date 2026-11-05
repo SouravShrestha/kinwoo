@@ -1,5 +1,4 @@
 import { ArrowRightIcon } from "@kinwoo/icons/native";
-import { colors } from "@kinwoo/tokens/native";
 import { Text, View } from "react-native";
 
 import { Pressable } from "@/components/Pressable";
@@ -14,7 +13,7 @@ export function SheetHeader({
   subtitle?: string;
   onBack?: () => void;
 }) {
-  const { resolvedTheme } = useTheme();
+  const { resolvedTheme, colors } = useTheme();
 
   return (
     <View accessibilityRole="header" className="pr-10">

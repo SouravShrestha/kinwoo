@@ -12,11 +12,10 @@ import {
 import { useActiveHouse } from "@kinwoo/client/houses";
 import { toast } from "@kinwoo/client/toast";
 import { expenseFeed } from "@kinwoo/core/expenses";
-import { MoreVerticalIcon, PlusCircleIcon } from "@kinwoo/icons";
+import { MoreVerticalIcon } from "@kinwoo/icons";
 import { useRouter } from "@/lib/router";
 import { useMemo, useState } from "react";
 
-import { FixedLayer } from "@/components/FixedLayer";
 import { LoadMoreSentinel } from "@/components/LoadMoreSentinel";
 import { BalanceSummary } from "@/components/expenses/BalanceSummary";
 import { ExpenseActions } from "@/components/expenses/ExpenseActions";
@@ -30,12 +29,7 @@ import {
   ExpenseActionsSkeleton,
   ExpenseRowsSkeleton,
 } from "@/components/skeleton/skeletons";
-import {
-  expensePath,
-  NEW_EXPENSE_PATH,
-  paymentPath,
-  PRIVATE_SPENDING_PATH,
-} from "@/lib/house-navigation";
+import { expensePath, paymentPath, PRIVATE_SPENDING_PATH } from "@/lib/house-navigation";
 
 export function BillsScreen() {
   const router = useRouter();
@@ -152,20 +146,6 @@ export function BillsScreen() {
           </div>
         )}
       </div>
-
-      <FixedLayer>
-        <div className="pointer-events-none fixed bottom-[calc(5.625rem+env(safe-area-inset-bottom))] left-1/2 z-30 w-full max-w-md -translate-x-1/2 px-4">
-          <button
-            type="button"
-            onClick={() => router.push(NEW_EXPENSE_PATH)}
-            className="pointer-events-auto relative ml-auto flex size-12 items-center justify-center text-primary transition-opacity hover:cursor-pointer hover:opacity-90"
-            aria-label="Add expense"
-          >
-            <span className="absolute inset-2.5 rounded-full bg-primary-foreground" />
-            <PlusCircleIcon size={48} className="relative" />
-          </button>
-        </div>
-      </FixedLayer>
 
       <ExpensesMenuSheet
         open={menuOpen}

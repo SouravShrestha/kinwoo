@@ -1,5 +1,4 @@
 import { CaretDownIcon } from "@kinwoo/icons/native";
-import { colors } from "@kinwoo/tokens/native";
 import { Text, View } from "react-native";
 
 import { Pressable } from "@/components/Pressable";
@@ -24,7 +23,7 @@ function StepButton({
   disabled: boolean;
   onPress: () => void;
 }) {
-  const { resolvedTheme } = useTheme();
+  const { resolvedTheme, colors } = useTheme();
   return (
     <Pressable
       accessibilityRole="button"
@@ -58,11 +57,11 @@ export function PeriodFilter({
         onPress={onToggleAllTime}
         allowDoublePress
         className={`rounded-xl border px-4 py-2 ${
-          allTime ? "border-foreground bg-foreground" : "border-border bg-card"
+          allTime ? "border-primary bg-primary" : "border-border bg-card"
         }`}
       >
         <Text
-          className={`font-display-medium text-sm ${allTime ? "text-background" : "text-foreground"}`}
+          className={`font-display-medium text-sm ${allTime ? "text-primary-foreground" : "text-foreground"}`}
         >
           All time
         </Text>

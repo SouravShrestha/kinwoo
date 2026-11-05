@@ -43,15 +43,20 @@ export function isStandalone(): boolean {
   );
 }
 
-function currentKind(): InstallKind {
+export function isIOS(): boolean {
   const { userAgent, maxTouchPoints } = navigator;
+  // iPadOS reports a Mac user agent, so touch support is the tell.
+  return (
+    /iphone|ipad|ipod/i.test(userAgent) || (/macintosh/i.test(userAgent) && maxTouchPoints > 1)
+  );
+}
+
+function currentKind(): InstallKind {
   return installKind({
     standalone: isStandalone(),
     hasPrompt: deferred !== null,
-    // iPadOS reports a Mac user agent, so touch support is the tell.
-    ios:
-      /iphone|ipad|ipod/i.test(userAgent) || (/macintosh/i.test(userAgent) && maxTouchPoints > 1),
-    android: /android/i.test(userAgent),
+    ios: isIOS(),
+    android: /android/i.test(navigator.userAgent),
   });
 }
 

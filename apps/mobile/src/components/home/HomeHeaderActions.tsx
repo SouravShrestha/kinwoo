@@ -2,7 +2,6 @@ import { useAuth } from "@kinwoo/client/auth";
 import { useNotifications } from "@kinwoo/client/notifications";
 import { useProfile } from "@kinwoo/client/profile";
 import { NotificationIcon } from "@kinwoo/icons/native";
-import { colors } from "@kinwoo/tokens/native";
 import { router } from "expo-router";
 import { Text, View } from "react-native";
 
@@ -11,23 +10,26 @@ import { Avatar } from "@/components/houses/Avatar";
 import { useTheme } from "@/theme/ThemeProvider";
 
 export function HomeHeaderActions({ showNotifications }: { showNotifications: boolean }) {
-  const { resolvedTheme } = useTheme();
+  const { resolvedTheme, colors } = useTheme();
   const { profile } = useProfile();
   const { user } = useAuth();
   const { data: notifications } = useNotifications(user?.id ?? null);
   const unread = notifications?.filter((entry) => !entry.readAt).length ?? 0;
+  const palette = colors[resolvedTheme];
+  const shadow = { boxShadow: `0 2px 8px ${palette.shadow}` };
 
   return (
-    <View className="flex-row items-center gap-4">
+    <View className="flex-row items-center gap-3">
       {showNotifications ? (
         <Pressable
           accessibilityRole="button"
           accessibilityLabel={unread > 0 ? `Notifications, ${unread} unread` : "Notifications"}
           onPress={() => router.push("/notifications")}
           hitSlop={8}
-          className="size-[38px] items-center justify-center rounded-full border border-border bg-card active:opacity-60"
+          className="size-11 items-center justify-center rounded-full bg-card active:opacity-60"
+          style={shadow}
         >
-          <NotificationIcon size={22} color={colors[resolvedTheme].foreground} />
+          <NotificationIcon size={22} color={palette.foreground} />
           {unread > 0 ? (
             <View
               accessibilityElementsHidden
@@ -46,9 +48,10 @@ export function HomeHeaderActions({ showNotifications }: { showNotifications: bo
         accessibilityLabel="Profile"
         hitSlop={8}
         onPress={() => router.push("/profile")}
-        className="active:opacity-60"
+        className="size-11 items-center justify-center rounded-full border-2 border-card active:opacity-60"
+        style={shadow}
       >
-        <Avatar name={profile?.displayName ?? null} url={profile?.avatarUrl ?? null} size={38} />
+        <Avatar name={profile?.displayName ?? null} url={profile?.avatarUrl ?? null} size={40} />
       </Pressable>
     </View>
   );

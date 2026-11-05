@@ -202,7 +202,7 @@ export function EditListSheet({
                   aria-label={`Icon: ${selectedIcon.label}. Change icon`}
                   onClick={canEditMeta ? showPicker : undefined}
                   disabled={!canEditMeta}
-                  className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-muted text-foreground transition-opacity hover:cursor-pointer hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground disabled:cursor-not-allowed disabled:opacity-50"
+                  className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-muted text-foreground transition-opacity hover:cursor-pointer hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   <ListIconImage label={selectedIcon.label} size={40} />
                 </button>
@@ -219,7 +219,7 @@ export function EditListSheet({
                   placeholder="e.g. Party Supplies, Weekly Essentials"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="h-12 min-w-0 flex-1 rounded-xl bg-muted px-5 font-display text-base font-normal text-foreground outline-none placeholder:text-muted-foreground focus-visible:outline-2 focus-visible:outline-foreground read-only:cursor-not-allowed read-only:opacity-60"
+                  className="h-12 min-w-0 flex-1 rounded-xl bg-muted px-5 font-display text-base font-normal text-foreground outline-none placeholder:text-muted-foreground focus-visible:outline-2 focus-visible:outline-primary read-only:cursor-not-allowed read-only:opacity-60"
                 />
               </div>
 
@@ -330,7 +330,7 @@ function DeleteButton({ disabled, onClick }: { disabled: boolean; onClick: () =>
       aria-label="Delete"
       disabled={disabled}
       onClick={onClick}
-      className="flex size-14 shrink-0 items-center justify-center rounded-xl bg-destructive/15 text-destructive transition-opacity hover:cursor-pointer hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground disabled:cursor-not-allowed disabled:opacity-50"
+      className="flex size-14 shrink-0 items-center justify-center rounded-xl bg-destructive/15 text-destructive transition-opacity hover:cursor-pointer hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed disabled:opacity-50"
     >
       <TrashIcon size={20} />
     </button>

@@ -117,10 +117,12 @@ export function BottomSheet({
     }
 
     previousFocus.current = document.activeElement as HTMLElement | null;
-    const first =
-      panelRef.current?.querySelector<HTMLElement>("[data-autofocus]") ??
-      panelRef.current?.querySelector<HTMLElement>(FOCUSABLE);
-    (first ?? panelRef.current)?.focus();
+    // Without an explicit [data-autofocus] target, focus the panel itself: falling back to the
+    // first focusable put a focus ring on the close button.
+    const target =
+      panelRef.current?.querySelector<HTMLElement>("[data-autofocus]") ?? panelRef.current;
+    // preventScroll: iOS otherwise scrolls the page to the input while the sheet is still sliding in.
+    target?.focus({ preventScroll: true });
   }, [open]);
 
   // Runs for non-dismissable sheets too: the login wall has no escape hatch, so
@@ -160,6 +162,7 @@ export function BottomSheet({
   }, [open]);
 
   useSwipeToClose(panelRef, mounted && rendered && dismissable && !closing, guardedClose);
+  const keyboardInset = useKeyboardInset(open);
 
   if (!mounted || !rendered) return null;
 
@@ -170,15 +173,17 @@ export function BottomSheet({
         onClick={dismissable ? guardedClose : undefined}
         className={cn(
           "fixed inset-0 touch-none bg-black/50",
-          !dismissable && "pointer-events-none",
           zClassName,
           closing ? "sheet-backdrop-out" : "sheet-backdrop-in",
         )}
       />
 
       <div
+        // transform rather than bottom: it eases on the compositor instead of jumping per resize.
+        style={{ transform: `translateY(-${keyboardInset}px)` }}
         className={cn(
           "pointer-events-none fixed inset-x-0 bottom-0 flex justify-center",
+          "motion-safe:transition-transform motion-safe:duration-300 motion-safe:ease-[cubic-bezier(0.32,0.72,0,1)]",
           zClassName,
         )}
       >
@@ -194,10 +199,11 @@ export function BottomSheet({
             setRendered(false);
             setClosing(false);
           }}
+          style={{ maxHeight: `calc(100dvh - 1.5rem - ${keyboardInset}px)` }}
           className={cn(
-            "pointer-events-auto relative w-full max-w-md rounded-t-2xl bg-sheet px-6",
+            "pointer-events-auto relative w-full max-w-md rounded-t-2xl bg-sheet px-6 outline-none",
             "pb-[max(2rem,env(safe-area-inset-bottom))]",
-            "max-h-[calc(100dvh-1.5rem)] overflow-x-hidden overflow-y-auto overscroll-contain",
+            "overflow-x-hidden overflow-y-auto overscroll-contain",
             closing ? "sheet-panel-out" : "sheet-panel-in",
             className,
           )}
@@ -213,7 +219,7 @@ export function BottomSheet({
               type="button"
               aria-label="Close"
               onClick={guardedClose}
-              className="absolute right-3 top-8 flex size-9 items-center justify-center rounded-full hover:cursor-pointer hover:opacity-70 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
+              className="absolute right-3 top-8 flex size-9 items-center justify-center rounded-full hover:cursor-pointer hover:opacity-70 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
             >
               <CloseIcon size={22} />
             </button>
@@ -224,4 +230,28 @@ export function BottomSheet({
     </>,
     document.body,
   );
+}
+
+// Mobile browsers open the keyboard over the layout viewport instead of shrinking it, so a
+// bottom-pinned sheet ends up behind the keyboard. This is the keyboard's height, to lift it by.
+function useKeyboardInset(active: boolean) {
+  const [inset, setInset] = useState(0);
+
+  useEffect(() => {
+    const viewport = window.visualViewport;
+    if (!active || !viewport) return;
+
+    const update = () =>
+      setInset(Math.max(0, window.innerHeight - viewport.height - viewport.offsetTop));
+    update();
+    viewport.addEventListener("resize", update);
+    viewport.addEventListener("scroll", update);
+    return () => {
+      viewport.removeEventListener("resize", update);
+      viewport.removeEventListener("scroll", update);
+      setInset(0);
+    };
+  }, [active]);
+
+  return inset;
 }

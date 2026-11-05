@@ -37,11 +37,11 @@ type Picker = "category" | "unit" | "date" | "payers" | "split";
 const NO_UNIT = "__none__";
 
 const FIELD =
-  "flex h-12 items-center rounded-xl bg-muted font-display text-base font-normal text-foreground focus-within:outline-2 focus-within:outline-foreground";
+  "flex h-12 items-center rounded-xl bg-muted font-display text-base font-normal text-foreground focus-within:outline-2 focus-within:outline-primary";
 const FIELD_BUTTON =
-  "gap-2 px-3.5 transition-opacity hover:cursor-pointer hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground";
+  "gap-2 px-3.5 transition-opacity hover:cursor-pointer hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary";
 const FOCUS_RING =
-  "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground";
+  "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary";
 
 export function MarkBoughtScreen({
   listId,
@@ -290,7 +290,7 @@ export function MarkBoughtScreen({
                     aria-hidden
                     className={cn(
                       "flex size-5 items-center justify-center rounded-[6px]",
-                      split ? "bg-foreground text-background" : "border border-border",
+                      split ? "bg-primary text-primary-foreground" : "border border-border",
                     )}
                   >
                     {split ? <CheckIcon size={10} /> : null}

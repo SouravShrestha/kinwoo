@@ -1,7 +1,6 @@
 import { useHouseMembers } from "@kinwoo/client/houses";
 import { itemAssignee, type GroceryOverviewItem, type TasksView } from "@kinwoo/core/grocery";
 import { ArrowRightIcon } from "@kinwoo/icons/native";
-import { colors } from "@kinwoo/tokens/native";
 import { router } from "expo-router";
 import { useMemo, useState } from "react";
 import { Text, useWindowDimensions, View } from "react-native";
@@ -41,7 +40,7 @@ export function ItemCarousel({
   onItemPress: (item: GroceryOverviewItem) => void;
 }) {
   const { width: windowWidth } = useWindowDimensions();
-  const { resolvedTheme } = useTheme();
+  const { resolvedTheme, colors } = useTheme();
   const { data: members } = useHouseMembers(houseId);
   const memberById = useMemo(() => new Map((members ?? []).map((m) => [m.userId, m])), [members]);
   const [contentWidth, setContentWidth] = useState(0);
@@ -65,7 +64,7 @@ export function ItemCarousel({
   }));
 
   return (
-    <View className="gap-4">
+    <View className="gap-5">
       <SectionHeader
         title={title}
         count={items.length}
@@ -78,7 +77,7 @@ export function ItemCarousel({
             style={{ width: TRACK_WIDTH }}
           >
             <Animated.View
-              className="h-full rounded-full bg-muted-foreground"
+              className="h-full rounded-full bg-foreground"
               style={[{ width: THUMB_WIDTH }, thumbStyle]}
             />
           </View>
@@ -123,11 +122,11 @@ export function ItemCarousel({
             })
           }
           style={{ width: windowWidth / VISIBLE_CARDS, minHeight: CARD_MIN_HEIGHT }}
-          className="justify-between gap-3 rounded-2xl border border-border bg-card p-3 active:opacity-80"
+          className="justify-between gap-3 rounded-2xl border border-card-border bg-card p-3 active:opacity-80"
         >
           <View className="items-end">
             <View className="size-7 items-center justify-center rounded-full border border-dialog-border">
-              <ArrowRightIcon size={16} color={colors[resolvedTheme].foreground} />
+              <ArrowRightIcon size={16} color={colors[resolvedTheme].mutedForeground} />
             </View>
           </View>
           <Text className="font-display-medium text-sm text-foreground">{viewAll.label}</Text>

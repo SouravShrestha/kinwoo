@@ -1,7 +1,6 @@
 import { useGroceryItemActivity } from "@kinwoo/client/grocery";
 import { useHouseMembers } from "@kinwoo/client/houses";
 import { boughtItemTimeline, formatTimelineTime, type GroceryItem } from "@kinwoo/core/grocery";
-import { colors } from "@kinwoo/tokens/native";
 import { Text, View } from "react-native";
 // Gesture-handler's ScrollView, so the sheet's pan gesture doesn't swallow horizontal drags on Android.
 import { ScrollView } from "react-native-gesture-handler";
@@ -21,7 +20,7 @@ export function BoughtTimeline({
   houseId: string;
   listId: string;
 }) {
-  const { resolvedTheme } = useTheme();
+  const { resolvedTheme, colors } = useTheme();
   const palette = colors[resolvedTheme];
   const { data: activity } = useGroceryItemActivity(houseId, listId, item.id);
   const { data: members } = useHouseMembers(houseId);

@@ -15,7 +15,10 @@ const times = (count: number) => Array.from({ length: count }, (_, index) => ind
 export function ItemCardSkeleton({ className }: { className?: string }) {
   return (
     <div
-      className={cn("flex flex-col gap-3 rounded-2xl border border-border bg-card p-3", className)}
+      className={cn(
+        "flex flex-col gap-3 rounded-2xl border border-card-border bg-card p-3",
+        className,
+      )}
     >
       <div className="flex items-center justify-between">
         <Skeleton className="size-8 rounded-lg" />
@@ -48,7 +51,7 @@ export function ItemGridSkeleton() {
 
 export function ItemCarouselSkeleton() {
   return (
-    <SkeletonRegion className="space-y-4">
+    <SkeletonRegion className="space-y-5">
       <SkeletonText size="sm" className="w-36" />
       <ul className="-mx-6 flex gap-3 overflow-hidden px-6">
         {times(3).map((index) => (
@@ -59,10 +62,6 @@ export function ItemCarouselSkeleton() {
       </ul>
     </SkeletonRegion>
   );
-}
-
-export function QuickAddBarSkeleton() {
-  return <Skeleton className="h-[54px] w-full rounded-full" />;
 }
 
 export function HouseHeaderSkeleton() {
@@ -78,13 +77,14 @@ export function HouseHeaderSkeleton() {
 
 export function BalanceCardSkeleton() {
   return (
-    <SkeletonRegion className="flex w-full items-stretch overflow-hidden rounded-lg border border-border bg-card">
-      <div className="flex flex-1 flex-col justify-between gap-4 py-6 pl-2 pr-5">
-        <div>
-          <SkeletonText size="sm" align="end" className="w-[90%]" />
-          <SkeletonText size="sm" align="end" className="w-3/5" />
-        </div>
-        <SkeletonText size="xl" align="end" className="w-2/5" />
+    <SkeletonRegion className="flex w-full items-center justify-between gap-5 px-3 py-8">
+      <Skeleton className="size-[58px] shrink-0 rounded-full" />
+      <div className="flex flex-col items-end gap-0.5">
+        <SkeletonText size="sm" align="end" className="w-24" />
+        <span className="flex h-10 items-center">
+          <Skeleton className="h-6 w-32" />
+        </span>
+        <SkeletonText size="xs" align="end" className="w-40" />
       </div>
     </SkeletonRegion>
   );
@@ -234,7 +234,7 @@ const ACTIVITY_PATTERNS = [
 function ActivityRowSkeleton({ index, first }: { index: number; first: boolean }) {
   const pattern = ACTIVITY_PATTERNS[index % ACTIVITY_PATTERNS.length]!;
   return (
-    <div className={cn("flex items-start py-6", !first && "border-t border-border")}>
+    <div className="flex items-start py-6">
       <span className="relative mr-5 mt-px shrink-0">
         <Skeleton className="size-9 rounded-lg" />
         <Skeleton className="absolute -bottom-1 -right-1 size-4 rounded-full ring-2 ring-background" />
@@ -808,21 +808,20 @@ export function AddItemPageSkeleton() {
 
 export function HomeSkeleton() {
   return (
-    <main className="flex min-h-[calc(100dvh-4rem-env(safe-area-inset-bottom))] flex-col pb-6">
-      <header className="flex items-center justify-between px-6 pb-6 pt-[calc(0.75rem+env(safe-area-inset-top))]">
-        <HouseHeaderSkeleton />
-      </header>
-      <div className="flex flex-1 flex-col px-6 pt-4">
-        <div className="space-y-5">
+    <main className="flex min-h-[calc(100dvh-5rem-env(safe-area-inset-bottom))] flex-col pb-6">
+      <section className="rounded-b-[28px] bg-muted px-6 pt-[calc(0.75rem+env(safe-area-inset-top))]">
+        <header className="flex items-center justify-between pb-1">
+          <HouseHeaderSkeleton />
+        </header>
+        <div className="mt-2">
           <BalanceCardSkeleton />
-          <ShortcutCards />
-          <div className="mt-4">
-            <QuickAddBarSkeleton />
-          </div>
-          <div className="my-8 space-y-10">
-            <ItemCarouselSkeleton />
-            <ItemCarouselSkeleton />
-          </div>
+        </div>
+      </section>
+      <div className="space-y-8 px-6 pt-8">
+        <ShortcutCards />
+        <div className="space-y-10">
+          <ItemCarouselSkeleton />
+          <ItemCarouselSkeleton />
         </div>
       </div>
     </main>

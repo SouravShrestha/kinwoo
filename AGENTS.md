@@ -26,6 +26,7 @@ npm workspaces + Turborepo. `apps/web` is Next.js 15 (App Router) on Cloudflare 
 
 ## Conventions
 
+- UI changes apply to both `apps/web` and `apps/mobile` unless the user says otherwise. Check both before finishing, including skeleton/loading variants.
 - Prettier: 100 columns, double quotes, trailing commas.
 - Conventional Commits (`feat:`, `fix:`, `chore:`…): release-please reads them.
 - Comment only where the logic is non-obvious.

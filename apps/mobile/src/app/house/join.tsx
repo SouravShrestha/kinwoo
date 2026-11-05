@@ -6,7 +6,6 @@ import {
   JOIN_SCREEN_SUBTITLE,
 } from "@kinwoo/core/houses";
 import { QrIcon, TextInputIcon } from "@kinwoo/icons/native";
-import { colors } from "@kinwoo/tokens/native";
 import { useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { Keyboard, Text, View } from "react-native";
@@ -40,7 +39,7 @@ export default function JoinHouseScreen() {
 
 function JoinForm() {
   const { code, confirm } = useLocalSearchParams<{ code?: string; confirm?: string }>();
-  const { resolvedTheme } = useTheme();
+  const { resolvedTheme, colors } = useTheme();
   const [scanning, setScanning] = useState(false);
   const [confirmation, setConfirmation] = useState<Confirmation | null>(
     confirm === "1" && code ? { code, open: true, id: 0 } : null,

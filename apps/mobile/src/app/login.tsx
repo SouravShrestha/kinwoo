@@ -4,7 +4,7 @@ import { APP_NAME } from "@kinwoo/core/app";
 import { GoogleIcon } from "@kinwoo/icons/native";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
-import { Image, Text, View } from "react-native";
+import { BackHandler, Image, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { AuthSheet } from "@/components/AuthSheet";
@@ -28,8 +28,15 @@ export default function LoginScreen() {
   // Hold until the profile is ready and no name is owed: gorhom's modal does not reliably
   // present across a route change, so redirecting early would skip the display-name sheet.
   useEffect(() => {
-    if (ready && isLoggedIn && profileReady && !needsDisplayName) router.replace("/");
-  }, [ready, isLoggedIn, profileReady, needsDisplayName]);
+    // Also waits for the email sheet to close, so its success state is seen first.
+    if (ready && isLoggedIn && profileReady && !needsDisplayName && !emailOpen) router.replace("/");
+  }, [ready, isLoggedIn, profileReady, needsDisplayName, emailOpen]);
+
+  // Swallow hardware back. An open sheet registers later, so its handler still runs first.
+  useEffect(() => {
+    const subscription = BackHandler.addEventListener("hardwareBackPress", () => true);
+    return () => subscription.remove();
+  }, []);
 
   const google = async () => {
     setGoogleBusy(true);

@@ -33,7 +33,7 @@ function PendingLinkBusy() {
 }
 
 const ROW =
-  "flex h-14 w-full items-center text-left hover:cursor-pointer hover:opacity-70 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-foreground";
+  "flex h-14 w-full items-center text-left hover:cursor-pointer hover:opacity-70 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-primary";
 
 export function SettingsInfoRow({
   icon,

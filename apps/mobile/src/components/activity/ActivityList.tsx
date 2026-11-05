@@ -11,14 +11,13 @@ import {
 } from "@kinwoo/core/grocery";
 import type { HouseMember } from "@kinwoo/core/houses";
 import { ActivityKindIcon } from "@kinwoo/icons/native";
-import { colors } from "@kinwoo/tokens/native";
 import { memo, useCallback, useMemo, type ReactElement } from "react";
 import { SectionList, Text, View, type RefreshControlProps } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Avatar } from "@/components/houses/Avatar";
 import { Pressable } from "@/components/Pressable";
 import { useTheme } from "@/theme/ThemeProvider";
+import { useTabBarSpace } from "@/lib/tab-bar";
 
 const END_REACHED_THRESHOLD = 0.5;
 const ACTOR_AVATAR_SIZE = 16;
@@ -36,7 +35,7 @@ function ActivityIcon({
   entry: GroceryActivityEntry;
   actor: HouseMember | undefined;
 }) {
-  const { resolvedTheme } = useTheme();
+  const { resolvedTheme, colors } = useTheme();
 
   return (
     <View className="mr-5 mt-px">
@@ -76,9 +75,9 @@ function ActivityDetail({
   const textColor = entry.readAt
     ? "text-muted-foreground"
     : lent
-      ? "text-accent"
-      : "text-destructive";
-  const lineColor = entry.readAt ? "bg-muted-foreground" : lent ? "bg-accent" : "bg-destructive";
+      ? "text-positive"
+      : "text-negative";
+  const lineColor = entry.readAt ? "bg-muted-foreground" : lent ? "bg-positive" : "bg-negative";
 
   return (
     <View
@@ -116,7 +115,7 @@ function DayEntries({
 }) {
   return (
     <View className="px-4">
-      {entries.map((entry, index) => {
+      {entries.map((entry) => {
         const expenseId = activityExpenseId(entry);
         const settlementId = activitySettlementId(entry);
         const open = onOpenEntry
@@ -126,7 +125,7 @@ function DayEntries({
             : settlementId
               ? () => onOpenPayment?.(settlementId)
               : null;
-        const className = `flex-row items-start py-6 ${index > 0 ? "border-t border-border" : ""}`;
+        const className = "flex-row items-start py-6";
         const content = (
           <>
             <ActivityIcon entry={entry} actor={membersById.get(entry.actorId ?? "")} />
@@ -216,7 +215,7 @@ export const ActivityList = memo(function ActivityList({
   // Adds the house name after the time, for lists that mix houses.
   houseNames?: Map<string, string>;
 }) {
-  const insets = useSafeAreaInsets();
+  const tabBarSpace = useTabBarSpace();
   const membersById = useMemo(() => new Map(members.map((m) => [m.userId, m])), [members]);
 
   const sections = useMemo<DaySection[]>(
@@ -259,7 +258,7 @@ export const ActivityList = memo(function ActivityList({
       onEndReached={onEndReached}
       onEndReachedThreshold={END_REACHED_THRESHOLD}
       showsVerticalScrollIndicator={false}
-      contentContainerStyle={{ flexGrow: 1, paddingBottom: insets.bottom + 24 }}
+      contentContainerStyle={{ flexGrow: 1, paddingBottom: tabBarSpace + 24 }}
     />
   );
 });

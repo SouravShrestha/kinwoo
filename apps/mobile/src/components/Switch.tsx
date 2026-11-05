@@ -1,4 +1,3 @@
-import { colors } from "@kinwoo/tokens/native";
 import { useEffect } from "react";
 import Animated, {
   Easing,
@@ -21,7 +20,7 @@ export function Switch({
   onChange: (next: boolean) => void;
   accessibilityLabel: string;
 }) {
-  const { resolvedTheme } = useTheme();
+  const { resolvedTheme, colors } = useTheme();
   const palette = colors[resolvedTheme];
   const progress = useSharedValue(checked ? 1 : 0);
   useEffect(() => {
@@ -32,10 +31,10 @@ export function Switch({
   }, [checked, progress]);
   const knobStyle = useAnimatedStyle(() => ({
     transform: [{ translateX: progress.value * 20 }],
-    backgroundColor: checked ? palette.background : palette.mutedForeground,
+    backgroundColor: checked ? palette.primaryForeground : palette.mutedForeground,
   }));
   const trackStyle = useAnimatedStyle(() => ({
-    backgroundColor: checked ? palette.foreground : `${palette.mutedForeground}4D`,
+    backgroundColor: checked ? palette.primary : `${palette.mutedForeground}4D`,
   }));
   return (
     <Pressable

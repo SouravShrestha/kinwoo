@@ -1,4 +1,4 @@
-import { gateDecision, useAuth } from "@kinwoo/client/auth";
+import { OTP_SUCCESS_HOLD_MS, gateDecision, useAuth } from "@kinwoo/client/auth";
 import { useProfile } from "@kinwoo/client/profile";
 import { isPublicRoute } from "@kinwoo/core/auth";
 import { router, usePathname } from "expo-router";
@@ -6,8 +6,8 @@ import { useEffect, useState } from "react";
 
 import { DisplayNameSheet } from "./DisplayNameSheet";
 
-/** Slightly longer than BottomSheet's 220ms dismiss animation. */
-const SHEET_HANDOFF_MS = 300;
+/** The email sheet's success hold, then slightly longer than BottomSheet's 220ms dismiss. */
+const SHEET_HANDOFF_MS = OTP_SUCCESS_HOLD_MS + 300;
 
 export function AuthGate() {
   const { ready: authReady, isLoggedIn } = useAuth();

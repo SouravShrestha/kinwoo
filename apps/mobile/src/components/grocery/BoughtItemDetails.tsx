@@ -6,7 +6,6 @@ import {
   type GroceryItem,
 } from "@kinwoo/core/grocery";
 import { ArchiveIcon, TransactionIcon } from "@kinwoo/icons/native";
-import { colors } from "@kinwoo/tokens/native";
 import { Text, View } from "react-native";
 
 import { Button } from "@/components/Button";
@@ -34,7 +33,7 @@ export function BoughtItemDetails({
   onArchive: () => void;
   onClose: () => void;
 }) {
-  const { resolvedTheme } = useTheme();
+  const { resolvedTheme, colors } = useTheme();
   const palette = colors[resolvedTheme];
 
   const viewTransaction = () => {

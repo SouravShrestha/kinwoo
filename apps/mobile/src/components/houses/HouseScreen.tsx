@@ -1,5 +1,4 @@
 import { ArrowRightIcon } from "@kinwoo/icons/native";
-import { colors } from "@kinwoo/tokens/native";
 import { useEffect, useState, type ReactNode } from "react";
 import { KeyboardAvoidingView, Platform, Text, View } from "react-native";
 import { GestureDetector } from "react-native-gesture-handler";
@@ -39,7 +38,7 @@ export function HouseScreen({
   children: ReactNode;
 }) {
   const insets = useSafeAreaInsets();
-  const { resolvedTheme } = useTheme();
+  const { resolvedTheme, colors } = useTheme();
   const palette = colors[resolvedTheme];
   const keyboardVisible = useKeyboardVisible();
   const collapsed = hero !== undefined && keyboardVisible;

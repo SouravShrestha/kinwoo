@@ -10,7 +10,7 @@ import { Avatar } from "@/components/houses/Avatar";
 import { cn } from "@/lib/utils";
 
 const ACTION_CLASS =
-  "flex shrink-0 items-center justify-center rounded-full hover:cursor-pointer hover:opacity-70 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground";
+  "flex shrink-0 items-center justify-center rounded-full hover:cursor-pointer hover:opacity-70 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary";
 
 export function HomeHeaderActions({ showNotifications }: { showNotifications: boolean }) {
   const { profile } = useProfile();
@@ -19,12 +19,12 @@ export function HomeHeaderActions({ showNotifications }: { showNotifications: bo
   const unread = notifications?.filter((entry) => !entry.readAt).length ?? 0;
 
   return (
-    <div className="flex items-center gap-4">
+    <div className="flex items-center gap-3">
       {showNotifications ? (
         <Link
           href="/notifications"
           aria-label={unread > 0 ? `Notifications, ${unread} unread` : "Notifications"}
-          className={cn(ACTION_CLASS, "relative size-[38px] border border-border bg-card")}
+          className={cn(ACTION_CLASS, "relative size-11 bg-card shadow-[0_2px_8px_var(--shadow)]")}
         >
           <NotificationIcon size={22} />
           {unread > 0 ? (
@@ -37,8 +37,15 @@ export function HomeHeaderActions({ showNotifications }: { showNotifications: bo
           ) : null}
         </Link>
       ) : null}
-      <Link href="/profile" aria-label="Profile" className={ACTION_CLASS}>
-        <Avatar name={profile?.displayName ?? null} url={profile?.avatarUrl ?? null} size={38} />
+      <Link
+        href="/profile"
+        aria-label="Profile"
+        className={cn(
+          ACTION_CLASS,
+          "size-11 border-2 border-card text-primary shadow-[0_2px_8px_var(--shadow)]",
+        )}
+      >
+        <Avatar name={profile?.displayName ?? null} url={profile?.avatarUrl ?? null} size={40} />
       </Link>
     </div>
   );

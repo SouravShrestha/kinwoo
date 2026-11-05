@@ -44,7 +44,7 @@ export function PrivateSpendingScreen() {
             aria-label="Back"
             disabled={closing}
             onClick={() => setClosing(true)}
-            className="-ml-1 flex size-10 items-center justify-start hover:cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
+            className="-ml-1 flex size-10 items-center justify-start hover:cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
           >
             <ArrowRightIcon size={28} className="rotate-90" />
           </button>

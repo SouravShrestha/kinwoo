@@ -8,7 +8,6 @@ import { canManageExpense, type Expense } from "@kinwoo/core/expenses";
 import { formatFullDate, formatPaise } from "@kinwoo/core/grocery";
 import { memberDisplayName } from "@kinwoo/core/houses";
 import { ArrowRightIcon, EditIcon, NoteIcon, TrashIcon } from "@kinwoo/icons/native";
-import { colors } from "@kinwoo/tokens/native";
 import { useEffect, useState } from "react";
 import { Text, View } from "react-native";
 import { GestureDetector } from "react-native-gesture-handler";
@@ -244,7 +243,7 @@ export function ExpenseDetailScreen({
   isPrivate?: boolean;
 }) {
   const insets = useSafeAreaInsets();
-  const { resolvedTheme } = useTheme();
+  const { resolvedTheme, colors } = useTheme();
   const palette = colors[resolvedTheme];
   const { user } = useAuth();
   const currentUserId = user?.id ?? null;

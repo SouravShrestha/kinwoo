@@ -12,7 +12,6 @@ import {
   CheckIcon,
   RupeeIcon,
 } from "@kinwoo/icons/native";
-import { colors } from "@kinwoo/tokens/native";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useMemo, useState } from "react";
 import { Keyboard, KeyboardAvoidingView, Platform, Text, TextInput, View } from "react-native";
@@ -48,7 +47,7 @@ function quantityUnit(item: GroceryItem): string {
 
 export default function BatchMarkBoughtScreen() {
   const insets = useSafeAreaInsets();
-  const { resolvedTheme } = useTheme();
+  const { resolvedTheme, colors } = useTheme();
   const palette = colors[resolvedTheme];
   const params = useLocalSearchParams<{ listId?: string; itemIds?: string }>();
   const listId = params.listId ?? null;
@@ -172,6 +171,7 @@ export default function BatchMarkBoughtScreen() {
                       maxLength={BATCH_NAME_MAX_LENGTH}
                       placeholder="Group name"
                       placeholderTextColor={palette.mutedForeground}
+                      selectionColor={palette.primary}
                       onFocus={revealFocusedInput}
                       value={form.name}
                       onChangeText={form.setName}
@@ -200,6 +200,7 @@ export default function BatchMarkBoughtScreen() {
                       keyboardType="decimal-pad"
                       placeholder="0.00"
                       placeholderTextColor={palette.mutedForeground}
+                      selectionColor={palette.primary}
                       onFocus={revealFocusedInput}
                       value={form.total}
                       onChangeText={form.setTotal}
@@ -233,10 +234,10 @@ export default function BatchMarkBoughtScreen() {
                     >
                       <View
                         className={`size-5 items-center justify-center rounded-md ${
-                          split ? "bg-foreground" : "border border-border"
+                          split ? "bg-primary" : "border border-border"
                         }`}
                       >
-                        {split ? <CheckIcon size={10} color={palette.background} /> : null}
+                        {split ? <CheckIcon size={10} color={palette.primaryForeground} /> : null}
                       </View>
                       <Text className="font-display-normal text-base text-foreground">
                         I want to split expenses
@@ -332,6 +333,7 @@ export default function BatchMarkBoughtScreen() {
                                 keyboardType="decimal-pad"
                                 placeholder="0.00"
                                 placeholderTextColor={palette.mutedForeground}
+                                selectionColor={palette.primary}
                                 onFocus={revealFocusedInput}
                                 value={form.amountOf(item.id)}
                                 onChangeText={(value) => form.setAmount(item.id, value)}

@@ -44,9 +44,9 @@ function IconButton({
       disabled={disabled}
       onClick={onClick}
       className={cn(
-        "flex shrink-0 items-center justify-center hover:cursor-pointer hover:opacity-70 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground disabled:cursor-not-allowed disabled:opacity-50",
+        "flex shrink-0 items-center justify-center hover:cursor-pointer hover:opacity-70 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed disabled:opacity-50",
         boxed ? "size-[54px] rounded-2xl border border-border bg-muted" : "size-10 rounded-xl",
-        filled && "border-foreground bg-foreground text-background",
+        filled && "border-primary bg-primary text-primary-foreground",
       )}
     >
       {children}
@@ -134,7 +134,7 @@ export function PersonalInformationScreen() {
           type="button"
           aria-label="Change avatar"
           onClick={() => setAvatarOpen(true)}
-          className="relative size-20 overflow-hidden rounded-full bg-accent hover:cursor-pointer hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
+          className="relative size-20 overflow-hidden rounded-full bg-accent hover:cursor-pointer hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
@@ -236,7 +236,7 @@ export function PersonalInformationScreen() {
               aria-label="Link Google"
               disabled={linking}
               onClick={() => void link()}
-              className="flex h-14 w-full items-center pl-4 text-left hover:cursor-pointer hover:opacity-70 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground disabled:cursor-not-allowed disabled:opacity-50"
+              className="flex h-14 w-full items-center pl-4 text-left hover:cursor-pointer hover:opacity-70 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed disabled:opacity-50"
             >
               <span className="w-9 shrink-0">
                 <GoogleIcon size={20} />

@@ -63,6 +63,7 @@ export function DisplayNameSheet({ open }: { open: boolean }) {
             setError(null);
           }}
           disabled={saving}
+          keepFocus={open}
           errorId={error ? "display-name-error" : undefined}
           className="mt-6"
         />

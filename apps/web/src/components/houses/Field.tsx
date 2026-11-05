@@ -58,7 +58,7 @@ export function Field({
             "font-display text-base font-normal tracking-normal placeholder:text-muted-foreground",
             icon && "pl-11",
             action && "pr-14",
-            "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground",
+            "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary",
             "disabled:cursor-not-allowed disabled:opacity-50",
             inputClassName,
           )}

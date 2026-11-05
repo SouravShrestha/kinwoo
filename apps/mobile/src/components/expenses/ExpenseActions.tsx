@@ -1,5 +1,4 @@
 import { BalancesIcon, SettleUpIcon, TotalsIcon } from "@kinwoo/icons/native";
-import { colors } from "@kinwoo/tokens/native";
 import { ScrollView, Text } from "react-native";
 
 import { Pressable } from "@/components/Pressable";
@@ -21,7 +20,7 @@ const ACTIONS: readonly Action[] = [
 ];
 
 export function ExpenseActions() {
-  const { resolvedTheme } = useTheme();
+  const { resolvedTheme, colors } = useTheme();
   const palette = colors[resolvedTheme];
   return (
     <ScrollView
@@ -38,13 +37,13 @@ export function ExpenseActions() {
           accessibilityHint={onPress ? undefined : "Coming soon"}
           onPress={onPress}
           className={`min-w-28 flex-row items-center justify-center gap-2 rounded-xl border px-5 py-2 ${
-            primary ? "border-foreground bg-foreground" : "border-border bg-card"
+            primary ? "border-primary bg-primary" : "border-border bg-card"
           }`}
         >
-          <Icon size={iconSize} color={primary ? palette.background : palette.foreground} />
+          <Icon size={iconSize} color={primary ? palette.primaryForeground : palette.foreground} />
           <Text
             className={`font-display-medium text-sm ${
-              primary ? "text-background" : "text-foreground"
+              primary ? "text-primary-foreground" : "text-foreground"
             }`}
           >
             {label}

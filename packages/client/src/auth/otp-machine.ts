@@ -1,5 +1,7 @@
 export const CODE_LENGTH = 6;
 export const RESEND_COOLDOWN_MS = 30_000;
+/** How long a verified code shows its success state before the sign-in sheet closes. */
+export const OTP_SUCCESS_HOLD_MS = 1200;
 
 // Deliberately permissive: a stricter pattern only rejects addresses that work.
 export const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

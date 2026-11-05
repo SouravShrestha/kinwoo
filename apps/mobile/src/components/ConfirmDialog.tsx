@@ -11,7 +11,6 @@ import {
   WorldIcon,
   type IconProps,
 } from "@kinwoo/icons/native";
-import { colors } from "@kinwoo/tokens/native";
 import type { ComponentType } from "react";
 import { Modal, Text, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -51,7 +50,7 @@ export function ConfirmDialog({
   onCancel: () => void;
   isPending?: boolean;
 }) {
-  const { themeStyle, resolvedTheme } = useTheme();
+  const { themeStyle, resolvedTheme, colors } = useTheme();
   const palette = colors[resolvedTheme];
   useSheetStack(open, !isPending, onCancel);
 
@@ -123,7 +122,12 @@ export function ConfirmDialog({
                 </View>
               </Pressable>
               <View className="flex-1">
-                <Button label={copy.confirmLabel} loading={isPending} onPress={onConfirm} />
+                <Button
+                  variant="inverse"
+                  label={copy.confirmLabel}
+                  loading={isPending}
+                  onPress={onConfirm}
+                />
               </View>
             </View>
           </View>

@@ -1,6 +1,5 @@
 import { itemUrgencyLabel, itemUrgencyTone, type GroceryItem } from "@kinwoo/core/grocery";
 import { ArrowRightIcon, TickIcon } from "@kinwoo/icons/native";
-import { colors } from "@kinwoo/tokens/native";
 import { Text, View } from "react-native";
 
 import { Avatar } from "@/components/houses/Avatar";
@@ -30,7 +29,7 @@ export function PendingItemCard({
   assignee?: CardAssignee;
   assigneeVerb?: string;
 }) {
-  const { resolvedTheme } = useTheme();
+  const { resolvedTheme, colors } = useTheme();
   const palette = colors[resolvedTheme];
 
   const quantityUnit = [item.quantity != null ? String(item.quantity) : "", item.unit ?? ""]
@@ -49,7 +48,7 @@ export function PendingItemCard({
 
   return (
     <View
-      className={`rounded-2xl border ${selected ? "border-foreground bg-muted" : "border-border bg-card"}`}
+      className={`rounded-2xl border ${selected ? "border-primary bg-muted" : "border-card-border bg-card"}`}
       style={{ width }}
     >
       <Pressable
@@ -66,11 +65,11 @@ export function PendingItemCard({
         className="gap-3 rounded-2xl p-3 active:opacity-80"
       >
         <View className="flex-row items-center justify-between">
-          <View className="size-8 items-center justify-center">
-            <ItemCategoryImage name={item.categoryName} size={32} />
+          <View className="size-10 items-center justify-center">
+            <ItemCategoryImage name={item.categoryName} size={40} />
             {selected ? (
-              <View className="absolute -right-1 -top-1 size-4 items-center justify-center rounded-full bg-foreground">
-                <TickIcon size={7} color={palette.background} />
+              <View className="absolute -right-1 -top-1 size-4 items-center justify-center rounded-full bg-primary">
+                <TickIcon size={7} color={palette.primaryForeground} />
               </View>
             ) : null}
           </View>
@@ -79,7 +78,7 @@ export function PendingItemCard({
         <View className="min-w-0 gap-0.5">
           <View className="min-h-4 justify-center">
             {quantityUnit ? (
-              <Text className="text-xs text-muted-foreground font-display-normal" numberOfLines={1}>
+              <Text className="text-xs text-muted-foreground font-display-medium" numberOfLines={1}>
                 {quantityUnit}
               </Text>
             ) : null}
@@ -109,10 +108,10 @@ export function PendingItemCard({
         accessibilityLabel={`Open ${item.name} details`}
         hitSlop={10}
         onPress={onOpen}
-        className="absolute right-3 top-3 size-7 items-center justify-center rounded-full border border-dialog-border active:border-foreground"
+        className="absolute right-3 top-[18px] size-7 items-center justify-center rounded-full border border-dialog-border active:border-primary"
       >
         <View style={{ transform: [{ rotate: "-90deg" }] }}>
-          <ArrowRightIcon size={16} color={palette.foreground} />
+          <ArrowRightIcon size={16} color={palette.mutedForeground} />
         </View>
       </Pressable>
     </View>

@@ -1,5 +1,6 @@
 import { useExpenseTotals } from "@kinwoo/client/expenses";
 import { LOAD_FAILED_MESSAGE } from "@kinwoo/core/app";
+import type { ColorName } from "@kinwoo/tokens/native";
 import { TOAST_MESSAGES } from "@kinwoo/core/toast";
 import {
   currentMonthKey,
@@ -13,7 +14,6 @@ import {
 } from "@kinwoo/core/expenses";
 import { formatPaise } from "@kinwoo/core/grocery";
 import { ArrowRightIcon } from "@kinwoo/icons/native";
-import { colors } from "@kinwoo/tokens/native";
 import { useState } from "react";
 import { Text, View } from "react-native";
 import { GestureDetector } from "react-native-gesture-handler";
@@ -33,7 +33,7 @@ const CHART_WIDTH = 320;
 const CHART_HEIGHT = 220;
 const AXIS_WIDTH = 40;
 
-type Palette = (typeof colors)[keyof typeof colors];
+type Palette = Record<ColorName, string>;
 
 function TotalsChart({
   points,
@@ -161,7 +161,7 @@ function Stat({
 
 export function TotalsScreen({ houseId }: { houseId: string }) {
   const insets = useSafeAreaInsets();
-  const { resolvedTheme } = useTheme();
+  const { resolvedTheme, colors } = useTheme();
   const palette = colors[resolvedTheme];
   const { data: months, isError } = useExpenseTotals(houseId);
   const { pan, scrollGesture, onScroll, sheetStyle } = useSwipeDownToDismiss(goBack);

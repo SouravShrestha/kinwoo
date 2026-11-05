@@ -3,6 +3,7 @@
 import {
   CODE_LENGTH,
   INITIAL_OTP_STATE,
+  OTP_SUCCESS_HOLD_MS,
   canResend,
   isValidEmail,
   normaliseEmail,
@@ -18,6 +19,7 @@ import { cn } from "@/lib/utils";
 import { BottomSheet } from "./BottomSheet";
 import { Button } from "./Button";
 import { TextField } from "./TextField";
+import { OtpInput } from "./ui/otp-input";
 
 const RESEND_COOLDOWN_MS = resendCooldownMsFrom(
   process.env.NEXT_PUBLIC_OTP_RESEND_COOLDOWN_SECONDS,
@@ -41,6 +43,16 @@ export function AuthSheet({ open, onClose }: { open: boolean; onClose: () => voi
   const busy = state.phase === "sending" || state.phase === "verifying";
   const onCodeStep = state.phase === "code" || state.phase === "verifying";
 
+  // iOS Safari only lets a script open the keyboard (after the network await) by moving focus from
+  // an input that has it. Unmounting the email field first drops the keyboard, so it stays mounted,
+  // hidden, until the code field has taken focus.
+  const [codeFocused, setCodeFocused] = useState(false);
+  if (!onCodeStep && codeFocused) setCodeFocused(false);
+
+  const [verified, setVerified] = useState(false);
+  if (!open && verified) setVerified(false);
+  const showEmail = !onCodeStep || !codeFocused;
+
   const send = async () => {
     dispatch({ type: "submit-email", now: Date.now() });
     if (!isValidEmail(state.email)) return;
@@ -53,14 +65,17 @@ export function AuthSheet({ open, onClose }: { open: boolean; onClose: () => voi
     }
   };
 
-  const verify = async () => {
+  // Takes the code directly: onComplete fires before the edit-code dispatch reaches `state`.
+  const verify = async (code = state.code) => {
     dispatch({ type: "submit-code" });
-    if (state.code.length !== CODE_LENGTH) return;
+    if (code.length !== CODE_LENGTH) return;
 
     try {
-      await verifyEmailCode(state.email, state.code);
-      // Close straight away so the display-name sheet never stacks on this one.
-      onClose();
+      await verifyEmailCode(state.email, code);
+      // Let the success pill play before closing. AuthGate waits this long too, so the
+      // display-name sheet never stacks on this one.
+      setVerified(true);
+      setTimeout(onClose, OTP_SUCCESS_HOLD_MS);
     } catch (error) {
       dispatch({ type: "verify-failed", message: messageFor(error) });
     }
@@ -84,44 +99,62 @@ export function AuthSheet({ open, onClose }: { open: boolean; onClose: () => voi
         </p>
 
         {onCodeStep ? (
-          <TextField
-            kind="code"
-            value={state.code}
-            onChange={(value) => dispatch({ type: "edit-code", value })}
-            disabled={busy}
-            errorId={state.error ? "auth-sheet-error" : undefined}
-            className="mt-6 font-bold"
-          />
-        ) : (
+          // Spacing on a wrapper: the field sizes itself from its container, so keep its box clean.
+          <div className="py-10" onFocus={() => setCodeFocused(true)}>
+            <OtpInput
+              autoFocus
+              length={CODE_LENGTH}
+              align="center"
+              value={state.code}
+              status={
+                verified
+                  ? "success"
+                  : state.phase === "verifying"
+                    ? "verifying"
+                    : state.error
+                      ? "error"
+                      : "idle"
+              }
+              errorMessage={state.error}
+              onChange={(value) => dispatch({ type: "edit-code", value })}
+              onComplete={(code) => void verify(code)}
+            />
+          </div>
+        ) : null}
+        {showEmail ? (
           <TextField
             kind="email"
+            autoFocus
             value={state.email}
-            onChange={(value) => dispatch({ type: "edit-email", value })}
-            disabled={busy}
+            // Not disabled while sending: a disabled input loses focus, and mobile browsers then
+            // refuse to move focus (and the keyboard) to the code field once it arrives.
+            onChange={(value) => busy || dispatch({ type: "edit-email", value })}
             errorId={state.error ? "auth-sheet-error" : undefined}
-            className="mt-6"
+            className={onCodeStep ? "sr-only" : "mt-6"}
           />
-        )}
+        ) : null}
 
-        {state.error ? (
-          <p
-            id="auth-sheet-error"
-            role="alert"
-            className={cn("mt-3 text-sm text-destructive", !onCodeStep && "px-1")}
-          >
+        {state.error && !onCodeStep ? (
+          <p id="auth-sheet-error" role="alert" className="mt-3 px-1 text-sm text-destructive">
             {state.error}
           </p>
         ) : null}
 
-        <Button
-          type="submit"
-          label={onCodeStep ? (busy ? "Checking…" : "Continue") : "Send code"}
-          loading={busy}
-          className={cn("mt-5", onCodeStep && "rounded-3xl font-sans font-semibold")}
-        />
+        {/* No submit button on the code step: the last digit submits. Enter still works. */}
+        {onCodeStep ? null : (
+          <Button
+            type="submit"
+            label="Send code"
+            loading={busy}
+            className="mt-5"
+            // Keeps focus (and the iOS keyboard) on the email field through the tap, so focus can
+            // move straight to the code field. iOS only opens a keyboard for a script while one is up.
+            onPointerDown={(event) => event.preventDefault()}
+          />
+        )}
 
         {onCodeStep ? (
-          <div className="mt-4 flex items-center justify-between px-1 text-sm">
+          <div className="flex items-center justify-between px-1 text-sm">
             <button
               type="button"
               onClick={() => dispatch({ type: "back-to-email" })}

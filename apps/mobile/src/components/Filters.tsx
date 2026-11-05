@@ -10,7 +10,7 @@ import {
   type SortOption,
 } from "@kinwoo/core/filters";
 import { CaretDownIcon, CloseIcon, FilterIcon, SortIcon, TickIcon } from "@kinwoo/icons/native";
-import { colors } from "@kinwoo/tokens/native";
+import type { ColorName } from "@kinwoo/tokens/native";
 import { useRef, useState, type ReactNode } from "react";
 import { ScrollView, Text, View } from "react-native";
 
@@ -18,15 +18,19 @@ import { BottomSheet } from "./BottomSheet";
 import { Button } from "./Button";
 import { SheetHeader } from "./houses/SheetHeader";
 import { Pressable } from "./Pressable";
+import { SheetFooter } from "./sheet-footer";
 import { useTheme } from "@/theme/ThemeProvider";
 
-type Palette = (typeof colors)[keyof typeof colors];
+type Palette = Record<ColorName, string>;
 
 // NativeWind cannot apply opacity modifiers to the var()-based token colours, so tints
 // are built by appending an alpha byte to the token hex.
 const tint = (hex: string, alpha: string) => `${hex}${alpha}`;
 
 const SORT_TAB_ID = "__sort__";
+const FOOTER_GAP = 20;
+// Footer gap plus the 56px Button.
+const FOOTER_HEIGHT = FOOTER_GAP + 56;
 
 export type SortConfig = {
   options: readonly SortOption[];
@@ -48,7 +52,7 @@ export function Filters({
   sort?: SortConfig;
   className?: string;
 }) {
-  const { resolvedTheme } = useTheme();
+  const { resolvedTheme, colors } = useTheme();
   const palette = colors[resolvedTheme];
 
   const [open, setOpen] = useState(false);
@@ -215,7 +219,7 @@ function Chip({
     <View
       className="flex-row items-center rounded-xl border"
       style={{
-        borderColor: active ? palette.foreground : palette.border,
+        borderColor: active ? palette.primary : palette.border,
         backgroundColor: palette.card,
       }}
     >
@@ -283,16 +287,16 @@ function FilterSheet({
               onPress={() => onDraftChange(toggleOption(draft, group.id, option.id))}
               className="flex-row items-center gap-1.5 rounded-xl border py-1.5 pl-3 pr-2 active:opacity-70"
               style={{
-                borderColor: palette.foreground,
+                borderColor: palette.primary,
                 backgroundColor: palette.card,
               }}
             >
               <Text className="font-display-medium text-sm text-foreground">{option.label}</Text>
               <View
                 className="size-4 items-center justify-center rounded-full"
-                style={{ backgroundColor: palette.foreground }}
+                style={{ backgroundColor: palette.primary }}
               >
-                <CloseIcon size={10} color={palette.background} />
+                <CloseIcon size={10} color={palette.primaryForeground} />
               </View>
             </Pressable>
           ))}
@@ -349,23 +353,25 @@ function FilterSheet({
         </View>
       </View>
 
-      <View className="mt-5 flex-row items-center justify-between">
-        <View className="w-1/2 items-start">
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel="Clear all"
-            accessibilityState={{ disabled: nothingToClear }}
-            disabled={nothingToClear}
-            onPress={clearAll}
-            className={`ml-6 py-2 pr-2 ${nothingToClear ? "opacity-50" : "active:opacity-70"}`}
-          >
-            <Text className="font-display-medium text-base text-foreground underline">
-              Clear all
-            </Text>
-          </Pressable>
+      <SheetFooter maxHeight={FOOTER_HEIGHT}>
+        <View className="flex-row items-center justify-between" style={{ paddingTop: FOOTER_GAP }}>
+          <View className="w-1/2 items-start">
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel="Clear all"
+              accessibilityState={{ disabled: nothingToClear }}
+              disabled={nothingToClear}
+              onPress={clearAll}
+              className={`ml-6 py-2 pr-2 ${nothingToClear ? "opacity-50" : "active:opacity-70"}`}
+            >
+              <Text className="font-display-medium text-base text-foreground underline">
+                Clear all
+              </Text>
+            </Pressable>
+          </View>
+          <Button label="Apply" onPress={onApply} className="w-1/2" />
         </View>
-        <Button label="Apply" onPress={onApply} className="w-1/2" />
-      </View>
+      </SheetFooter>
     </BottomSheet>
   );
 }
@@ -387,13 +393,13 @@ function TabButton({
       accessibilityState={{ selected: active }}
       onPress={onPress}
       className="justify-center px-4 py-3.5"
-      style={active ? { backgroundColor: tint(palette.foreground, "1F") } : undefined}
+      style={active ? { backgroundColor: tint(palette.primary, "1F") } : undefined}
     >
       <Text
         className={[
           "text-sm",
           active
-            ? "font-display-semibold text-foreground"
+            ? "font-display-semibold text-primary"
             : "font-display-normal text-muted-foreground",
         ].join(" ")}
       >
@@ -402,7 +408,7 @@ function TabButton({
       {active ? (
         <View
           className="absolute bottom-0 right-0 top-0 w-[3px] rounded-l-full"
-          style={{ backgroundColor: palette.foreground }}
+          style={{ backgroundColor: palette.primary }}
         />
       ) : null}
     </Pressable>
@@ -439,11 +445,11 @@ function OptionRow({
       <View
         className={`size-5 items-center justify-center border ${role === "radio" ? "rounded-full" : "rounded-md"}`}
         style={{
-          borderColor: palette.foreground,
-          backgroundColor: checked ? palette.foreground : "transparent",
+          borderColor: checked ? palette.primary : palette.foreground,
+          backgroundColor: checked ? palette.primary : "transparent",
         }}
       >
-        {checked ? <TickIcon size={11} color={palette.background} /> : null}
+        {checked ? <TickIcon size={11} color={palette.primaryForeground} /> : null}
       </View>
     </Pressable>
   );

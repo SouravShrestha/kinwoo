@@ -18,7 +18,6 @@ import {
   LinkIcon,
   UnlinkIcon,
 } from "@kinwoo/icons/native";
-import { colors } from "@kinwoo/tokens/native";
 import { router } from "expo-router";
 import { useState, type ReactNode } from "react";
 import { Image, ScrollView, Text, View } from "react-native";
@@ -56,7 +55,7 @@ function IconButton({
       className={`items-center justify-center ${
         boxed
           ? `size-[54px] rounded-2xl border ${
-              filled ? "border-foreground bg-foreground" : "border-border bg-muted"
+              filled ? "border-primary bg-primary" : "border-border bg-muted"
             }`
           : "size-10"
       } ${disabled ? "opacity-50" : ""}`}
@@ -69,7 +68,7 @@ function IconButton({
 export default function PersonalInformationScreen() {
   const { user, canSignInWithGoogle, linkGoogle, unlinkGoogle } = useAuth();
   const { profile, error: profileError, setDisplayName } = useProfile();
-  const { resolvedTheme } = useTheme();
+  const { resolvedTheme, colors } = useTheme();
   const palette = colors[resolvedTheme];
   const insets = useSafeAreaInsets();
 
@@ -221,7 +220,7 @@ export default function PersonalInformationScreen() {
                 disabled={saving}
                 onPress={() => void save()}
               >
-                <CheckIcon size={18} color={palette.background} />
+                <CheckIcon size={18} color={palette.primaryForeground} />
               </IconButton>
             ) : (
               <IconButton boxed label="Edit name" onPress={startEditing}>

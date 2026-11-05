@@ -9,13 +9,19 @@ describe("tokens", () => {
   it("uses the brand background and foreground", () => {
     expect(resolve("background", "light")).toBe("#fefefe");
     expect(resolve("background", "dark")).toBe("#0e0e0e");
-    expect(resolve("foreground", "light")).toBe("#0e0e0e");
-    expect(resolve("foreground", "dark")).toBe("#fefefe");
+    expect(resolve("foreground", "light")).toBe("#1e1240");
+    expect(resolve("foreground", "dark")).toBe("#f5f5f5");
   });
 
   it("has unique names", () => {
     const names = TOKENS.map((t) => t.name);
     expect(new Set(names).size).toBe(names.length);
+  });
+
+  it("applies palette overrides and falls back to the base token", () => {
+    expect(resolve("accent", "light", "skyscanner")).toBe("#0062e3");
+    expect(resolve("accent", "dark", "mono")).toBe("#fefefe");
+    expect(resolve("destructive", "light", "mono")).toBe(resolve("destructive", "light"));
   });
 
   it("throws on an unknown token", () => {

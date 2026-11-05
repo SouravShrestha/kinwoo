@@ -1,5 +1,4 @@
 import { CheckIcon } from "@kinwoo/icons/native";
-import { colors } from "@kinwoo/tokens/native";
 import type { ReactNode } from "react";
 import { Text, View } from "react-native";
 
@@ -37,7 +36,7 @@ export function OptionSheet({
   showTitle?: boolean;
   scrollable?: boolean;
 }) {
-  const { resolvedTheme } = useTheme();
+  const { resolvedTheme, colors } = useTheme();
   const palette = colors[resolvedTheme];
   const grid = columns > 1;
   const cellWidth = columns === 4 ? "w-1/4" : columns === 2 ? "w-1/2" : "w-1/3";
@@ -73,7 +72,7 @@ export function OptionSheet({
                 className={
                   chip
                     ? `${columns > 2 ? "aspect-[5/4] " : ""}min-h-14 items-center justify-center rounded-xl px-1 py-2 active:opacity-70 ${
-                        selected ? "bg-foreground" : "bg-muted"
+                        selected ? "bg-primary" : "bg-muted"
                       }`
                     : grid
                       ? "items-center gap-2 rounded-xl px-1 py-3 active:opacity-70"
@@ -88,12 +87,14 @@ export function OptionSheet({
                       option.dashed
                         ? "border border-dashed border-muted-foreground"
                         : grid && selected
-                          ? "bg-foreground"
+                          ? "bg-primary"
                           : "bg-muted"
                     }`}
                   >
                     {typeof option.icon === "function"
-                      ? option.icon(grid && selected ? palette.background : palette.foreground)
+                      ? option.icon(
+                          grid && selected ? palette.primaryForeground : palette.foreground,
+                        )
                       : option.icon}
                   </View>
                 ) : null}
@@ -108,7 +109,7 @@ export function OptionSheet({
                   } ${
                     chip
                       ? selected
-                        ? "text-background"
+                        ? "text-primary-foreground"
                         : "text-muted-foreground"
                       : selected
                         ? "text-foreground"
@@ -120,7 +121,7 @@ export function OptionSheet({
                 {option.detail ? (
                   <Text
                     className={`font-display-normal text-xs leading-5 opacity-70 ${
-                      selected ? "text-background" : "text-muted-foreground"
+                      selected ? "text-primary-foreground" : "text-muted-foreground"
                     }`}
                   >
                     ({option.detail})

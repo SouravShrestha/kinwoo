@@ -35,7 +35,7 @@ export function ExpensesMenuSheet({
       <button
         type="button"
         onClick={onViewPrivate}
-        className="mt-6 flex min-h-12 w-full items-center gap-3 text-left text-foreground transition-opacity hover:cursor-pointer hover:opacity-70 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
+        className="mt-6 flex min-h-12 w-full items-center gap-3 text-left text-foreground transition-opacity hover:cursor-pointer hover:opacity-70 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
       >
         <CloudLockFilledIcon size={20} />
         <span className="flex-1 font-display text-base">View private spending</span>

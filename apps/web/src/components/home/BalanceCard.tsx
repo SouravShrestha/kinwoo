@@ -1,46 +1,93 @@
+"use client";
+
 import { balanceHeadline, balanceHeadlineParts, type HouseBalances } from "@kinwoo/core/expenses";
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 
-import { BalanceLine } from "@/components/expenses/BalanceSummary";
-import { cn } from "@/lib/utils";
+import santa1 from "../../../../../assets/gifs/santa_1.webp";
+import santa2 from "../../../../../assets/gifs/santa_2.webp";
+import santa3 from "../../../../../assets/gifs/santa_3.webp";
+import santa4 from "../../../../../assets/gifs/santa_4.webp";
+import santa5 from "../../../../../assets/gifs/santa_5.webp";
 
-const LEAD = {
-  owed: "Across all your shared bills, you're owed",
-  owe: "Across all your shared bills, you owe",
-} as const;
+const santas = [santa1, santa2, santa3, santa4, santa5];
+// Picked once per page load. The card only renders client-side after balances load, so the
+// server and client picks never have to match.
+const santa = santas[Math.floor(Math.random() * santas.length)];
 
-export function BalanceCard({ balances }: { balances: HouseBalances }) {
-  const text = balanceHeadlineParts(balances);
-  const lead = text.tone === "neutral" ? text.before.trim() : LEAD[text.tone];
+// Autoplay once per app open; later mounts (e.g. tapping Home) show a still frame until tapped.
+let autoplayed = false;
+
+const LEAD = { owed: "You're owed", owe: "You owe" } as const;
+
+export function HeroCard({ onReplay, children }: { onReplay?: () => void; children: ReactNode }) {
+  // A new query string makes the browser restart the two-loop animation.
+  const [plays, setPlays] = useState(0);
+  const [still] = useState(autoplayed);
+  const canvas = useRef<HTMLCanvasElement>(null);
+  useEffect(() => {
+    autoplayed = true;
+    if (!still) return;
+    // ponytail: drawImage of an animated webp paints its first frame; no separate still asset.
+    const img = new window.Image();
+    img.onload = () => canvas.current?.getContext("2d")?.drawImage(img, 0, 0, 200, 200);
+    img.src = santa.src;
+  }, [still]);
   return (
-    <Link
-      href="/bills"
-      aria-label={`${balanceHeadline(balances)}. Open bills`}
-      className="flex w-full items-stretch overflow-hidden rounded-lg border border-border bg-card text-left hover:cursor-pointer hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
-    >
-      <Image
-        src="/images/shared-bill.webp"
-        alt=""
-        width={600}
-        height={318}
-        loading="eager"
-        className="h-auto w-[45%] shrink-0 self-end -ml-2 -mb-2"
-      />
-      <div className="flex flex-1 flex-col justify-between gap-4 py-6 pr-5 pl-2 -ml-12 text-right">
-        {/* Two lead lines and an amount row are always reserved, so a settled card keeps the
-            height of one with a balance. */}
-        <p className="min-h-[2lh] font-display text-sm font-normal text-muted-foreground">{lead}</p>
-        <p
-          aria-hidden={!text.amount}
-          className={cn(
-            "font-display text-xl font-normal text-foreground",
-            !text.amount && "invisible",
-          )}
-        >
-          {text.amount ? <BalanceLine text={{ ...text, before: "", after: "" }} /> : "\u00a0"}
-        </p>
-      </div>
-    </Link>
+    <div className="flex w-full items-center justify-between gap-5 px-3 py-8">
+      <button
+        type="button"
+        aria-label="Replay animation"
+        onClick={() => {
+          setPlays((n) => n + 1);
+          onReplay?.();
+        }}
+        className="shrink-0 rounded-full hover:cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+      >
+        {still && plays === 0 ? (
+          <canvas ref={canvas} width={200} height={200} className="size-[100px]" />
+        ) : (
+          <Image
+            key={plays}
+            src={`${santa.src}?play=${plays}`}
+            alt=""
+            width={100}
+            height={100}
+            unoptimized
+          />
+        )}
+      </button>
+      {children}
+    </div>
+  );
+}
+
+export function BalanceCard({
+  balances,
+  onReplay,
+}: {
+  balances: HouseBalances;
+  onReplay?: () => void;
+}) {
+  const text = balanceHeadlineParts(balances);
+  return (
+    <HeroCard onReplay={onReplay}>
+      <Link
+        href="/bills"
+        aria-label={`${balanceHeadline(balances)}. Open bills`}
+        className="flex flex-col items-end gap-0.5 text-right font-display font-medium hover:cursor-pointer hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+      >
+        <span className="text-sm leading-[18px] text-balance">
+          {text.tone === "neutral" ? text.before.trim() : LEAD[text.tone]}
+        </span>
+        {text.amount ? (
+          <span className="text-[26px] leading-10 tracking-[-0.02em] text-foreground">
+            {text.amount}
+          </span>
+        ) : null}
+        <span className="text-xs text-muted-foreground">Across all your shared bills</span>
+      </Link>
+    </HeroCard>
   );
 }

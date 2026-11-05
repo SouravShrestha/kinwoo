@@ -24,7 +24,7 @@ import { cn } from "@/lib/utils";
 
 const AVATAR = 72;
 const FOCUS_RING =
-  "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground";
+  "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary";
 const ICON_BUTTON =
   "flex size-9 items-center justify-center rounded-lg transition-opacity hover:cursor-pointer hover:opacity-80 disabled:cursor-not-allowed disabled:opacity-50";
 
@@ -128,7 +128,7 @@ function Body({
               aria-hidden
               className={cn(
                 "pointer-events-none absolute inset-x-0 -bottom-1 h-0.5 rounded-full",
-                editing ? "bg-foreground" : "bg-transparent",
+                editing ? "bg-primary" : "bg-transparent",
               )}
             />
           </label>
@@ -139,7 +139,7 @@ function Body({
             onClick={toggle}
             className={cn(
               editing
-                ? "border-foreground bg-foreground text-background"
+                ? "border-primary bg-primary text-primary-foreground"
                 : "border-border bg-card text-foreground",
               "ml-2 flex size-10 items-center justify-center rounded-full border transition-opacity hover:cursor-pointer hover:opacity-80 disabled:cursor-not-allowed disabled:opacity-50",
               FOCUS_RING,

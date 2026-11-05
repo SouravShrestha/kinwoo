@@ -1,5 +1,4 @@
 import { ArrowRightIcon } from "@kinwoo/icons/native";
-import { colors } from "@kinwoo/tokens/native";
 import { Text, View } from "react-native";
 
 import { Pressable } from "@/components/Pressable";
@@ -45,7 +44,7 @@ export function SettingsRow({
   value?: string;
   onPress?: () => void;
 }) {
-  const { resolvedTheme } = useTheme();
+  const { resolvedTheme, colors } = useTheme();
   const palette = colors[resolvedTheme];
 
   return (

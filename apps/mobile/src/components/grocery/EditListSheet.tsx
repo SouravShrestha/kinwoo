@@ -18,7 +18,6 @@ import {
 } from "@kinwoo/core/grocery";
 import { memberDisplayName } from "@kinwoo/core/houses";
 import { TrashIcon } from "@kinwoo/icons/native";
-import { colors } from "@kinwoo/tokens/native";
 import { useState } from "react";
 import { Text, View } from "react-native";
 import Animated, { Easing, FadeInLeft, FadeInRight } from "react-native-reanimated";
@@ -56,7 +55,7 @@ export function EditListSheet({
   currentUserId: string;
   onRemoved?: (listId: string) => void;
 }) {
-  const { resolvedTheme } = useTheme();
+  const { resolvedTheme, colors } = useTheme();
   const palette = colors[resolvedTheme];
 
   const [name, setName] = useState("");
@@ -204,6 +203,7 @@ export function EditListSheet({
                   accessibilityLabel="List name"
                   placeholder="e.g. Party Supplies, Weekly Essentials"
                   placeholderTextColor={palette.mutedForeground}
+                  selectionColor={palette.primary}
                   value={name}
                   onChangeText={setName}
                   maxLength={LIST_NAME_MAX_LENGTH}
@@ -322,7 +322,7 @@ export function EditListSheet({
 }
 
 function DeleteButton({ disabled, onPress }: { disabled: boolean; onPress: () => void }) {
-  const { resolvedTheme } = useTheme();
+  const { resolvedTheme, colors } = useTheme();
   const palette = colors[resolvedTheme];
 
   return (

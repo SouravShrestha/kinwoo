@@ -35,7 +35,7 @@ function ActionCard({
       type="button"
       aria-label={label}
       onClick={onClick}
-      className={`relative flex min-w-0 flex-1 flex-col ${labelAtTop ? "justify-start" : "justify-end"} overflow-hidden rounded-lg border border-border bg-card p-4 hover:cursor-pointer hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground ${className ?? ""}`}
+      className={`relative flex min-w-0 flex-1 flex-col ${labelAtTop ? "justify-start" : "justify-end"} overflow-hidden rounded-lg border border-border bg-card p-4 hover:cursor-pointer hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary ${className ?? ""}`}
     >
       {background ? (
         <span aria-hidden="true" className={`pointer-events-none absolute ${backgroundClassName}`}>

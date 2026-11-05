@@ -1,12 +1,11 @@
-import { CODE_LENGTH } from "@kinwoo/client/auth";
 import { DISPLAY_NAME_MAX_LENGTH } from "@kinwoo/core/auth";
-import type { InputHTMLAttributes } from "react";
+import { useEffect, useRef, type InputHTMLAttributes } from "react";
 
-export type TextFieldKind = "email" | "code" | "name";
+export type TextFieldKind = "email" | "name";
 
-const FOCUS =
-  "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground";
-const BASE = `h-[54px] w-full rounded-2xl border border-border bg-muted px-4 text-foreground placeholder:text-muted-foreground ${FOCUS}`;
+// No focus ring, matching mobile: the caret shows focus. outline-hidden keeps one in forced-colors mode.
+const BASE =
+  "h-[54px] w-full rounded-2xl border border-border bg-muted px-4 text-foreground placeholder:text-muted-foreground outline-hidden";
 
 const PRESETS: Record<TextFieldKind, InputHTMLAttributes<HTMLInputElement>> = {
   email: {
@@ -18,14 +17,6 @@ const PRESETS: Record<TextFieldKind, InputHTMLAttributes<HTMLInputElement>> = {
     "aria-label": "Email address",
     placeholder: "you@example.com",
     className: `${BASE} text-lg tracking-normal`,
-  },
-  code: {
-    inputMode: "numeric",
-    autoComplete: "one-time-code",
-    maxLength: CODE_LENGTH,
-    "aria-label": `${CODE_LENGTH}-digit code`,
-    placeholder: "123456",
-    className: `${BASE} text-center text-base tracking-[8px]`,
   },
   name: {
     autoComplete: "name",
@@ -42,6 +33,9 @@ type TextFieldProps = {
   value: string;
   onChange: (value: string) => void;
   disabled?: boolean;
+  autoFocus?: boolean;
+  /** Focus now and take focus back whenever it leaves. */
+  keepFocus?: boolean;
   errorId?: string;
   className?: string;
 };
@@ -52,17 +46,34 @@ export function TextField({
   value,
   onChange,
   disabled = false,
+  autoFocus,
+  keepFocus = false,
   errorId,
   className,
 }: TextFieldProps) {
   const preset = PRESETS[kind];
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  // Not the native attribute: that focuses with a page scroll, which jerks a sliding sheet.
+  // Re-runs when a kept field is re-enabled: disabling it drops focus.
+  const wantsFocus = autoFocus || (keepFocus && !disabled);
+  useEffect(() => {
+    if (wantsFocus) inputRef.current?.focus({ preventScroll: true });
+  }, [wantsFocus]);
 
   return (
     <input
+      ref={inputRef}
       {...preset}
       id={id}
       value={value}
       onChange={(event) => onChange(event.target.value)}
+      // Next frame: refocusing inside blur is ignored while focus is still moving.
+      onBlur={
+        keepFocus
+          ? () => requestAnimationFrame(() => inputRef.current?.focus({ preventScroll: true }))
+          : undefined
+      }
       disabled={disabled}
       aria-invalid={errorId ? true : undefined}
       aria-describedby={errorId}

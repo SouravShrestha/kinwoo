@@ -12,7 +12,6 @@ import {
   TickIcon,
   TrashIcon,
 } from "@kinwoo/icons/native";
-import { colors } from "@kinwoo/tokens/native";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Keyboard, Text, TextInput, View } from "react-native";
 import { GestureDetector } from "react-native-gesture-handler";
@@ -66,7 +65,7 @@ export function PaymentForm({
   children?: ReactNode;
 }) {
   const insets = useSafeAreaInsets();
-  const { resolvedTheme } = useTheme();
+  const { resolvedTheme, colors } = useTheme();
   const palette = colors[resolvedTheme];
   const { pan, scrollGesture, onScroll, sheetStyle } = useSwipeDownToDismiss(goBack);
   const amountInput = useRef<TextInput>(null);
@@ -93,7 +92,7 @@ export function PaymentForm({
     setEditing((value) => !value);
   };
   const editButtonClass = `ml-2 size-10 items-center justify-center rounded-full border ${
-    editing ? "border-foreground bg-foreground" : "border-border bg-card"
+    editing ? "border-primary bg-primary" : "border-border bg-card"
   } ${editing && !validAmount ? "opacity-50" : "active:opacity-80"}`;
 
   return (
@@ -175,6 +174,7 @@ export function PaymentForm({
                     keyboardType="decimal-pad"
                     placeholder="0"
                     placeholderTextColor={palette.mutedForeground}
+                    selectionColor={palette.primary}
                     value={amount}
                     onChangeText={(text) => isPaymentAmountDraft(text) && setDraft(text)}
                     className="absolute inset-0 font-display-normal text-foreground"
@@ -183,7 +183,7 @@ export function PaymentForm({
                   <View
                     pointerEvents="none"
                     className={`absolute inset-x-0 h-0.5 rounded-full ${
-                      editing ? "bg-foreground" : "bg-transparent"
+                      editing ? "bg-primary" : "bg-transparent"
                     }`}
                     style={{ bottom: -4 }}
                   />
@@ -197,7 +197,7 @@ export function PaymentForm({
                   className={editButtonClass}
                 >
                   {editing ? (
-                    <TickIcon size={18} color={palette.background} />
+                    <TickIcon size={18} color={palette.primaryForeground} />
                   ) : (
                     <EditIcon size={18} color={palette.foreground} />
                   )}
@@ -222,7 +222,7 @@ export function PaymentForm({
           </Text>
           <Button
             label={submitLabel}
-            icon={<RecordPaymentIcon size={20} color={palette.background} />}
+            icon={<RecordPaymentIcon size={20} color={palette.primaryForeground} />}
             loading={submitting}
             disabled={!validAmount || (requireChange && !changed)}
             onPress={() => onSubmit(amountPaise)}

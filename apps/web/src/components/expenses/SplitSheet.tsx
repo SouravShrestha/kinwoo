@@ -14,7 +14,7 @@ const LABEL = "How was it split?";
 const PANEL_ID = "split-sheet-panel";
 
 const FOCUS_RING =
-  "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground";
+  "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary";
 
 const TAB_CONTENT: Record<SplitMethod, ReactNode> = {
   equal: "=",
@@ -44,7 +44,7 @@ function Checkbox({ checked }: { checked: boolean }) {
       aria-hidden
       className={cn(
         "flex size-5 shrink-0 items-center justify-center rounded-[6px]",
-        checked ? "bg-foreground text-background" : "border border-border",
+        checked ? "bg-primary text-primary-foreground" : "border border-border",
       )}
     >
       {checked ? <CheckIcon size={10} /> : null}
@@ -137,7 +137,7 @@ export function SplitSheet({
         >
           <span
             aria-hidden
-            className="absolute inset-y-0 left-0 z-10 rounded-xl bg-foreground transition-transform duration-200 ease-out motion-reduce:transition-none"
+            className="absolute inset-y-0 left-0 z-10 rounded-xl bg-primary transition-transform duration-200 ease-out motion-reduce:transition-none"
             style={{
               width: `calc((100% - ${TAB_GAP} * ${SPLIT_METHODS.length - 1}) / ${SPLIT_METHODS.length})`,
               transform: `translateX(calc(${SPLIT_METHODS.indexOf(method)} * (100% + ${TAB_GAP})))`,
@@ -168,7 +168,7 @@ export function SplitSheet({
                 <span
                   className={cn(
                     "relative z-20 flex transition-colors duration-200 motion-reduce:transition-none",
-                    active ? "text-background" : "text-foreground",
+                    active ? "text-primary-foreground" : "text-foreground",
                   )}
                 >
                   {TAB_CONTENT[tab]}
@@ -229,7 +229,7 @@ export function SplitSheet({
               >
                 <Avatar name={member.name} url={member.avatarUrl} size={36} />
                 {name}
-                <label className="flex h-11 w-28 shrink-0 items-center rounded-xl bg-muted px-3 font-display text-base text-muted-foreground focus-within:outline-2 focus-within:outline-foreground">
+                <label className="flex h-11 w-28 shrink-0 items-center rounded-xl bg-muted px-3 font-display text-base text-muted-foreground focus-within:outline-2 focus-within:outline-primary">
                   {prefix}
                   <input
                     type="text"

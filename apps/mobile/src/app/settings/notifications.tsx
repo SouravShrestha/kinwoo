@@ -5,7 +5,6 @@ import { SETTING_EVENTS, withPushType, type SettingType } from "@kinwoo/core/pus
 import { LOAD_FAILED_MESSAGE } from "@kinwoo/core/app";
 import { TOAST_MESSAGES } from "@kinwoo/core/toast";
 import { ArrowRightIcon, CheckIcon } from "@kinwoo/icons/native";
-import { colors } from "@kinwoo/tokens/native";
 import { useRef, useState } from "react";
 import { ScrollView, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -26,7 +25,7 @@ const PUSH_NOTE =
 export default function NotificationsScreen() {
   const { profile, error: profileError, setPreferences } = useProfile();
   const { activeHouse } = useActiveHouse();
-  const { resolvedTheme } = useTheme();
+  const { resolvedTheme, colors } = useTheme();
   const palette = colors[resolvedTheme];
   const insets = useSafeAreaInsets();
   const [shown, setShown] = useState<{ enabled?: boolean; muted?: string[] }>({});
@@ -181,10 +180,10 @@ export default function NotificationsScreen() {
                     <Text className="flex-1 text-base text-foreground">{event.label}</Text>
                     <View
                       className={`size-5 items-center justify-center rounded-md ${
-                        checked ? "bg-foreground" : "border border-border"
+                        checked ? "bg-primary" : "border border-border"
                       }`}
                     >
-                      {checked ? <CheckIcon size={10} color={palette.background} /> : null}
+                      {checked ? <CheckIcon size={10} color={palette.primaryForeground} /> : null}
                     </View>
                   </Pressable>
                 );

@@ -10,8 +10,8 @@ import { Text, View } from "react-native";
 import { Avatar } from "@/components/houses/Avatar";
 
 const AMOUNT_TONE = {
-  owed: "text-accent",
-  owe: "text-destructive",
+  owed: "text-positive",
+  owe: "text-negative",
   neutral: "text-foreground",
 } as const;
 

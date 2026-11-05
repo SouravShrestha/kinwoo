@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 
 import { Pressable } from "./Pressable";
 
-export type ButtonVariant = "primary" | "accent" | "outline" | "ghost" | "destructive";
+export type ButtonVariant = "primary" | "accent" | "inverse" | "outline" | "ghost" | "destructive";
 
 export function Button({
   label,
@@ -43,22 +43,26 @@ export function Button({
       ? "bg-primary"
       : variant === "accent"
         ? "bg-accent"
-        : variant === "outline"
-          ? "border border-border bg-transparent"
-          : variant === "destructive"
-            ? "border border-destructive bg-transparent"
-            : "bg-transparent";
+        : variant === "inverse"
+          ? "bg-foreground"
+          : variant === "outline"
+            ? "border border-border bg-transparent"
+            : variant === "destructive"
+              ? "border border-destructive bg-transparent"
+              : "bg-transparent";
 
   const text =
     variant === "primary"
       ? "text-primary-foreground"
       : variant === "accent"
         ? "text-accent-foreground"
-        : variant === "ghost"
-          ? "text-muted-foreground"
-          : variant === "destructive"
-            ? "text-destructive"
-            : "text-foreground";
+        : variant === "inverse"
+          ? "text-background"
+          : variant === "ghost"
+            ? "text-muted-foreground"
+            : variant === "destructive"
+              ? "text-destructive"
+              : "text-foreground";
 
   return (
     <Pressable

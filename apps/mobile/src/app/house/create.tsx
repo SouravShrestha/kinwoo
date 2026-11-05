@@ -6,7 +6,6 @@ import {
   HOUSE_SCREEN_TITLES,
 } from "@kinwoo/core/houses";
 import { HousePinIcon } from "@kinwoo/icons/native";
-import { colors } from "@kinwoo/tokens/native";
 import { router } from "expo-router";
 import { Text, View } from "react-native";
 
@@ -19,7 +18,7 @@ import { useTheme } from "@/theme/ThemeProvider";
 
 export default function CreateHouseScreen() {
   const form = useCreateHouseForm(() => router.replace("/house/invite"));
-  const { resolvedTheme } = useTheme();
+  const { resolvedTheme, colors } = useTheme();
 
   return (
     <HouseScreen

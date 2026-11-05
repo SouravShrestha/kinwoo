@@ -6,7 +6,6 @@ import {
   WEEKDAY_LABELS,
 } from "@kinwoo/core/grocery";
 import { ArrowRightIcon } from "@kinwoo/icons/native";
-import { colors } from "@kinwoo/tokens/native";
 import { useCallback, useLayoutEffect, useMemo, useState } from "react";
 import { Text, View } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
@@ -81,7 +80,7 @@ function MonthPane({
                   allowDoublePress
                   className={`size-11 items-center justify-center rounded-full ${
                     selected
-                      ? "bg-foreground"
+                      ? "bg-primary"
                       : isSameLocalDay(date, today)
                         ? "border border-border"
                         : "active:bg-muted"
@@ -89,7 +88,7 @@ function MonthPane({
                 >
                   <Text
                     className={`font-display-normal text-base ${
-                      selected ? "text-background" : "text-foreground"
+                      selected ? "text-primary-foreground" : "text-foreground"
                     }`}
                   >
                     {date.getDate()}
@@ -113,7 +112,7 @@ function Calendar({
   onSelect: (date: Date) => void;
   onCancel: () => void;
 }) {
-  const { resolvedTheme } = useTheme();
+  const { resolvedTheme, colors } = useTheme();
   const palette = colors[resolvedTheme];
   const today = useMemo(() => startOfLocalDay(new Date()), []);
   const [view, setView] = useState<Month>({ year: value.getFullYear(), month: value.getMonth() });

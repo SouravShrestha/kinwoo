@@ -82,7 +82,7 @@ export function ProfileScreen() {
           type="button"
           aria-label="Change avatar"
           onClick={() => setAvatarOpen(true)}
-          className="relative size-16 shrink-0 overflow-hidden rounded-full bg-accent hover:cursor-pointer hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
+          className="relative size-16 shrink-0 overflow-hidden rounded-full bg-accent hover:cursor-pointer hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
