@@ -125,7 +125,7 @@ export function HomeScreen() {
             />
           ) : showWelcome ? (
             <HeroCard onReplay={() => setDecorPlays((n) => n + 1)}>
-              <div className="flex flex-col items-end gap-1.5 text-right font-display font-medium">
+              <div className="flex flex-col items-center gap-1.5 text-center font-display font-medium">
                 <span className="text-base whitespace-nowrap">
                   Every home starts
                   <br />

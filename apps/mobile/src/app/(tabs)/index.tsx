@@ -126,16 +126,16 @@ export default function HomeScreen() {
               />
             ) : showWelcome ? (
               <HeroCard onReplay={() => setDecorPlays((n) => n + 1)}>
-                <View className="shrink items-end gap-1.5">
+                <View className="items-center gap-1.5">
                   <Text
                     numberOfLines={2}
-                    className="text-right font-display-medium text-base text-foreground"
+                    className="text-center font-display-medium text-base text-foreground"
                   >
                     {"Every home starts\nsomewhere"}
                   </Text>
                   <Text
                     numberOfLines={1}
-                    className="text-right font-display-medium text-base text-muted-foreground"
+                    className="text-center font-display-medium text-base text-muted-foreground"
                   >
                     Set yours up to share
                   </Text>

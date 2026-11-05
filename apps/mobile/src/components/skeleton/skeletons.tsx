@@ -79,14 +79,14 @@ export function HouseHeaderSkeleton() {
 
 export function BalanceCardSkeleton() {
   return (
-    <SkeletonRegion className="w-full flex-row items-center justify-between gap-5 px-3 py-8">
-      <Skeleton className="size-[58px] rounded-full" />
-      <View className="items-end gap-0.5">
-        <SkeletonText size="sm" align="end" className="w-24" />
+    <SkeletonRegion className="w-full items-center gap-3 px-3 pb-7 pt-4">
+      <Skeleton className="size-[72px] rounded-full" />
+      <View className="items-center gap-0.5">
+        <SkeletonText size="sm" align="center" className="w-24" />
         <View className="h-10 justify-center">
           <Skeleton className="h-6 w-32" />
         </View>
-        <SkeletonText size="xs" align="end" className="w-40" />
+        <SkeletonText size="xs" align="center" className="w-40" />
       </View>
     </SkeletonRegion>
   );

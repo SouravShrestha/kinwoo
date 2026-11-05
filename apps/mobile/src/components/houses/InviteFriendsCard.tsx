@@ -11,7 +11,7 @@ type InviteFriendsCardProps = {
   onReplay?: () => void;
 };
 
-const LINE = "text-right font-display-medium text-sm leading-[18px] text-foreground";
+const LINE = "text-center font-display-medium text-sm leading-[18px] text-foreground";
 
 export function InviteFriendsCard({ canInvite, onPress, onReplay }: InviteFriendsCardProps) {
   const { resolvedTheme, colors } = useTheme();
@@ -24,7 +24,7 @@ export function InviteFriendsCard({ canInvite, onPress, onReplay }: InviteFriend
         accessibilityLabel="Invite friends. Solo mode is fine, but it's better with friends"
         disabled={!canInvite}
         onPress={onPress}
-        className="shrink items-end gap-1.5 active:opacity-80"
+        className="items-center gap-1.5 active:opacity-80"
       >
         <Text className={LINE}>Solo mode is fine,</Text>
         <Text className={LINE}>but it's better with friends</Text>

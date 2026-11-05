@@ -21,7 +21,7 @@ export function HeroCard({ onReplay, children }: { onReplay?: () => void; childr
   }, []);
 
   return (
-    <View className="w-full flex-row items-center justify-between gap-5 px-3 py-8">
+    <View className="w-full items-center gap-3 px-3 pb-7 pt-4">
       <Pressable
         accessibilityRole="button"
         accessibilityLabel="Replay animation"
@@ -37,7 +37,7 @@ export function HeroCard({ onReplay, children }: { onReplay?: () => void; childr
           source={santa}
           autoplay={!still || plays > 0}
           accessibilityIgnoresInvertColors
-          style={{ width: 100, height: 100 }}
+          style={{ width: 72, height: 72 }}
         />
       </Pressable>
       {children}
@@ -59,9 +59,9 @@ export function BalanceCard({
         accessibilityRole="button"
         accessibilityLabel={`${balanceHeadline(balances)}. Open bills`}
         onPress={() => router.push("/bills")}
-        className="shrink items-end gap-0.5 active:opacity-80"
+        className="items-center gap-0.5 active:opacity-80"
       >
-        <Text className="text-right font-display-medium text-sm leading-[18px] text-foreground">
+        <Text className="text-center font-display-medium text-sm leading-[18px] text-foreground">
           {text.tone === "neutral" ? text.before.trim() : LEAD[text.tone]}
         </Text>
         {text.amount ? (
@@ -69,7 +69,7 @@ export function BalanceCard({
             {text.amount}
           </Text>
         ) : null}
-        <Text className="font-display-medium text-xs text-muted-foreground">
+        <Text className="text-center font-display-medium text-xs text-muted-foreground">
           Across all your shared bills
         </Text>
       </Pressable>

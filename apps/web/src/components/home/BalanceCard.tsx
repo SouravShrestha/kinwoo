@@ -35,7 +35,7 @@ export function HeroCard({ onReplay, children }: { onReplay?: () => void; childr
     img.src = santa.src;
   }, [still]);
   return (
-    <div className="flex w-full items-center justify-between gap-5 px-3 py-8">
+    <div className="flex w-full flex-col items-center gap-3 px-3 pt-4 pb-7">
       <button
         type="button"
         aria-label="Replay animation"
@@ -43,17 +43,17 @@ export function HeroCard({ onReplay, children }: { onReplay?: () => void; childr
           setPlays((n) => n + 1);
           onReplay?.();
         }}
-        className="shrink-0 rounded-full hover:cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+        className="rounded-full hover:cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
       >
         {still && plays === 0 ? (
-          <canvas ref={canvas} width={200} height={200} className="size-[100px]" />
+          <canvas ref={canvas} width={200} height={200} className="size-[72px]" />
         ) : (
           <Image
             key={plays}
             src={`${santa.src}?play=${plays}`}
             alt=""
-            width={100}
-            height={100}
+            width={72}
+            height={72}
             unoptimized
           />
         )}
@@ -76,7 +76,7 @@ export function BalanceCard({
       <Link
         href="/bills"
         aria-label={`${balanceHeadline(balances)}. Open bills`}
-        className="flex flex-col items-end gap-0.5 text-right font-display font-medium hover:cursor-pointer hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+        className="flex flex-col items-center gap-0.5 text-center font-display font-medium hover:cursor-pointer hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
       >
         <span className="text-sm leading-[18px] text-balance">
           {text.tone === "neutral" ? text.before.trim() : LEAD[text.tone]}
