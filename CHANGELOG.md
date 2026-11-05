@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.5.2](https://github.com/SouravShrestha/kinwoo/compare/v1.5.1...v1.5.2) (2026-11-05)
+
+
+### Bug Fixes
+
+* **home:** center hero card art and text ([15b37b3](https://github.com/SouravShrestha/kinwoo/commit/15b37b393983e6affb67f1e6eb3da7474bdc8695))
+* **web:** tint house menu icons with primary color ([3abec12](https://github.com/SouravShrestha/kinwoo/commit/3abec1234eedfaeab49b6fdaf04ca104d95ab199))
+
 ## [1.5.1](https://github.com/SouravShrestha/kinwoo/compare/v1.5.0...v1.5.1) (2026-11-05)
 
 
