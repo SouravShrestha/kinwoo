@@ -21,6 +21,8 @@ name = "kinwoo-test"
 
 [env.test.vars]
 APP_HOSTNAME = "test.kinwoo.in"
+# Play App Signing certificate, read at runtime by /.well-known/assetlinks.json. Public by design.
+ANDROID_CERT_SHA256 = "0A:B8:D1:C4:F7:3E:FC:37:5D:5F:B1:C8:74:1A:4B:71:71:94:F6:F1:D7:43:CB:51:74:A6:1B:B2:B5:04:A8:3B"
 
 # workers_dev and preview_urls are both off, so without a route the deployed
 # Worker has no reachable hostname. kinwoo.in must be on Cloudflare DNS.
@@ -44,6 +46,7 @@ name = "kinwoo-prod"
 
 [env.production.vars]
 APP_HOSTNAME = "app.kinwoo.in"
+ANDROID_CERT_SHA256 = "0A:B8:D1:C4:F7:3E:FC:37:5D:5F:B1:C8:74:1A:4B:71:71:94:F6:F1:D7:43:CB:51:74:A6:1B:B2:B5:04:A8:3B"
 
 [[env.production.routes]]
 pattern = "app.kinwoo.in"
