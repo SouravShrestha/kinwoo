@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.1](https://github.com/SouravShrestha/kinwoo/compare/v1.5.0...v1.5.1) (2026-11-05)
+
+
+### Bug Fixes
+
+* **web:** serve android cert fingerprint from worker vars ([fe6fa70](https://github.com/SouravShrestha/kinwoo/commit/fe6fa7077b2d7d1bd2aa2de7f8f724a0afec5594))
+
 ## [1.5.0](https://github.com/SouravShrestha/kinwoo/compare/v1.4.0...v1.5.0) (2026-11-05)
 
 
