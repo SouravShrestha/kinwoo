@@ -9,7 +9,8 @@
   "types": "./src/index.tsx",
   "exports": {
     ".": "./src/index.tsx",
-    "./native": "./src/native.tsx"
+    "./native": "./src/native.tsx",
+    "./decor": "./src/decor.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",

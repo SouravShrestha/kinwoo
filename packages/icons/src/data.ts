@@ -400,6 +400,37 @@ export const basketIcon: IconGeometry = {
   ],
 };
 
+// Filled bill and outlined basket, used in the tab bar's add menu.
+export const billFilledIcon: IconGeometry = {
+  viewBox: "0 0 24 24",
+  paths: [
+    {
+      d: "M18 2H6a3 3 0 0 0-3 3v14.8a2 2 0 0 0 2.86 1.81c.24-.12.45-.25.67-.38A2.35 2.35 0 0 1 8 20.76a2.38 2.38 0 0 1 1.48.47A4.3 4.3 0 0 0 12 22a4.28 4.28 0 0 0 2.52-.77 2.37 2.37 0 0 1 1.48-.47 2.33 2.33 0 0 1 1.47.47 7 7 0 0 0 .67.37A2 2 0 0 0 21 19.8V5a3 3 0 0 0-3-3m-6 14H8a1 1 0 0 1 0-2h4a1 1 0 0 1 0 2m4-4H8a1 1 0 0 1 0-2h8a1 1 0 0 1 0 2m0-4H8a1 1 0 0 1 0-2h8a1 1 0 0 1 0 2",
+    },
+  ],
+};
+
+export const basketOutlineIcon: IconGeometry = {
+  viewBox: "0 0 24 24",
+  paths: [
+    {
+      d: "m18.643 8.614-3-5a.75.75 0 0 0-1.286.772l3 5a.75.75 0 0 0 1.286-.772M6.643 9.386l3-5a.75.75 0 0 0-1.286-.772l-3 5a.75.75 0 0 0 1.286.772",
+      fillRule: "evenodd",
+      clipRule: "evenodd",
+    },
+    {
+      d: "M21.74 9.121A.75.75 0 0 0 21 8.25H3a.75.75 0 0 0-.74.871l1.525 9.323a2.75 2.75 0 0 0 2.714 2.306h11.002a2.75 2.75 0 0 0 2.714-2.306zM11.25 12.5v4a.75.75 0 0 0 1.5 0v-4a.75.75 0 0 0-1.5 0m4 0v4a.75.75 0 0 0 1.5 0v-4a.75.75 0 0 0-1.5 0m-8 0v4a.75.75 0 0 0 1.5 0v-4a.75.75 0 0 0-1.5 0",
+      fillRule: "evenodd",
+      clipRule: "evenodd",
+    },
+    {
+      d: "M22 8.25H2a.75.75 0 0 0 0 1.5h20a.75.75 0 0 0 0-1.5",
+      fillRule: "evenodd",
+      clipRule: "evenodd",
+    },
+  ],
+};
+
 export const moreVerticalIcon: IconGeometry = {
   viewBox: "0 0 4 17",
   paths: [
@@ -436,6 +467,11 @@ export const caretDownIcon: IconGeometry = {
       d: "M0.102482 0.69427L2.55188 3.55266C2.59136 3.59871 2.64034 3.63567 2.69545 3.66101C2.75056 3.68636 2.81049 3.69948 2.87115 3.69948C2.93181 3.69948 2.99175 3.68636 3.04686 3.66101C3.10197 3.63567 3.15094 3.59871 3.19043 3.55266L5.63982 0.69427C5.87358 0.421433 5.67977 0 5.32055 0H0.421054C0.0618283 0 -0.131979 0.421433 0.102482 0.69427Z",
     },
   ],
+};
+
+export const plusIcon: IconGeometry = {
+  viewBox: "0 0 24 24",
+  paths: [{ d: "M12 5V19M5 12H19", lineWidth: 2.5 }],
 };
 
 export const plusCircleIcon: IconGeometry = {
