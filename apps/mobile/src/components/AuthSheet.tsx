@@ -47,6 +47,9 @@ export function AuthSheet({ open, onClose }: { open: boolean; onClose: () => voi
   if (!open && verified) setVerified(false);
 
   const busy = state.phase === "sending" || state.phase === "verifying";
+  // From the moment a code is checked until the sheet closes, the code step's links do nothing.
+  const locked = busy || verified;
+  const resendable = canResend(state, now) && !locked;
   useBusyWhile(busy && !verified);
 
   const send = async () => {
@@ -98,14 +101,8 @@ export function AuthSheet({ open, onClose }: { open: boolean; onClose: () => voi
             className="mt-10"
           />
 
-          {verified ? (
-            <Text
-              accessibilityLiveRegion="polite"
-              className="mt-3 text-center text-sm font-normal text-positive"
-            >
-              Verified
-            </Text>
-          ) : state.error ? (
+          {/* "Verified" is the capsule the code fuses into */}
+          {state.error ? (
             <Text
               accessibilityLiveRegion="polite"
               className="mt-3 text-center text-sm font-normal text-destructive"
@@ -117,24 +114,32 @@ export function AuthSheet({ open, onClose }: { open: boolean; onClose: () => voi
           <View className="mt-10 flex-row items-center justify-between px-1">
             <Pressable
               accessibilityRole="button"
+              accessibilityState={{ disabled: locked }}
+              disabled={locked}
               onPress={() => dispatch({ type: "back-to-email" })}
             >
-              <View className="border-b border-muted-foreground" style={UNDERLINE_STYLE}>
-                <Text className="text-sm text-foreground">Use a different email</Text>
+              <View
+                className={`border-b border-muted-foreground ${locked ? "opacity-50" : ""}`}
+                style={UNDERLINE_STYLE}
+              >
+                <Text className={`text-sm ${locked ? "text-muted-foreground" : "text-foreground"}`}>
+                  Use a different email
+                </Text>
               </View>
             </Pressable>
 
             <Pressable
               accessibilityRole="button"
-              disabled={!canResend(state, now) || busy}
+              accessibilityState={{ disabled: !resendable }}
+              disabled={!resendable}
               onPress={send}
             >
               <View
-                className={`border-b ${canResend(state, now) && !busy ? "border-foreground" : "border-muted-foreground opacity-50"}`}
+                className={`border-b ${resendable ? "border-foreground" : "border-muted-foreground opacity-50"}`}
                 style={UNDERLINE_STYLE}
               >
                 <Text
-                  className={`text-sm ${canResend(state, now) && !busy ? "text-foreground" : "text-muted-foreground"}`}
+                  className={`text-sm ${resendable ? "text-foreground" : "text-muted-foreground"}`}
                 >
                   {canResend(state, now)
                     ? "Resend code"
@@ -157,8 +162,9 @@ export function AuthSheet({ open, onClose }: { open: boolean; onClose: () => voi
             kind="email"
             autoFocus
             value={state.email}
-            onChangeText={(value) => dispatch({ type: "edit-email", value })}
-            disabled={busy}
+            // Not disabled while sending: a non-editable input loses focus, Android drops the
+            // keyboard, and the code field's focus then lands with no keyboard to show.
+            onChangeText={(value) => busy || dispatch({ type: "edit-email", value })}
             className="mt-6"
           />
 
@@ -183,7 +189,7 @@ function messageFor(error: unknown): string {
     return "Too many attempts. Wait a minute and try again.";
   }
   if (/expired|invalid/i.test(error.message)) {
-    return "That code has expired or was already used.";
+    return "Invalid code. It may have expired or been used.";
   }
 
   return error.message;

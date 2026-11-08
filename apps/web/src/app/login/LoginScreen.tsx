@@ -5,7 +5,6 @@ import { APP_NAME, LEGAL_URLS } from "@kinwoo/core/app";
 import { GoogleIcon } from "@kinwoo/icons";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "@/lib/router";
 import { useEffect, useState } from "react";
 
 import { AndroidInstallBanner } from "@/components/AndroidInstallBanner";
@@ -14,16 +13,18 @@ import { Button } from "@/components/Button";
 
 export function LoginScreen() {
   const { isLoggedIn, ready, canSignInWithGoogle, signInWithGoogle } = useAuth();
-  const router = useRouter();
 
   const [emailOpen, setEmailOpen] = useState(false);
   const [googleBusy, setGoogleBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   // Waits for the email sheet to close, so its success state is seen before the route changes.
+  // A full navigation, not router.replace: isLoggedIn flips as soon as the client SDK sees the
+  // new session, which can race ahead of its own cookie write. router.replace's RSC fetch can
+  // then hit middleware with stale cookies and get bounced straight back to /login.
   useEffect(() => {
-    if (ready && isLoggedIn && !emailOpen) router.replace("/");
-  }, [ready, isLoggedIn, emailOpen, router]);
+    if (ready && isLoggedIn && !emailOpen) window.location.assign("/");
+  }, [ready, isLoggedIn, emailOpen]);
 
   // Trap browser back, hardware back and edge swipes: each pop lands on a duplicate entry
   // and is immediately re-pushed.
