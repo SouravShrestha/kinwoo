@@ -138,7 +138,7 @@ export function PendingItemDetails({
                   variant="outline"
                   accessibilityLabel="Assign to a housemate"
                   accessibilityState={{ expanded: stripOpen }}
-                  iconEnd={<ExpandCaret progress={progress} color={palette.foreground} />}
+                  iconEnd={<ExpandCaret progress={progress} color={palette.foreground} opensUp />}
                   onPress={() => setExpanded((value) => !value)}
                   className="h-12 flex-1 px-3"
                 />

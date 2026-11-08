@@ -80,7 +80,7 @@ export function PendingSelectionBar({
             label="Someone else"
             variant="outline"
             accessibilityLabel="Assign to others"
-            iconEnd={<ExpandCaret progress={progress} color={palette.foreground} />}
+            iconEnd={<ExpandCaret progress={progress} color={palette.foreground} opensUp />}
             onPress={() => setExpanded((value) => !value)}
             accessibilityState={{ expanded }}
             className="h-12 flex-1"

@@ -1,6 +1,6 @@
 import { CheckIcon } from "@kinwoo/icons/native";
 import type { ReactNode } from "react";
-import { Text, View } from "react-native";
+import { Text, useWindowDimensions, View } from "react-native";
 
 import { useTheme } from "@/theme/ThemeProvider";
 
@@ -37,17 +37,22 @@ export function OptionSheet({
   scrollable?: boolean;
 }) {
   const { resolvedTheme, colors } = useTheme();
+  const { height: screenHeight } = useWindowDimensions();
   const palette = colors[resolvedTheme];
   const grid = columns > 1;
   const cellWidth = columns === 4 ? "w-1/4" : columns === 2 ? "w-1/2" : "w-1/3";
+
+  // A non-scrollable grid (e.g. Category) still needs to scroll once its content outgrows
+  // the sheet, so grids always get the real BottomSheetScrollView, just capped lower.
+  const effectiveScrollable = scrollable || grid;
 
   return (
     <BottomSheet
       open={open}
       onClose={onClose}
       label={title}
-      scrollable={scrollable}
-      maxHeight={scrollable ? 520 : undefined}
+      scrollable={effectiveScrollable}
+      maxHeight={effectiveScrollable ? (grid ? screenHeight * 0.8 : 520) : undefined}
       minHeightRatio={grid ? 0.4 : undefined}
     >
       {showTitle ? (

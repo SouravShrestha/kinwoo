@@ -35,9 +35,18 @@ export function useExpandProgress(expanded: boolean) {
   return progress;
 }
 
-export function ExpandCaret({ progress, color }: { progress: SharedValue<number>; color: string }) {
+// opensUp: the panel appears above the trigger, so the caret points up while closed.
+export function ExpandCaret({
+  progress,
+  color,
+  opensUp = false,
+}: {
+  progress: SharedValue<number>;
+  color: string;
+  opensUp?: boolean;
+}) {
   const style = useAnimatedStyle(() => ({
-    transform: [{ rotate: `${progress.value * 180}deg` }],
+    transform: [{ rotate: `${(opensUp ? 1 - progress.value : progress.value) * 180}deg` }],
   }));
 
   return (
