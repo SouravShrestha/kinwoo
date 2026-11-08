@@ -53,6 +53,8 @@ export function BalanceCard({
   onReplay?: () => void;
 }) {
   const text = balanceHeadlineParts(balances);
+  // Settled up is the whole message; "across all your bills" adds nothing to it.
+  const settled = text.tone === "neutral" && balances.pairs.every((pair) => pair.netPaise === 0);
   return (
     <HeroCard onReplay={onReplay}>
       <Pressable
@@ -69,9 +71,11 @@ export function BalanceCard({
             {text.amount}
           </Text>
         ) : null}
-        <Text className="text-center font-display-medium text-xs text-muted-foreground">
-          Across all your shared bills
-        </Text>
+        {settled ? null : (
+          <Text className="text-center font-display-medium text-xs text-muted-foreground">
+            Across all your shared bills
+          </Text>
+        )}
       </Pressable>
     </HeroCard>
   );
