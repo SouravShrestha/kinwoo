@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.6.1](https://github.com/SouravShrestha/kinwoo/compare/v1.6.0...v1.6.1) (2026-11-08)
+
+
+### Bug Fixes
+
+* **db:** drop category check before renaming expense rows ([d5c69db](https://github.com/SouravShrestha/kinwoo/commit/d5c69dbfaa7f54fe6453b6888dfdd339b291633a))
+* **home:** show only settled up message when balances are clear ([c245598](https://github.com/SouravShrestha/kinwoo/commit/c24559862764ea5e59e5a152633aa7aab851c193))
+
 ## [1.6.0](https://github.com/SouravShrestha/kinwoo/compare/v1.5.2...v1.6.0) (2026-11-08)
 
 
