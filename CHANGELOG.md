@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.6.0](https://github.com/SouravShrestha/kinwoo/compare/v1.5.2...v1.6.0) (2026-11-08)
+
+
+### Features
+
+* **auth:** replace otp input with animated one-time code field ([d8f86db](https://github.com/SouravShrestha/kinwoo/commit/d8f86db4a552ff9bd3d65b46b423bf64d3b8dee4))
+* **categories:** expand expense and grocery categories with new icons ([599ad60](https://github.com/SouravShrestha/kinwoo/commit/599ad60c2e8a3e3aba2745f5a2fa7c7530adb16f))
+
+
+### Bug Fixes
+
+* **grocery:** point assign carets toward their panels and scroll grids ([97fb02a](https://github.com/SouravShrestha/kinwoo/commit/97fb02af49fd526019f0f064ab58066b252ab2c7))
+* **mobile:** raise android tab bar clearance and enable r8 shrinking ([5c13337](https://github.com/SouravShrestha/kinwoo/commit/5c133371f601be55871df56fb3abc9d30f1657eb))
+
 ## [1.5.2](https://github.com/SouravShrestha/kinwoo/compare/v1.5.1...v1.5.2) (2026-11-05)
 
 
