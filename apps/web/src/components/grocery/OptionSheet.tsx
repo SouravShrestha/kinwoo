@@ -42,7 +42,7 @@ export function OptionSheet({
       open={open}
       onClose={onClose}
       label={title}
-      className={cn(grid && "min-h-[40dvh]", !scrollable && "overflow-y-hidden")}
+      className={cn(grid && "min-h-[40dvh]", grid && !scrollable && "max-h-[80dvh]")}
     >
       {showTitle ? (
         <h2 className="mb-3 font-display text-lg font-medium text-foreground">{title}</h2>

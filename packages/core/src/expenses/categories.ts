@@ -1,28 +1,62 @@
 export const EXPENSE_CATEGORIES = [
+  "others",
   "rent",
-  "utilities",
   "groceries",
-  "internet",
-  "household",
-  "food_dining",
+  "utilities",
+  "food",
   "transport",
-  "other",
+  "household",
+  "shopping",
+  "entertainment",
+  "subscriptions",
+  "travel",
+  "health",
+  "personal_care",
+  "clothing",
+  "maintenance",
+  "internet",
+  "insurance",
+  "loan_emi",
+  "education",
+  "fitness",
+  "pets",
+  "childcare",
+  "furniture",
+  "gifts",
+  "taxes",
 ] as const;
 
 export type ExpenseCategory = (typeof EXPENSE_CATEGORIES)[number];
 
 export const EXPENSE_CATEGORY_LABELS: Record<ExpenseCategory, string> = {
+  others: "Others",
   rent: "Rent",
-  utilities: "Utilities",
   groceries: "Groceries",
-  internet: "Internet",
-  household: "Household",
-  food_dining: "Food & dining",
+  utilities: "Utilities",
+  food: "Food",
   transport: "Transport",
-  other: "Other",
+  household: "Household",
+  shopping: "Shopping",
+  entertainment: "Entertainment",
+  subscriptions: "Subscriptions",
+  travel: "Travel",
+  health: "Health",
+  personal_care: "Personal care",
+  clothing: "Clothing",
+  maintenance: "Maintenance",
+  internet: "Internet",
+  insurance: "Insurance",
+  loan_emi: "Loan / EMI",
+  education: "Education",
+  fitness: "Fitness",
+  pets: "Pets",
+  childcare: "Childcare",
+  furniture: "Furniture",
+  gifts: "Gifts",
+  taxes: "Taxes",
 };
 
-export const DEFAULT_EXPENSE_CATEGORY: ExpenseCategory = "other";
+export const DEFAULT_EXPENSE_CATEGORY: ExpenseCategory = "others";
 export const DEFAULT_GROCERY_EXPENSE_CATEGORY: ExpenseCategory = "groceries";
 
 export function isExpenseCategory(value: unknown): value is ExpenseCategory {

@@ -19,7 +19,7 @@ import { cn } from "@/lib/utils";
 import { BottomSheet } from "./BottomSheet";
 import { Button } from "./Button";
 import { TextField } from "./TextField";
-import { OtpInput } from "./ui/otp-input";
+import { OneTimeCode } from "./ui/one-time-code";
 
 const RESEND_COOLDOWN_MS = resendCooldownMsFrom(
   process.env.NEXT_PUBLIC_OTP_RESEND_COOLDOWN_SECONDS,
@@ -52,6 +52,9 @@ export function AuthSheet({ open, onClose }: { open: boolean; onClose: () => voi
   const [verified, setVerified] = useState(false);
   if (!open && verified) setVerified(false);
   const showEmail = !onCodeStep || !codeFocused;
+  // From the moment a code is checked until the sheet closes, the code step's links do nothing.
+  const locked = busy || verified;
+  const resendable = canResend(state, now) && !locked;
 
   const send = async () => {
     dispatch({ type: "submit-email", now: Date.now() });
@@ -101,10 +104,9 @@ export function AuthSheet({ open, onClose }: { open: boolean; onClose: () => voi
         {onCodeStep ? (
           // Spacing on a wrapper: the field sizes itself from its container, so keep its box clean.
           <div className="py-10" onFocus={() => setCodeFocused(true)}>
-            <OtpInput
+            <OneTimeCode
               autoFocus
               length={CODE_LENGTH}
-              align="center"
               value={state.code}
               status={
                 verified
@@ -158,15 +160,18 @@ export function AuthSheet({ open, onClose }: { open: boolean; onClose: () => voi
             <button
               type="button"
               onClick={() => dispatch({ type: "back-to-email" })}
-              className="text-foreground hover:cursor-pointer"
+              disabled={locked}
+              className="text-foreground hover:cursor-pointer disabled:cursor-not-allowed disabled:text-muted-foreground"
             >
-              <span className="block border-b border-muted-foreground">Use a different email</span>
+              <span className="block border-b border-muted-foreground in-disabled:opacity-50">
+                Use a different email
+              </span>
             </button>
 
             <button
               type="button"
               onClick={() => void send()}
-              disabled={!canResend(state, now) || busy}
+              disabled={!resendable}
               className="text-foreground hover:cursor-pointer disabled:cursor-not-allowed disabled:text-muted-foreground"
             >
               <span className="block border-b border-foreground in-disabled:border-muted-foreground in-disabled:opacity-50">
@@ -190,7 +195,7 @@ function messageFor(error: unknown): string {
     return "Too many attempts. Wait a minute and try again.";
   }
   if (/expired|invalid/i.test(error.message)) {
-    return "That code has expired or was already used.";
+    return "Invalid code. It may have expired or been used.";
   }
 
   return error.message;

@@ -145,7 +145,7 @@ export function TasksScreen({ view }: { view: TasksView | null }) {
           className="mr-3 flex min-h-10 min-w-0 flex-1 items-center gap-3 text-left text-foreground transition-opacity hover:opacity-70 hover:cursor-pointer"
         >
           {activeList ? (
-            <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-muted">
+            <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-muted">
               <ListIconImage label={listIconOption(activeList.icon).label} size={28} />
             </span>
           ) : null}

@@ -180,7 +180,7 @@ function TasksScreen({ view }: { view: TasksView | null }) {
           className="mr-3 min-h-10 flex-1 flex-row items-center gap-3 active:opacity-70"
         >
           {currentList ? (
-            <View className="size-8 shrink-0 items-center justify-center rounded-lg bg-muted">
+            <View className="size-10 shrink-0 items-center justify-center rounded-xl bg-muted">
               <ListIconImage label={listIconOption(currentList.icon).label} size={28} />
             </View>
           ) : null}

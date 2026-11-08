@@ -45,3 +45,5 @@ _current_branch*
 # Local-only DB scripts (seed scenarios, data wipe)
 supabase/local/
 brag-output/
+
+/assets/icons/

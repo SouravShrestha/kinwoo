@@ -81,7 +81,7 @@ function Bar({
                 size={8}
                 className={cn(
                   "transition-transform duration-200 motion-reduce:transition-none",
-                  expanded && "rotate-180",
+                  !expanded && "rotate-180",
                 )}
               />
             }

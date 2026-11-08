@@ -124,7 +124,7 @@ select is((select note from public.expenses where id = tests.id('e1')), null,
 
 select tests.as_user(tests.id('b'));
 select set_config('tests.e2', public.create_expense(
-  tests.id('house'), 'Snacks', 9000, 'food_dining', null, current_date, 'shares',
+  tests.id('house'), 'Snacks', 9000, 'food', null, current_date, 'shares',
   jsonb_build_array(tests.payer('b', 6000), tests.payer('c', 3000)),
   jsonb_build_array(tests.share('a', 6000, 200), tests.share('b', 3000, 100))
 )::text, true);
@@ -207,7 +207,7 @@ select lives_ok(format('select public.set_simplify_debts(%L, true)', tests.id('h
 -- Remainders round once per pair
 select tests.as_user(tests.id('a'));
 select set_config('tests.e3', public.create_expense(
-  tests.id('house'), 'Tea', 100, 'other', null, current_date, 'equal',
+  tests.id('house'), 'Tea', 100, 'others', null, current_date, 'equal',
   jsonb_build_array(tests.payer('a', 100)),
   jsonb_build_array(tests.share('a', 34), tests.share('b', 33), tests.share('c', 33))
 )::text, true);
@@ -225,12 +225,12 @@ select throws_ok(format('select public.remove_member(%L, %L, true)', tests.id('h
 -- Edit and delete permissions
 select tests.as_user(tests.id('c'));
 select throws_ok(
-  format($$select public.update_expense(%L, 'Tea', 100, 'other', null, current_date, 'equal',
+  format($$select public.update_expense(%L, 'Tea', 100, 'others', null, current_date, 'equal',
             jsonb_build_array(tests.payer('a', 100)), jsonb_build_array(tests.share('a', 90)))$$,
     tests.id('e2')),
   'P0001', 'INVALID_INPUT', 'a participant can edit, but the new parts are still validated');
 select lives_ok(
-  format($$select public.update_expense(%L, 'Tea run', 100, 'food_dining', 'Chai', current_date,
+  format($$select public.update_expense(%L, 'Tea run', 100, 'food', 'Chai', current_date,
             'equal', jsonb_build_array(tests.payer('a', 100)),
             jsonb_build_array(tests.share('a', 50), tests.share('b', 50)))$$, tests.id('e3')),
   'a participant can edit someone else''s expense');
@@ -240,7 +240,7 @@ select is((select count(*) from public.expense_shares where expense_id = tests.i
 
 select tests.as_user(tests.id('c'));
 select set_config('tests.e4', public.create_expense(
-  tests.id('house'), 'Own thing', 500, 'other', null, current_date, 'equal',
+  tests.id('house'), 'Own thing', 500, 'others', null, current_date, 'equal',
   jsonb_build_array(tests.payer('c', 500)), jsonb_build_array(tests.share('c', 500))
 )::text, true);
 select tests.as_user(tests.id('b'));
