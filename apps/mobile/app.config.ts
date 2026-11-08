@@ -85,8 +85,15 @@ export default (): ExpoConfig => ({
         recordAudioAndroid: false,
       },
     ],
-    // iOS 27 aborts launch without the UIScene lifecycle. Remove on SDK 58, where it is default.
-    ["expo-build-properties", { ios: { enableSceneSupport: true, usePrecompiledModules: false } }],
+    [
+      "expo-build-properties",
+      {
+        // iOS 27 aborts launch without the UIScene lifecycle. Remove on SDK 58, where it is default.
+        ios: { enableSceneSupport: true, usePrecompiledModules: false },
+        // R8 shrinks/obfuscates Kotlin+Java DEX; Play Console flags apps without it.
+        android: { enableMinifyInReleaseBuilds: true, enableShrinkResourcesInReleaseBuilds: true },
+      },
+    ],
   ],
   experiments: {
     typedRoutes: true,
