@@ -3,7 +3,7 @@ import type { ExpenseCategory } from "./categories";
 import categoryKeywords from "./category-keywords.json";
 
 const CATEGORY_KEYWORDS: Record<
-  Exclude<ExpenseCategory, "other">,
+  Exclude<ExpenseCategory, "others">,
   readonly string[]
 > = categoryKeywords;
 

@@ -19,7 +19,7 @@ export function ListIconPicker({
     <View>
       <SheetHeader onBack={onBack} />
 
-      <View className="-mx-1.5 mt-6 flex-row flex-wrap">
+      <View className="-mx-1.5 mt-6 flex-row flex-wrap pb-4">
         {LIST_ICON_OPTIONS.map((option) => {
           const isSelected = option.value === selected;
           return (
@@ -32,8 +32,8 @@ export function ListIconPicker({
                 className="items-center rounded-xl px-1 py-3 active:opacity-70"
               >
                 <View
-                  className={`size-16 items-center justify-center rounded-xl border-2 bg-muted ${
-                    isSelected ? "border-primary" : "border-transparent"
+                  className={`size-14 items-center justify-center rounded-xl ${
+                    isSelected ? "bg-primary" : "bg-muted"
                   }`}
                 >
                   <ListIconImage label={option.label} size={48} />
