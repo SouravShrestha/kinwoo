@@ -1,12 +1,14 @@
 -- Expands expense categories from 8 to 25 and renames 'other' -> 'others' and
 -- 'food_dining' -> 'food'. Existing rows are renamed first so the tightened CHECK
--- constraint below doesn't reject them.
+-- constraint below doesn't reject them. The old constraint is dropped first because
+-- it rejects the new names.
+
+alter table public.expenses drop constraint expenses_category_check;
 
 update public.expenses set category = 'others' where category = 'other';
 update public.expenses set category = 'food' where category = 'food_dining';
 
 alter table public.expenses
-  drop constraint expenses_category_check,
   add constraint expenses_category_check check (
     category = any (array['others'::text, 'rent'::text, 'groceries'::text, 'utilities'::text, 'food'::text, 'transport'::text, 'household'::text, 'shopping'::text, 'entertainment'::text, 'subscriptions'::text, 'travel'::text, 'health'::text, 'personal_care'::text, 'clothing'::text, 'maintenance'::text, 'internet'::text, 'insurance'::text, 'loan_emi'::text, 'education'::text, 'fitness'::text, 'pets'::text, 'childcare'::text, 'furniture'::text, 'gifts'::text, 'taxes'::text])
   );
