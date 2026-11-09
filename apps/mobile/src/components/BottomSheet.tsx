@@ -53,6 +53,7 @@ export const SHEET_KEYBOARD_GAP = 20;
 export function BottomSheet({
   open,
   onClose,
+  onCloseAttempt,
   label,
   dismissable = true,
   showHandle = true,
@@ -64,6 +65,8 @@ export function BottomSheet({
 }: {
   open: boolean;
   onClose?: () => void;
+  /** When set, user dismissals (swipe, backdrop, back button) call this and the sheet stays open. */
+  onCloseAttempt?: () => void;
   label: string;
   dismissable?: boolean;
   showHandle?: boolean;
@@ -78,7 +81,11 @@ export function BottomSheet({
   const { resolvedTheme, colors, themeStyle } = useTheme();
   const palette = colors[resolvedTheme];
 
-  useSheetStack(open, dismissable, onClose);
+  useSheetStack(open, dismissable, onCloseAttempt ?? onClose);
+  const onAttemptRef = useRef(onCloseAttempt);
+  useEffect(() => {
+    onAttemptRef.current = onCloseAttempt;
+  });
 
   const animationConfigs = useBottomSheetTimingConfigs({
     duration: 220,
@@ -156,7 +163,16 @@ export function BottomSheet({
       Keyboard.dismiss();
       return;
     }
-    sheetRef.current?.dismiss();
+    if (onAttemptRef.current) onAttemptRef.current();
+    else sheetRef.current?.dismiss();
+  }, []);
+
+  // A pan-down close can't be vetoed up front, so it is caught as it starts animating out and
+  // sent back to the open detent.
+  const handleAnimate = useCallback((_from: number, to: number) => {
+    if (to !== -1 || !openRef.current || !onAttemptRef.current) return;
+    sheetRef.current?.snapToIndex(0);
+    onAttemptRef.current();
   }, []);
 
   const renderBackdrop = useCallback(
@@ -224,7 +240,7 @@ export function BottomSheet({
       accessibilityRole="button"
       accessibilityLabel="Close"
       hitSlop={8}
-      onPress={() => sheetRef.current?.dismiss()}
+      onPress={() => (onAttemptRef.current ? onAttemptRef.current() : sheetRef.current?.dismiss())}
       className="absolute right-3 top-2 z-10 size-9 items-center justify-center active:opacity-60"
     >
       <CloseIcon size={22} color={palette.foreground} />
@@ -248,6 +264,7 @@ export function BottomSheet({
       enableHandlePanningGesture={dismissable}
       onDismiss={handleDismissed}
       onChange={setPresentedIndex}
+      onAnimate={handleAnimate}
       keyboardBehavior="interactive"
       keyboardBlurBehavior="restore"
       // Otherwise the sheet can be dragged down behind a keyboard that stays up.
