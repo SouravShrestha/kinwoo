@@ -58,6 +58,9 @@ export function ProfileProvider({ children }: { children: ReactNode }) {
     async (value: string) => {
       const updated = await patchDisplayName(value);
       if (userId) queryClient.setQueryData(profileKey(userId), updated);
+      // Not a useMutation, so the query client's after-write refresh does not run. Members,
+      // expenses and activity all embed the name.
+      void queryClient.invalidateQueries();
     },
     [queryClient, userId],
   );
@@ -74,6 +77,7 @@ export function ProfileProvider({ children }: { children: ReactNode }) {
     async (avatarUrl: string) => {
       const updated = await patchAvatar(avatarUrl);
       if (userId) queryClient.setQueryData(profileKey(userId), updated);
+      void queryClient.invalidateQueries();
       if (userId) {
         void pruneAvatars(client, userId, ownUploadPath(updated.avatarUrl, userId));
       }

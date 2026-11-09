@@ -2,6 +2,7 @@ export * from "./api";
 export * from "./errors";
 export * from "./expense-form";
 export * from "./expense-split";
+export * from "./ExpensesRealtime";
 export * from "./form-input";
 export * from "./keys";
 export * from "./mutations";
