@@ -304,7 +304,7 @@ begin
       )
     );
   end loop;
-end $;
+end $$;
 
 REVOKE ALL ON FUNCTION public.queue_grocery_digest() FROM PUBLIC, anon, authenticated;
 GRANT ALL ON FUNCTION public.queue_grocery_digest() TO service_role;
