@@ -176,6 +176,13 @@ export class GroceryService implements IGroceryService {
     });
   }
 
+  async markMissed(itemId: string, reason: string | null): Promise<GroceryResult<null>> {
+    return run(async () => {
+      await this.repository.markMissed(itemId, reason);
+      return null;
+    });
+  }
+
   async assignItems(
     listId: string,
     itemIds: string[],

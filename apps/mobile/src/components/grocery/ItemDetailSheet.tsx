@@ -13,6 +13,7 @@ import { useState } from "react";
 import { BottomSheet } from "@/components/BottomSheet";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { ItemDetailSkeleton } from "@/components/skeleton/skeletons";
+import { useDiscardConfirm } from "@/components/useDiscardConfirm";
 import { openMarkBought } from "@/lib/house-navigation";
 
 import { AssignedItemDetails } from "./AssignedItemDetails";
@@ -54,6 +55,14 @@ export function ItemDetailSheet({
   const form = useEditItemForm({ houseId, listId, item: isPending || isTaken ? item : null });
 
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const {
+    ask,
+    requestClose,
+    dialog: discardDialog,
+  } = useDiscardConfirm(form.dirty, () => {
+    form.reset();
+    onClose();
+  });
   const archiving = item?.status === "bought";
 
   const deleteItem = useDeleteItem(houseId, listId);
@@ -75,6 +84,7 @@ export function ItemDetailSheet({
       <BottomSheet
         open={open && (!!item || (itemId !== null && itemPending))}
         onClose={onClose}
+        onCloseAttempt={form.dirty ? ask : undefined}
         label="Item details"
         showClose={!isPending && !isTaken}
       >
@@ -91,6 +101,7 @@ export function ItemDetailSheet({
             isPrivateList={isPrivateList}
             onDelete={() => setConfirmDelete(true)}
             onClose={onClose}
+            onRequestClose={requestClose}
           />
         ) : item && isTaken ? (
           <AssignedItemDetails
@@ -103,12 +114,14 @@ export function ItemDetailSheet({
             canEdit={canManage || isClaimer}
             canDelete={canManage}
             canUnassign={canManage || isClaimer || isAssignee || item.assignedBy === currentUserId}
+            canMiss={isClaimer || isAssignee}
             onDelete={() => setConfirmDelete(true)}
             onMarkBought={() => {
               onClose();
               openMarkBought(listId, item.id);
             }}
             onClose={onClose}
+            onRequestClose={requestClose}
           />
         ) : item ? (
           <BoughtItemDetails
@@ -132,6 +145,7 @@ export function ItemDetailSheet({
         onConfirm={() => void handleDelete()}
         onCancel={() => setConfirmDelete(false)}
       />
+      {discardDialog}
     </>
   );
 }

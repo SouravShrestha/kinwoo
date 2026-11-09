@@ -91,6 +91,10 @@ export function useEditItemForm({
     setUrgency: (urgency: ItemUrgency) => update({ urgency }),
     setNote: (note: string) => update({ note }),
     save,
+    reset: () => {
+      setDraft(fresh);
+      setError(null);
+    },
   };
 }
 

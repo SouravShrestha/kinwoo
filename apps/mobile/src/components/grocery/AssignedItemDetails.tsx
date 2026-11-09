@@ -1,10 +1,12 @@
-import { useUnassignItem, type EditItemForm } from "@kinwoo/client/grocery";
+import { useMarkItemMissed, useUnassignItem, type EditItemForm } from "@kinwoo/client/grocery";
 import { toast } from "@kinwoo/client/toast";
-import type { GroceryItem } from "@kinwoo/core/grocery";
+import { MISSED_REASONS, type GroceryItem } from "@kinwoo/core/grocery";
 import { VerifiedIcon, TrashIcon } from "@kinwoo/icons/native";
+import { useState } from "react";
 import { View } from "react-native";
 
 import { Button } from "@/components/Button";
+import { OptionSheet } from "@/components/OptionSheet";
 import { Pressable } from "@/components/Pressable";
 import { SheetFooter } from "@/components/sheet-footer";
 import { useTheme } from "@/theme/ThemeProvider";
@@ -29,9 +31,11 @@ export function AssignedItemDetails({
   canEdit,
   canDelete,
   canUnassign,
+  canMiss,
   onDelete,
   onMarkBought,
   onClose,
+  onRequestClose,
 }: {
   item: GroceryItem;
   form: EditItemForm;
@@ -42,18 +46,36 @@ export function AssignedItemDetails({
   canEdit: boolean;
   canDelete: boolean;
   canUnassign: boolean;
+  /** The holder gets "Couldn't get" in place of Unassign, so the house hears why. */
+  canMiss: boolean;
   onDelete: () => void;
   onMarkBought: () => void;
   onClose: () => void;
+  /** The header close button; may ask before discarding edits. */
+  onRequestClose: () => void;
 }) {
   const { resolvedTheme, colors } = useTheme();
   const palette = colors[resolvedTheme];
   const unassignItem = useUnassignItem(houseId, listId);
+  const markMissed = useMarkItemMissed(houseId, listId);
+  const [askReason, setAskReason] = useState(false);
+
+  const handleMissed = async (reason: string | null) => {
+    setAskReason(false);
+    if (!(await saveItemEdits(form, canEdit))) return;
+    try {
+      await markMissed.mutateAsync({ itemId: item.id, reason });
+      toast.success(`"${item.name}" is back on the list for someone else`);
+      onClose();
+    } catch {
+      toast.error("Couldn't hand that item back. Try again.");
+    }
+  };
 
   const handleUnassign = async () => {
     if (!(await saveItemEdits(form, canEdit))) return;
     try {
-      await unassignItem.mutateAsync(item.id);
+      await unassignItem.mutateAsync({ itemId: item.id });
       toast.success(`"${item.name}" is back in Pending`);
       onClose();
     } catch {
@@ -66,48 +88,69 @@ export function AssignedItemDetails({
   };
 
   return (
-    <ItemDetailsEditor
-      item={item}
-      form={form}
-      houseId={houseId}
-      listId={listId}
-      currentUserId={currentUserId}
-      currentUserName={currentUserName}
-      canEdit={canEdit}
-      onClose={onClose}
-      footer={
-        <SheetFooter maxHeight={FOOTER_MAX_HEIGHT}>
-          <View style={{ paddingTop: FOOTER_GAP, paddingBottom: FOOTER_BOTTOM_PADDING }}>
-            <View className="flex-row items-center gap-3" style={{ height: BUTTON_ROW_HEIGHT }}>
-              {canDelete ? (
-                <Pressable
-                  accessibilityRole="button"
-                  accessibilityLabel="Delete item"
-                  onPress={onDelete}
-                  className="size-12 items-center justify-center rounded-xl border border-border active:bg-muted"
-                >
-                  <TrashIcon size={18} color={palette.foreground} />
-                </Pressable>
-              ) : null}
-              {canUnassign ? (
+    <>
+      <ItemDetailsEditor
+        item={item}
+        form={form}
+        houseId={houseId}
+        listId={listId}
+        currentUserId={currentUserId}
+        currentUserName={currentUserName}
+        canEdit={canEdit}
+        onDelete={canDelete ? onDelete : undefined}
+        onClose={onClose}
+        onRequestClose={onRequestClose}
+        footer={
+          <SheetFooter maxHeight={FOOTER_MAX_HEIGHT}>
+            <View style={{ paddingTop: FOOTER_GAP, paddingBottom: FOOTER_BOTTOM_PADDING }}>
+              <View className="flex-row items-center gap-3" style={{ height: BUTTON_ROW_HEIGHT }}>
+                {canDelete ? (
+                  <Pressable
+                    accessibilityRole="button"
+                    accessibilityLabel="Delete item"
+                    onPress={onDelete}
+                    className="size-12 items-center justify-center rounded-xl border border-border active:bg-muted"
+                  >
+                    <TrashIcon size={18} color={palette.foreground} />
+                  </Pressable>
+                ) : null}
+                {canMiss ? (
+                  <Button
+                    label="Couldn't get"
+                    variant="outline"
+                    loading={markMissed.isPending}
+                    onPress={() => setAskReason(true)}
+                    className="h-12 flex-1 px-3"
+                  />
+                ) : canUnassign ? (
+                  <Button
+                    label="Unassign"
+                    variant="outline"
+                    loading={unassignItem.isPending}
+                    onPress={() => void handleUnassign()}
+                    className="h-12 flex-1 px-3"
+                  />
+                ) : null}
                 <Button
-                  label="Unassign"
-                  variant="outline"
-                  loading={unassignItem.isPending}
-                  onPress={() => void handleUnassign()}
+                  label="Bought"
+                  icon={<VerifiedIcon size={18} color={palette.primaryForeground} />}
+                  onPress={() => void handleMarkBought()}
                   className="h-12 flex-1 px-3"
                 />
-              ) : null}
-              <Button
-                label="Bought"
-                icon={<VerifiedIcon size={18} color={palette.primaryForeground} />}
-                onPress={() => void handleMarkBought()}
-                className="h-12 flex-1 px-3"
-              />
+              </View>
             </View>
-          </View>
-        </SheetFooter>
-      }
-    />
+          </SheetFooter>
+        }
+      />
+      <OptionSheet
+        open={askReason}
+        onClose={() => setAskReason(false)}
+        title="What happened?"
+        columns={2}
+        options={MISSED_REASONS.map((reason) => ({ id: reason, label: reason }))}
+        selectedId={null}
+        onSelect={(id) => void handleMissed(id === MISSED_REASONS.at(-1) ? null : id)}
+      />
+    </>
   );
 }

@@ -182,6 +182,47 @@ describe("helpers", () => {
     expect([...PUSH_TYPES]).toEqual([...corePushTypes]);
   });
 
+  it("sends one morning digest per person, naming three items at most", () => {
+    const digest = activity({
+      type: "grocery.digest",
+      actor_id: null,
+      entity_id: null,
+      payload: { total: 6, overdue: 1, names: ["Bread", "Milk", "Eggs"] },
+    });
+    expect(audienceFor(digest)).toEqual({ kind: "members" });
+    expect(messageFor(digest, null)).toEqual({
+      title: "6 items needed today (1 overdue)",
+      body: "Bread, Milk, Eggs +3 more",
+      url: "/tasks?view=today",
+    });
+    expect(
+      messageFor(activity({ type: "grocery.digest", payload: { total: 1, names: ["Milk"] } }), null)
+        ?.title,
+    ).toBe("1 item needed today");
+    expect(
+      messageFor(activity({ type: "grocery.digest", payload: { total: 0 } }), null),
+    ).toBeNull();
+  });
+
+  it("pushes an added item only when it is needed now", () => {
+    const added = (urgency: string) =>
+      activity({ type: "grocery_item.added", payload: { name: "Bread", urgency } });
+    expect(audienceFor(added("now"))).toEqual({ kind: "members" });
+    expect(audienceFor(added("today"))).toEqual({ kind: "none" });
+    expect(messageFor(added("now"), "Ravi")?.body).toBe("Ravi needs Bread now");
+  });
+
+  it("tells whoever added an item that it couldn't be got, and why", () => {
+    const missed = activity({
+      type: "grocery_item.missed",
+      actor_id: ROHAN,
+      payload: { name: "Milk", created_by: ASHA, reason: "Out of stock" },
+    });
+    expect(audienceFor(missed)).toEqual({ kind: "users", ids: [ASHA] });
+    expect(messageFor(missed, "Rohan")?.body).toBe("Rohan couldn't get Milk · Out of stock");
+    expect(audienceFor({ ...missed, actor_id: ASHA })).toEqual({ kind: "none" });
+  });
+
   it("formats rupees exactly like @kinwoo/core", () => {
     for (const paise of [0, 5, 100, 12550, 99999, 100000, 12345678, 1000000000, -4500]) {
       expect(formatPaise(paise), String(paise)).toBe(corePaise(paise));

@@ -10,7 +10,8 @@ export type Activity = {
   payload: Record<string, unknown>;
 };
 
-export type Audience = { kind: "users"; ids: string[] } | { kind: "admins" } | { kind: "none" };
+export type Audience =
+  { kind: "users"; ids: string[] } | { kind: "admins" } | { kind: "members" } | { kind: "none" };
 
 export type Message = { title: string; body: string; url: string };
 
@@ -21,6 +22,9 @@ export const PUSH_TYPES = [
   "expense.updated",
   "settlement.recorded",
   "grocery_item.assigned",
+  "grocery_item.added",
+  "grocery_item.missed",
+  "grocery.digest",
   "join_requested",
 ] as const;
 
@@ -79,6 +83,13 @@ export function audienceFor(activity: Activity): Audience {
       return users([payload.payer_id, payload.payee_id], actor);
     case "grocery_item.assigned":
       return users([payload.assigned_to], actor);
+    // Only a "Now" item is worth interrupting the house for; the rest wait for the digest.
+    case "grocery_item.added":
+      return payload.urgency === "now" ? { kind: "members" } : { kind: "none" };
+    case "grocery_item.missed":
+      return users([payload.created_by], actor);
+    case "grocery.digest":
+      return { kind: "members" };
     case "join_requested":
       return { kind: "admins" };
     default:
@@ -126,11 +137,44 @@ export function messageFor(activity: Activity, actorName: string | null): Messag
         body: `${actor} assigned you ${text(payload.name, "an item")}`,
         url: "/tasks",
       };
+    case "grocery_item.added":
+      return {
+        title: "Needed now",
+        body: `${actor} needs ${text(payload.name, "an item")} now`,
+        url: "/tasks?view=today",
+      };
+    case "grocery_item.missed": {
+      const reason = typeof payload.reason === "string" ? text(payload.reason, "") : "";
+      return {
+        title: "Couldn't get it",
+        body: `${actor} couldn't get ${text(payload.name, "an item")}${reason ? ` · ${reason}` : ""}`,
+        url: "/tasks",
+      };
+    }
+    case "grocery.digest":
+      return digestMessage(payload);
     case "join_requested":
       return { title: "Join request", body: `${actor} wants to join your house`, url: "/" };
     default:
       return null;
   }
+}
+
+// One push however many items are due: "6 items needed today" / "Bread, Milk, Eggs +3 more".
+function digestMessage(payload: Record<string, unknown>): Message | null {
+  const total = typeof payload.total === "number" ? payload.total : 0;
+  if (total < 1) return null;
+  const overdue = typeof payload.overdue === "number" ? payload.overdue : 0;
+  const names = (Array.isArray(payload.names) ? payload.names : [])
+    .map((name) => text(name, ""))
+    .filter(Boolean);
+  const more = total - names.length;
+  const list = names.join(", ") + (more > 0 ? ` +${more} more` : "");
+  return {
+    title: `${total} ${total === 1 ? "item" : "items"} needed today${overdue > 0 ? ` (${overdue} overdue)` : ""}`,
+    body: list || "Open your list to see them",
+    url: "/tasks?view=today",
+  };
 }
 
 export function chunk<T>(items: T[], size = EXPO_BATCH): T[][] {

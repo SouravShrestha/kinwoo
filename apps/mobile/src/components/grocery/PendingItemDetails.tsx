@@ -44,6 +44,7 @@ export function PendingItemDetails({
   isPrivateList,
   onDelete,
   onClose,
+  onRequestClose,
 }: {
   item: GroceryItem;
   form: EditItemForm;
@@ -56,6 +57,8 @@ export function PendingItemDetails({
   isPrivateList: boolean;
   onDelete: () => void;
   onClose: () => void;
+  /** The header close button; may ask before discarding edits. */
+  onRequestClose: () => void;
 }) {
   const { resolvedTheme, colors } = useTheme();
   const palette = colors[resolvedTheme];
@@ -103,7 +106,9 @@ export function PendingItemDetails({
       currentUserId={currentUserId}
       currentUserName={currentUserName}
       canEdit={canEdit}
+      onDelete={canDelete ? onDelete : undefined}
       onClose={onClose}
+      onRequestClose={onRequestClose}
       footer={
         <SheetFooter maxHeight={FOOTER_MAX_HEIGHT}>
           <View style={{ paddingTop: FOOTER_GAP, paddingBottom: FOOTER_BOTTOM_PADDING }}>

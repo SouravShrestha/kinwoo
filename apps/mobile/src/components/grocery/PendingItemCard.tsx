@@ -1,4 +1,4 @@
-import { itemUrgencyLabel, itemUrgencyTone, type GroceryItem } from "@kinwoo/core/grocery";
+import { itemNeededLabel, type GroceryItem } from "@kinwoo/core/grocery";
 import { ArrowRightIcon, TickIcon } from "@kinwoo/icons/native";
 import { Text, View } from "react-native";
 
@@ -36,11 +36,11 @@ export function PendingItemCard({
     .filter(Boolean)
     .join(" ");
 
-  const urgencyTone = item.status === "bought" ? null : itemUrgencyTone(item.urgency);
+  const needed = itemNeededLabel(item);
   const label = [
     item.name,
     quantityUnit,
-    urgencyTone ? `needed ${itemUrgencyLabel(item.urgency).toLowerCase()}` : "",
+    needed?.text ?? "",
     assignee ? `${assigneeVerb} ${assignee.name ?? "a housemate"}` : "",
   ]
     .filter(Boolean)
@@ -51,6 +51,22 @@ export function PendingItemCard({
       className={`rounded-2xl border ${selected ? "border-primary bg-muted" : "border-card-border bg-card"}`}
       style={{ width }}
     >
+      {needed?.state === "overdue" ? (
+        <View
+          pointerEvents="none"
+          importantForAccessibility="no-hide-descendants"
+          className="absolute inset-0 overflow-hidden rounded-2xl"
+        >
+          <View
+            className="absolute bg-foreground py-px"
+            style={{ left: -41, top: 9, width: 112, transform: [{ rotate: "-45deg" }] }}
+          >
+            <Text className="text-center text-[7px] leading-[10px] tracking-wide text-card font-display-semibold">
+              Overdue
+            </Text>
+          </View>
+        </View>
+      ) : null}
       <Pressable
         accessibilityRole={onToggleSelect ? "checkbox" : "button"}
         accessibilityState={onToggleSelect ? { checked: selected } : undefined}
@@ -108,7 +124,7 @@ export function PendingItemCard({
         accessibilityLabel={`Open ${item.name} details`}
         hitSlop={10}
         onPress={onOpen}
-        className="absolute right-3 top-[18px] size-7 items-center justify-center rounded-full border border-dialog-border active:border-primary"
+        className="absolute right-3 top-3 size-7 items-center justify-center rounded-full border border-dialog-border active:border-primary"
       >
         <View style={{ transform: [{ rotate: "-90deg" }] }}>
           <ArrowRightIcon size={16} color={palette.mutedForeground} />

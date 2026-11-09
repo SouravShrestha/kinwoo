@@ -33,25 +33,6 @@ export const ITEM_URGENCY_OPTIONS: readonly { value: ItemUrgency; label: string 
   { value: "whenever", label: "Anytime" },
 ];
 
-export type ItemUrgencyTone = "high" | "medium";
-
-const URGENCY_TONE: Record<ItemUrgency, ItemUrgencyTone | null> = {
-  now: "high",
-  soon: "high",
-  today: "high",
-  tomorrow: "medium",
-  this_week: "medium",
-  whenever: null,
-};
-
-export function itemUrgencyTone(urgency: ItemUrgency): ItemUrgencyTone | null {
-  return URGENCY_TONE[urgency];
-}
-
-export function itemUrgencyLabel(urgency: ItemUrgency): string {
-  return ITEM_URGENCY_OPTIONS.find((option) => option.value === urgency)?.label ?? "Anytime";
-}
-
 export const DEFAULT_ITEM_URGENCY: ItemUrgency = "whenever";
 
 export const DEFAULT_ITEM_QUANTITY = "500";

@@ -147,6 +147,18 @@ export async function unassignItem(houseId: string, listId: string, itemId: stri
   await apiRequest(`${itemBase(houseId, listId, itemId)}/assign`, { method: "DELETE" });
 }
 
+export async function markItemMissed(
+  houseId: string,
+  listId: string,
+  itemId: string,
+  reason: string | null,
+): Promise<void> {
+  await apiRequest(`${itemBase(houseId, listId, itemId)}/missed`, {
+    method: "POST",
+    body: { reason },
+  });
+}
+
 export async function assignItems(
   houseId: string,
   listId: string,

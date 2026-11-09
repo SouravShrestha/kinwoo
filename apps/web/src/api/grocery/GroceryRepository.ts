@@ -1,6 +1,7 @@
 import type { Database } from "@kinwoo/core/db";
 import type { LinkedExpenseInput } from "@kinwoo/core/expenses";
 import {
+  houseDateKey,
   parseGroceryRpcError,
   type ActivityCursor,
   type GroceryOverviewItem,
@@ -86,6 +87,7 @@ function toItem(row: any): GroceryItem {
     categoryId: row.category_id ?? row.categoryId ?? null,
     categoryName: row.category_name ?? row.categoryName ?? category?.name ?? null,
     urgency: row.urgency ?? "whenever",
+    neededBy: row.needed_by ?? row.neededBy ?? null,
     status: row.status ?? "pending",
     archivedAt: row.archived_at ?? row.archivedAt ?? null,
     claimedBy: row.claimed_by ?? row.claimedBy ?? null,
@@ -377,6 +379,14 @@ export class GroceryRepository implements IGroceryRepository {
     if (error) fail(error);
   }
 
+  async markMissed(itemId: string, reason: string | null): Promise<void> {
+    const { error } = await this.client.rpc("mark_item_missed", {
+      p_item_id: itemId,
+      p_reason: reason ?? undefined,
+    });
+    if (error) fail(error);
+  }
+
   async assignItems(listId: string, itemIds: string[], assignedTo: string): Promise<number> {
     const { data, error } = await this.client.rpc("assign_grocery_items", {
       p_list_id: listId,
@@ -521,8 +531,9 @@ export class GroceryRepository implements IGroceryRepository {
         .select(OVERVIEW_ITEM_COLUMNS)
         .eq("house_id", houseId)
         .is("grocery_lists.deleted_at", null)
-        .eq("urgency", "today")
+        .lte("needed_by", houseDateKey())
         .in("status", ["pending", "claimed", "assigned"])
+        .order("needed_by", { ascending: true })
         .order("created_at", { ascending: false }),
       this.client
         .from("grocery_items")

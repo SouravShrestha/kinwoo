@@ -1,4 +1,5 @@
 import { applyFilters, type FilterGroup, type FilterSelection } from "../filters";
+import { neededState } from "./needed-by";
 import type { GroceryTabKey } from "./tabs";
 import type { GroceryItem } from "./types";
 
@@ -17,13 +18,13 @@ const PEOPLE_OPTIONS: Record<GroceryTabKey, readonly { id: string; label: string
   bought: [{ id: "bought_by_me", label: "Bought by me" }],
 };
 
+// Ids are needed states, except "none", which also takes stale items: both have no date.
 const URGENCY_OPTIONS = [
-  { id: "now", label: "Now" },
-  { id: "soon", label: "Soon" },
+  { id: "overdue", label: "Overdue" },
   { id: "today", label: "Today" },
   { id: "tomorrow", label: "Tomorrow" },
-  { id: "this_week", label: "This week" },
-  { id: "whenever", label: "Anytime" },
+  { id: "upcoming", label: "Later" },
+  { id: "none", label: "No date" },
 ] as const;
 
 function categoryId(item: GroceryItem): string {
@@ -43,8 +44,10 @@ function matchesGroceryOption(
       if (optionId === "added_by_me") return item.createdBy === userId;
       if (optionId === "bought_by_me") return item.boughtBy === userId;
       return false;
-    case "urgency":
-      return item.urgency === optionId;
+    case "urgency": {
+      const state = neededState(item);
+      return optionId === "none" ? state === "none" || state === "stale" : state === optionId;
+    }
     case "category":
       return categoryId(item) === optionId;
     default:

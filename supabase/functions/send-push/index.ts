@@ -58,7 +58,9 @@ async function recipientIds(activity: Activity): Promise<string[]> {
 
   const { data, error } = await (audience.kind === "admins"
     ? members.eq("role", "admin")
-    : members.in("user_id", audience.ids));
+    : audience.kind === "members"
+      ? members
+      : members.in("user_id", audience.ids));
   if (error) throw error;
 
   return data.map((row) => row.user_id).filter((id) => id !== activity.actor_id);

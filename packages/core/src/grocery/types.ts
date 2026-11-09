@@ -34,6 +34,8 @@ export type GroceryItem = {
   categoryId: string | null;
   categoryName: string | null;
   urgency: ItemUrgency;
+  // "YYYY-MM-DD" the server derives from urgency when it is set; null for soon and anytime.
+  neededBy: string | null;
   status: ItemStatus;
   archivedAt?: string | null;
   claimedBy: string | null;

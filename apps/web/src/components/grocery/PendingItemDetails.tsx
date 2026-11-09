@@ -28,6 +28,7 @@ export function PendingItemDetails({
   isPrivateList,
   onDelete,
   onClose,
+  onRequestClose,
 }: {
   item: GroceryItem;
   form: EditItemForm;
@@ -40,6 +41,8 @@ export function PendingItemDetails({
   isPrivateList: boolean;
   onDelete: () => void;
   onClose: () => void;
+  /** The header close button; may ask before discarding edits. */
+  onRequestClose: () => void;
 }) {
   const [expanded, setExpanded] = useState(false);
   const stripId = useId();
@@ -83,7 +86,9 @@ export function PendingItemDetails({
       currentUserId={currentUserId}
       currentUserName={currentUserName}
       canEdit={canEdit}
+      onDelete={canDelete ? onDelete : undefined}
       onClose={onClose}
+      onRequestClose={onRequestClose}
       footer={
         // The sheet is anchored to the bottom, so the strip opening grows it upwards and the
         // button row stays put.
