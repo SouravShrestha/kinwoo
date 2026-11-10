@@ -2,6 +2,7 @@
   "name": "kinwoo-monorepo",
   "version": "1.6.1",
   "private": true,
+  "license": "UNLICENSED",
   "type": "module",
   "packageManager": "npm@10.9.2",
   "workspaces": [

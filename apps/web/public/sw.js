@@ -66,17 +66,32 @@ async function warmPages() {
 
 const OFFLINE_PAGE = `<!doctype html><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>Offline</title><body style="font-family:system-ui;display:flex;min-height:100vh;align-items:center;justify-content:center;text-align:center;margin:0;padding:24px"><div><p><b>You're offline</b></p><p>This screen isn't available without a connection.</p><button onclick="history.length>1?history.back():location.assign('/')" style="font:inherit;padding:8px 20px">Go back</button></div>`;
 
+// iOS keeps the installed app on its splash screen until the page paints, so a slow network must
+// not hold a navigation that has a cached copy for longer than this.
+const NAVIGATION_TIMEOUT_MS = 3000;
+
+async function fromNetwork(request, event) {
+  const response = await fetch(request);
+  if (cacheable(response)) {
+    const copy = response.clone();
+    event.waitUntil(caches.open(CACHE).then((cache) => cache.put(request, copy)));
+    const path = new URL(request.url).pathname;
+    if (request.mode === "navigate" && WARM_PATHS.includes(path)) event.waitUntil(warmPages());
+  }
+  return response;
+}
+
 // Pages carry no user data (screens load it client-side), so a cached copy is safe to replay.
 async function networkFirst(request, event) {
+  const network = fromNetwork(request, event);
+  // Keeps the worker alive to refresh the cache when the timeout serves the cached copy.
+  event.waitUntil(network.catch(() => {}));
   try {
-    const response = await fetch(request);
-    if (cacheable(response)) {
-      const cache = await caches.open(CACHE);
-      cache.put(request, response.clone());
-      const path = new URL(request.url).pathname;
-      if (request.mode === "navigate" && WARM_PATHS.includes(path)) event.waitUntil(warmPages());
-    }
-    return response;
+    if (request.mode !== "navigate") return await network;
+    const timeout = new Promise((resolve) => setTimeout(resolve, NAVIGATION_TIMEOUT_MS)).then(() =>
+      caches.match(request, { ignoreVary: true }),
+    );
+    return (await Promise.race([network, timeout])) ?? (await network);
   } catch (error) {
     const cached = await caches.match(request, { ignoreVary: true });
     if (cached) return cached;
