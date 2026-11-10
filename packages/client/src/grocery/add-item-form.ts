@@ -156,6 +156,13 @@ export function useAddItemForm({
     pendingMode,
     submitting: addItem.isPending,
     canSubmit: name.trim().length > 0 && listId.length > 0,
+    // Urgency is left out: it survives "add another", so it would flag every later close.
+    dirty:
+      name.trim() !== "" ||
+      note.trim() !== "" ||
+      quantityChoice !== undefined ||
+      unitChoice !== undefined ||
+      categoryChoice !== undefined,
     setListId,
     setName: (value: string) => {
       setName(value);

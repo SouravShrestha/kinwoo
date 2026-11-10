@@ -17,6 +17,7 @@ const EXIT_FALLBACK_MS = 400;
 export function BottomSheet({
   open,
   onClose,
+  onCloseAttempt,
   label,
   className,
   zClassName = "z-80",
@@ -27,6 +28,8 @@ export function BottomSheet({
 }: {
   open: boolean;
   onClose?: () => void;
+  /** When set, user dismissals (swipe, backdrop, Escape, close button) call this and the sheet stays open. */
+  onCloseAttempt?: () => void;
   label: string;
   className?: string;
   zClassName?: string;
@@ -72,21 +75,27 @@ export function BottomSheet({
 
   // Only the topmost sheet answers Escape and Tab, so a confirmation stacked on another sheet
   // doesn't also close or trap the sheet underneath.
+  const onAttemptRef = useRef(onCloseAttempt);
   useEffect(() => {
     onCloseRef.current = onClose;
+    onAttemptRef.current = onCloseAttempt;
   });
   useEffect(() => {
     if (!open) return;
     const id = stackId.current;
     // Non-dismissable sheets (the login wall) stay put when something else closes sheets.
-    push(id, dismissable ? () => onCloseRef.current?.() : undefined);
+    push(id, dismissable ? () => (onAttemptRef.current ?? onCloseRef.current)?.() : undefined);
     return () => remove(id);
   }, [open, dismissable]);
 
   const guardedClose = useCallback(() => {
-    if (Date.now() - openedAt.current < MISFIRE_MS) return;
+    if (Date.now() - openedAt.current < MISFIRE_MS) return false;
+    if (onCloseAttempt) {
+      onCloseAttempt();
+      return false;
+    }
     onClose?.();
-  }, [onClose]);
+  }, [onClose, onCloseAttempt]);
 
   // Belt and braces: unmount even if the animation event never fires.
   useEffect(() => {

@@ -1,5 +1,6 @@
 import type { SortOption } from "../filters";
-import type { GroceryItem, ItemUrgency } from "./types";
+import { compareNeeded, localDateKey } from "./needed-by";
+import type { GroceryItem } from "./types";
 
 export const DEFAULT_GROCERY_SORT = "newest";
 
@@ -11,17 +12,8 @@ export const GROCERY_SORT_OPTIONS: readonly SortOption[] = [
   { id: "name_desc", label: "Name Z to A" },
 ];
 
-const URGENCY_RANK: Record<ItemUrgency, number> = {
-  now: 0,
-  soon: 1,
-  today: 2,
-  tomorrow: 3,
-  this_week: 4,
-  whenever: 5,
-};
-
-const COMPARATORS: Record<string, (a: GroceryItem, b: GroceryItem) => number> = {
-  urgency: (a, b) => URGENCY_RANK[a.urgency] - URGENCY_RANK[b.urgency],
+const COMPARATORS: Record<string, (a: GroceryItem, b: GroceryItem, today: string) => number> = {
+  urgency: compareNeeded,
   newest: (a, b) => b.createdAt.localeCompare(a.createdAt),
   oldest: (a, b) => a.createdAt.localeCompare(b.createdAt),
   name_asc: (a, b) => a.name.localeCompare(b.name),
@@ -31,5 +23,7 @@ const COMPARATORS: Record<string, (a: GroceryItem, b: GroceryItem) => number> = 
 // Array.prototype.sort is stable, so ties keep the incoming order.
 export function sortGroceryItems(items: readonly GroceryItem[], sortId: string): GroceryItem[] {
   const compare = COMPARATORS[sortId];
-  return compare ? [...items].sort(compare) : [...items];
+  if (!compare) return [...items];
+  const today = localDateKey();
+  return [...items].sort((a, b) => compare(a, b, today));
 }

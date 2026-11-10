@@ -22,6 +22,7 @@ const TYPE_OPTION_BY_ACTIVITY: Record<string, string> = {
   "grocery_item.assigned": "claims",
   "grocery_item.assignment_accepted": "claims",
   "grocery_item.assignment_declined": "claims",
+  "grocery_item.missed": "claims",
   "grocery_item.bought": "bought",
   "grocery_batch.bought": "bought",
   "expense.created": "expenses",
@@ -201,6 +202,7 @@ const ITEM_VERBS: Record<string, string> = {
   "grocery_item.assigned": "assigned",
   "grocery_item.assignment_accepted": "accepted assignment for",
   "grocery_item.assignment_declined": "declined assignment for",
+  "grocery_item.missed": "couldn't get",
   "grocery_item.bought": "bought",
   "grocery_batch.bought": "bought",
   "grocery_item.cancelled": "cancelled",
@@ -224,6 +226,7 @@ const LIST_PREPOSITIONS: Record<string, string> = {
   "grocery_item.assigned": "in",
   "grocery_item.assignment_accepted": "in",
   "grocery_item.assignment_declined": "in",
+  "grocery_item.missed": "in",
 };
 
 const AMOUNT_PREPOSITIONS: Record<string, string> = {
@@ -344,6 +347,15 @@ export function formatActivityParts(
   entry: GroceryActivityEntry,
   currentUserId?: string | null,
 ): ActivitySegment[] {
+  if (entry.type === "grocery.digest") {
+    const total = typeof entry.payload?.total === "number" ? entry.payload.total : 0;
+    const overdue = typeof entry.payload?.overdue === "number" ? entry.payload.overdue : 0;
+    return [
+      { text: `${total} ${total === 1 ? "item" : "items"}`, emphasis: true },
+      { text: ` needed today${overdue > 0 ? `, ${overdue} overdue` : ""}`, emphasis: false },
+    ];
+  }
+
   const actor: ActivitySegment = { text: activityActorLabel(entry, currentUserId), emphasis: true };
   const verb = ITEM_VERBS[entry.type];
 
@@ -386,6 +398,8 @@ export function formatActivityParts(
     if (preposition && typeof listName === "string" && listName) {
       parts.push({ text: ` ${preposition} `, emphasis: false }, { text: listName, emphasis: true });
     }
+    const reason = entry.type === "grocery_item.missed" ? entry.payload?.reason : null;
+    if (typeof reason === "string" && reason) parts.push({ text: ` · ${reason}`, emphasis: false });
     return parts;
   }
 

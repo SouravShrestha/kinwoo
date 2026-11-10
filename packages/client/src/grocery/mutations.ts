@@ -2,6 +2,7 @@
 
 import {
   DEFAULT_ITEM_URGENCY,
+  neededByFor,
   type AddItemInput,
   type CreateListInput,
   type GroceryItem,
@@ -24,6 +25,7 @@ import {
   deleteItems,
   deleteList,
   markBought,
+  markItemMissed,
   markItemsBought,
   unassignItem,
   updateItem,
@@ -87,6 +89,7 @@ export function optimisticItem(
     categoryId: input.categoryId ?? null,
     categoryName: null,
     urgency: input.urgency ?? DEFAULT_ITEM_URGENCY,
+    neededBy: neededByFor(input.urgency ?? DEFAULT_ITEM_URGENCY),
     status: "pending",
     claimedBy: null,
     claimedByName: null,
@@ -203,11 +206,28 @@ export function useClaimItem(
 }
 
 export function useUnassignItem(houseId: string, listId: string) {
+  return useReleaseItem(houseId, listId, ({ itemId }) => unassignItem(houseId, listId, itemId));
+}
+
+// "Couldn't get" releases the item like unassign does; only the server-side record differs.
+export function useMarkItemMissed(houseId: string, listId: string) {
+  return useReleaseItem(houseId, listId, ({ itemId, reason }) =>
+    markItemMissed(houseId, listId, itemId, reason ?? null),
+  );
+}
+
+type ReleaseVariables = { itemId: string; reason?: string | null };
+
+function useReleaseItem(
+  houseId: string,
+  listId: string,
+  release: (variables: ReleaseVariables) => Promise<void>,
+) {
   const queryClient = useQueryClient();
   const itemsKey = groceryKeys.items(houseId, listId);
   return useMutation({
-    mutationFn: (itemId: string) => unassignItem(houseId, listId, itemId),
-    onMutate: async (itemId) => {
+    mutationFn: release,
+    onMutate: async ({ itemId }) => {
       await queryClient.cancelQueries({ queryKey: itemsKey });
       const previous = queryClient.getQueryData<GroceryItem[]>(itemsKey);
       queryClient.setQueryData<GroceryItem[]>(
@@ -233,7 +253,7 @@ export function useUnassignItem(houseId: string, listId: string) {
     onError: (_err, _itemId, context) => {
       if (context?.previous) queryClient.setQueryData(itemsKey, context.previous);
     },
-    onSettled: (_data, _error, itemId) => {
+    onSettled: (_data, _error, { itemId }) => {
       void queryClient.invalidateQueries({ queryKey: itemsKey });
       void queryClient.invalidateQueries({ queryKey: groceryKeys.overview(houseId) });
       void queryClient.invalidateQueries({

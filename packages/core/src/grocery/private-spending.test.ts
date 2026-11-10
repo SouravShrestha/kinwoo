@@ -28,6 +28,7 @@ function item(
     categoryId: null,
     categoryName: "Snacks",
     urgency: "whenever",
+    neededBy: null,
     status: overrides.status ?? "bought",
     claimedBy: null,
     claimedByName: null,

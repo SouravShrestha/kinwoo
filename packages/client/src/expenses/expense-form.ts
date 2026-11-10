@@ -1,8 +1,10 @@
 import {
+  amountDraftToPaise,
   DEFAULT_EXPENSE_CATEGORY,
   expenseFormSeed,
   paiseToAmountDraft,
   parseSpentOn,
+  spentOnFor,
   suggestExpenseCategory,
   type Expense,
   type ExpenseCategory,
@@ -136,6 +138,21 @@ export function useExpenseForm({
     }
   };
 
+  // What would be saved, compared with what the form opened with. Zero amounts are dropped so
+  // members or the signed-in user loading after mount doesn't count as an edit.
+  const snapshot = JSON.stringify([
+    title,
+    amount,
+    category,
+    note,
+    spentOnFor(date),
+    Object.entries(payers.amounts).filter(([, value]) => amountDraftToPaise(value) > 0),
+    split.method,
+    split.values,
+    Object.entries(split.sharesPaise).filter(([, paise]) => paise > 0),
+  ]);
+  const [initialSnapshot] = useState(snapshot);
+
   const errorFor = (field: ExpenseFormField) => (error?.field === field ? error.message : null);
   const clearError = (field: ExpenseFormField) =>
     setError((current) => (current?.field === field ? null : current));
@@ -143,6 +160,7 @@ export function useExpenseForm({
   return {
     isEditing: !!expense,
     isPrivate: privatePurchase !== null,
+    dirty: snapshot !== initialSnapshot,
     title,
     amount,
     category,

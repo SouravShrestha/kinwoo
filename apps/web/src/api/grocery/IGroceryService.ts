@@ -47,6 +47,7 @@ export interface IGroceryService {
   claimItem(itemId: string): Promise<GroceryResult<ClaimResult>>;
   assignItem(itemId: string, assignedTo: string): Promise<GroceryResult<null>>;
   unassignItem(itemId: string): Promise<GroceryResult<null>>;
+  markMissed(itemId: string, reason: string | null): Promise<GroceryResult<null>>;
   assignItems(
     listId: string,
     itemIds: string[],

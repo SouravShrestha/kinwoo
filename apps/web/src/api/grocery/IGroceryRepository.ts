@@ -81,6 +81,8 @@ export interface IGroceryRepository {
   assignItem(itemId: string, assignedTo: string): Promise<void>;
   /** Returns a claimed or assigned item to pending. */
   unassignItem(itemId: string): Promise<void>;
+  /** "Couldn't get": the holder hands a claimed or assigned item back to pending. */
+  markMissed(itemId: string, reason: string | null): Promise<void>;
   /** Returns how many items were assigned; items no longer pending are skipped. */
   assignItems(listId: string, itemIds: string[], assignedTo: string): Promise<number>;
   /** Claims for the caller; returns how many were still pending and got claimed. */

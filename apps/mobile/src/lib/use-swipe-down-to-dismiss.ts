@@ -21,7 +21,8 @@ function dismissKeyboard() {
 
 // The pull only starts once the content is scrolled to the top; the anchor makes the sheet
 // follow the finger from that point instead of jumping by the distance already scrolled.
-export function useSwipeDownToDismiss(onDismiss: () => void) {
+// With `onDismissAttempt` set (e.g. unsaved edits), a full pull springs back and calls it instead.
+export function useSwipeDownToDismiss(onDismiss: () => void, onDismissAttempt?: () => void) {
   const { height } = useWindowDimensions();
   const scrollY = useSharedValue(0);
   const dragY = useSharedValue(0);
@@ -59,6 +60,11 @@ export function useSwipeDownToDismiss(onDismiss: () => void) {
           const drag = dragY.get();
           const pulled = anchor.get() !== null && drag > 0;
           if (pulled && (drag > DISMISS_DISTANCE || event.velocityY > DISMISS_VELOCITY)) {
+            if (onDismissAttempt) {
+              runOnJS(onDismissAttempt)();
+              dragY.set(withTiming(0, { duration: SETTLE_MS }));
+              return;
+            }
             dragY.set(
               withTiming(height, { duration: SETTLE_MS }, (finished) => {
                 if (finished) runOnJS(dismissWithoutAnimation)();
@@ -68,7 +74,7 @@ export function useSwipeDownToDismiss(onDismiss: () => void) {
           }
           dragY.set(withTiming(0, { duration: SETTLE_MS }));
         }),
-    [anchor, dragY, height, dismissWithoutAnimation, scrollGesture, scrollY],
+    [anchor, dragY, height, dismissWithoutAnimation, onDismissAttempt, scrollGesture, scrollY],
   );
 
   const onScroll = useAnimatedScrollHandler((event) => {

@@ -1,6 +1,6 @@
 "use client";
 
-import { itemUrgencyLabel, itemUrgencyTone, type GroceryItem } from "@kinwoo/core/grocery";
+import { itemNeededLabel, type GroceryItem } from "@kinwoo/core/grocery";
 import { ArrowRightIcon, TickIcon } from "@kinwoo/icons";
 import { ItemCategoryImage } from "@/components/CategoryImages";
 
@@ -33,7 +33,7 @@ export function PendingItemCard({
     .filter(Boolean)
     .join(" ");
 
-  const urgencyTone = item.status === "bought" ? null : itemUrgencyTone(item.urgency);
+  const needed = itemNeededLabel(item);
 
   return (
     <div
@@ -44,6 +44,17 @@ export function PendingItemCard({
           : "border-card-border bg-card hover:border-foreground/30",
       )}
     >
+      {needed?.state === "overdue" ? (
+        // Own clipping layer so the card itself doesn't clip the buttons' focus rings.
+        <span
+          aria-hidden
+          className="pointer-events-none absolute inset-0 overflow-hidden rounded-2xl"
+        >
+          <span className="absolute left-[-41px] top-[9px] w-28 -rotate-45 bg-foreground py-px text-center font-display text-[7px] leading-[10px] font-semibold tracking-wide text-card">
+            Overdue
+          </span>
+        </span>
+      ) : null}
       <button
         type="button"
         {...(onToggleSelect
@@ -78,11 +89,7 @@ export function PendingItemCard({
             )}
           >
             {item.name}
-            {urgencyTone ? (
-              <span className="sr-only">
-                , needed {itemUrgencyLabel(item.urgency).toLowerCase()}
-              </span>
-            ) : null}
+            {needed ? <span className="sr-only">, {needed.text}</span> : null}
             {assignee ? (
               <span className="sr-only">
                 , {assigneeVerb} {assignee.name ?? "a housemate"}
@@ -112,7 +119,7 @@ export function PendingItemCard({
         aria-haspopup="dialog"
         onClick={onOpen}
         className={cn(
-          "absolute right-3 top-[18px] flex size-7 items-center justify-center rounded-full border border-dialog-border text-muted-foreground transition-colors hover:cursor-pointer group-hover:border-foreground/30",
+          "absolute right-3 top-3 flex size-7 items-center justify-center rounded-full border border-dialog-border text-muted-foreground transition-colors hover:cursor-pointer group-hover:border-foreground/30",
           FOCUS_RING,
         )}
       >

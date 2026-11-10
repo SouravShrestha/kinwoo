@@ -133,3 +133,4 @@ export const NoActivityIcon = /*#__PURE__*/ icon(geometry.noActivityIcon);
 export const NoFilterMatchIcon = /*#__PURE__*/ icon(geometry.noFilterMatchIcon);
 export const NoSettledIcon = /*#__PURE__*/ icon(geometry.noSettledIcon);
 export const NoPrivateIcon = /*#__PURE__*/ icon(geometry.noPrivateIcon);
+export const OverdueIcon = /*#__PURE__*/ icon(geometry.overdueIcon);

@@ -11,6 +11,7 @@ export * from "./item-defaults";
 export * from "./item-detail";
 export * from "./list-options";
 export * from "./list-visibility";
+export * from "./needed-by";
 export * from "./private-spending";
 export * from "./purchase-date";
 export * from "./sorting";

@@ -6,6 +6,7 @@ import { HousesProvider } from "@kinwoo/client/houses";
 import { router } from "expo-router";
 import { useEffect, type ReactNode } from "react";
 
+import { ExpensesRealtime } from "@kinwoo/client/expenses";
 import { GroceryRealtime } from "@kinwoo/client/grocery";
 import { useActiveHouse } from "@kinwoo/client/houses";
 import { AuthGate } from "./AuthGate";
@@ -26,7 +27,12 @@ installOnlineManager();
 function GroceryRealtimeGate() {
   const { activeHouse } = useActiveHouse();
   if (!activeHouse) return null;
-  return <GroceryRealtime client={supabase} houseId={activeHouse.house.id} />;
+  return (
+    <>
+      <GroceryRealtime client={supabase} houseId={activeHouse.house.id} />
+      <ExpensesRealtime client={supabase} houseId={activeHouse.house.id} />
+    </>
+  );
 }
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL;

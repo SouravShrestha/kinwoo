@@ -26,6 +26,7 @@ function item(
     categoryId: null,
     categoryName: null,
     urgency: "whenever",
+    neededBy: null,
     status: "bought",
     claimedBy: null,
     claimedByName: null,

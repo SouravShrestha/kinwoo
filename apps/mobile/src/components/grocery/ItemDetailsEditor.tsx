@@ -1,4 +1,4 @@
-import { useGroceryItemActivity, type EditItemForm } from "@kinwoo/client/grocery";
+import { useGroceryItemActivity, useUpdateItem, type EditItemForm } from "@kinwoo/client/grocery";
 import { useHouseMembers } from "@kinwoo/client/houses";
 import { toast } from "@kinwoo/client/toast";
 import {
@@ -7,9 +7,12 @@ import {
   ITEM_QUANTITY_MAX_LENGTH,
   ITEM_URGENCY_OPTIONS,
   itemLastEdit,
+  itemNeededLabel,
+  itemNeededPrompt,
   itemUnitOptions,
   storeSearchLinks,
   type GroceryItem,
+  type ItemUrgency,
   type StoreId,
 } from "@kinwoo/core/grocery";
 import { CaretDownIcon, CheckCircleIcon, ClockIcon, CloseIcon } from "@kinwoo/icons/native";
@@ -27,7 +30,9 @@ import { useTheme } from "@/theme/ThemeProvider";
 
 import { ItemCategoryImage } from "./ItemCategoryImage";
 
-type Picker = "category" | "unit" | "urgency";
+// "renew" is the urgency picker opened from "Still need it?": it saves straight away, since
+// re-picking the same urgency must still restart its date.
+type Picker = "category" | "unit" | "urgency" | "renew";
 
 const NO_UNIT = "__none__";
 
@@ -43,6 +48,8 @@ const STORE_LOGOS: Record<StoreId, number> = {
 };
 
 const FIELD = "h-12 flex-row items-center rounded-xl bg-muted";
+const PROMPT_BUTTON =
+  "h-10 min-w-20 items-center justify-center rounded-lg border border-border px-3 active:bg-muted";
 // No `text-*` size class on inputs: its lineHeight misaligns iOS text and caret.
 const INPUT_STYLE = { fontSize: 16, paddingVertical: 0 } as const;
 
@@ -60,7 +67,9 @@ export function ItemDetailsEditor({
   currentUserId,
   currentUserName,
   canEdit,
+  onDelete,
   onClose,
+  onRequestClose,
   footer,
 }: {
   item: GroceryItem;
@@ -70,7 +79,11 @@ export function ItemDetailsEditor({
   currentUserId: string;
   currentUserName: string | null;
   canEdit: boolean;
+  /** Set when the viewer may delete; "Still need it? No" opens the same confirm. */
+  onDelete?: () => void;
   onClose: () => void;
+  /** The header close button; may ask before discarding edits. */
+  onRequestClose: () => void;
   footer: ReactNode;
 }) {
   const { resolvedTheme, colors } = useTheme();
@@ -81,6 +94,7 @@ export function ItemDetailsEditor({
 
   const { data: activity } = useGroceryItemActivity(houseId, listId, item.id);
   const { data: members } = useHouseMembers(houseId);
+  const updateItem = useUpdateItem(houseId, listId, item.id);
 
   const draft = form.draft;
   if (!draft) return null;
@@ -111,6 +125,18 @@ export function ItemDetailsEditor({
     setPicker(next);
   };
   const closePicker = () => setPicker(null);
+  const neededState = itemNeededLabel(item)?.state;
+  const neededPrompt = itemNeededPrompt(item);
+
+  const handleRenew = async (urgency: ItemUrgency) => {
+    closePicker();
+    try {
+      await updateItem.mutateAsync({ urgency });
+      toast.success(`"${item.name}" is back on the list`);
+    } catch {
+      toast.error("Couldn't update that item. Try again.");
+    }
+  };
 
   const handleSave = async () => {
     if (!form.dirty) return;
@@ -136,7 +162,7 @@ export function ItemDetailsEditor({
           <Pressable
             accessibilityRole="button"
             accessibilityLabel="Close"
-            onPress={onClose}
+            onPress={onRequestClose}
             hitSlop={12}
             className="-ml-2 size-10 items-center justify-center active:opacity-60"
           >
@@ -247,6 +273,43 @@ export function ItemDetailsEditor({
           </Pressable>
         </View>
 
+        {neededPrompt ? (
+          <View className="flex-row items-center justify-between gap-3">
+            <Text
+              className={`shrink font-display-normal text-sm ${
+                neededState === "overdue" ? "text-destructive" : "text-muted-foreground"
+              }`}
+            >
+              {neededPrompt}
+            </Text>
+            {neededState === "overdue" && canEdit ? (
+              <View className="flex-row gap-2">
+                <Pressable
+                  accessibilityRole="button"
+                  accessibilityLabel="Yes, still need it. Pick when"
+                  disabled={updateItem.isPending}
+                  onPress={() => openPicker("renew")}
+                  hitSlop={6}
+                  className={`${PROMPT_BUTTON} ${updateItem.isPending ? "opacity-50" : ""}`}
+                >
+                  <Text className="font-display-medium text-sm text-foreground">Yes</Text>
+                </Pressable>
+                {onDelete ? (
+                  <Pressable
+                    accessibilityRole="button"
+                    accessibilityLabel="No, delete it"
+                    onPress={onDelete}
+                    hitSlop={6}
+                    className={PROMPT_BUTTON}
+                  >
+                    <Text className="font-display-medium text-sm text-foreground">No</Text>
+                  </Pressable>
+                ) : null}
+              </View>
+            ) : null}
+          </View>
+        ) : null}
+
         <SheetTextInput
           accessibilityLabel="Note"
           editable={canEdit}
@@ -355,6 +418,15 @@ export function ItemDetailsEditor({
           if (option) form.setUrgency(option.value);
           closePicker();
         }}
+      />
+      <OptionSheet
+        open={picker === "renew"}
+        onClose={closePicker}
+        title="When do you need it now?"
+        columns={2}
+        options={ITEM_URGENCY_OPTIONS.map((option) => ({ id: option.value, label: option.label }))}
+        selectedId={null}
+        onSelect={(id) => void handleRenew(id as ItemUrgency)}
       />
     </>
   );

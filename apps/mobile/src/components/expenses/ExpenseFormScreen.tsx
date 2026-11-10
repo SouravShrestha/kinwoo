@@ -20,6 +20,7 @@ import { DatePickerSheet } from "@/components/grocery/DatePickerSheet";
 import { OptionSheet } from "@/components/OptionSheet";
 import { Pressable } from "@/components/Pressable";
 import { SwipeDownScreen } from "@/components/SwipeDownScreen";
+import { useDiscardConfirm } from "@/components/useDiscardConfirm";
 import { goBack } from "@/lib/house-navigation";
 import { useFocusedInputAboveKeyboard } from "@/lib/use-focused-input-above-keyboard";
 import { useSwipeDownToDismiss } from "@/lib/use-swipe-down-to-dismiss";
@@ -59,12 +60,16 @@ export function ExpenseFormScreen({
   });
   const { payers, split } = form;
   const [noteOpen, setNoteOpen] = useState(Boolean(expense?.note));
+  const { ask, requestClose, dialog: discardDialog } = useDiscardConfirm(form.dirty, goBack);
 
   const submitDisabled = !form.canSubmit;
   const dateLabel = formatPickedDate(form.date);
   const heading = form.isEditing ? "Edit expense" : "Add expense";
 
-  const { pan, scrollGesture, scrollY, onScroll, sheetStyle } = useSwipeDownToDismiss(goBack);
+  const { pan, scrollGesture, scrollY, onScroll, sheetStyle } = useSwipeDownToDismiss(
+    goBack,
+    form.dirty ? ask : undefined,
+  );
   const { scrollRef, revealFocusedInput } = useFocusedInputAboveKeyboard(scrollY);
 
   const openPicker = (next: Picker) => {
@@ -100,7 +105,7 @@ export function ExpenseFormScreen({
               <Pressable
                 accessibilityRole="button"
                 accessibilityLabel="Back"
-                onPress={goBack}
+                onPress={requestClose}
                 hitSlop={12}
                 className="size-10 items-start justify-center"
               >
@@ -317,6 +322,7 @@ export function ExpenseFormScreen({
         onSelect={form.setDate}
         label="Choose the date spent"
       />
+      {discardDialog}
     </SwipeDownScreen>
   );
 }

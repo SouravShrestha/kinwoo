@@ -3,6 +3,7 @@
 import { configureApiClient } from "@kinwoo/client/api";
 import { useOfflineToast } from "@kinwoo/client/activity";
 import { AuthProvider } from "@kinwoo/client/auth";
+import { ExpensesRealtime } from "@kinwoo/client/expenses";
 import { GroceryRealtime } from "@kinwoo/client/grocery";
 import { HousesProvider, useActiveHouse } from "@kinwoo/client/houses";
 import { onlineManager } from "@tanstack/react-query";
@@ -44,7 +45,12 @@ if (typeof navigator !== "undefined") {
 function GroceryRealtimeGate() {
   const { activeHouse } = useActiveHouse();
   if (!activeHouse) return null;
-  return <GroceryRealtime client={supabase} houseId={activeHouse.house.id} />;
+  return (
+    <>
+      <GroceryRealtime client={supabase} houseId={activeHouse.house.id} />
+      <ExpensesRealtime client={supabase} houseId={activeHouse.house.id} />
+    </>
+  );
 }
 
 export function AppProviders({ children }: { children: ReactNode }) {

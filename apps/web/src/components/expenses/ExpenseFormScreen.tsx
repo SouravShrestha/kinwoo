@@ -19,6 +19,7 @@ import { DatePickerSheet } from "@/components/grocery/DatePickerSheet";
 import { OptionSheet } from "@/components/grocery/OptionSheet";
 import { useHouseNavigation } from "@/lib/house-navigation";
 import { useSwipeToClose } from "@/lib/use-swipe-to-close";
+import { useDiscardConfirm } from "@/components/useDiscardConfirm";
 import { cn } from "@/lib/utils";
 
 import { PayerSheet } from "./PayerSheet";
@@ -46,7 +47,6 @@ export function ExpenseFormScreen({
   const { goBack } = useHouseNavigation();
   const [closing, setClosing] = useState(false);
   const screenRef = useRef<HTMLElement>(null);
-  useSwipeToClose(screenRef, !closing, () => setClosing(true));
   const [picker, setPicker] = useState<Picker | null>(null);
   const form = useExpenseForm({
     houseId,
@@ -57,6 +57,11 @@ export function ExpenseFormScreen({
   });
   const { payers, split } = form;
   const [noteOpen, setNoteOpen] = useState(Boolean(expense?.note));
+
+  const { requestClose, dialog: discardDialog } = useDiscardConfirm(form.dirty, () =>
+    setClosing(true),
+  );
+  useSwipeToClose(screenRef, !closing, requestClose);
 
   // Children fire their own animationend events, which bubble up here.
   const onAnimationEnd = (event: AnimationEvent<HTMLElement>) => {
@@ -88,7 +93,7 @@ export function ExpenseFormScreen({
             type="button"
             aria-label="Back"
             disabled={closing}
-            onClick={() => setClosing(true)}
+            onClick={requestClose}
             className={cn(
               "flex size-10 items-center justify-start hover:cursor-pointer",
               FOCUS_RING,
@@ -314,6 +319,7 @@ export function ExpenseFormScreen({
         onSelect={form.setDate}
         label="Choose the date spent"
       />
+      {discardDialog}
     </main>
   );
 }

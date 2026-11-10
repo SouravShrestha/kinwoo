@@ -18,3 +18,16 @@ describe("createAppQueryClient offline writes", () => {
     expect(mutationFn).not.toHaveBeenCalled();
   });
 });
+
+describe("createAppQueryClient after a write", () => {
+  it("marks queries from other features stale when any mutation succeeds", async () => {
+    const client = createAppQueryClient();
+    await client.fetchQuery({ queryKey: ["expenses", "h1", "list"], queryFn: () => [] });
+    expect(client.getQueryState(["expenses", "h1", "list"])?.isInvalidated).toBe(false);
+
+    const mutation = client.getMutationCache().build(client, { mutationFn: async () => "ok" });
+    await mutation.execute(undefined);
+
+    expect(client.getQueryState(["expenses", "h1", "list"])?.isInvalidated).toBe(true);
+  });
+});

@@ -24,6 +24,7 @@ import { useEffect, useRef, useState, type AnimationEvent } from "react";
 
 import { useHouseNavigation } from "@/lib/house-navigation";
 import { useSwipeToClose } from "@/lib/use-swipe-to-close";
+import { useDiscardConfirm } from "@/components/useDiscardConfirm";
 import { cn } from "@/lib/utils";
 
 import { NewListSheet } from "./NewListSheet";
@@ -46,7 +47,6 @@ export function AddItemScreen({ listId }: { listId: string | null }) {
   const { goBack, goHome } = useHouseNavigation();
   const [closing, setClosing] = useState(false);
   const screenRef = useRef<HTMLElement>(null);
-  useSwipeToClose(screenRef, !closing, () => setClosing(true));
   const [addAnother, setAddAnother] = useState(true);
   const [picker, setPicker] = useState<Picker | null>(null);
   const [newListOpen, setNewListOpen] = useState(false);
@@ -63,6 +63,11 @@ export function AddItemScreen({ listId }: { listId: string | null }) {
       }
     },
   });
+
+  const { requestClose, dialog: discardDialog } = useDiscardConfirm(form.dirty, () =>
+    setClosing(true),
+  );
+  useSwipeToClose(screenRef, !closing, requestClose);
 
   useEffect(() => {
     if (ready && !activeHouse) goHome();
@@ -111,7 +116,7 @@ export function AddItemScreen({ listId }: { listId: string | null }) {
             type="button"
             aria-label="Back"
             disabled={closing}
-            onClick={() => setClosing(true)}
+            onClick={requestClose}
             className={cn(
               "flex size-10 items-center justify-start hover:cursor-pointer",
               FOCUS_RING,
@@ -386,6 +391,7 @@ export function AddItemScreen({ listId }: { listId: string | null }) {
           closePicker();
         }}
       />
+      {discardDialog}
     </main>
   );
 }

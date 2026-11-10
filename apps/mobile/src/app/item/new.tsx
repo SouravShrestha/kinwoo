@@ -37,6 +37,7 @@ import { OptionSheet, type SheetOption } from "@/components/OptionSheet";
 import { Pressable } from "@/components/Pressable";
 import { SkeletonText } from "@/components/skeleton/Skeleton";
 import { SwipeDownScreen } from "@/components/SwipeDownScreen";
+import { useDiscardConfirm } from "@/components/useDiscardConfirm";
 import { goBack, goHome } from "@/lib/house-navigation";
 import { useSwipeDownToDismiss } from "@/lib/use-swipe-down-to-dismiss";
 import { useTheme } from "@/theme/ThemeProvider";
@@ -96,7 +97,8 @@ export default function AddItemScreen() {
     setPicker(next);
   };
   const closePicker = () => setPicker(null);
-  const { pan, sheetStyle } = useSwipeDownToDismiss(goBack);
+  const { ask, requestClose, dialog: discardDialog } = useDiscardConfirm(form.dirty, goBack);
+  const { pan, sheetStyle } = useSwipeDownToDismiss(goBack, form.dirty ? ask : undefined);
 
   return (
     <SwipeDownScreen pan={pan} sheetStyle={sheetStyle}>
@@ -113,7 +115,7 @@ export default function AddItemScreen() {
               <Pressable
                 accessibilityRole="button"
                 accessibilityLabel="Back"
-                onPress={goBack}
+                onPress={requestClose}
                 hitSlop={12}
                 className="size-10 items-start justify-center"
               >
@@ -413,6 +415,7 @@ export default function AddItemScreen() {
             closePicker();
           }}
         />
+        {discardDialog}
       </KeyboardAvoidingView>
     </SwipeDownScreen>
   );

@@ -151,14 +151,14 @@ isOneToOne: false
                   ]
                 },"grocery_items": {
                   Row: {
-                    "archived_at": string | null,"assigned_at": string | null,"assigned_by": string | null,"assigned_to": string | null,"assignment_response": string | null,"category_id": string | null,"claimed_at": string | null,"claimed_by": string | null,"created_at": string,"created_by": string,"deleted_at": string | null,"house_id": string,"id": string,"idempotency_key": string | null,"list_id": string,"name": string,"note": string | null,"position": number,"quantity": number | null,"status": Database["public"]['Enums']["item_status"],"unit": string | null,"updated_at": string,"urgency": Database["public"]['Enums']["item_urgency"]
+                    "archived_at": string | null,"assigned_at": string | null,"assigned_by": string | null,"assigned_to": string | null,"assignment_response": string | null,"category_id": string | null,"claimed_at": string | null,"claimed_by": string | null,"created_at": string,"created_by": string,"deleted_at": string | null,"house_id": string,"id": string,"idempotency_key": string | null,"list_id": string,"name": string,"needed_by": string | null,"note": string | null,"position": number,"quantity": number | null,"status": Database["public"]['Enums']["item_status"],"unit": string | null,"updated_at": string,"urgency": Database["public"]['Enums']["item_urgency"]
                   }
                   ComputedFields: never
                   Insert: {
-                    "archived_at"?: string | null,"assigned_at"?: string | null,"assigned_by"?: string | null,"assigned_to"?: string | null,"assignment_response"?: string | null,"category_id"?: string | null,"claimed_at"?: string | null,"claimed_by"?: string | null,"created_at"?: string,"created_by": string,"deleted_at"?: string | null,"house_id": string,"id"?: string,"idempotency_key"?: string | null,"list_id": string,"name": string,"note"?: string | null,"position"?: number,"quantity"?: number | null,"status"?: Database["public"]['Enums']["item_status"],"unit"?: string | null,"updated_at"?: string,"urgency"?: Database["public"]['Enums']["item_urgency"]
+                    "archived_at"?: string | null,"assigned_at"?: string | null,"assigned_by"?: string | null,"assigned_to"?: string | null,"assignment_response"?: string | null,"category_id"?: string | null,"claimed_at"?: string | null,"claimed_by"?: string | null,"created_at"?: string,"created_by": string,"deleted_at"?: string | null,"house_id": string,"id"?: string,"idempotency_key"?: string | null,"list_id": string,"name": string,"needed_by"?: string | null,"note"?: string | null,"position"?: number,"quantity"?: number | null,"status"?: Database["public"]['Enums']["item_status"],"unit"?: string | null,"updated_at"?: string,"urgency"?: Database["public"]['Enums']["item_urgency"]
                   }
                   Update: {
-                    "archived_at"?: string | null,"assigned_at"?: string | null,"assigned_by"?: string | null,"assigned_to"?: string | null,"assignment_response"?: string | null,"category_id"?: string | null,"claimed_at"?: string | null,"claimed_by"?: string | null,"created_at"?: string,"created_by"?: string,"deleted_at"?: string | null,"house_id"?: string,"id"?: string,"idempotency_key"?: string | null,"list_id"?: string,"name"?: string,"note"?: string | null,"position"?: number,"quantity"?: number | null,"status"?: Database["public"]['Enums']["item_status"],"unit"?: string | null,"updated_at"?: string,"urgency"?: Database["public"]['Enums']["item_urgency"]
+                    "archived_at"?: string | null,"assigned_at"?: string | null,"assigned_by"?: string | null,"assigned_to"?: string | null,"assignment_response"?: string | null,"category_id"?: string | null,"claimed_at"?: string | null,"claimed_by"?: string | null,"created_at"?: string,"created_by"?: string,"deleted_at"?: string | null,"house_id"?: string,"id"?: string,"idempotency_key"?: string | null,"list_id"?: string,"name"?: string,"needed_by"?: string | null,"note"?: string | null,"position"?: number,"quantity"?: number | null,"status"?: Database["public"]['Enums']["item_status"],"unit"?: string | null,"updated_at"?: string,"urgency"?: Database["public"]['Enums']["item_urgency"]
                   }
                   Relationships: [
                     {
@@ -564,6 +564,7 @@ isOneToOne: false
 "idempotency_key": string | null,
 "list_id": string,
 "name": string,
+"needed_by": string | null,
 "note": string | null,
 "position": number,
 "quantity": number | null,
@@ -710,6 +711,9 @@ isOneToOne: false
               "avatar_url": string,"display_name": string,"is_self": boolean,"net_paise": number,"user_id": string
             }[]
                            },
+"house_today":
+{ Args: Record<PropertyKey, never>; Returns: string
+                           },
 "insert_expense":
 { Args: { "p_actor": string,"p_amount_paise": number,"p_batch_id"?: string,"p_category": string,"p_house_id": string,"p_note": string,"p_payers": Json,"p_purchase_id"?: string,"p_shares": Json,"p_spent_on": string,"p_split_method": string,"p_title": string }; Returns: string
                            },
@@ -745,6 +749,9 @@ isOneToOne: false
 "mark_item_bought":
 { Args: { "p_bought_at"?: string,"p_expense"?: Json,"p_item_id": string,"p_price_paise"?: number,"p_quantity"?: number,"p_store"?: string,"p_unit"?: string }; Returns: undefined
                            },
+"mark_item_missed":
+{ Args: { "p_item_id": string,"p_reason"?: string }; Returns: undefined
+                           },
 "mark_items_bought":
 { Args: { "p_expense"?: Json,"p_item_ids": (string)[],"p_item_prices"?: (number)[],"p_list_id": string,"p_name"?: string,"p_store"?: string,"p_total_paise": number }; Returns: string
                            },
@@ -777,6 +784,9 @@ isOneToOne: false
                            },
 "push_token_platform":
 { Args: { "p_token": string }; Returns: string
+                           },
+"queue_grocery_digest":
+{ Args: Record<PropertyKey, never>; Returns: number
                            },
 "record_settlement":
 { Args: { "p_amount_paise": number,"p_house_id": string,"p_payee_id": string,"p_payer_id": string }; Returns: string
@@ -841,6 +851,7 @@ isOneToOne: false
 "idempotency_key": string | null,
 "list_id": string,
 "name": string,
+"needed_by": string | null,
 "note": string | null,
 "position": number,
 "quantity": number | null,
@@ -880,6 +891,9 @@ isOneToOne: false
                            },
 "update_settlement":
 { Args: { "p_amount_paise": number,"p_settlement_id": string }; Returns: undefined
+                           },
+"urgency_needed_by":
+{ Args: { "p_today"?: string,"p_urgency": Database["public"]['Enums']["item_urgency"] }; Returns: string
                            },
 "user_has_outstanding_balance":
 { Args: { "p_house_id": string,"p_user_id": string }; Returns: boolean

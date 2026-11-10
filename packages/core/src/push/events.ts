@@ -3,6 +3,9 @@ export const PUSH_EVENTS = [
   { type: "expense.updated", group: "Expenses", label: "An expense I share is edited" },
   { type: "settlement.recorded", group: "Expenses", label: "A settlement is recorded with me" },
   { type: "grocery_item.assigned", group: "Tasks", label: "An item is assigned to me" },
+  { type: "grocery_item.added", group: "Tasks", label: "Someone needs an item now" },
+  { type: "grocery_item.missed", group: "Tasks", label: "Someone couldn't get an item I added" },
+  { type: "grocery.digest", group: "Tasks", label: "Morning list of items needed today" },
   { type: "join_requested", group: "House", label: "Someone asks to join my house" },
 ] as const;
 

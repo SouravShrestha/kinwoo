@@ -114,6 +114,8 @@ const ICON_BY_ACTIVITY: Record<string, ActivityIconName> = {
   "grocery_item.assigned": "user-check",
   "grocery_item.assignment_accepted": "user-check",
   "grocery_item.assignment_declined": "user-cross",
+  "grocery_item.missed": "cart-cross",
+  "grocery.digest": "pulse",
   "grocery_item.bought": "bag-dollar",
   "grocery_batch.bought": "bag-dollar",
   "expense.created": "transaction",

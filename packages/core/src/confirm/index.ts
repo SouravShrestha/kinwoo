@@ -116,6 +116,13 @@ export const CONFIRM_COPY = {
     message: "This will delete the house and is irreversible.",
     confirmLabel: "Delete",
   },
+  discardChanges: {
+    icon: "trash",
+    tone: "destructive",
+    title: "Discard changes?",
+    message: "What you've entered will be lost.",
+    confirmLabel: "Discard",
+  },
   rotateInvite: {
     icon: "lock",
     tone: "destructive",

@@ -10,7 +10,8 @@ const DRAG_START_PX = 10;
 export function useSwipeToClose(
   ref: RefObject<HTMLElement | null>,
   enabled: boolean,
-  onClose: () => void,
+  // Returning false keeps it open (e.g. to confirm discarding edits) and springs it back.
+  onClose: () => boolean | void,
   // For screens that scroll the document itself rather than an inner container.
   respectPageScroll = false,
 ) {
@@ -70,10 +71,7 @@ export function useSwipeToClose(
       tracking = false;
       if (!dragging) return;
       dragging = false;
-      if (offset > CLOSE_DRAG_PX) {
-        onCloseRef.current();
-        return;
-      }
+      if (offset > CLOSE_DRAG_PX && onCloseRef.current() !== false) return;
       el.style.transition = "translate 200ms ease-out";
       el.style.translate = "0 0";
     };

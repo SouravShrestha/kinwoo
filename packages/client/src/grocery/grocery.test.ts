@@ -221,6 +221,7 @@ describe("optimisticItem", () => {
       unit: "kg",
       status: "pending",
       urgency: "whenever",
+      neededBy: null,
       createdBy: "u1",
     });
   });

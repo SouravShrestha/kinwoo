@@ -29,13 +29,23 @@ export function rejectWhileOffline(): void {
 }
 
 export function createAppQueryClient(): QueryClient {
-  return new QueryClient({
-    mutationCache: new MutationCache({ onMutate: rejectWhileOffline }),
+  const queryClient: QueryClient = new QueryClient({
+    mutationCache: new MutationCache({
+      onMutate: rejectWhileOffline,
+      // Any successful write can change what another screen shows (home totals, activity feed,
+      // balances), so everything is marked stale: mounted queries refetch now, the rest on mount.
+      // Not returned, so the mutation never waits on the refetch (see invalidateWhileOnline).
+      // ponytail: blanket refetch of every mounted query; narrow by key if it gets chatty.
+      onSuccess: () => {
+        void queryClient.invalidateQueries();
+      },
+    }),
     defaultOptions: {
       queries: { retry: shouldRetry, staleTime: 30_000, gcTime: CACHE_MAX_AGE_MS },
       mutations: { retry: false },
     },
   });
+  return queryClient;
 }
 
 // A write that already succeeded must not hang on its follow-up refresh when the connection drops:
