@@ -24,6 +24,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { AppFooter } from "@/components/AppFooter";
 import { AppearanceSheet } from "@/components/AppearanceSheet";
 import { AvatarSheet } from "@/components/AvatarSheet";
+import { BannerAd } from "@/components/BannerAd";
 import { Button } from "@/components/Button";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { Pressable } from "@/components/Pressable";
@@ -133,6 +134,8 @@ export default function ProfileScreen() {
           )}
         </View>
       </View>
+
+      <BannerAd className="mb-4" />
 
       <SettingsGroup title="Account Settings">
         <SettingsRow
