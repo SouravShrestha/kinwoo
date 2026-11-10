@@ -34,6 +34,6 @@ See [AGENTS.md](AGENTS.md#architecture-rules). In short: `core` stays dependency
 
 Merging to `main` lets release-please open a release PR. Merging that PR tags the release, deploys the web app to production and starts an Android build.
 
-## Conduct and license
+## License
 
-See [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md). Contributions are under the [MIT license](LICENSE).
+Proprietary. All contributions become the property of the copyright holder; see [LICENSE](LICENSE).
