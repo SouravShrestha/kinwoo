@@ -17,11 +17,25 @@ import {
 } from "./IExpensesRepository";
 
 const EXPENSE_COLUMNS =
-  "id, house_id, title, amount_paise, category, note, spent_on, split_method, purchase_id, batch_id, created_by, created_at, updated_at, updated_by, creator:profiles!created_by(display_name), editor:profiles!updated_by(display_name), expense_payers(user_id, amount_paise, profiles(display_name)), expense_shares(user_id, share_paise, weight, profiles(display_name))";
+  "id, house_id, title, amount_paise, category, note, spent_on, split_method, purchase_id, batch_id, purchase:grocery_purchases!expenses_purchase_id_fkey(grocery_items(grocery_categories(name))), batch:grocery_purchase_batches!expenses_batch_id_fkey(grocery_purchases!grocery_purchases_batch_id_fkey(batch_position, grocery_items(grocery_categories(name)))), created_by, created_at, updated_at, updated_by, creator:profiles!created_by(display_name), editor:profiles!updated_by(display_name), expense_payers(user_id, amount_paise, profiles(display_name)), expense_shares(user_id, share_paise, weight, profiles(display_name))";
 
 function one<T>(value: T | T[] | null | undefined): T | null {
   return (Array.isArray(value) ? value[0] : value) ?? null;
 }
+
+function purchaseCategoryName(purchase: any): string | null {
+  return one<any>(one<any>(purchase?.grocery_items)?.grocery_categories)?.name ?? null;
+}
+
+// Linked expenses are created as "groceries"; until someone picks another category, they show
+// the bought item's icon. A batch uses its first item (the query fetches only that one).
+function itemCategoryName(row: any): string | null {
+  if (row.category !== "groceries") return null;
+  const purchase = one<any>(row.purchase) ?? one<any>(one<any>(row.batch)?.grocery_purchases);
+  return purchaseCategoryName(purchase);
+}
+
+const BATCH_PURCHASES = "batch.grocery_purchases";
 
 function toExpense(row: any): Expense {
   const payers: any[] = Array.isArray(row.expense_payers) ? row.expense_payers : [];
@@ -44,6 +58,7 @@ function toExpense(row: any): Expense {
       : row.batch_id
         ? { kind: "batch", id: row.batch_id }
         : null,
+    itemCategoryName: itemCategoryName(row),
     payers: payers
       .map((payer) => ({
         userId: payer.user_id,
@@ -125,7 +140,12 @@ export class ExpensesRepository implements IExpensesRepository {
     limit: number,
     after: ExpenseCursor | null,
   ): Promise<Expense[]> {
-    let query = this.client.from("expenses").select(EXPENSE_COLUMNS).eq("house_id", houseId);
+    let query = this.client
+      .from("expenses")
+      .select(EXPENSE_COLUMNS)
+      .eq("house_id", houseId)
+      .order("batch_position", { referencedTable: BATCH_PURCHASES })
+      .limit(1, { referencedTable: BATCH_PURCHASES });
 
     if (after) {
       const { spentOn, createdAt, id } = after;
@@ -150,6 +170,8 @@ export class ExpensesRepository implements IExpensesRepository {
       .select(EXPENSE_COLUMNS)
       .eq("house_id", houseId)
       .eq("id", expenseId)
+      .order("batch_position", { referencedTable: BATCH_PURCHASES })
+      .limit(1, { referencedTable: BATCH_PURCHASES })
       .maybeSingle();
 
     if (error) fail(error);

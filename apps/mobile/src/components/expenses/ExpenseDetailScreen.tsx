@@ -15,6 +15,7 @@ import Animated from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { ConfirmDialog } from "@/components/ConfirmDialog";
+import { ItemCategoryImage } from "@/components/grocery/ItemCategoryImage";
 import { Avatar } from "@/components/houses/Avatar";
 import { Pressable } from "@/components/Pressable";
 import { ExpenseDetailSkeleton } from "@/components/skeleton/skeletons";
@@ -156,7 +157,11 @@ function ExpenseDetails({
     <View className="gap-7">
       <View className="flex-row gap-4">
         <View className="size-16 items-center justify-center rounded-xl bg-muted">
-          <ExpenseCategoryImage category={expense.category} size={56} />
+          {expense.itemCategoryName ? (
+            <ItemCategoryImage name={expense.itemCategoryName} size={56} />
+          ) : (
+            <ExpenseCategoryImage category={expense.category} size={56} />
+          )}
         </View>
         <View className="min-w-0 flex-1 gap-1.5">
           <Text accessibilityRole="header" className="font-display-medium text-lg text-foreground">

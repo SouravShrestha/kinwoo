@@ -36,6 +36,8 @@ export type Expense = {
   updatedBy: string | null;
   updatedByName: string | null;
   source: ExpenseSource | null;
+  // The grocery category of the item bought (the first item of a batch), for its icon.
+  itemCategoryName: string | null;
   payers: ExpensePayer[];
   shares: ExpenseShare[];
   createdAt: string;

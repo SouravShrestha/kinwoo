@@ -8,6 +8,7 @@ import {
 import { formatPaise, formatPickedDate } from "@kinwoo/core/grocery";
 import { Text, View } from "react-native";
 
+import { ItemCategoryImage } from "@/components/grocery/ItemCategoryImage";
 import { Pressable } from "@/components/Pressable";
 import { useTheme } from "@/theme/ThemeProvider";
 
@@ -46,7 +47,11 @@ export function ExpenseRow({
         <Text className="font-display-normal text-lg leading-6 text-muted-foreground">{day}</Text>
       </View>
       <View className="ml-3 mr-4 size-10 items-center justify-center rounded-lg bg-muted">
-        <ExpenseCategoryImage category={expense.category} size={30} />
+        {expense.itemCategoryName ? (
+          <ItemCategoryImage name={expense.itemCategoryName} size={30} />
+        ) : (
+          <ExpenseCategoryImage category={expense.category} size={30} />
+        )}
       </View>
       <View className="mr-3 min-w-0 flex-1 gap-0.5">
         <Text numberOfLines={1} className="font-display-normal text-base text-foreground">

@@ -43,6 +43,7 @@ function expense(overrides: Partial<Expense> = {}): Expense {
     updatedBy: null,
     updatedByName: null,
     source: null,
+    itemCategoryName: null,
     payers: [{ userId: "a", name: "Asha", amountPaise: 30000 }],
     shares: [
       { userId: "a", name: "Asha", sharePaise: 10000, weight: null },
