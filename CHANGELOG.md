@@ -1,5 +1,26 @@
 # Changelog
 
+## [1.7.0](https://github.com/SouravShrestha/kinwoo/compare/v1.6.1...v1.7.0) (2026-11-13)
+
+
+### Features
+
+* **expenses:** refresh expenses and activity in realtime ([5ffd1a0](https://github.com/SouravShrestha/kinwoo/commit/5ffd1a07da9dc5475eccf1a7ff2b8dbf2aa541cf))
+* **grocery:** add needed-by dates and missed items ([4c42d59](https://github.com/SouravShrestha/kinwoo/commit/4c42d59a57cd1470c0468d4a574429033d788f27))
+* **web:** confirm before discarding unsaved form changes ([be6279b](https://github.com/SouravShrestha/kinwoo/commit/be6279b2e4cf067374923e57e94c0245292d0dc7))
+
+
+### Bug Fixes
+
+* **db:** close dollar quote in needed-by digest function ([c994cdf](https://github.com/SouravShrestha/kinwoo/commit/c994cdf1eadfdba72a6f59e91ce92c35a94e9fd0))
+* **expenses:** show the bought item's category icon on linked expenses ([d8894d8](https://github.com/SouravShrestha/kinwoo/commit/d8894d83175245f2c258c06fa832e7eb7c7219fe))
+* **web:** serve cached page when navigation takes over 3s ([67ceb5a](https://github.com/SouravShrestha/kinwoo/commit/67ceb5a16588e3722d7b89a13d1752d2a361f40b))
+
+
+### Performance Improvements
+
+* **mobile:** shorten minimum splash duration to 500ms ([d872fce](https://github.com/SouravShrestha/kinwoo/commit/d872fce13296e008e060c9628df87348f63e6dd1))
+
 ## [1.6.1](https://github.com/SouravShrestha/kinwoo/compare/v1.6.0...v1.6.1) (2026-11-08)
 
 
