@@ -10,7 +10,7 @@ import {
 } from "@kinwoo/core/expenses";
 import { formatPaise, formatPickedDate } from "@kinwoo/core/grocery";
 
-import { ExpenseCategoryImage } from "@/components/CategoryImages";
+import { ExpenseCategoryImage, ItemCategoryImage } from "@/components/CategoryImages";
 
 import { cn } from "@/lib/utils";
 
@@ -51,7 +51,11 @@ export function ExpenseRow({
         title={EXPENSE_CATEGORY_LABELS[expense.category]}
         className="ml-3 mr-4 flex size-10 shrink-0 items-center justify-center rounded-lg bg-muted text-foreground"
       >
-        <ExpenseCategoryImage category={expense.category} size={30} />
+        {expense.itemCategoryName ? (
+          <ItemCategoryImage name={expense.itemCategoryName} size={30} />
+        ) : (
+          <ExpenseCategoryImage category={expense.category} size={30} />
+        )}
       </span>
       <span className="mr-3 flex min-w-0 flex-1 flex-col gap-0.5">
         <span className="truncate font-display text-base text-foreground">{expense.title}</span>
