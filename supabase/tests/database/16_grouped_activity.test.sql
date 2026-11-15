@@ -95,7 +95,7 @@ select throws_ok(
       'user_id', '00000000-0000-4000-8000-0000000001a1', 'amount_paise', 31000)),
     jsonb_build_array(jsonb_build_object(
       'user_id', '00000000-0000-4000-8000-0000000001a1', 'share_paise', 31000, 'weight', null)),
-    jsonb_build_array(jsonb_build_object('item_id', tests.id('i4'), 'price_paise', 1)))),
+    jsonb_build_array(jsonb_build_object('item_id', tests.id('i4'), 'price_paise', 1))),
   'P0001', 'INVALID_INPUT', 'an item outside the batch is rejected');
 
 select * from finish();

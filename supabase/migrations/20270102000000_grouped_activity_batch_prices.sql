@@ -247,21 +247,26 @@ begin
   ) returning * into v_item;
 
   if p_urgency <> 'now' then
+    -- ponytail: fixed 30-minute window; make it a setting if houses want longer runs.
     select * into v_last
       from public.activity_log
      where house_id = v_list.house_id
+       and actor_id = v_uid
+       and type = 'grocery_item.added'
+       and payload ->> 'list_id' = p_list_id::text
+       and payload ->> 'urgency' is distinct from 'now'
+       and jsonb_typeof(payload -> 'item_ids') = 'array'
+       and created_at > now() - interval '30 minutes'
      order by created_at desc, id desc
      limit 1
        for update;
 
-    -- ponytail: fixed 30-minute window; make it a setting if houses want longer runs.
-    if found
-       and v_last.actor_id = v_uid
-       and v_last.type = 'grocery_item.added'
-       and v_last.payload ->> 'list_id' = p_list_id::text
-       and v_last.payload ->> 'urgency' is distinct from 'now'
-       and jsonb_typeof(v_last.payload -> 'item_ids') = 'array'
-       and v_last.created_at > now() - interval '30 minutes' then
+    -- Rows logged in the same transaction share a timestamp, so only a strictly later row
+    -- counts as someone acting in between.
+    if found and not exists (
+      select 1 from public.activity_log
+       where house_id = v_list.house_id and created_at > v_last.created_at
+    ) then
       v_count := jsonb_array_length(v_last.payload -> 'item_ids') + 1;
       update public.activity_log
          set payload = payload || jsonb_build_object(
