@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.8.0](https://github.com/SouravShrestha/kinwoo/compare/v1.7.0...v1.8.0) (2026-11-15)
+
+
+### Features
+
+* **expenses:** edit item rates on bulk purchases and confirm discarding bulk edits ([6588ce1](https://github.com/SouravShrestha/kinwoo/commit/6588ce12648e4670ddb838d3e01ddc3e7a67e46a))
+* **grocery:** group bulk and back-to-back item activity into one row ([b669dcb](https://github.com/SouravShrestha/kinwoo/commit/b669dcb802996b1ca4a4c69ac34d4e74da27cb27))
+
+
+### Bug Fixes
+
+* **grocery:** merge back-to-back adds that share a transaction timestamp ([37a732b](https://github.com/SouravShrestha/kinwoo/commit/37a732be6738ce2fe196891f36ef58cf66d8f146))
+* **home:** colour the balance amount by whether you owe or are owed ([dcaf876](https://github.com/SouravShrestha/kinwoo/commit/dcaf876042626531e51f0748aec5984c8b384836))
+
 ## [1.7.0](https://github.com/SouravShrestha/kinwoo/compare/v1.6.1...v1.7.0) (2026-11-13)
 
 
