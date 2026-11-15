@@ -1,5 +1,10 @@
 import type { Database } from "@kinwoo/core/db";
-import { parseExpenseRpcError, type ExpenseParts } from "@kinwoo/core/expenses";
+import {
+  parseExpenseRpcError,
+  type ExpenseParts,
+  type ItemPriceInput,
+  type PurchaseLine,
+} from "@kinwoo/core/expenses";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
 import { toAvatarUrl } from "../avatars/avatarUrls";
@@ -94,6 +99,12 @@ export function toRpcParts(parts: ExpenseParts) {
   };
 }
 
+export function itemPricesArg(prices: ItemPriceInput[] | undefined) {
+  return prices?.length
+    ? prices.map((price) => ({ item_id: price.itemId, price_paise: price.pricePaise }))
+    : undefined;
+}
+
 function rpcArgs(input: ExpenseInput) {
   const parts = toRpcParts(input.parts);
   return {
@@ -175,7 +186,29 @@ export class ExpensesRepository implements IExpensesRepository {
       .maybeSingle();
 
     if (error) fail(error);
-    return data ? toExpense(data) : null;
+    if (!data) return null;
+    const expense = toExpense(data);
+    if (data.batch_id) expense.lines = await this.batchLines(data.batch_id);
+    return expense;
+  }
+
+  private async batchLines(batchId: string): Promise<PurchaseLine[]> {
+    const { data, error } = await this.client
+      .from("grocery_purchases")
+      .select("item_id, price_paise, grocery_items(name, grocery_categories(name))")
+      .eq("batch_id", batchId)
+      .order("batch_position");
+
+    if (error) fail(error);
+    return (data ?? []).map((row: any) => {
+      const item = one<any>(row.grocery_items);
+      return {
+        id: row.item_id,
+        name: item?.name ?? "",
+        categoryName: one<any>(item?.grocery_categories)?.name ?? null,
+        pricePaise: row.price_paise ?? null,
+      };
+    });
   }
 
   async createExpense(houseId: string, input: ExpenseInput): Promise<string> {
@@ -192,6 +225,7 @@ export class ExpensesRepository implements IExpensesRepository {
     const { error } = await this.client.rpc("update_expense", {
       p_expense_id: expenseId,
       ...rpcArgs(input),
+      p_item_prices: itemPricesArg(input.itemPrices),
     });
 
     if (error) fail(error);

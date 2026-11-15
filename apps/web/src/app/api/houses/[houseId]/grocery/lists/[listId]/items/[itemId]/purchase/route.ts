@@ -1,4 +1,5 @@
 import { badRequest, handleGroceryRequest, readJsonObject } from "@/app/api/_lib/groceryRoute";
+import { readItemPrices } from "@/app/api/_lib/expenseRoute";
 import { isOptional } from "@/app/api/_lib/route";
 
 type Context = { params: Promise<{ houseId: string; listId: string; itemId: string }> };
@@ -11,6 +12,8 @@ export async function PATCH(request: Request, { params }: Context) {
       const body = await readJsonObject(request);
       if (!body) return badRequest("Invalid JSON body");
       const { pricePaise, store, boughtAt } = body;
+      const itemPrices = readItemPrices(body.itemPrices);
+      if (itemPrices === null) return badRequest("itemPrices must list item ids and amounts");
       if (!isOptional(pricePaise, "number")) return badRequest("pricePaise must be a number");
       if (!isOptional(store, "string")) return badRequest("store must be a string");
       if (typeof boughtAt !== "string" || Number.isNaN(Date.parse(boughtAt))) {
@@ -20,6 +23,7 @@ export async function PATCH(request: Request, { params }: Context) {
         pricePaise: pricePaise ?? null,
         store: store ?? null,
         boughtAt,
+        itemPrices,
       });
     },
     { uuids: [houseId, listId, itemId] },

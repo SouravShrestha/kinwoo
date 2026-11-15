@@ -8,6 +8,7 @@ import {
   suggestExpenseCategory,
   type Expense,
   type ExpenseCategory,
+  type ItemPriceInput,
 } from "@kinwoo/core/expenses";
 import {
   amountErrorMessage,
@@ -22,6 +23,7 @@ import { useUpdatePrivatePurchase } from "../grocery/mutations";
 import { useHouseMembers } from "../houses/queries";
 import { toast } from "../toast";
 import { groceryErrorFromCause } from "../grocery/errors";
+import { withoutKey } from "../grocery/without-key";
 import { expenseErrorFromCause } from "./errors";
 import { useExpenseSplit } from "./expense-split";
 import { expenseInputFromForm, expensePartsFromForms, type ExpenseFormField } from "./form-input";
@@ -64,6 +66,29 @@ export function useExpenseForm({
   const [note, setNoteText] = useState(expense?.note ?? "");
   const [date, setDate] = useState(() => (expense ? parseSpentOn(expense.spentOn) : new Date()));
   const [error, setError] = useState<{ field: ExpenseFormField; message: string } | null>(null);
+  // A batch purchase's items, each with its own editable price.
+  const lines = expense?.lines ?? [];
+  const [itemAmounts, setItemAmounts] = useState<Record<string, string>>(() =>
+    Object.fromEntries(
+      lines.map((line) => [line.id, line.pricePaise ? paiseToAmountDraft(line.pricePaise) : ""]),
+    ),
+  );
+  const [itemErrors, setItemErrors] = useState<Record<string, string>>({});
+
+  // The prices that changed, or an error per item that cannot be read.
+  const readItemPrices = (): ItemPriceInput[] | null => {
+    const errors: Record<string, string> = {};
+    const changed: ItemPriceInput[] = [];
+    for (const line of lines) {
+      const parsed = parseRupeesToPaise(itemAmounts[line.id] ?? "");
+      if (!parsed.ok) errors[line.id] = amountErrorMessage(parsed.error);
+      else if (parsed.value !== line.pricePaise) {
+        changed.push({ itemId: line.id, pricePaise: parsed.value });
+      }
+    }
+    setItemErrors(errors);
+    return Object.keys(errors).length > 0 ? null : changed;
+  };
 
   const payers = usePayerSplit({
     houseId,
@@ -85,6 +110,8 @@ export function useExpenseForm({
   const submitting = create.isPending || update.isPending || updatePrivate.isPending;
 
   const submitPrivate = async (purchase: PrivateTransaction) => {
+    const itemPrices = readItemPrices();
+    if (!itemPrices) return;
     const parsed = parseRupeesToPaise(amount);
     if (!parsed.ok) {
       setError({ field: "amount", message: amountErrorMessage(parsed.error) });
@@ -101,7 +128,12 @@ export function useExpenseForm({
     try {
       await updatePrivate.mutateAsync({
         itemId: purchase.itemId,
-        input: { pricePaise: parsed.value, store: purchase.store, boughtAt },
+        input: {
+          pricePaise: parsed.value,
+          store: purchase.store,
+          boughtAt,
+          itemPrices,
+        },
       });
       toast.success("Expense updated");
       if (expense) onSaved(expense);
@@ -113,6 +145,8 @@ export function useExpenseForm({
   const submit = async () => {
     if (submitting) return;
     if (privatePurchase) return submitPrivate(privatePurchase);
+    const itemPrices = readItemPrices();
+    if (!itemPrices) return;
     const result = expenseInputFromForm({
       title,
       amount,
@@ -129,7 +163,7 @@ export function useExpenseForm({
 
     try {
       const saved = expense
-        ? await update.mutateAsync(result.input)
+        ? await update.mutateAsync({ ...result.input, itemPrices })
         : await create.mutateAsync(result.input);
       toast.success(expense ? "Expense updated" : `Added "${saved.title}"`);
       onSaved(saved);
@@ -150,6 +184,7 @@ export function useExpenseForm({
     split.method,
     split.values,
     Object.entries(split.sharesPaise).filter(([, paise]) => paise > 0),
+    itemAmounts,
   ]);
   const [initialSnapshot] = useState(snapshot);
 
@@ -189,6 +224,13 @@ export function useExpenseForm({
       clearError("note");
     },
     setDate,
+    lines,
+    itemAmountOf: (itemId: string) => itemAmounts[itemId] ?? "",
+    itemErrorOf: (itemId: string) => itemErrors[itemId] ?? null,
+    setItemAmount: (itemId: string, value: string) => {
+      setItemAmounts((current) => ({ ...current, [itemId]: value }));
+      setItemErrors((current) => withoutKey(current, itemId));
+    },
     submit,
   };
 }

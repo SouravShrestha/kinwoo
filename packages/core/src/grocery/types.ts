@@ -1,4 +1,4 @@
-import type { LinkedExpenseInput } from "../expenses/types";
+import type { ItemPriceInput, LinkedExpenseInput } from "../expenses/types";
 
 export type ListVisibility = "shared" | "private";
 export type ItemStatus = "pending" | "claimed" | "assigned" | "bought";
@@ -129,6 +129,8 @@ export type UpdatePrivatePurchaseInput = {
   pricePaise: number | null;
   store: string | null;
   boughtAt: string;
+  // Batch purchases only: new prices for some of its items.
+  itemPrices?: ItemPriceInput[];
 };
 
 export type MarkItemsBoughtInput = {

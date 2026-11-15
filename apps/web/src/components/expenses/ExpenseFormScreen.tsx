@@ -13,6 +13,7 @@ import {
 import { formatPickedDate, type PrivateTransaction } from "@kinwoo/core/grocery";
 import { ArrowRightIcon, CalendarIcon, CheckCircleIcon, RupeeIcon } from "@kinwoo/icons";
 import { ExpenseCategoryImage } from "@/components/CategoryImages";
+import { ItemAmountRow } from "@/components/grocery/ItemAmountRow";
 import { useRef, useState, type AnimationEvent } from "react";
 
 import { DatePickerSheet } from "@/components/grocery/DatePickerSheet";
@@ -212,6 +213,30 @@ export function ExpenseFormScreen({
               <span>{dateLabel}</span>
             </button>
           </div>
+
+          {form.lines.length > 0 ? (
+            <div role="group" aria-labelledby="expense-items-label">
+              <p
+                id="expense-items-label"
+                className="pb-5 font-display text-sm text-muted-foreground"
+              >
+                {form.lines.length} items
+              </p>
+              <ul className="space-y-7">
+                {form.lines.map((line) => (
+                  <ItemAmountRow
+                    key={line.id}
+                    id={line.id}
+                    name={line.name}
+                    categoryName={line.categoryName}
+                    value={form.itemAmountOf(line.id)}
+                    error={form.itemErrorOf(line.id)}
+                    onChange={(value) => form.setItemAmount(line.id, value)}
+                  />
+                ))}
+              </ul>
+            </div>
+          ) : null}
 
           {form.isPrivate ? null : (
             <>

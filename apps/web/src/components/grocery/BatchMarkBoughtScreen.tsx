@@ -8,13 +8,14 @@ import { useActiveHouse } from "@kinwoo/client/houses";
 import { toast } from "@kinwoo/client/toast";
 import { BATCH_NAME_MAX_LENGTH, MIN_BATCH_ITEMS, type GroceryItem } from "@kinwoo/core/grocery";
 import { ArrowRightIcon, BasketIcon, CheckCircleIcon, CheckIcon, RupeeIcon } from "@kinwoo/icons";
-import { ItemCategoryImage } from "@/components/CategoryImages";
+import { ItemAmountRow } from "@/components/grocery/ItemAmountRow";
 import { useEffect, useRef, useState, type AnimationEvent } from "react";
 
 import { PayerSheet } from "@/components/expenses/PayerSheet";
 import { SplitSheet } from "@/components/expenses/SplitSheet";
 import { useHouseNavigation } from "@/lib/house-navigation";
 import { useSwipeToClose } from "@/lib/use-swipe-to-close";
+import { useDiscardConfirm } from "@/components/useDiscardConfirm";
 import { ItemFormSkeleton } from "@/components/skeleton/skeletons";
 import { cn } from "@/lib/utils";
 
@@ -43,7 +44,6 @@ export function BatchMarkBoughtScreen({
   const { goBack, goHome } = useHouseNavigation();
   const [closing, setClosing] = useState(false);
   const screenRef = useRef<HTMLElement>(null);
-  useSwipeToClose(screenRef, !closing, () => setClosing(true));
   const [picker, setPicker] = useState<Picker | null>(null);
   const [split, setSplit] = useState(true);
   const houseId = activeHouse?.house.id ?? "";
@@ -58,6 +58,11 @@ export function BatchMarkBoughtScreen({
     currentUserName: user?.user_metadata?.displayName ?? user?.email ?? null,
     onBought: () => setClosing(true),
   });
+
+  const { requestClose, dialog: discardDialog } = useDiscardConfirm(form.dirty, () =>
+    setClosing(true),
+  );
+  useSwipeToClose(screenRef, !closing, requestClose);
 
   const payers = usePayerSplit({ houseId, currentUserId: user?.id ?? null, price: form.total });
   const expenseSplit = useExpenseSplit({ members: payers.members, totalPaise: payers.totalPaise });
@@ -103,7 +108,7 @@ export function BatchMarkBoughtScreen({
             type="button"
             aria-label="Back"
             disabled={closing}
-            onClick={() => setClosing(true)}
+            onClick={requestClose}
             className={cn(
               "flex size-10 items-center justify-start hover:cursor-pointer",
               FOCUS_RING,
@@ -286,60 +291,18 @@ export function BatchMarkBoughtScreen({
                   {form.amountMismatch}
                 </p>
                 <ul className="space-y-7">
-                  {form.items.map((item) => {
-                    const inputId = `batch-item-${item.id}`;
-                    const error = form.itemErrorOf(item.id);
-                    const detail = quantityUnit(item);
-                    return (
-                      <li key={item.id}>
-                        <div className="flex items-center gap-3">
-                          <span
-                            aria-hidden
-                            className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-muted text-foreground"
-                          >
-                            <ItemCategoryImage name={item.categoryName ?? undefined} size={40} />
-                          </span>
-                          <label
-                            htmlFor={inputId}
-                            className="min-w-0 flex-1 font-display font-normal"
-                          >
-                            <span className="block truncate text-base text-foreground">
-                              {item.name}
-                            </span>
-                            {detail ? (
-                              <span className="block truncate text-sm text-muted-foreground">
-                                {detail}
-                              </span>
-                            ) : null}
-                          </label>
-                          <div className={cn(FIELD, "w-28 shrink-0 gap-1.5 px-3")}>
-                            <RupeeIcon size={14} className="shrink-0 text-muted-foreground" />
-                            <input
-                              id={inputId}
-                              type="text"
-                              inputMode="decimal"
-                              autoComplete="off"
-                              placeholder="0.00"
-                              value={form.amountOf(item.id)}
-                              onChange={(event) => form.setAmount(item.id, event.target.value)}
-                              aria-invalid={error ? true : undefined}
-                              aria-describedby={error ? `${inputId}-hint` : undefined}
-                              className="h-full min-w-0 flex-1 bg-transparent text-right outline-none placeholder:text-muted-foreground"
-                            />
-                          </div>
-                        </div>
-                        {error ? (
-                          <p
-                            id={`${inputId}-hint`}
-                            role="alert"
-                            className="mt-2 text-right font-display text-sm font-normal text-destructive"
-                          >
-                            {error}
-                          </p>
-                        ) : null}
-                      </li>
-                    );
-                  })}
+                  {form.items.map((item) => (
+                    <ItemAmountRow
+                      key={item.id}
+                      id={item.id}
+                      name={item.name}
+                      detail={quantityUnit(item)}
+                      categoryName={item.categoryName}
+                      value={form.amountOf(item.id)}
+                      error={form.itemErrorOf(item.id)}
+                      onChange={(value) => form.setAmount(item.id, value)}
+                    />
+                  ))}
                 </ul>
               </div>
             ) : null}
@@ -349,6 +312,7 @@ export function BatchMarkBoughtScreen({
 
       <PayerSheet open={picker === "payers"} onClose={closePicker} payers={payers} />
       <SplitSheet open={picker === "split"} onClose={closePicker} split={expenseSplit} />
+      {discardDialog}
     </main>
   );
 }
