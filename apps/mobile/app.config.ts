@@ -26,7 +26,7 @@ export default (): ExpoConfig => ({
       foregroundImage: "./assets/adaptive-icon.png",
       backgroundColor: "#0e0e0e",
     },
-    // Only screens that exist in the app. /auth, /legal, /feedback and /api stay in the browser,
+    // Only screens that exist in the app. /auth, /feedback and /api stay in the browser,
     // and web OAuth finishes on /auth/callback there.
     intentFilters: [
       {

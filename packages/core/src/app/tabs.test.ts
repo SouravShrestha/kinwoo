@@ -47,7 +47,7 @@ describe("activeTabFor", () => {
 
   it("returns null for routes outside the navigation", () => {
     expect(activeTabFor("/login")).toBeNull();
-    expect(activeTabFor("/legal/privacy")).toBeNull();
+    expect(activeTabFor("/feedback")).toBeNull();
   });
 });
 
