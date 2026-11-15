@@ -25,7 +25,7 @@ function RowBody({ icon, label, value }: { icon: ReactNode; label: string; value
   );
 }
 
-// Routes without a loading.tsx (legal, feedback) give no feedback until they land, so the row
+// Routes without a loading.tsx (feedback) give no feedback until they land, so the row
 // drives the top bar while its navigation is pending.
 function PendingLinkBusy() {
   useBusyWhile(useLinkStatus().pending);

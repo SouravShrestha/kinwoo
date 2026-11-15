@@ -24,6 +24,16 @@ const nextConfig: NextConfig = {
   // Pages are thin wrappers around client screens that load their data through React Query, so
   // reusing a visited page's RSC payload is safe and saves a Worker round trip per tab switch.
   experimental: { staleTimes: { dynamic: 300 } },
+  // Legal pages live only on the landing site; old app.kinwoo.in links keep working.
+  async redirects() {
+    return [
+      {
+        source: "/legal/:path*",
+        destination: "https://www.kinwoo.in/legal/:path*",
+        permanent: true,
+      },
+    ];
+  },
   // The Content-Security-Policy is set per request in middleware.ts, since it carries a nonce.
   async headers() {
     return [

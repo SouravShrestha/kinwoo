@@ -6,8 +6,6 @@ describe("isPublicRoute", () => {
   it("treats the listed routes and their children as public", () => {
     expect(isPublicRoute("/login")).toBe(true);
     expect(isPublicRoute("/login/email")).toBe(true);
-    expect(isPublicRoute("/legal")).toBe(true);
-    expect(isPublicRoute("/legal/privacy")).toBe(true);
     expect(isPublicRoute("/feedback")).toBe(true);
     expect(isPublicRoute("/auth/callback")).toBe(true);
     expect(isPublicRoute("/join/ABC234")).toBe(true);
@@ -20,6 +18,6 @@ describe("isPublicRoute", () => {
 
   it("does not match on a shared prefix", () => {
     expect(isPublicRoute("/logins")).toBe(false);
-    expect(isPublicRoute("/legalese")).toBe(false);
+    expect(isPublicRoute("/feedbacks")).toBe(false);
   });
 });

@@ -38,7 +38,7 @@ Name: Kinwoo. Domain: kinwoo.in. No other voice or identity constraints confirme
 
 ## Evidence on Hand
 
-Working app, legal pages, and OG/app icon assets under `apps/web/src/app` and `assets/`. No testimonials, customer counts, or benchmarks exist; do not invent them.
+Working app and OG/app icon assets under `apps/web/src/app` and `assets/`. Legal pages live in the separate kinwoo-landing repo. No testimonials, customer counts, or benchmarks exist; do not invent them.
 
 ## Product Principles
 
