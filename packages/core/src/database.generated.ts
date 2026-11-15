@@ -831,7 +831,7 @@ isOneToOne: false
 { Args: { "p_token": string }; Returns: undefined
                            },
 "update_expense":
-{ Args: { "p_amount_paise": number,"p_category": string,"p_expense_id": string,"p_note": string,"p_payers": Json,"p_shares": Json,"p_spent_on": string,"p_split_method": string,"p_title": string }; Returns: undefined
+{ Args: { "p_amount_paise": number,"p_category": string,"p_expense_id": string,"p_item_prices"?: Json,"p_note": string,"p_payers": Json,"p_shares": Json,"p_spent_on": string,"p_split_method": string,"p_title": string }; Returns: undefined
                            },
 "update_grocery_item":
 { Args: { "p_category_id"?: string,"p_item_id": string,"p_name"?: string,"p_note"?: string,"p_quantity"?: number,"p_unit"?: string,"p_urgency"?: string }; Returns: {
@@ -887,7 +887,7 @@ isOneToOne: false
         isSetofReturn: false
       } },
 "update_private_purchase":
-{ Args: { "p_bought_at": string,"p_item_id": string,"p_price_paise": number,"p_store": string }; Returns: undefined
+{ Args: { "p_bought_at": string,"p_item_id": string,"p_item_prices"?: Json,"p_price_paise": number,"p_store": string }; Returns: undefined
                            },
 "update_settlement":
 { Args: { "p_amount_paise": number,"p_settlement_id": string }; Returns: undefined

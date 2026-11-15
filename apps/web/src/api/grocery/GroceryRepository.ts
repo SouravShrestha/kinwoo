@@ -8,7 +8,7 @@ import {
 } from "@kinwoo/core/grocery";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
-import { toRpcParts } from "../expenses/ExpensesRepository";
+import { itemPricesArg, toRpcParts } from "../expenses/ExpensesRepository";
 import {
   GroceryRepositoryError,
   type ActivityEntry,
@@ -439,6 +439,7 @@ export class GroceryRepository implements IGroceryRepository {
       p_price_paise: input.pricePaise as number,
       p_store: input.store as string,
       p_bought_at: input.boughtAt,
+      p_item_prices: itemPricesArg(input.itemPrices),
     });
 
     if (error) fail(error);
@@ -496,26 +497,29 @@ export class GroceryRepository implements IGroceryRepository {
   }
 
   async listItemActivity(houseId: string, itemId: string): Promise<ActivityEntry[]> {
-    const [own, batches] = await Promise.all([
+    const [own, grouped] = await Promise.all([
       this.client
         .from("activity_log")
         .select(ACTIVITY_COLUMNS)
         .eq("house_id", houseId)
         .eq("entity_type", "grocery_item")
         .eq("entity_id", itemId),
-      // Batch buys log once per batch, so find the entries whose payload names this item.
+      // Batch buys and bulk or back-to-back actions log one row for many items, so also find
+      // the entries whose payload names this item.
       this.client
         .from("activity_log")
         .select(ACTIVITY_COLUMNS)
         .eq("house_id", houseId)
-        .eq("type", "grocery_batch.bought")
         .contains("payload", { item_ids: [itemId] }),
     ]);
 
     if (own.error) fail(own.error);
-    if (batches.error) fail(batches.error);
+    if (grouped.error) fail(grouped.error);
 
-    return [...(own.data ?? []), ...(batches.data ?? [])]
+    const rows = new Map(
+      [...(own.data ?? []), ...(grouped.data ?? [])].map((row) => [row.id, row]),
+    );
+    return [...rows.values()]
       .map(toActivityEntry)
       .sort(
         (a, b) => Date.parse(a.createdAt) - Date.parse(b.createdAt) || a.id.localeCompare(b.id),
