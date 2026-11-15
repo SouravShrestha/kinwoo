@@ -11,6 +11,11 @@ import { santa } from "@/lib/images";
 let autoplayed = false;
 
 const LEAD = { owed: "You're owed", owe: "You owe" } as const;
+const AMOUNT_COLOR = {
+  owed: "text-positive",
+  owe: "text-negative",
+  neutral: "text-foreground",
+} as const;
 
 export function HeroCard({ onReplay, children }: { onReplay?: () => void; children: ReactNode }) {
   // Remounting the image restarts its two-loop animation.
@@ -67,7 +72,9 @@ export function BalanceCard({
           {text.tone === "neutral" ? text.before.trim() : LEAD[text.tone]}
         </Text>
         {text.amount ? (
-          <Text className="font-display-medium text-[26px] leading-10 tracking-[-0.52px] text-foreground">
+          <Text
+            className={`font-display-medium text-[26px] leading-10 tracking-[-0.52px] ${AMOUNT_COLOR[text.tone]}`}
+          >
             {text.amount}
           </Text>
         ) : null}
