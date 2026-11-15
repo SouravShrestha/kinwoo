@@ -17,6 +17,7 @@ import Animated, { Easing, FadeInUp, FadeOutUp, ReduceMotion } from "react-nativ
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { DatePickerSheet } from "@/components/grocery/DatePickerSheet";
+import { ItemAmountRow } from "@/components/grocery/ItemAmountRow";
 import { OptionSheet } from "@/components/OptionSheet";
 import { Pressable } from "@/components/Pressable";
 import { SwipeDownScreen } from "@/components/SwipeDownScreen";
@@ -213,6 +214,25 @@ export function ExpenseFormScreen({
                 </Text>
               </Pressable>
             </View>
+
+            {form.lines.length > 0 ? (
+              <View className="gap-7">
+                <Text className="-mb-2 font-display-normal text-sm text-muted-foreground">
+                  {form.lines.length} items
+                </Text>
+                {form.lines.map((line) => (
+                  <ItemAmountRow
+                    key={line.id}
+                    name={line.name}
+                    categoryName={line.categoryName}
+                    value={form.itemAmountOf(line.id)}
+                    error={form.itemErrorOf(line.id)}
+                    onChange={(value) => form.setItemAmount(line.id, value)}
+                    onFocus={revealFocusedInput}
+                  />
+                ))}
+              </View>
+            ) : null}
 
             {form.isPrivate ? null : (
               <>

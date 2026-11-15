@@ -20,6 +20,11 @@ const santa = santas[Math.floor(Math.random() * santas.length)];
 let autoplayed = false;
 
 const LEAD = { owed: "You're owed", owe: "You owe" } as const;
+const AMOUNT_COLOR = {
+  owed: "text-positive",
+  owe: "text-negative",
+  neutral: "text-foreground",
+} as const;
 
 export function HeroCard({ onReplay, children }: { onReplay?: () => void; children: ReactNode }) {
   // A new query string makes the browser restart the two-loop animation.
@@ -84,7 +89,7 @@ export function BalanceCard({
           {text.tone === "neutral" ? text.before.trim() : LEAD[text.tone]}
         </span>
         {text.amount ? (
-          <span className="text-[26px] leading-10 tracking-[-0.02em] text-foreground">
+          <span className={`text-[26px] leading-10 tracking-[-0.02em] ${AMOUNT_COLOR[text.tone]}`}>
             {text.amount}
           </span>
         ) : null}

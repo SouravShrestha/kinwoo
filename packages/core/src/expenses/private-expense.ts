@@ -25,6 +25,7 @@ export function privateExpenseOf(
     updatedByName: null,
     source: null,
     itemCategoryName: transaction.categoryName,
+    lines: transaction.lines,
     payers: [{ userId, name: userName, amountPaise }],
     shares: [],
     createdAt: transaction.boughtAt,

@@ -16,6 +16,7 @@ import { toast } from "../toast";
 import { groceryErrorFromCause } from "./errors";
 import { useMarkItemsBought } from "./mutations";
 import { useGroceryItems } from "./queries";
+import { withoutKey } from "./without-key";
 
 // Long first names are shortened so the prefilled name always passes batch name validation.
 function prefilledName(names: readonly string[]): string {
@@ -154,6 +155,10 @@ export function useBatchMarkBoughtForm({
     nameError,
     amountMismatch: mismatch,
     submitting,
+    dirty:
+      total.trim() !== "" ||
+      name !== prefilledName(list.map((item) => item.name)) ||
+      Object.values(amounts).some((value) => value.trim() !== ""),
     canSubmit: ready && !unavailable && !submitting,
     amountOf: (itemId: string) => amounts[itemId] ?? "",
     itemErrorOf: (itemId: string) => itemErrors[itemId] ?? null,
@@ -167,12 +172,7 @@ export function useBatchMarkBoughtForm({
     },
     setAmount: (itemId: string, value: string) => {
       setAmounts((current) => ({ ...current, [itemId]: value }));
-      setItemErrors((current) => {
-        if (!(itemId in current)) return current;
-        const next = { ...current };
-        delete next[itemId];
-        return next;
-      });
+      setItemErrors((current) => withoutKey(current, itemId));
     },
     submit,
   };

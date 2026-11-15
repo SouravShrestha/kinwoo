@@ -3,9 +3,11 @@ import {
   isSplitMethod,
   type ExpenseInput,
   type ExpenseParts,
+  type ItemPriceInput,
   type LinkedExpenseInput,
   type SettlementInput,
 } from "@kinwoo/core/expenses";
+import { isPaiseAmount, MAX_BULK_ASSIGN } from "@kinwoo/core/grocery";
 import type { NextResponse } from "next/server";
 
 import { ExpensesRepository } from "@/api/expenses/ExpensesRepository";
@@ -93,6 +95,21 @@ export function readLinkedExpense(value: unknown): LinkedExpenseInput | null | "
   return { ...parts, spentOn: value.spentOn };
 }
 
+// undefined when absent, null when malformed.
+export function readItemPrices(value: unknown): ItemPriceInput[] | undefined | null {
+  if (value === undefined || value === null) return undefined;
+  if (!Array.isArray(value) || value.length > MAX_BULK_ASSIGN) return null;
+  const ok = value.every(
+    (price) =>
+      isRecord(price) &&
+      isUuid(price.itemId) &&
+      (price.pricePaise === null || isPaiseAmount(price.pricePaise)),
+  );
+  return ok
+    ? value.map((price) => ({ itemId: price.itemId, pricePaise: price.pricePaise ?? null }))
+    : null;
+}
+
 export function readExpenseInput(body: Record<string, unknown>): ExpenseInput | string {
   if (typeof body.title !== "string") return "title must be a string";
   if (!Number.isInteger(body.amountPaise)) return "amountPaise must be a whole number";
@@ -103,7 +120,10 @@ export function readExpenseInput(body: Record<string, unknown>): ExpenseInput | 
   if (typeof body.spentOn !== "string") return "spentOn must be a date";
   const parts = readExpenseParts(body.parts);
   if (!parts) return "parts must list payers and shares";
+  const itemPrices = readItemPrices(body.itemPrices);
+  if (itemPrices === null) return "itemPrices must list item ids and amounts";
   return {
+    itemPrices,
     title: body.title,
     amountPaise: body.amountPaise as number,
     category: body.category,

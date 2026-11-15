@@ -20,11 +20,12 @@ import Animated, { Easing, FadeInUp, FadeOutUp, ReduceMotion } from "react-nativ
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { PayerSheet } from "@/components/expenses/PayerSheet";
-import { ItemCategoryImage } from "@/components/grocery/ItemCategoryImage";
+import { ItemAmountRow } from "@/components/grocery/ItemAmountRow";
 import { SplitSheet } from "@/components/expenses/SplitSheet";
 import { Pressable } from "@/components/Pressable";
 import { ItemFormSkeleton } from "@/components/skeleton/skeletons";
 import { SwipeDownScreen } from "@/components/SwipeDownScreen";
+import { useDiscardConfirm } from "@/components/useDiscardConfirm";
 import { goBack, goHome } from "@/lib/house-navigation";
 import { useFocusedInputAboveKeyboard } from "@/lib/use-focused-input-above-keyboard";
 import { useSwipeDownToDismiss } from "@/lib/use-swipe-down-to-dismiss";
@@ -36,8 +37,6 @@ const SPLIT_ENTERING = FadeInUp.duration(220)
   .easing(Easing.out(Easing.cubic))
   .reduceMotion(ReduceMotion.System);
 const SPLIT_EXITING = FadeOutUp.duration(160).reduceMotion(ReduceMotion.System);
-
-const FIELD = "h-12 flex-row items-center rounded-xl bg-muted";
 
 function quantityUnit(item: GroceryItem): string {
   return [item.quantity != null ? String(item.quantity) : "", item.unit ?? ""]
@@ -87,7 +86,11 @@ export default function BatchMarkBoughtScreen() {
     goBack();
   }, [form.unavailable]);
 
-  const { pan, scrollGesture, scrollY, onScroll, sheetStyle } = useSwipeDownToDismiss(goBack);
+  const { ask, requestClose, dialog: discardDialog } = useDiscardConfirm(form.dirty, goBack);
+  const { pan, scrollGesture, scrollY, onScroll, sheetStyle } = useSwipeDownToDismiss(
+    goBack,
+    form.dirty ? ask : undefined,
+  );
   const { scrollRef, revealFocusedInput } = useFocusedInputAboveKeyboard(scrollY);
   const submitDisabled = !form.canSubmit;
 
@@ -124,7 +127,7 @@ export default function BatchMarkBoughtScreen() {
               <Pressable
                 accessibilityRole="button"
                 accessibilityLabel="Back"
-                onPress={goBack}
+                onPress={requestClose}
                 hitSlop={12}
                 className="size-10 items-start justify-center"
               >
@@ -296,63 +299,18 @@ export default function BatchMarkBoughtScreen() {
                         {form.amountMismatch}
                       </Text>
                     ) : null}
-                    {form.items.map((item) => {
-                      const error = form.itemErrorOf(item.id);
-                      const detail = quantityUnit(item);
-                      return (
-                        <View key={item.id}>
-                          <View className="flex-row items-center gap-3">
-                            <View
-                              accessibilityElementsHidden
-                              importantForAccessibility="no-hide-descendants"
-                              className="size-12 items-center justify-center rounded-xl bg-muted"
-                            >
-                              <ItemCategoryImage name={item.categoryName} size={40} />
-                            </View>
-                            <View className="min-w-0 flex-1">
-                              <Text
-                                numberOfLines={1}
-                                className="font-display-normal text-base text-foreground"
-                              >
-                                {item.name}
-                              </Text>
-                              {detail ? (
-                                <Text
-                                  numberOfLines={1}
-                                  className="font-display-normal text-sm text-muted-foreground"
-                                >
-                                  {detail}
-                                </Text>
-                              ) : null}
-                            </View>
-                            <View className={`${FIELD} w-28 gap-1.5 px-3`}>
-                              <RupeeIcon size={14} color={palette.mutedForeground} />
-                              <TextInput
-                                accessibilityLabel={`Amount for ${item.name}`}
-                                accessibilityHint={error ?? undefined}
-                                keyboardType="decimal-pad"
-                                placeholder="0.00"
-                                placeholderTextColor={palette.mutedForeground}
-                                selectionColor={palette.primary}
-                                onFocus={revealFocusedInput}
-                                value={form.amountOf(item.id)}
-                                onChangeText={(value) => form.setAmount(item.id, value)}
-                                className="h-12 min-w-0 flex-1 text-right font-display-normal text-foreground"
-                                style={{ fontSize: 16, paddingVertical: 0 }}
-                              />
-                            </View>
-                          </View>
-                          {error ? (
-                            <Text
-                              accessibilityLiveRegion="polite"
-                              className="mt-2 text-right font-display-normal text-sm text-destructive"
-                            >
-                              {error}
-                            </Text>
-                          ) : null}
-                        </View>
-                      );
-                    })}
+                    {form.items.map((item) => (
+                      <ItemAmountRow
+                        key={item.id}
+                        name={item.name}
+                        detail={quantityUnit(item)}
+                        categoryName={item.categoryName}
+                        value={form.amountOf(item.id)}
+                        error={form.itemErrorOf(item.id)}
+                        onChange={(value) => form.setAmount(item.id, value)}
+                        onFocus={revealFocusedInput}
+                      />
+                    ))}
                   </View>
                 ) : null}
               </>
@@ -363,6 +321,7 @@ export default function BatchMarkBoughtScreen() {
 
       <PayerSheet open={picker === "payers"} onClose={closePicker} payers={payers} />
       <SplitSheet open={picker === "split"} onClose={closePicker} split={expenseSplit} />
+      {discardDialog}
     </SwipeDownScreen>
   );
 }

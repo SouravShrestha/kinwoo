@@ -22,6 +22,16 @@ export type ExpenseShare = ExpenseSharePart & { name: string | null };
 
 export type ExpenseSource = { kind: "purchase" | "batch"; id: string };
 
+// One item of a batch purchase; id is the item's id.
+export type PurchaseLine = {
+  id: string;
+  name: string;
+  categoryName: string | null;
+  pricePaise: number | null;
+};
+
+export type ItemPriceInput = { itemId: string; pricePaise: number | null };
+
 export type Expense = {
   id: string;
   houseId: string;
@@ -38,6 +48,8 @@ export type Expense = {
   source: ExpenseSource | null;
   // The grocery category of the item bought (the first item of a batch), for its icon.
   itemCategoryName: string | null;
+  // The items of a batch purchase, on an expense fetched on its own; absent from list pages.
+  lines?: PurchaseLine[];
   payers: ExpensePayer[];
   shares: ExpenseShare[];
   createdAt: string;
@@ -51,6 +63,8 @@ export type ExpenseInput = {
   note: string | null;
   spentOn: string;
   parts: ExpenseParts;
+  // Batch expenses only: new prices for some of its items.
+  itemPrices?: ItemPriceInput[];
 };
 
 // The payer handed money to the payee outside the app.

@@ -7,6 +7,7 @@ import {
   type BoughtEntry,
   type BoughtGroup,
 } from "./bought-groups";
+import type { PurchaseLine } from "../expenses/types";
 import { monthLabel } from "./purchase-date";
 import type { GroceryItem, GroceryOverviewItem } from "./types";
 
@@ -141,7 +142,7 @@ export type PrivateTransaction = {
   amountPaise: number | null;
   store: string | null;
   boughtAt: string;
-  lines: { id: string; name: string; pricePaise: number | null }[];
+  lines: PurchaseLine[];
 };
 
 export function privateTransactionOfItem(item: GroceryItem): PrivateTransaction {
@@ -169,6 +170,7 @@ export function privateTransactionOfGroup(group: BoughtGroup): PrivateTransactio
     lines: group.items.map((item) => ({
       id: item.id,
       name: item.name,
+      categoryName: item.categoryName,
       pricePaise: item.purchase?.pricePaise ?? null,
     })),
   };
