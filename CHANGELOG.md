@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.9.0](https://github.com/SouravShrestha/kinwoo/compare/v1.8.0...v1.9.0) (2026-11-18)
+
+
+### Features
+
+* **mobile:** show AdMob banner on home and profile ([e6079ea](https://github.com/SouravShrestha/kinwoo/commit/e6079eadf4d6bb7ae41e780bb75da34502c1d7cd))
+* **mobile:** show banner ads in lists and summary screens ([694ca2a](https://github.com/SouravShrestha/kinwoo/commit/694ca2af0abf9fab7bff577652d1c56e074baa02))
+
+
+### Bug Fixes
+
+* **web:** redirect legal pages to the landing site ([5e33bde](https://github.com/SouravShrestha/kinwoo/commit/5e33bdeebd80c2e4d8dbfeae12dbd44c333a2385))
+
 ## [1.8.0](https://github.com/SouravShrestha/kinwoo/compare/v1.7.0...v1.8.0) (2026-11-15)
 
 
