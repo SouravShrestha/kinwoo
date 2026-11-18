@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.9.1](https://github.com/SouravShrestha/kinwoo/compare/v1.9.0...v1.9.1) (2026-11-18)
+
+
+### Bug Fixes
+
+* **mobile:** raise gradle heap so r8 does not run out of memory ([4c2b302](https://github.com/SouravShrestha/kinwoo/commit/4c2b30279c9ee379a3cb20730b4c8e482113a5e2))
+
 ## [1.9.0](https://github.com/SouravShrestha/kinwoo/compare/v1.8.0...v1.9.0) (2026-11-18)
 
 
