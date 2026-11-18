@@ -15,6 +15,7 @@ import { useCallback, useMemo, useState } from "react";
 import { FlatList, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { BannerAd } from "@/components/BannerAd";
 import { BalanceSummary } from "@/components/expenses/BalanceSummary";
 import { ExpenseActions } from "@/components/expenses/ExpenseActions";
 import { ExpenseRow } from "@/components/expenses/ExpenseRow";
@@ -27,6 +28,7 @@ import {
   ExpenseActionsSkeleton,
   ExpenseRowsSkeleton,
 } from "@/components/skeleton/skeletons";
+import { showAdAfter } from "@/lib/ads";
 import { openExpense, openPayment, openPrivateSpending } from "@/lib/house-navigation";
 import { useTabBarSpace } from "@/lib/tab-bar";
 import { usePullToRefresh } from "@/lib/use-pull-to-refresh";
@@ -140,21 +142,30 @@ export default function BillsScreen() {
             </View>
           </View>
         }
-        renderItem={({ item }) =>
-          item.kind === "expense" ? (
-            <ExpenseRow
-              expense={item.expense}
-              currentUserId={currentUserId}
-              onOpen={() => openExpense(item.id)}
-            />
+        renderItem={({ item, index }) => {
+          const row =
+            item.kind === "expense" ? (
+              <ExpenseRow
+                expense={item.expense}
+                currentUserId={currentUserId}
+                onOpen={() => openExpense(item.id)}
+              />
+            ) : (
+              <PaymentRow
+                settlement={item.settlement}
+                currentUserId={currentUserId}
+                onOpen={() => openPayment(item.id)}
+              />
+            );
+          return showAdAfter(index, feed.length) ? (
+            <>
+              {row}
+              <BannerAd className="py-4" />
+            </>
           ) : (
-            <PaymentRow
-              settlement={item.settlement}
-              currentUserId={currentUserId}
-              onOpen={() => openPayment(item.id)}
-            />
-          )
-        }
+            row
+          );
+        }}
         ListFooterComponent={isFetchingNextPage ? <ExpenseRowsSkeleton count={2} /> : null}
         ListEmptyComponent={
           loading ? (

@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import { ScrollView, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { BannerAd } from "@/components/BannerAd";
 import { ItemDetailSheet } from "@/components/grocery/ItemDetailSheet";
 import { BalanceCard, HeroCard } from "@/components/home/BalanceCard";
 import { HomeHeaderActions } from "@/components/home/HomeHeaderActions";
@@ -189,6 +190,7 @@ export default function HomeScreen() {
             </View>
           )}
         </View>
+        {ready ? <BannerAd className="mt-8" /> : null}
       </ScrollView>
 
       <ItemDetailSheet

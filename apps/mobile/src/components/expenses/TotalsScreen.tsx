@@ -21,6 +21,7 @@ import Animated from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Svg, { Circle, Defs, G, Line, LinearGradient, Path, Stop } from "react-native-svg";
 
+import { BannerAd } from "@/components/BannerAd";
 import { PeriodFilter } from "@/components/expenses/PeriodFilter";
 import { Pressable } from "@/components/Pressable";
 import { TotalsSkeleton } from "@/components/skeleton/skeletons";
@@ -235,6 +236,7 @@ export function TotalsScreen({ houseId }: { houseId: string }) {
                   />
                 </View>
               </View>
+              <BannerAd className="mt-10" />
             </>
           ) : isError ? (
             <Text className="pt-16 text-center font-display-normal text-base text-muted-foreground">

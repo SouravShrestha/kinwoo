@@ -70,6 +70,17 @@ export default (): ExpoConfig => ({
       },
     ],
     "expo-status-bar",
+    [
+      "react-native-google-mobile-ads",
+      {
+        androidAppId: "ca-app-pub-3867903352379411~8950481143",
+        // Google's sample ID: the iOS SDK aborts launch without one. Ads stay Android-only
+        // until a real iOS AdMob app exists.
+        iosAppId: "ca-app-pub-3940256099942544~1458510533",
+        // Waits for the UMP consent answer before the SDK collects anything.
+        delayAppMeasurementInit: true,
+      },
+    ],
     "expo-web-browser",
     ["expo-image-picker", { photosPermission: "Kinwoo uses your photos to set your avatar." }],
     // Mods run last-registered first, so this must stay before expo-notifications.

@@ -15,6 +15,7 @@ import { GestureDetector } from "react-native-gesture-handler";
 import Animated, { useAnimatedStyle, useSharedValue } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { BannerAd } from "@/components/BannerAd";
 import { ExpandCaret, useExpandProgress } from "@/components/grocery/AssignMemberStrip";
 import { Avatar } from "@/components/houses/Avatar";
 import { Pressable } from "@/components/Pressable";
@@ -227,6 +228,7 @@ export function MemberBalances({ houseId }: { houseId: string }) {
               {rows.map((row) => (
                 <MemberRow key={row.member.userId} row={row} houseName={activeHouse.house.name} />
               ))}
+              <BannerAd className="mt-6" />
             </View>
           ) : (
             <MemberBalanceRowsSkeleton />

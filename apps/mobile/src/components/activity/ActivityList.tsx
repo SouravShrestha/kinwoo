@@ -11,12 +11,14 @@ import {
 } from "@kinwoo/core/grocery";
 import type { HouseMember } from "@kinwoo/core/houses";
 import { ActivityKindIcon } from "@kinwoo/icons/native";
-import { memo, useCallback, useMemo, type ReactElement } from "react";
+import { Fragment, memo, useCallback, useMemo, type ReactElement } from "react";
 import { SectionList, Text, View, type RefreshControlProps } from "react-native";
 
+import { BannerAd } from "@/components/BannerAd";
 import { Avatar } from "@/components/houses/Avatar";
 import { Pressable } from "@/components/Pressable";
 import { useTheme } from "@/theme/ThemeProvider";
+import { showAdAfter } from "@/lib/ads";
 import { useTabBarSpace } from "@/lib/tab-bar";
 
 const END_REACHED_THRESHOLD = 0.5;
@@ -26,6 +28,8 @@ type DaySection = {
   key: string;
   title: string;
   data: GroceryActivityEntry[][];
+  // Rows in earlier days, so ads count across the whole list.
+  offset: number;
 };
 
 function ActivityIcon({
@@ -104,8 +108,12 @@ function DayEntries({
   onOpenPayment,
   onOpenEntry,
   houseNames,
+  offset,
+  total,
 }: {
   entries: GroceryActivityEntry[];
+  offset: number;
+  total: number;
   membersById: Map<string, HouseMember>;
   currentUserId: string | null;
   onOpenExpense?: (expenseId: string | null) => void;
@@ -115,7 +123,7 @@ function DayEntries({
 }) {
   return (
     <View className="px-4">
-      {entries.map((entry) => {
+      {entries.map((entry, index) => {
         const expenseId = activityExpenseId(entry);
         const settlementId = activitySettlementId(entry);
         const open = onOpenEntry
@@ -152,7 +160,7 @@ function DayEntries({
           </>
         );
 
-        return open ? (
+        const row = open ? (
           <Pressable
             key={entry.id}
             accessibilityRole="button"
@@ -172,6 +180,15 @@ function DayEntries({
           <View key={entry.id} className={className}>
             {content}
           </View>
+        );
+
+        return showAdAfter(offset + index, total) ? (
+          <Fragment key={entry.id}>
+            {row}
+            <BannerAd className="py-4" />
+          </Fragment>
+        ) : (
+          row
         );
       })}
     </View>
@@ -220,18 +237,21 @@ export const ActivityList = memo(function ActivityList({
 
   const sections = useMemo<DaySection[]>(
     () =>
-      groupActivityByDay(entries).map((group) => ({
-        key: group.key,
-        title: group.label,
-        data: [group.entries],
-      })),
+      groupActivityByDay(entries).reduce<DaySection[]>((acc, group) => {
+        const prev = acc.at(-1);
+        const offset = prev ? prev.offset + (prev.data[0]?.length ?? 0) : 0;
+        acc.push({ key: group.key, title: group.label, data: [group.entries], offset });
+        return acc;
+      }, []),
     [entries],
   );
 
   const renderItem = useCallback(
-    ({ item }: { item: GroceryActivityEntry[] }) => (
+    ({ item, section }: { item: GroceryActivityEntry[]; section: DaySection }) => (
       <DayEntries
         entries={item}
+        offset={section.offset}
+        total={entries.length}
         membersById={membersById}
         currentUserId={currentUserId}
         onOpenExpense={onOpenExpense}
@@ -240,7 +260,15 @@ export const ActivityList = memo(function ActivityList({
         houseNames={houseNames}
       />
     ),
-    [membersById, currentUserId, onOpenExpense, onOpenPayment, onOpenEntry, houseNames],
+    [
+      membersById,
+      currentUserId,
+      onOpenExpense,
+      onOpenPayment,
+      onOpenEntry,
+      houseNames,
+      entries.length,
+    ],
   );
 
   return (

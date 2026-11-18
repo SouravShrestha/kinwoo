@@ -30,7 +30,8 @@
         "buildType": "app-bundle"
       },
       "env": {
-        "EXPO_PUBLIC_API_URL": "https://app.kinwoo.in"
+        "EXPO_PUBLIC_API_URL": "https://app.kinwoo.in",
+        "EXPO_PUBLIC_ADMOB_BANNER_ID": "ca-app-pub-3867903352379411/9285523060"
       }
     }
   },
