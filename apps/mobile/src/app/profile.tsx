@@ -135,8 +135,6 @@ export default function ProfileScreen() {
         </View>
       </View>
 
-      <BannerAd className="mb-4" />
-
       <SettingsGroup title="Account Settings">
         <SettingsRow
           icon={<ProfileIcon size={20} color={palette.foreground} />}
@@ -197,6 +195,8 @@ export default function ProfileScreen() {
         onPress={() => setLogoutOpen(true)}
         className="mt-10"
       />
+
+      <BannerAd className="mt-6" />
 
       <AppFooter />
 

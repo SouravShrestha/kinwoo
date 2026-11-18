@@ -14,6 +14,7 @@ import { GestureDetector } from "react-native-gesture-handler";
 import Animated from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { BannerAd } from "@/components/BannerAd";
 import { BoughtGroupSheet } from "@/components/grocery/BoughtGroupSheet";
 import { EmptyItems } from "@/components/grocery/EmptyItems";
 import { ItemDetailSheet } from "@/components/grocery/ItemDetailSheet";
@@ -101,6 +102,7 @@ export function PrivateSpending({ houseId }: { houseId: string }) {
               <PrivateSpendingHeaderSkeleton />
             )}
           </View>
+          {loaded ? <BannerAd className="mb-4" /> : null}
           {loaded && entries.length === 0 ? (
             <View className="flex-1">
               <EmptyItems
